@@ -1,27 +1,15 @@
-#===============================================================================
-#    Copyright (C) 2013
+#================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [marthaler at ge dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
-#    Kristian Kersting [kristian dot kersting at iais dot fraunhofer dot de]
-# 
-#    Fraunhofer IAIS, STREAM Project, Sankt Augustin, Germany
-# 
-#    This file is part of pyGPs.
-# 
-#    pyGPs is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
-# 
-#    pyGPs is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-#    GNU General Public License for more details.
-# 
-#    You should have received a copy of the GNU General Public License
-#    along with this program; if not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+#    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
+#
+#    This file is part of pyGP_OO.
+#    The software package is released under the BSD 2-Clause (FreeBSD) License.
+#
+#    Copyright (c) by
+#    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 30/09/2013
+#================================================================================
 
 
 import numpy as np
@@ -51,7 +39,6 @@ def unique(x):
     return y
 
 def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
-    #def brentmin(0,smax,Nline,thr,'Psi_line',4,dalpha,alpha,hyp,K,m,likfunc,y,inffunc):
     ## BRENTMIN: Brent's minimization method in one dimension
     # code taken from
     #    Section 10.2 Parabolic Interpolation and Brent's Method in One Dimension
@@ -77,7 +64,9 @@ def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
     # funccount: number of function evaluations made
     # varargout: additional outputs of f at optimum
     #
-    # Copyright (c) by Hannes Nickisch 2010-01-10.
+    # This is a python implementation of gpml functionality (Copyright (c) by
+    # Hannes Nickisch 2010-01-10).
+    
 
     if nout == None:
         nout = 0

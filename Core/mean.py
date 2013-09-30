@@ -1,27 +1,15 @@
-#===============================================================================
-#    Copyright (C) 2013
+#================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [marthaler at ge dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
-#    Kristian Kersting [kristian dot kersting at iais dot fraunhofer dot de]
-# 
-#    Fraunhofer IAIS, STREAM Project, Sankt Augustin, Germany
-# 
-#    This file is part of pyGPs.
-# 
-#    pyGPs is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation; either version 2 of the License, or
-#    (at your option) any later version.
-# 
-#    pyGPs is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-#    GNU General Public License for more details.
-# 
-#    You should have received a copy of the GNU General Public License
-#    along with this program; if not, see <http://www.gnu.org/licenses/>.
-#===============================================================================
+#    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
+#
+#    This file is part of pyGP_OO.
+#    The software package is released under the BSD 2-Clause (FreeBSD) License.
+#
+#    Copyright (c) by
+#    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 30/09/2013
+#================================================================================
 
 # mean functions to be use by Gaussian process functions. There are two
 # different kinds of mean functions: simple and composite:
@@ -39,7 +27,7 @@
 #   meanPow       - power of a mean function
 #   meanProd      - products of mean functions
 #   meanSum       - sums of mean functions
-
+#
 #
 # Naming convention: all mean functions are named "mean*".
 #
@@ -58,8 +46,7 @@
 #
 # The function computes and returns the n by 1 vector of partial derivatives
 # of the mean vector w.r.t. hyp(i) i.e. hyperparameter number i.
-
-#===============================================================================
+#
 #
 # @author: Shan Huang (last update Sep.2013)
 # This is a object-oriented python implementation of gpml functionality 
@@ -69,7 +56,6 @@
 # 
 #
 # Copyright (c) by Marion Neumann and Shan Huang, Sep.2013
-#===============================================================================
 
 import numpy as np
 import math
