@@ -6,53 +6,62 @@
 	cov functions:			### cf. pyGP_FN
 	----------------------------
 
-	covPoly
-	covPPiso
-	covConst
-	covLIN
-	covLINard
-	covMatern
-	covSEiso
-	covSEard
-	covSEisoU
-	covPeriodic
-	covNoise
+	* simple covariance functions:
 
-	ScaleOfKernel or "*"		### covScale  
-	SumOfKernel or "+"		### covSum
-	ProductOfKernel or "**"		### covProduct 
-	k.fitc()			### covFITC
-	covPre(A,B)
+	covPoly - polynomial covariance function
+	covPPiso - piecewise polynomial covariance function with compact support
+	covConst - constant covariance function
+	covLIN - linear covariance function
+	covLINard - linear covariance function with ard
+	covMatern - Matern covariance function
+	covSEiso - isotropic squared exponential covariance function
+	covSEard - squared exponential covariance function with ard (Automatic Relevance Determination)
+	covSEisoU - isotropic squared exponential covariance function with unit magnitude
+	covPeriodic - periodic covariance function
+	covNoise - independent covariance function (ie white noise)
+	covFITC - Covariance function to be used together with the FITC approximation
+
+	* composite covariance functions:
+	ScaleOfKernel or "*" - composition of a covariance function as a scaled version of another covariance function - sum of (parameterized) covariance functions
+	SumOfKernel or "+" - sum of (parameterized) covariance functions
+	ProductOfKernel or "**" - product of (parametrized) covariance functions
+	k.fitc() - Covariance function to be used together with the FITC approximation
+	covPre(A,B) - Precomputed kernel matrix
 
 	----------------------------
 	mean functions:
 	----------------------------
-	meanConst
-	meanLinear
-	meanOne
-	meanZero
 
-	"*"                            	### meanProd
-	"+"                           	### meanSum 
-	"*"                       	### meanScale    
-	"**"                            ### meanPow 
+	* simple mean functions:
+	
+	meanZero - zero mean function
+	meanOne - one mean function
+	meanConst - constant mean function
+	meanLinear - linear mean function
+
+	* composite covariance functions (see explanation at the bottom):
+
+	"*"   - products of mean functions
+	"+"   - sums of mean functions
+	"*"   - scaled version of a mean function
+	"**"  - power of a mean function
 
 	----------------------------
 	lik functions:
 	----------------------------
-	likErf
-	likGauss
+	likErf  - Error function, classification, probit regression
+	likGauss - Gaussian, regression
 
 	----------------------------
 	inf functions:
 	----------------------------
-	infExact
-	infEP
-	infLaplace
+	infExact - Exact inference (only possible with Gaussian likelihood)
+	infEP - Expectation Propagation
+	infLaplace - Laplace's Approximation
 
-	infFITC_Exact
-	infFITC_EP
-	infFITC_Laplace
+	infFITC_Exact - Large scale regression with approximate covariance matrix
+	infFITC_EP - Large scale inference  with approximate covariance matrix
+	infFITC_Laplace - Large scale inference  with approximate covariance matrix
 
 
 
