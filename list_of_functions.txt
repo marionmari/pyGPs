@@ -1,0 +1,56 @@
+	A list of functions in pyGP_OO
+	===================================
+	----------------------------
+	cov functions:			### cf. pyGP_FN
+	----------------------------
+
+	covPoly
+	covPPiso
+	covConst
+	covLIN
+	covLINard
+	covMatern
+	covSEiso
+	covSEard
+	covSEisoU
+	covPeriodic
+	covNoise
+
+	ScaleOfKernel or "*"		### covScale  
+	SumOfKernel or "+"		### covSum
+	ProductOfKernel or "**"		### covProduct 
+	k.fitc()			### covFITC
+	covPre(A,B)
+
+	----------------------------
+	mean functions:
+	----------------------------
+	meanConst
+	meanLinear
+	meanOne
+	meanZero
+
+	"*"                            	### meanProd
+	"+"                           	### meanSum 
+	"*"                       	### meanScale    
+	"**"                            ### meanPow 
+
+	----------------------------
+	lik functions:
+	----------------------------
+	likErf
+	likGauss
+
+	----------------------------
+	inf functions:
+	----------------------------
+	infExact
+	infEP
+	infLaplace
+
+	infFITC_Exact
+	infFITC_EP
+	infFITC_Laplace
+
+
+
