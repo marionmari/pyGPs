@@ -17,7 +17,7 @@ pyGP_OO is an object-oriented implementation of GPs. Its functionalities follow 
 
 Standard GP regression and (binary) classification as well as FITC (spares GPs) inference is implemented.  
 For a list of implemented covariance, mean, likelihood, and inference functions see list_of_functions.txt.  
-The current implementation, however, has not been optimized yet and is work in progress. We appreciate any feedback.
+The current implementation is tested, but not optimized yet and is work in progress. We appreciate any feedback.
 
 
 Further, it includes implementations of
