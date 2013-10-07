@@ -17,7 +17,7 @@ from pyGP_OO.Core import *
 import numpy as np
 import matplotlib.pyplot as plt
 
-print '------------------pyGP_OO DEMO----------------------'
+print '\n------------------pyGP_OO regression DEMO----------------------'
 
 PLOT = True
 
@@ -175,10 +175,10 @@ print 'optimal nlZ=', nlZ_trained
 # Step 4:   GP PREDICTION
 #-----------------------------------------------------------------
 out = gp.predict(i,m,k,l,x,y,z)
-ym  = out[0]
-ys2 = out[1]
-mm  = out[2]
-s2  = out[3]
+ym  = out[0]	# predictive mean
+ys2 = out[1]	# predictive variance 
+mm  = out[2]	# predictive latent mean
+s2  = out[3] 	# predictive latent variance
 if PLOT:
     pyGP_OO.Visual.plot.standardPlotter(z,ym,ys2,x,y,[-1.9, 1.9, -0.9, 3.9])
 
@@ -254,9 +254,6 @@ s2F = out[3]
 if PLOT:
     pyGP_OO.Visual.plot.fitcPlotter(u,z,ymF,y2F,x,y,[-1.9, 1.9, -0.9, 3.9])
 
-#-----------------------------------------------------------------
-# end of demo
-#-----------------------------------------------------------------
 
 print '------------------END OF DEMO----------------------'
 
