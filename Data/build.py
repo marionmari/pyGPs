@@ -1,7 +1,7 @@
 import numpy as np 
 
 def save_data_regresssion():
-	  # n = 20      # number of labeled/training data
+    # n = 20      # number of labeled/training data
     # D = 1       # dimension of input data
     x = np.array([[2.083970427750732,  -0.821018066101379,  -0.617870699182597,  -1.183822608860694,\
               0.274087442277144,   0.599441729295593,   1.768897919204435,  -0.465645549031928,\
@@ -20,6 +20,13 @@ def save_data_regresssion():
     np.savez('regression_data', x=x, y=y, xstar=xstar) 
 
 def save_data_classification():
+    # Synthetic data for binary classification: two partially overlapping 
+    # Gaussians in two dimensions. 120 data points are generated from two 
+    # Gaussians with different means and covariances. One Gaussian is 
+    # isotropic and contains 2/3 of the data (blue), the other is highly 
+    # correlated and contains 1/3 of the points (red). Note, that the 
+    # labels for the targets are -1/+1 (and not 0/1).
+    
     n1 = 80; n2 = 40
     x1 = np.array([[0.089450165731417,  -0.000700765006939],\
         [ 1.171605560541542,   1.177765337635947],\
@@ -143,6 +150,9 @@ def save_data_classification():
           [-0.285298076847255,   0.085451489400687]])
     x = np.concatenate((x1,x2),axis=0)
     y = np.concatenate((-np.ones((1,n1)),np.ones((1,n2))),axis=1).T
+
+    # For plotting, we superimpose the data points with the posterior equi-probability contour 
+    # lines for the probability of class two given complete information about the generating mechanism.
     t1,t2 = np.meshgrid(np.arange(-4,4.1,0.1),np.arange(-4,4.1,0.1))
     t = np.array(zip(np.reshape(t1,(np.prod(t1.shape),)),np.reshape(t2,(np.prod(t2.shape),)))) # these are the test inputs
     n = t.shape[0]
@@ -150,9 +160,11 @@ def save_data_classification():
     tmm = np.zeros_like(t)
     S1 = np.eye(2); S2 = np.array([[1, 0.95], [0.95, 1]])
     m1 = np.array([0.75, 0]); m2 = np.array([-0.75, 0])
+    tmm[:,0] = t[:,0] - m1[0]; tmm[:,1] = t[:,1] - m1[1]
+    p1 = n1*np.exp( (-np.dot(tmm,np.linalg.inv(S1))*tmm/2).sum(axis=1) )
+    
     tmm[:,0] = t[:,0] - m2[0]; tmm[:,1] = t[:,1] - m2[1]
-    p1 = n1*np.exp( (-np.dot(tmm,S1)*tmm/2).sum(axis=1) )
-    S2i = np.array([[10.256410256410254,-9.743589743589741],[-9.743589743589741,10.256410256410254]])
+    S2i =  np.linalg.inv(S2)
     p2 = n2*np.exp( (-np.dot(tmm,S2i)*tmm/2).sum(axis=1) ) / np.sqrt(0.0975)
 
     np.savez('classification_data', x=x, y=y, xstar=t, x1=x1,x2=x2,t1=t1,t2=t2,p1=p1,p2=p2) 
@@ -160,7 +172,7 @@ def save_data_classification():
 
 if __name__=='__main__':
     # save_data_regression()
-    # save_data_classification()
+    save_data_classification()
     
 
 
