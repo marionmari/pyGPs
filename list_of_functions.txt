@@ -1,4 +1,4 @@
-	A list of functions in pyGP_OO
+	A list of functions in pyGP_OO   
 	===================================
 	For documentations see respective modules/functions. 
 
