@@ -39,7 +39,7 @@
 	meanConst - constant mean function
 	meanLinear - linear mean function
 
-	* composite covariance functions (see explanation at the bottom):
+	* composite covariance functions:
 
 	"*"   - products of mean functions
 	"+"   - sums of mean functions
