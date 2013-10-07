@@ -23,12 +23,15 @@ from pyGP_OO.Valid import valid
 from pyGP_OO.Pre import pre
 from pyGP_OO.Core import *
 
+print '\n------------------pyGP_OO validation DEMO----------------------'
+
 #------------------------------------------------------
 # Step 1: 
 # load UCI dataset
 # in this demo: ionosphere dataset
 #------------------------------------------------------
 
+print '...LOADING ionosphere DATA...'
 file = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]),'../Data/ionosphere.data.txt'))
 x, y = pre.load_data(file)
 
@@ -56,6 +59,8 @@ y = np.int8(y)
 K = 10
 measure_ACC = []
 measure_RMSE = []
+print '...performing '+str(K)+'-fold corss validation...'
+cv_run = 0
 for x_train, x_test, y_train, y_test in valid.k_fold_validation(x,y,K):
     '''
     IMPORTANT: 
@@ -69,6 +74,9 @@ for x_train, x_test, y_train, y_test in valid.k_fold_validation(x,y,K):
     then you need to know which values are stored in your specified inf method,
     and clear these values in the end of every iteration(e.g. i.last_alpha=None)
     '''
+    cv_run += 1;
+    print '...RUN:', cv_run
+
     k = cov.covSEiso([-1,0])
     m = mean.meanZero()
     l = lik.likErf()
@@ -100,14 +108,17 @@ for x_train, x_test, y_train, y_test in valid.k_fold_validation(x,y,K):
     '''
     pred_class = np.sign(out[0])
     acc = valid.ACC(pred_class, y_test)
-    msre = valid.RMSE(pred_class, y_test)
+    print '   accuracy =', acc 
+    rmse = valid.RMSE(pred_class, y_test)
+    print '   rmse =', rmse
     measure_ACC.append(acc)
-    measure_RMSE.append(msre)
+    measure_RMSE.append(rmse)
 
-print 'average accuracy: ', np.mean(measure_ACC)
-print 'average root-mean-square error: ', np.mean(measure_RMSE)
+print '\naverage accuracy: ', np.round(np.mean(measure_ACC),2), '('+str(np.round(np.std(measure_ACC),2))+')'
+print 'average root-mean-square error: ', np.round(np.mean(measure_RMSE),2)
 
 
+print '------------------END OF DEMO----------------------\n'
 
 
 
