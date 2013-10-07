@@ -12,8 +12,6 @@
 #================================================================================
 
 
-# export PYTHONPATH=$PYTHONPATH:/.../pyGPs/
-
 import pyGP_OO
 from pyGP_OO.Core import *
 import numpy as np

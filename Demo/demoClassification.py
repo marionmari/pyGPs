@@ -11,7 +11,6 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 30/09/2013
 #================================================================================
 
-# export PYTHONPATH=$PYTHONPATH:/.../pyGPs/
 
 import pyGP_OO
 from pyGP_OO.Core import *

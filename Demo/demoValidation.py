@@ -26,6 +26,7 @@ from pyGP_OO.Core import *
 #------------------------------------------------------
 # Step 1: 
 # load UCI dataset
+# in this demo: ionosphere dataset
 #------------------------------------------------------
 
 file = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]),'../Data/ionosphere.data.txt'))
