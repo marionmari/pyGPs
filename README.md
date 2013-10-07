@@ -16,10 +16,11 @@ pyGP_OO is a library containing code for Gaussian Process (GP) Regression and Cl
 pyGP_OO is an object-oriented implementation of GPs. Its functionalities follow roughly the gpml matlab implementaion by Carl Edward Rasmussen and Hannes Nickisch (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-01-21).
 
 Standard GP regression and (binary) classification as well as FITC (spares GPs) inference is implemented.  
+For a list of implemented covariance, mean, likelihood and inference functions see "list_of_functions.txt".  
 The current implementation, however, has not been optimized yet and is work in progress. We appreciate any feedback.
 
 
-Further it includes implementations of
+Further, it includes implementations of
 - minimize.py implemented in python by Roland Memisevic 2008, following minimize.m which is copyright (C) 1999 - 2006, Carl Edward Rasmussen
 - scg.py (Copyright (c) Ian T Nabney (1996-2001))
 - brentmin.py (Copyright (c) by Hannes Nickisch 2010-01-10.)
