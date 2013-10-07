@@ -21,36 +21,33 @@ import matplotlib.mlab as mlab
 
 #-----------------------------------------------------------------
 # NOTICE
-# For more detail and overal usages, see demoRegression
-# This demo only shows the differences when using gp classification.
+# For more detail and overal usage, see demoRegression.
+# This demo only shows the differences when using GP classification.
 #-----------------------------------------------------------------
 
+print '\n------------------pyGP_OO classification DEMO----------------------'
 
-
-#-----------------------------------------------------------------
-# initialze input data
-#-----------------------------------------------------------------
 PLOT = True
 
-## LOAD data
+## LOAD DATA
+print '...LOADING DATA...'
 demoData = np.load('../Data/classification_data.npz')
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
-n = z.shape[0]           # number of test points
+n = z.shape[0]               # number of test points
 
-## DATA only needed in plotting
+## DATA only needed in plotting (see build.py for more details)
 if PLOT:  
     x1 = demoData['x1'] 
     x2 = demoData['x2']                    
     t1 = demoData['t1'] 
     t2 = demoData['t2'] 
-    p1 = demoData['p1']  
-    p2 = demoData['p2']  
+    p1 = demoData['p1']  	# prior for class 1 (with label -1)
+    p2 = demoData['p2']  	# prior for class 2 (with label +1)
 
 ## PLOT data 
 if PLOT:
-    print '...LOADING DATA...'
     fig = plt.figure()
     plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
     plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
@@ -61,49 +58,41 @@ if PLOT:
     plt.show()
 
 
+##--------------------------------------------------------------##
+## Example 1:   prediction					##	
+##--------------------------------------------------------------##
+print '\n...Example 1: GP prediction...'
 
 #-----------------------------------------------------------------
-# step 1:
-# specify combinations of cov, mean, inf and lik functions
+# Step 1:   SPECIFY combinations of cov, mean, inf and lik functions
 #-----------------------------------------------------------------
-k1 = cov.covSEard([0.05,0.17,1.21])
-k2 = cov.covSEiso([-1,0])
-k3 = cov.covPoly([2,1,1])
-k = k1*k3*6
-m = mean.meanLinear([1.,2.]) + mean.meanConst([1.53])
+k = cov.covSEard([0.05,0.17,1.21])
+m =  mean.meanConst([0]) 
 l = lik.likErf()
-#i = inf.infLaplace()
-i = inf.infEP()
-
-
-#-----------------------------------------------------------------
-# step 2 (optional):
-# specify optimization methods
-#-----------------------------------------------------------------
-o = opt.Minimize()
-#o = opt.CG()
+#i = inf.infLaplace()	# use Laplace approximation
+i = inf.infEP()		# use expectation propagation
 
 #-----------------------------------------------------------------
-# step 3:
-# optimization, training and prediction
+# Step 2:  ANALYZE GP (optional)
 #-----------------------------------------------------------------
-# analyze nlZ and dnlZ 
+# get nlZ and dnlZ 
 out = gp.analyze(i,m,k,l,x,y,True)
-print "nlz=", out[0]
+print "nlz =", out[0]
 # print 'dnlZ.cov', out[1].cov
 # print 'dnlZ.mean', out[1].mean
 # print 'dnlZ.lik', out[1].lik
 
-# training (find optimal hyperparameters)
-out = gp.train(i,m,k,l,x,y,o)
-print "optimal nlz=", out
-
-# predict after optimization
+#-----------------------------------------------------------------
+# Step 3:   GP PREDICTION
+#-----------------------------------------------------------------
 out = gp.predict(i,m,k,l,x,y,z,np.ones((n,1)))
-a = out[0]; b = out[1]; c = out[2]; d = out[3]; lp = out[4]
-#print a
+ym = out[0]	# predictive mean
+ys2 = out[1]	# predictive variance
+fm = out[2]	# predictive latent mean
+fs2 = out[3]	# predictive latent variance
+lp = out[4]	# log predcitive probabilities
+
 if PLOT:
-    print '...Example 1 Training and Prediction...'
     fig = plt.figure()
     plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
     plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
@@ -115,47 +104,111 @@ if PLOT:
 
 
 
+##--------------------------------------------------------------##
+## Example 2: optimization and prediction			##
+## (Note: this example just shows functionality.)	
+##--------------------------------------------------------------##
+print '\n...Example 2: optimization and prediction...'
+
 #-----------------------------------------------------------------
-# More things you can do: SPARSE GP
+# Step 1:   SPECIFY combinations of cov, mean, inf and lik functions
 #-----------------------------------------------------------------
-# specify inducing points
-u1,u2 = np.meshgrid(np.linspace(-2,2,5),np.linspace(-2,2,5))
-u = np.array(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),)))) 
+k1 = cov.covSEard([0.0,0.0,0.1])
+k2 = cov.covPoly([2,1,1])
+k = k1*k2*6
 
-# specify FITC covariance functions
-k = cov.covSEard([0.05,0.17,1.21]).fitc(u)
-
-# specify FICT inference method
-i = inf.infFITC_EP()
-#i = inf.infFITC_Laplace()
-
-# The rest usage is the same as STANDARD GP
-# if you are not sure about sth, see demoRegressition for detail
-# Here we just give one example:
-m = mean.meanLinear([1.,2.]) + mean.meanConst([1.53])
+m =  mean.meanConst([0]) + mean.meanLinear([1.,2.])
 l = lik.likErf()
+#i = inf.infLaplace()	# use Laplace approximation
+i = inf.infEP()		# use expectation propagation
 
-# optimization method
-conf = pyGP_OO.Optimization.conf.random_init_conf(m,k,l)
-conf.max_trails = 10
-o = opt.Minimize(conf)
 
-# analyze nlz and dnlz
+#-----------------------------------------------------------------
+# Step 2:   SPECIFY optimization method
+#-----------------------------------------------------------------
+o = opt.Minimize()   # minimize by Carl Rasmussen
+#o = opt.CG()        # conjugent gradient
+#o = opt.BFGS()      # quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)
+#o = opt.SCG()       # scaled conjugent gradient (faster than CG) 
+
+#-----------------------------------------------------------------
+# Step 3:  ANALYZE GP (optional)
+#-----------------------------------------------------------------
+# get nlZ and dnlZ 
 out = gp.analyze(i,m,k,l,x,y,True)
-print "[fitc] nlz=", out[0]
+print "nlz (no training) =", out[0]
 # print 'dnlZ.cov', out[1].cov
 # print 'dnlZ.mean', out[1].mean
 # print 'dnlZ.lik', out[1].lik
 
-# training
-nlZ_trained = gp.train(i,m,k,l,x,y,o)
-print '[fitc] optimal nlZ=', nlZ_trained
+#-----------------------------------------------------------------
+# Step 4:   optimization/GP training 
+#-----------------------------------------------------------------
+out = gp.train(i,m,k,l,x,y,o)
+print "nlz (optimal) =", out
 
-# predict and plot
+#-----------------------------------------------------------------
+# Step 5:   GP PREDICTION
+#-----------------------------------------------------------------
+out = gp.predict(i,m,k,l,x,y,z,np.ones((n,1)))
+ym = out[0]	# predictive mean
+ys2 = out[1]	# predictive variance
+fm = out[2]	# predictive latent mean
+fs2 = out[3]	# predictive latent variance
+lp = out[4]	# log predcitive probabilities
+
+if PLOT:
+    fig = plt.figure()
+    plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
+    plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
+    pc = plt.contour(t1, t2, np.reshape(np.exp(lp), (t1.shape[0],t1.shape[1]) ))
+    fig.colorbar(pc)
+    plt.grid()
+    plt.axis([-4, 4, -4, 4])
+    plt.show()
+
+
+
+##--------------------------------------------------------------##
+## More things you can do: 					##
+## SPARSE GP							##
+##--------------------------------------------------------------##
+print '\n...SPARSE GP: FITC optimization and prediction...'
+# SPECIFY inducing points
+u1,u2 = np.meshgrid(np.linspace(-2,2,5),np.linspace(-2,2,5))
+u = np.array(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),)))) 
+
+# SPECIFY FITC covariance functions
+k = cov.covSEard([0.05,0.17,1.21]).fitc(u)
+
+# SPECIFY FICT inference method
+i = inf.infFITC_EP()
+#i = inf.infFITC_Laplace()
+
+# SPECIFY combinations of mean and lik functions (same as STANDARD GP)
+m = mean.meanLinear([1.,2.]) + mean.meanConst([1.53])
+l = lik.likErf()
+
+# SPECIFY optimization method (same as STANDARD GP; see demoRegression.py Example 3 for details)
+conf = pyGP_OO.Optimization.conf.random_init_conf(m,k,l)
+conf.num_restarts = 5
+o = opt.Minimize(conf)
+
+# GET nlz and dnlz
+out = gp.analyze(i,m,k,l,x,y,True)
+print "[fitc] nlz =", out[0]
+# print 'dnlZ.cov', out[1].cov
+# print 'dnlZ.mean', out[1].mean
+# print 'dnlZ.lik', out[1].lik
+
+# OPTIMIZATION
+nlZ_trained = gp.train(i,m,k,l,x,y,o)
+print '[fitc] optimal nlz =', nlZ_trained
+
+# PREDICTION
 out = gp.predict(i,m,k,l,x,y,z,np.ones((n,1)))
 
 if PLOT:
-    print '...Example 2 FITC Training and Prediction...'
     fig = plt.figure()
     plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
     plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
@@ -166,11 +219,6 @@ if PLOT:
     plt.axis([-4, 4, -4, 4])
     plt.show()        
 
-
-
-#-----------------------------------------------------------------
-# end of demo
-#-----------------------------------------------------------------
 
 print '------------------END OF DEMO----------------------'
 
