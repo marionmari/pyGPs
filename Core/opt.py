@@ -82,7 +82,7 @@ class CG(Optimizer):
 
         if self.searchConfig:
             searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
-            if not (self.searchConfig.max_trails or self.searchConfig.min_threshold):
+            if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
                 self.trailsCounter += 1                 # increase counter
@@ -96,10 +96,10 @@ class CG(Optimizer):
                         optimalHyp = thisopt[0]
                 except:
                     self.errorCounter += 1
-                if self.searchConfig.max_trails and self.errorCounter > self.searchConfig.max_trails/2:
+                if self.searchConfig.num_restarts and self.errorCounter > self.searchConfig.num_restarts/2:
                     print "[CG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
                     raise Exception("Over half of the trails failed for conjugate gradient")
-                if self.searchConfig.max_trails and self.trailsCounter > self.searchConfig.max_trails-1:         # if exceed max_trails
+                if self.searchConfig.num_restarts and self.trailsCounter > self.searchConfig.num_restarts-1:         # if exceed num_restarts
                     print "[CG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
@@ -133,7 +133,7 @@ class BFGS(Optimizer):
 
         if self.searchConfig:
             searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
-            if not (self.searchConfig.max_trails or self.searchConfig.min_threshold):
+            if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
                 self.trailsCounter += 1                 # increase counter
@@ -147,10 +147,10 @@ class BFGS(Optimizer):
                         optimalHyp = thisopt[0]
                 except:
                     self.errorCounter += 1
-                if self.searchConfig.max_trails and self.errorCounter > self.searchConfig.max_trails/2:
+                if self.searchConfig.num_restarts and self.errorCounter > self.searchConfig.num_restarts/2:
                     print "[BFGS] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
                     raise Exception("Over half of the trails failed for BFGS")
-                if self.searchConfig.max_trails and self.trailsCounter > self.searchConfig.max_trails-1:         # if exceed max_trails
+                if self.searchConfig.num_restarts and self.trailsCounter > self.searchConfig.num_restarts-1:         # if exceed num_restarts
                     print "[BFGS] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
@@ -179,7 +179,7 @@ class Minimize(Optimizer):
 
         if self.searchConfig:
             searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
-            if not (self.searchConfig.max_trails or self.searchConfig.min_threshold):
+            if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
                 self.trailsCounter += 1                 # increase counter
@@ -193,10 +193,10 @@ class Minimize(Optimizer):
                         optimalHyp = thisopt[0]
                 except:
                     self.errorCounter += 1
-                if self.searchConfig.max_trails and self.errorCounter > self.searchConfig.max_trails/2:
+                if self.searchConfig.num_restarts and self.errorCounter > self.searchConfig.num_restarts/2:
                     print "[Minimize] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
                     raise Exception("Over half of the trails failed for minimize")
-                if self.searchConfig.max_trails and self.trailsCounter > self.searchConfig.max_trails-1:         # if exceed max_trails
+                if self.searchConfig.num_restarts and self.trailsCounter > self.searchConfig.num_restarts-1:         # if exceed num_restarts
                     print "[Minimize] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
@@ -224,7 +224,7 @@ class SCG(Optimizer):
 
         if self.searchConfig:
             searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
-            if not (self.searchConfig.max_trails or self.searchConfig.min_threshold):
+            if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
                 self.trailsCounter += 1                 # increase counter
@@ -238,10 +238,10 @@ class SCG(Optimizer):
                         optimalHyp = thisopt[0]
                 except:
                     self.errorCounter += 1
-                if self.searchConfig.max_trails and self.errorCounter > self.searchConfig.max_trails/2:
+                if self.searchConfig.num_restarts and self.errorCounter > self.searchConfig.num_restarts/2:
                     print "[SCG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
                     raise Exception("Over half of the trails failed for Scaled conjugate gradient")
-                if self.searchConfig.max_trails and self.trailsCounter > self.searchConfig.max_trails-1:         # if exceed max_trails
+                if self.searchConfig.num_restarts and self.trailsCounter > self.searchConfig.num_restarts-1:         # if exceed num_restarts
                     print "[SCG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
