@@ -1,5 +1,7 @@
 	A list of functions in pyGP_OO
 	===================================
+	For documentations see respective modules/functions. 
+
 	----------------------------
 	cov functions:			### cf. pyGP_FN
 	----------------------------
