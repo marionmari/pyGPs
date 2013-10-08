@@ -1,4 +1,4 @@
-	A list of functions in pyGP_OO   
+	A list of functionality in pyGP_OO   
 	===================================
 	For documentations see respective modules/functions. 
 
@@ -63,5 +63,21 @@
 	infFITC_EP - Large scale inference  with approximate covariance matrix
 	infFITC_Laplace - Large scale inference  with approximate covariance matrix
 
+	----------------------------
+	optimization methods:
+	----------------------------
+	Minimize - Minimize by Carl Rasmussen
+	CG - Conjugent gradient
+	BFGS - Quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)
+	SCG - Scaled conjugent gradient (faster than CG) 
 
+	----------------------------
+	evaluation measures:
+	----------------------------
+	RMSE - Root mean squared error
+	ACC - Classification accuracy
+	Prec - Precision for class +1
+	Recall - Recall for class +1
+	NLPD - Negative log predictive density in transformed observation space
+	
 
