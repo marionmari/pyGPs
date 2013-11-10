@@ -12,9 +12,7 @@
 #================================================================================
 
 import numpy as np
-import inf
-import mean
-import lik
+import inf, mean, lik, cov, opt
 from tools import unique
 
 #   MEANING OF NOTATION:
@@ -51,37 +49,256 @@ from tools import unique
 # Copyright (c) by Marion Neumann and Shan Huang, Sep.2013
 
 
-def train(inffunc, meanfunc, covfunc, likfunc, x, y, optimizer):
-    '''
-    train optimal hyperparameters 
-    adjust to all mean/cov/lik functions
-    return nlZ after optimazation
+class GP(object):
+    """Base class for GP model"""
+    def __init__(self):
+        super(GP, self).__init__()
+        self.meanfunc = None
+        self.covfunc = None
+        self.likfunc = None
+        self.inffunc = None
+        self.optimizer = None
+        self._neg_log_marginal_likelihood_ = None
+        self._neg_log_marginal_likelihood_gradient_ = None    
+        self._posterior_ = None
+        self.x = None
+        self.y = None
 
-    if you want to check hyp after training, it's now become property of each function
-        (e.g.) print myCov.hyp
-               print myMean.hyp
-    '''
-    if not meanfunc:
-        meanfunc = mean.meanZero()
-    if not covfunc:
-        raise Exception('Covariance function cannot be empty')
-    if not likfunc:
-        likfunc = lik.likGauss([0.1])  
-    if not inffunc:
-        inffunc = inf.infExact()
-    # if covFTIC then infFITC, leave this part aside now
+    def withData(self, x, y):
+        self.x = x
+        self.y = y
+ 
 
-    # optimize here
-    out = optimizer.findMin(inffunc, meanfunc, covfunc, likfunc, x, y)
-    optimalHyp = out[0] 
-    optimalNlZ = out[1]
+    def withPrior(self, mean=None, kernel=None):
+        """set prior mean and cov"""
+        self.meanfunc = mean
+        self.covfunc = kernel
 
-    # apply optimal hyp to all mean/cov/lik functions here
-    optimizer.apply_in_objects(optimalHyp, meanfunc, covfunc, likfunc)
-    return optimalNlZ
+
+    def train(self):
+        '''
+        train optimal hyperparameters 
+        adjust to all mean/cov/lik functions
+        '''
+        meanfunc = self.meanfunc
+        covfunc = self.covfunc
+        likfunc = self.likfunc
+        inffunc = self.inffunc
+        optimizer = self.optimizer
+
+        # optimize here
+        optimalHyp, optimalNlZ = optimizer.findMin(self.x, self.y)
+        self._neg_log_marginal_likelihood_ = optimalNlZ
+
+        # apply optimal hyp to all mean/cov/lik functions here
+        optimizer.apply_in_objects(optimalHyp)
+
+
+    def fit(self, der=True):
+        '''
+        fit the training data
+        @return  [nlZ, post]        if der = False
+        @return  [nlZ, dnlZ, post]  if der = True (default)
+            
+            where nlZ  is the negative log marginal likelihood
+                  dnlZ is partial derivatives of nlZ w.r.t. each hyperparameter
+                  post is struct representation of the (approximate) posterior
+                  post is consist of post.alpha, post.L, post.sW
+        '''
+        meanfunc = self.meanfunc
+        covfunc = self.covfunc
+        likfunc = self.likfunc
+        inffunc = self.inffunc
+
+        # call inference method
+        if isinstance(likfunc, lik.likErf):  #or likLogistic)
+            uy = unique(y)        
+            ind = ( uy != 1 )
+            if any( uy[ind] != -1):
+                raise Exception('You attempt classification using labels different from {+1,-1}')
+        if not der:
+            post, nlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, 2)
+            self._neg_log_marginal_likelihood_ = nlZ
+            self._posterior_ = post
+            return nlZ, post          
+        else:
+            post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, 3) 
+            self._neg_log_marginal_likelihood_ = nlZ 
+            self._neg_log_marginal_likelihood_gradient_ = dnlZ
+            self._posterior_ = post
+            return nlZ, dnlZ, post    
+
+
+
+    def predict(self, xs, ys=None):
+        '''
+        prediction according to given inputs 
+
+        @param xs           test input
+        @param ys           test target(optional)
+
+        @return ymu, ys2, fmu, fs2, lp
+                where ymu is predictive output means
+                      ys2 is predictive output variances
+                      fm2 is predictive latent means
+                      fs2 is predictive latent variances
+                      lp  is log predictive probabilities(if ys is given, otherwise is None)
+        '''
+        meanfunc = self.meanfunc
+        covfunc = self.covfunc
+        likfunc = self.likfunc
+        inffunc = self.inffunc
+        x = self.x
+        y = self.y
+        
+        if self._posterior_ == None:         # if posterior is not calculated before...
+            self.fit(der=False)              # ...first fit training data
+        alpha = self._posterior_.alpha
+        L     = self._posterior_.L
+        sW    = self._posterior_.sW
+
+        nz = range(len(alpha[:,0]))         # non-sparse representation 
+        if L == []:                         # in case L is not provided, we compute it
+            K = covfunc.proceed(x[nz,:])
+            L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
+        Ltril     = np.all( np.tril(L,-1) == 0 ) # is L an upper triangular matrix?
+        ns        = xs.shape[0]                  # number of data points
+        nperbatch = 1000                         # number of data points per mini batch
+        nact      = 0                            # number of already processed test data points
+        ymu = np.zeros((ns,1))
+        ys2 = np.zeros((ns,1))
+        fmu = np.zeros((ns,1))
+        fs2 = np.zeros((ns,1))
+        lp  = np.zeros((ns,1))
+        while nact<=ns-1:                              # process minibatches of test cases to save memory
+            id  = range(nact,min(nact+nperbatch,ns))   # data points to process
+            kss = covfunc.proceed(xs[id,:], 'diag')    # self-variances
+            Ks  = covfunc.proceed(x[nz,:], xs[id,:])   # cross-covariances
+            ms  = meanfunc.proceed(xs[id,:])         
+            N   = (alpha.shape)[1]                     # number of alphas (usually 1; more in case of sampling)
+            Fmu = np.tile(ms,(1,N)) + np.dot(Ks.T,alpha[nz])          # conditional mean fs|f
+            fmu[id] = np.reshape(Fmu.sum(axis=1)/N,(len(id),1))       # predictive means
+            if Ltril: # L is triangular => use Cholesky parameters (alpha,sW,L)
+                V       = np.linalg.solve(L.T,np.tile(sW,(1,len(id)))*Ks)
+                fs2[id] = kss - np.array([(V*V).sum(axis=0)]).T             # predictive variances
+            else:     # L is not triangular => use alternative parametrization
+                fs2[id] = kss + np.array([(Ks*np.dot(L,Ks)).sum(axis=0)]).T # predictive variances
+            fs2[id] = np.maximum(fs2[id],0)            # remove numerical noise i.e. negative variances
+            Fs2 = np.tile(fs2[id],(1,N))               # we have multiple values in case of sampling
+            if ys == None:
+                [Lp, Ymu, Ys2] = likfunc.proceed(None,Fmu[:],Fs2[:],None,None,3)
+            else:
+                [Lp, Ymu, Ys2] = likfunc.proceed(np.tile(ys[id],(1,N)), Fmu[:], Fs2[:],None,None,3)
+            lp[id]  = np.reshape( np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1)/N , (len(id),1) )   # log probability; sample averaging
+            ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
+            ys2[id] = np.reshape( np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1)/N , (len(id),1) ) # .. variance
+            nact = id[-1]+1                  # set counter to index of next data point
+        if ys == None:
+            return ymu, ys2, fmu, fs2, None
+        else:
+            return ymu, ys2, fmu, fs2, lp 
+
+
+
+    def predict_with_posterior(self, post, xs, ys=None):
+        '''
+        prediction with provided posterior
+        (i.e. you already have the posterior and thus don't need fitting/training phases)
+        
+        @param post         posterior structcture
+        @param xs           test input
+        @param ys           test target(optional)
+
+        @return ymu, ys2, fmu, fs2, lp
+                where ymu is predictive output means
+                      ys2 is predictive output variances
+                      fm2 is predictive latent means
+                      fs2 is predictive latent variances
+                      lp  is log predictive probabilities(if ys is given, otherwise is None)
+        '''
+        meanfunc = self.meanfunc
+        covfunc = self.covfunc
+        likfunc = self.likfunc
+        inffunc = self.inffunc
+        x = self.x
+        y = self.y
+        
+        self._posterior_ = post         
+        alpha = self._posterior_.alpha
+        L     = self._posterior_.L
+        sW    = self._posterior_.sW
+
+        nz = range(len(alpha[:,0]))         # non-sparse representation 
+        if L == []:                         # in case L is not provided, we compute it
+            K = covfunc.proceed(x[nz,:])
+            L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
+        Ltril     = np.all( np.tril(L,-1) == 0 ) # is L an upper triangular matrix?
+        ns        = xs.shape[0]                  # number of data points
+        nperbatch = 1000                         # number of data points per mini batch
+        nact      = 0                            # number of already processed test data points
+        ymu = np.zeros((ns,1))
+        ys2 = np.zeros((ns,1))
+        fmu = np.zeros((ns,1))
+        fs2 = np.zeros((ns,1))
+        lp  = np.zeros((ns,1))
+        while nact<=ns-1:                              # process minibatches of test cases to save memory
+            id  = range(nact,min(nact+nperbatch,ns))   # data points to process
+            kss = covfunc.proceed(xs[id,:], 'diag')    # self-variances
+            Ks  = covfunc.proceed(x[nz,:], xs[id,:])   # cross-covariances
+            ms  = meanfunc.proceed(xs[id,:])         
+            N   = (alpha.shape)[1]                     # number of alphas (usually 1; more in case of sampling)
+            Fmu = np.tile(ms,(1,N)) + np.dot(Ks.T,alpha[nz])          # conditional mean fs|f
+            fmu[id] = np.reshape(Fmu.sum(axis=1)/N,(len(id),1))       # predictive means
+            if Ltril: # L is triangular => use Cholesky parameters (alpha,sW,L)
+                V       = np.linalg.solve(L.T,np.tile(sW,(1,len(id)))*Ks)
+                fs2[id] = kss - np.array([(V*V).sum(axis=0)]).T             # predictive variances
+            else:     # L is not triangular => use alternative parametrization
+                fs2[id] = kss + np.array([(Ks*np.dot(L,Ks)).sum(axis=0)]).T # predictive variances
+            fs2[id] = np.maximum(fs2[id],0)            # remove numerical noise i.e. negative variances
+            Fs2 = np.tile(fs2[id],(1,N))               # we have multiple values in case of sampling
+            if ys == None:
+                [Lp, Ymu, Ys2] = likfunc.proceed(None,Fmu[:],Fs2[:],None,None,3)
+            else:
+                [Lp, Ymu, Ys2] = likfunc.proceed(np.tile(ys[id],(1,N)), Fmu[:], Fs2[:],None,None,3)
+            lp[id]  = np.reshape( np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1)/N , (len(id),1) )   # log probability; sample averaging
+            ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
+            ys2[id] = np.reshape( np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1)/N , (len(id),1) ) # .. variance
+            nact = id[-1]+1                  # set counter to index of next data point
+        if ys == None:
+            return ymu, ys2, fmu, fs2, None
+        else:
+            return ymu, ys2, fmu, fs2, lp 
+
+
+
+
+
+
+class GPR(GP):
+    """Gaussian Process Regression"""
+    def __init__(self):
+        super(GPR, self).__init__()
+        self.meanfunc = mean.meanZero()                        # default prior mean 
+        self.covfunc = cov.rbf(lengthscale=1.0, variance=0.1)  # default prior covariance
+        self.likfunc = lik.likGauss(0.1)                       # likihood with default noise variance 0.1
+        self.inffunc = inf.infExact()                          # inference method
+        self.optimizer = opt.Minimize(self)                    # default optimizer
+
+    def hasNoise(self, noise_variance):
+        """explicitly set noise variance other than default"""
+        self.likfunc = lik.likGauss(noise_variance)
+
+
+
+
+
+
+
+
+
         
 
-
+"""
 def predict(inffunc, meanfunc, covfunc, likfunc, x, y, xs, ys=None):
     '''
     prediction according to given inputs
@@ -157,39 +374,6 @@ def predict(inffunc, meanfunc, covfunc, likfunc, x, y, xs, ys=None):
 
 
 
-def analyze(inffunc, meanfunc, covfunc, likfunc, x, y, der=False):
-    '''
-    Middle Step, or maybe useful for experts to analyze sth.
-    return [nlZ, post]        if der = False
-        or [nlZ, dnlZ, post]  if der = True
-    '''
-    if not meanfunc:
-        meanfunc = mean.meanZero()  
-    if not covfunc:
-        raise Exception('Covariance function cannot be empty')
-    if not likfunc:
-        likfunc = lik.likGauss([0.1])  
-    if not inffunc:
-        inffunc = inf.infExact()
-    # if covFTIC then infFITC
-
-    # call inference method
-    if isinstance(likfunc, lik.likErf):  #or isinstance(likfunc, likelihood.likLogistic)
-        uy = unique(y)        
-        ind = ( uy != 1 )
-        if any( uy[ind] != -1):
-            raise Exception('You attempt classification using labels different from {+1,-1}')
-    if not der:
-        vargout = inffunc.proceed(meanfunc, covfunc, likfunc, x, y, 2) 
-        post = vargout[0]
-        nlZ = vargout[1] 
-        return [nlZ, post]          # report -log marg lik, and post
-    else:
-        vargout = inffunc.proceed(meanfunc, covfunc, likfunc, x, y, 3) 
-        post = vargout[0]
-        nlZ = vargout[1]
-        dnlZ = vargout[2] 
-        return [nlZ, dnlZ, post]    # report -log marg lik, derivatives and post
-
+"""
 
 

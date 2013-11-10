@@ -278,8 +278,13 @@ class covPoly(Kernel):
         return A
    
 
-class covSEiso(Kernel):
-    def __init__(self,hyp):
+class rbf(Kernel):
+    def __init__(self, lengthscale=None, variance=None):
+        self.rbf_lengthscale = lengthscale
+        self.rbf_variance = variance
+
+        self.hyp = [lengthscale, variance]
+        '''
         if len(hyp) == 2:
             self.hyp = hyp
             self.name = "sf2 * exp(-(x^p - x^q)'*inv(P)*(x^p - x^q)/2)"
@@ -292,9 +297,10 @@ class covSEiso(Kernel):
             print "hyp = [ log(ell), log(sqrt(sf2)) ]"
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
+        '''
     def proceed(self, x=None, z=None, der=None):
-        ell = np.exp(self.hyp[0])          # characteristic length scale
-        sf2 = np.exp(2.* self.hyp[1])      # signal variance
+        ell = self.rbf_lengthscale          # characteristic length scale
+        sf2 = self.rbf_variance          # signal variance
         n,D = x.shape
         if z == 'diag':
             A = np.zeros((n,1))

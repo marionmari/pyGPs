@@ -45,7 +45,7 @@ Matlab-function minimize.m
 
 from numpy import dot, isinf, isnan, any, sqrt, isreal, real, nan, inf
 
-def run(f, X, args, length=None, red=1.0, verbose=False):
+def run(f, X, args=(), length=None, red=1.0, verbose=False):
     INT = 0.1;# don't reevaluate within 0.1 of the limit of the current bracket
     EXT = 3.0;              # extrapolate maximum 3 times the current step-size
     MAX = 20;                     # max 20 function evaluations per line search

@@ -129,7 +129,10 @@ class Likelihood(object):
 
 
 class likGauss(Likelihood):
-    def __init__(self, hyp):
+    def __init__(self, noise=None):
+        self.noise_variance = noise
+        self.hyp = [noise]
+        '''
         if len(hyp) == 1:
             self.hyp = hyp
             self.name = 'exp(-(t-y)^2/2*sn^2) / sqrt(2*pi*sn^2)'
@@ -142,9 +145,10 @@ class likGauss(Likelihood):
             print "The number of hyperparameters is 1"
             print "hyp = [log(sn)]"
             print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")           
+            raise Exception("Wrong number of hyperparameters.")         
+        '''  
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
-        sn2 = np.exp(2. * self.hyp[0])
+        sn2 = self.noise_variance
         if inffunc == None:              # prediction mode 
             if y == None:
                 y = np.zeros_like(mu)

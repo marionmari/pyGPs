@@ -20,53 +20,54 @@ from copy import deepcopy
 
 class Optimizer(object):
     def __init__(self):
-        pass
-    def findMin(self):
-        pass
+        self.model = None
 
-    def nlml(self, hypInArray, inffunc, meanfunc, covfunc, likfunc, x, y):
-        self.apply_in_objects(hypInArray, meanfunc, covfunc, likfunc)
-        result = gp.analyze(inffunc, meanfunc, covfunc, likfunc, x, y, der=False)
-        return result[0]
+    def nlml(self, hypInArray):
+        self.apply_in_objects(hypInArray)
+        nlZ, dnlZ = self.model.fit(der=False)
+        return nlZ
 
-    def dnlml(self, hypInArray, inffunc, meanfunc, covfunc, likfunc, x, y):
-        self.apply_in_objects(hypInArray, meanfunc, covfunc, likfunc)
-        result = gp.analyze(inffunc, meanfunc, covfunc, likfunc, x, y, der=True)
-        dnlml_List = result[1].mean + result[1].cov + result[1].lik
+    def dnlml(self, hypInArray):
+        self.apply_in_objects(hypInArray)
+        nlZ, dnlZ, post = self.model.fit()
+        dnlml_List = dnlZ.mean + dnlZ.cov + dnlZ.lik
         return np.array(dnlml_List)
 
-    def nlzAnddnlz(self, hypInArray, inffunc, meanfunc, covfunc, likfunc, x, y):
-        self.apply_in_objects(hypInArray, meanfunc, covfunc, likfunc)
-        result = gp.analyze(inffunc, meanfunc, covfunc, likfunc, x, y, der=True)
-        mean_list = result[1].mean
-        cov_list = result[1].cov
-        lik_list = result[1].lik 
-        dnlml_List = mean_list + cov_list + lik_list
-        nlZ = result[0]
+    def nlzAnddnlz(self, hypInArray):
+        self.apply_in_objects(hypInArray)
+        nlZ, dnlZ, post = self.model.fit()
+        dnlml_List = dnlZ.mean + dnlZ.cov + dnlZ.lik
         return nlZ, np.array(dnlml_List)
 
-    def convert_to_array(self, mean, cov, lik):
-        hyplist = mean.hyp + cov.hyp + lik.hyp
+    def convert_to_array(self):
+        hyplist = self.model.meanfunc.hyp + self.model.covfunc.hyp + self.model.likfunc.hyp
         return np.array(hyplist)
 
-    def apply_in_objects(self, hypInArray, mean, cov, lik):
-        Lm = len(mean.hyp)
-        Lc = len(cov.hyp)
+    def apply_in_objects(self, hypInArray):
+        Lm = len(self.model.meanfunc.hyp)
+        Lc = len(self.model.covfunc.hyp)
         hypInList = hypInArray.tolist()
-        mean.hyp  = hypInList[:Lm]
-        cov.hyp   = hypInList[Lm:(Lm+Lc)]
-        lik.hyp   = hypInList[(Lm+Lc):]
+        self.model.meanfunc.hyp  = hypInList[:Lm]
+        self.model.covfunc.hyp   = hypInList[Lm:(Lm+Lc)]
+        self.model.likfunc.hyp   = hypInList[(Lm+Lc):]
 
         
 class CG(Optimizer):
-    def __init__(self, searchConfig = None):
+    def __init__(self, model, searchConfig = None):
+        super(CG, self).__init__()
+        self.model = model
         self.searchConfig = searchConfig
         self.trailsCounter = 0
         self.errorCounter = 0
-    def findMin(self, inffunc, meanfunc, covfunc, likfunc, x, y):
-        hypInArray = self.convert_to_array(meanfunc, covfunc, likfunc)
+
+    def findMin(self, x, y):
+        meanfunc = self.model.meanfunc
+        covfunc = self.model.covfunc
+        likfunc = self.model.likfunc
+        inffunc = self.model.inffunc
+        hypInArray = self.convert_to_array()
         try:
-            opt = cg(self.nlml, hypInArray, self.dnlml, (inffunc, meanfunc, covfunc, likfunc, x, y), maxiter=100, disp=False, full_output=True)
+            opt = cg(self.nlml, hypInArray, self.dnlml, maxiter=100, disp=False, full_output=True)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1]
             warnFlag   = opt[4]
@@ -90,7 +91,7 @@ class CG(Optimizer):
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = cg(self.nlml, hypInArray, self.dnlml, (inffunc, meanfunc, covfunc, likfunc, x, y), maxiter=100, disp=False, full_output=True)
+                    thisopt = cg(self.nlml, hypInArray, self.dnlml, maxiter=100, disp=False, full_output=True)
                     if thisopt[1] < funcValue:
                         funcValue  = thisopt[1]
                         optimalHyp = thisopt[0]
@@ -109,14 +110,22 @@ class CG(Optimizer):
 
 
 class BFGS(Optimizer):
-    def __init__(self, searchConfig = None):
+    def __init__(self, model, searchConfig = None):
+        super(BFGS, self).__init__()
+        self.model = model
         self.searchConfig = searchConfig
         self.trailsCounter = 0
         self.errorCounter = 0
-    def findMin(self,inffunc, meanfunc, covfunc, likfunc, x, y):
-        hypInArray = self.convert_to_array(meanfunc, covfunc, likfunc)
+
+    def findMin(self, x, y):
+        meanfunc = self.model.meanfunc
+        covfunc = self.model.covfunc
+        likfunc = self.model.likfunc
+        inffunc = self.model.inffunc
+        hypInArray = self.convert_to_array()
+
         try:
-            opt = bfgs(self.nlml, hypInArray, self.dnlml, (inffunc, meanfunc, covfunc, likfunc, x, y), maxiter=100, disp=False, full_output=True)
+            opt = bfgs(self.nlml, hypInArray, self.dnlml, maxiter=100, disp=False, full_output=True)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1]
             warnFlag   = opt[6]
@@ -141,7 +150,7 @@ class BFGS(Optimizer):
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = bfgs(self.nlml, hypInArray, self.dnlml, (inffunc, meanfunc, covfunc, likfunc, x, y), maxiter=100, disp=False, full_output=True)
+                    thisopt = bfgs(self.nlml, hypInArray, self.dnlml, maxiter=100, disp=False, full_output=True)
                     if thisopt[1] < funcValue:
                         funcValue  = thisopt[1]
                         optimalHyp = thisopt[0]
@@ -161,14 +170,22 @@ class BFGS(Optimizer):
 
 
 class Minimize(Optimizer):
-    def __init__(self, searchConfig = None):
+    def __init__(self, model, searchConfig = None):
+        super(Minimize, self).__init__()
+        self.model = model
         self.searchConfig = searchConfig
         self.trailsCounter = 0
         self.errorCounter = 0
-    def findMin(self,inffunc, meanfunc, covfunc, likfunc, x, y):
-        hypInArray = self.convert_to_array(meanfunc, covfunc, likfunc)
+
+    def findMin(self, x, y):
+        meanfunc = self.model.meanfunc
+        covfunc = self.model.covfunc
+        likfunc = self.model.likfunc
+        inffunc = self.model.inffunc
+        hypInArray = self.convert_to_array()
+        
         try: 
-            opt = minimize.run(self.nlzAnddnlz, hypInArray, (inffunc, meanfunc, covfunc, likfunc, x, y), length=-100)
+            opt = minimize.run(self.nlzAnddnlz, hypInArray, length=-100)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1][-1]  
         except:
@@ -176,6 +193,7 @@ class Minimize(Optimizer):
             if not self.searchConfig:         
                 raise Exception("Can not use minimize. Try other hyparameters")
         self.trailsCounter += 1
+        
 
         if self.searchConfig:
             searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
@@ -187,7 +205,7 @@ class Minimize(Optimizer):
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = minimize.run(self.nlzAnddnlz, hypInArray, (inffunc, meanfunc, covfunc, likfunc, x, y), length=-100)
+                    thisopt = minimize.run(self.nlzAnddnlz, hypInArray, length=-100)
                     if thisopt[1][-1] < funcValue:
                         funcValue  = thisopt[1][-1]
                         optimalHyp = thisopt[0]
@@ -206,14 +224,21 @@ class Minimize(Optimizer):
 
 
 class SCG(Optimizer):
-    def __init__(self, searchConfig = None):
+    def __init__(self, model, searchConfig = None):
+        super(SCG, self).__init__()
+        self.model = model
         self.searchConfig = searchConfig
         self.trailsCounter = 0
         self.errorCounter = 0
-    def findMin(self,inffunc, meanfunc, covfunc, likfunc, x, y):
-        hypInArray = self.convert_to_array(meanfunc, covfunc, likfunc)
+
+    def findMin(self, x, y):
+        meanfunc = self.model.meanfunc
+        covfunc = self.model.covfunc
+        likfunc = self.model.likfunc
+        inffunc = self.model.inffunc
+        hypInArray = self.convert_to_array()
         try:
-            opt = scg.run(self.nlzAnddnlz, hypInArray, (inffunc, meanfunc, covfunc, likfunc, x, y))
+            opt = scg.run(self.nlzAnddnlz, hypInArray)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1][-1]
         except:
@@ -232,7 +257,7 @@ class SCG(Optimizer):
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = scg.run(self.nlzAnddnlz, hypInArray, (inffunc, meanfunc, covfunc, likfunc, x, y))
+                    thisopt = scg.run(self.nlzAnddnlz, hypInArray)
                     if thisopt[1][-1] < funcValue:
                         funcValue  = thisopt[1][-1]
                         optimalHyp = thisopt[0]
