@@ -12,6 +12,7 @@
 #================================================================================
 
 import numpy as np
+import matplotlib.pyplot as plt
 import inf, mean, lik, cov, opt
 from tools import unique
 
@@ -63,16 +64,33 @@ class GP(object):
         self._posterior_ = None
         self.x = None
         self.y = None
+        self.xs = None
+        self.ys = None
+        self.ym = None
+        self.ys2 = None
 
     def withData(self, x, y):
         self.x = x
         self.y = y
+
+
+    def plotData(self, axisvals=None):
+        plt.figure()
+        plt.plot(self.x, self.y,' b+', markersize=12)
+        plt.axis(axisvals)
+        plt.grid()
+        plt.xlabel('input x')
+        plt.ylabel('target y')
+        plt.show()
+
  
 
     def withPrior(self, mean=None, kernel=None):
         """set prior mean and cov"""
-        self.meanfunc = mean
-        self.covfunc = kernel
+        if mean != None:
+            self.meanfunc = mean
+        if kernel != None:
+            self.covfunc = kernel
 
 
     def train(self):
@@ -144,12 +162,15 @@ class GP(object):
                       fs2 is predictive latent variances
                       lp  is log predictive probabilities(if ys is given, otherwise is None)
         '''
+
         meanfunc = self.meanfunc
         covfunc = self.covfunc
         likfunc = self.likfunc
         inffunc = self.inffunc
         x = self.x
         y = self.y
+        self.xs = xs
+        self.ys = ys
         
         if self._posterior_ == None:         # if posterior is not calculated before...
             self.fit(der=False)              # ...first fit training data
@@ -193,6 +214,9 @@ class GP(object):
             ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
             ys2[id] = np.reshape( np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1)/N , (len(id),1) ) # .. variance
             nact = id[-1]+1                  # set counter to index of next data point
+
+        self.ym = ymu
+        self.ys2 = ys2
         if ys == None:
             return ymu, ys2, fmu, fs2, None
         else:
@@ -264,6 +288,9 @@ class GP(object):
             ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
             ys2[id] = np.reshape( np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1)/N , (len(id),1) ) # .. variance
             nact = id[-1]+1                  # set counter to index of next data point
+        
+        self.ym = ymu
+        self.ys2 = ys2
         if ys == None:
             return ymu, ys2, fmu, fs2, None
         else:
@@ -288,6 +315,24 @@ class GPR(GP):
         """explicitly set noise variance other than default"""
         self.likfunc = lik.likGauss(noise_variance)
 
+    def plotPrediction(self,axisvals=None):
+        xs = self.xs
+        x = self.x
+        y = self.y
+        ym = self.ym
+        ys2 = self.ys2
+        plt.figure()
+        xss  = np.reshape(xs,(xs.shape[0],))
+        ymm  = np.reshape(ym,(ym.shape[0],))
+        ys22 = np.reshape(ys2,(ys2.shape[0],))
+        plt.plot(xs, ym, 'g-', x, y, 'r+', linewidth = 3.0, markersize = 10.0)
+        plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=[0.,1.0,0.0,0.8],linewidths=0.0)
+        plt.grid()
+        if axisvals:
+            plt.axis(axisvals)
+        plt.xlabel('input x')
+        plt.ylabel('target y')
+        plt.show()
 
 
 
@@ -295,85 +340,5 @@ class GPR(GP):
 
 
 
-
-        
-
-"""
-def predict(inffunc, meanfunc, covfunc, likfunc, x, y, xs, ys=None):
-    '''
-    prediction according to given inputs
-    return [ymu, ys2, fmu, fs2, lp] 
-
-    If given ys, lp will be calculated.
-    Otherwise,   lp is None.
-
-    If you don't know posterior yet, you can pass y istead of post.
-    '''
-    if not meanfunc:
-        meanfunc = mean.meanZero()  
-    if not covfunc:
-        raise Exception('Covariance function cannot be empty')
-    if not likfunc:
-        likfunc = lik.likGauss([0.1])  
-    if not inffunc:
-        inffunc = inf.infExact()
-    # if covFTIC then infFITC
-    
-
-    post  = analyze(inffunc, meanfunc, covfunc, likfunc, x, y, der=False)[1]
-    alpha = post.alpha
-    L     = post.L
-    sW    = post.sW
-
-    #if issparse(alpha)                  # handle things for sparse representations
-    #    nz = alpha != 0                 # determine nonzero indices
-    #    if issparse(L), L = full(L(nz,nz)); end      # convert L and sW if necessary
-    #    if issparse(sW), sW = full(sW(nz)); end
-    #else:
-
-    nz = range(len(alpha[:,0]))      # non-sparse representation 
-    if L == []:                      # in case L is not provided, we compute it
-        K = covfunc.proceed(x[nz,:])
-        L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
-    Ltril     = np.all( np.tril(L,-1) == 0 ) # is L an upper triangular matrix?
-    ns        = xs.shape[0]                  # number of data points
-    nperbatch = 1000                         # number of data points per mini batch
-    nact      = 0                            # number of already processed test data points
-    ymu = np.zeros((ns,1))
-    ys2 = np.zeros((ns,1))
-    fmu = np.zeros((ns,1))
-    fs2 = np.zeros((ns,1))
-    lp  = np.zeros((ns,1))
-    while nact<=ns-1:                              # process minibatches of test cases to save memory
-        id  = range(nact,min(nact+nperbatch,ns))   # data points to process
-        kss = covfunc.proceed(xs[id,:], 'diag')    # self-variances
-        Ks  = covfunc.proceed(x[nz,:], xs[id,:])   # cross-covariances
-        ms  = meanfunc.proceed(xs[id,:])         
-        N   = (alpha.shape)[1]                     # number of alphas (usually 1; more in case of sampling)
-        Fmu = np.tile(ms,(1,N)) + np.dot(Ks.T,alpha[nz])          # conditional mean fs|f
-        fmu[id] = np.reshape(Fmu.sum(axis=1)/N,(len(id),1))       # predictive means
-        if Ltril: # L is triangular => use Cholesky parameters (alpha,sW,L)
-            V       = np.linalg.solve(L.T,np.tile(sW,(1,len(id)))*Ks)
-            fs2[id] = kss - np.array([(V*V).sum(axis=0)]).T             # predictive variances
-        else:     # L is not triangular => use alternative parametrization
-            fs2[id] = kss + np.array([(Ks*np.dot(L,Ks)).sum(axis=0)]).T # predictive variances
-        fs2[id] = np.maximum(fs2[id],0)            # remove numerical noise i.e. negative variances
-        Fs2 = np.tile(fs2[id],(1,N))               # we have multiple values in case of sampling
-        if ys == None:
-            [Lp, Ymu, Ys2] = likfunc.proceed(None,Fmu[:],Fs2[:],None,None,3)
-        else:
-            [Lp, Ymu, Ys2] = likfunc.proceed(np.tile(ys[id],(1,N)), Fmu[:], Fs2[:],None,None,3)
-        lp[id]  = np.reshape( np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1)/N , (len(id),1) )   # log probability; sample averaging
-        ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
-        ys2[id] = np.reshape( np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1)/N , (len(id),1) ) # .. variance
-        nact = id[-1]+1                  # set counter to index of next data point
-    if ys == None:
-        return [ymu, ys2, fmu, fs2, None]
-    else:
-        return [ymu, ys2, fmu, fs2, lp]   
-
-
-
-"""
 
 

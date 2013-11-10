@@ -15,7 +15,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def datasetPlotter(x,y, axisvals):
+def datasetPlotter(x,y,axisvals):
     plt.figure()
     plt.plot(x,y,'b+',markersize=12)
     plt.axis(axisvals)
