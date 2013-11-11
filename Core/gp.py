@@ -62,13 +62,15 @@ class GP(object):
         self.inffunc = None
         self.optimizer = None
         self._neg_log_marginal_likelihood_ = None
-        self._neg_log_marginal_likelihood_gradient_ = None    
+        self._neg_log_marginal_likelihood_gradient_ = None  
+        self._posterior_ = None  
         self.x = None
         self.y = None
         self.xs = None
         self.ys = None
         self.ym = None
         self.ys2 = None
+        
 
     def withData(self, x, y):
         self.x = x
@@ -105,6 +107,7 @@ class GP(object):
 
         # apply optimal hyp to all mean/cov/lik functions here
         self.optimizer.apply_in_objects(optimalHyp)
+        self.fit()
 
 
     def fit(self, der=True):
@@ -128,12 +131,13 @@ class GP(object):
         if not der:
             post, nlZ = self.inffunc.proceed(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, 2)
             self._neg_log_marginal_likelihood_ = nlZ
+            self._posterior_ = deepcopy(post)
             return nlZ, post          
         else:
             post, nlZ, dnlZ = self.inffunc.proceed(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, 3) 
             self._neg_log_marginal_likelihood_ = nlZ 
-            #print self._neg_log_marginal_likelihood_
             self._neg_log_marginal_likelihood_gradient_ = deepcopy(dnlZ)
+            self._posterior_ = deepcopy(post)
             return nlZ, dnlZ, post    
 
 
@@ -162,10 +166,11 @@ class GP(object):
         self.xs = xs
         self.ys = ys
         
-        post = self.fit(der=False)[1]        
-        alpha = post.alpha
-        L     = post.L
-        sW    = post.sW
+        if self._posterior_ == None:   
+            self.fit()        
+        alpha = self._posterior_.alpha
+        L     = self._posterior_.L
+        sW    = self._posterior_.sW
         
         nz = range(len(alpha[:,0]))         # non-sparse representation 
         if L == []:                         # in case L is not provided, we compute it
@@ -235,7 +240,8 @@ class GP(object):
         inffunc = self.inffunc
         x = self.x
         y = self.y
-               
+        
+        self._posterior_ = deepcopy(post)
         alpha = post.alpha
         L     = post.L
         sW    = post.sW
