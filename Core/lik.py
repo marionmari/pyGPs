@@ -130,7 +130,6 @@ class Likelihood(object):
 
 class likGauss(Likelihood):
     def __init__(self, noise=None):
-        self.noise_variance = noise
         self.hyp = [noise]
         '''
         if len(hyp) == 1:
@@ -148,7 +147,7 @@ class likGauss(Likelihood):
             raise Exception("Wrong number of hyperparameters.")         
         '''  
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
-        sn2 = self.noise_variance
+        sn2 = np.exp(2. * self.hyp[0])
         if inffunc == None:              # prediction mode 
             if y == None:
                 y = np.zeros_like(mu)
@@ -157,7 +156,7 @@ class likGauss(Likelihood):
                 s2zero = False     
             if s2zero:                   # log probability
                 lp = -(y-mu)**2 /sn2/2 - np.log(2.*np.pi*sn2)/2. 
-                s2 = 0.
+                s2 = np.zeros_like(s2)
             else:
                 inf_func = inf.infEP()   # prediction
                 lp = self.proceed(y, mu, s2, inf_func)

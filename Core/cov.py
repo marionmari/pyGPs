@@ -299,8 +299,8 @@ class rbf(Kernel):
             raise Exception("Wrong number of hyperparameters.")
         '''
     def proceed(self, x=None, z=None, der=None):
-        ell = self.rbf_lengthscale          # characteristic length scale
-        sf2 = self.rbf_variance          # signal variance
+        ell = self.hyp[0]         # characteristic length scale
+        sf2 = self.hyp[1]             # signal variance
         n,D = x.shape
         if z == 'diag':
             A = np.zeros((n,1))

@@ -70,7 +70,7 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
     s = -df0 
     d0 = -dot(s,s)               # initial search direction (steepest) and slope
     x3 = red/(1.0-d0)                              # initial step is red/(|s|+1)
-
+    
     while i < abs(length):                                  # while not finished
         i = i + (length>0)                                  # count iterations?!
 
@@ -116,6 +116,7 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
             elif x3 < x2+INT*(x2-x1):   # new point too close to previous point?
                 x3 = x2+INT*(x2-x1)
             x3 = real(x3)
+
 
         while (abs(d3) > -SIG*d0 or f3 > f0+x3*RHO*d0) and M > 0: 
                                                             # keep interpolating

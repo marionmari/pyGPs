@@ -183,9 +183,8 @@ class Minimize(Optimizer):
         likfunc = self.model.likfunc
         inffunc = self.model.inffunc
         hypInArray = self.convert_to_array()
-        
         try: 
-            opt = minimize.run(self.nlzAnddnlz, hypInArray, length=-100)
+            opt = minimize.run(self.nlzAnddnlz, hypInArray, length=-40)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1][-1]  
         except:
@@ -194,7 +193,6 @@ class Minimize(Optimizer):
                 raise Exception("Can not use minimize. Try other hyparameters")
         self.trailsCounter += 1
         
-
         if self.searchConfig:
             searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
             if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
@@ -205,7 +203,7 @@ class Minimize(Optimizer):
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = minimize.run(self.nlzAnddnlz, hypInArray, length=-100)
+                    thisopt = minimize.run(self.nlzAnddnlz, hypInArray, length=-40)
                     if thisopt[1][-1] < funcValue:
                         funcValue  = thisopt[1][-1]
                         optimalHyp = thisopt[0]

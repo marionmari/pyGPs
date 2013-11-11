@@ -15,6 +15,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import inf, mean, lik, cov, opt
 from tools import unique
+from copy import deepcopy
+import pyGP_OO
 
 #   MEANING OF NOTATION:
 #  
@@ -61,7 +63,6 @@ class GP(object):
         self.optimizer = None
         self._neg_log_marginal_likelihood_ = None
         self._neg_log_marginal_likelihood_gradient_ = None    
-        self._posterior_ = None
         self.x = None
         self.y = None
         self.xs = None
@@ -98,18 +99,12 @@ class GP(object):
         train optimal hyperparameters 
         adjust to all mean/cov/lik functions
         '''
-        meanfunc = self.meanfunc
-        covfunc = self.covfunc
-        likfunc = self.likfunc
-        inffunc = self.inffunc
-        optimizer = self.optimizer
-
-        # optimize here
-        optimalHyp, optimalNlZ = optimizer.findMin(self.x, self.y)
+        # optimize 
+        optimalHyp, optimalNlZ = self.optimizer.findMin(self.x, self.y)
         self._neg_log_marginal_likelihood_ = optimalNlZ
 
         # apply optimal hyp to all mean/cov/lik functions here
-        optimizer.apply_in_objects(optimalHyp)
+        self.optimizer.apply_in_objects(optimalHyp)
 
 
     def fit(self, der=True):
@@ -123,27 +118,22 @@ class GP(object):
                   post is struct representation of the (approximate) posterior
                   post is consist of post.alpha, post.L, post.sW
         '''
-        meanfunc = self.meanfunc
-        covfunc = self.covfunc
-        likfunc = self.likfunc
-        inffunc = self.inffunc
 
         # call inference method
-        if isinstance(likfunc, lik.likErf):  #or likLogistic)
+        if isinstance(self.likfunc, lik.likErf):  #or likLogistic)
             uy = unique(y)        
             ind = ( uy != 1 )
             if any( uy[ind] != -1):
                 raise Exception('You attempt classification using labels different from {+1,-1}')
         if not der:
-            post, nlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, 2)
+            post, nlZ = self.inffunc.proceed(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, 2)
             self._neg_log_marginal_likelihood_ = nlZ
-            self._posterior_ = post
             return nlZ, post          
         else:
-            post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, 3) 
+            post, nlZ, dnlZ = self.inffunc.proceed(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, 3) 
             self._neg_log_marginal_likelihood_ = nlZ 
-            self._neg_log_marginal_likelihood_gradient_ = dnlZ
-            self._posterior_ = post
+            #print self._neg_log_marginal_likelihood_
+            self._neg_log_marginal_likelihood_gradient_ = deepcopy(dnlZ)
             return nlZ, dnlZ, post    
 
 
@@ -172,12 +162,11 @@ class GP(object):
         self.xs = xs
         self.ys = ys
         
-        if self._posterior_ == None:         # if posterior is not calculated before...
-            self.fit(der=False)              # ...first fit training data
-        alpha = self._posterior_.alpha
-        L     = self._posterior_.L
-        sW    = self._posterior_.sW
-
+        post = self.fit(der=False)[1]        
+        alpha = post.alpha
+        L     = post.L
+        sW    = post.sW
+        
         nz = range(len(alpha[:,0]))         # non-sparse representation 
         if L == []:                         # in case L is not provided, we compute it
             K = covfunc.proceed(x[nz,:])
@@ -246,11 +235,10 @@ class GP(object):
         inffunc = self.inffunc
         x = self.x
         y = self.y
-        
-        self._posterior_ = post         
-        alpha = self._posterior_.alpha
-        L     = self._posterior_.L
-        sW    = self._posterior_.sW
+               
+        alpha = post.alpha
+        L     = post.L
+        sW    = post.sW
 
         nz = range(len(alpha[:,0]))         # non-sparse representation 
         if L == []:                         # in case L is not provided, we compute it
@@ -307,9 +295,14 @@ class GPR(GP):
         super(GPR, self).__init__()
         self.meanfunc = mean.meanZero()                        # default prior mean 
         self.covfunc = cov.rbf(lengthscale=1.0, variance=0.1)  # default prior covariance
-        self.likfunc = lik.likGauss(0.1)                       # likihood with default noise variance 0.1
+        self.likfunc = lik.likGauss(np.log(0.1))      # likihood with default noise variance 0.1
         self.inffunc = inf.infExact()                          # inference method
-        self.optimizer = opt.Minimize(self)                    # default optimizer
+        
+        conf = pyGP_OO.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
+        conf.num_restarts = 100
+        self.optimizer = opt.Minimize(self,conf)                    # default optimizer
+        
+        #self.optimizer = opt.Minimize(self)
 
     def hasNoise(self, noise_variance):
         """explicitly set noise variance other than default"""
