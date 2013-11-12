@@ -279,11 +279,8 @@ class covPoly(Kernel):
    
 
 class rbf(Kernel):
-    def __init__(self, lengthscale=None, variance=None):
-        self.rbf_lengthscale = lengthscale
-        self.rbf_variance = variance
-
-        self.hyp = [lengthscale, variance]
+    def __init__(self, log_ell=-1., log_sigma=0.):
+        self.hyp = [log_ell, log_sigma]
         '''
         if len(hyp) == 2:
             self.hyp = hyp
@@ -299,8 +296,9 @@ class rbf(Kernel):
             raise Exception("Wrong number of hyperparameters.")
         '''
     def proceed(self, x=None, z=None, der=None):
-        ell = self.hyp[0]         # characteristic length scale
-        sf2 = self.hyp[1]             # signal variance
+
+        ell = np.exp(self.hyp[0])         # characteristic length scale
+        sf2 = np.exp(2.*self.hyp[1])             # signal variance
         n,D = x.shape
         if z == 'diag':
             A = np.zeros((n,1))

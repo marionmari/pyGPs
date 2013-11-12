@@ -271,6 +271,7 @@ class infExact(Inference):
         n, D = x.shape
         K = covfunc.proceed(x)                                 # evaluate covariance matrix
         m = meanfunc.proceed(x)                                # evaluate mean vector
+        
         sn2   = np.exp(2*likfunc.hyp[0])                       # noise variance of likGauss
         L     = np.linalg.cholesky(K/sn2+np.eye(n)).T          # Cholesky factor of covariance with noise
         alpha = solve_chol(L,y-m)/sn2
@@ -278,10 +279,9 @@ class infExact(Inference):
         post.alpha = alpha                                     # return the posterior parameters
         post.sW    = np.ones((n,1))/np.sqrt(sn2)               # sqrt of noise precision vector
         post.L     = L                                         # L = chol(eye(n)+sW*sW'.*K)
-        
+
         if nargout>1:                                          # do we want the marginal likelihood?
             nlZ = np.dot((y-m).T,alpha)/2. + np.log(np.diag(L)).sum() + n*np.log(2*np.pi*sn2)/2. # -log marg lik
-            #print nlZ
             if nargout>2:                                      # do we want derivatives?
                 dnlZ = dnlZStruct(meanfunc, covfunc, likfunc)  # allocate space for derivatives
                 Q = solve_chol(L,np.eye(n))/sn2 - np.dot(alpha,alpha.T) # precompute for convenience

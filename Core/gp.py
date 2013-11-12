@@ -77,7 +77,7 @@ class GP(object):
         self.y = y
 
 
-    def plotData(self, axisvals=None):
+    def plotData(self, axisvals=[-1.9, 1.9, -0.9, 3.9]):
         plt.figure()
         plt.plot(self.x, self.y,' b+', markersize=12)
         plt.axis(axisvals)
@@ -96,11 +96,15 @@ class GP(object):
             self.covfunc = kernel
 
 
-    def train(self):
+    def train(self, x=None, y=None):
         '''
         train optimal hyperparameters 
         adjust to all mean/cov/lik functions
         '''
+        if x != None:
+            self.x = x  
+        if y != None:
+            self.y = y
         # optimize 
         optimalHyp, optimalNlZ = self.optimizer.findMin(self.x, self.y)
         self._neg_log_marginal_likelihood_ = optimalNlZ
@@ -110,7 +114,7 @@ class GP(object):
         self.fit()
 
 
-    def fit(self, der=True):
+    def fit(self,x=None, y=None,der=True):
         '''
         fit the training data
         @return  [nlZ, post]        if der = False
@@ -121,7 +125,10 @@ class GP(object):
                   post is struct representation of the (approximate) posterior
                   post is consist of post.alpha, post.L, post.sW
         '''
-
+        if x != None:
+            self.x = x  
+        if y != None:
+            self.y = y
         # call inference method
         if isinstance(self.likfunc, lik.likErf):  #or likLogistic)
             uy = unique(y)        
@@ -300,21 +307,20 @@ class GPR(GP):
     def __init__(self):
         super(GPR, self).__init__()
         self.meanfunc = mean.meanZero()                        # default prior mean 
-        self.covfunc = cov.rbf(lengthscale=1.0, variance=0.1)  # default prior covariance
-        self.likfunc = lik.likGauss(np.log(0.1))      # likihood with default noise variance 0.1
+        self.covfunc = cov.rbf()                               # default prior covariance
+        self.likfunc = lik.likGauss()                        # likihood with default noise variance 0.1
         self.inffunc = inf.infExact()                          # inference method
         
         conf = pyGP_OO.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
-        conf.num_restarts = 100
-        self.optimizer = opt.Minimize(self,conf)                    # default optimizer
+        conf.num_restarts = 100                 
         
-        #self.optimizer = opt.Minimize(self)
+        self.optimizer = opt.Minimize(self)             # default optimizer
 
-    def hasNoise(self, noise_variance):
+    def withNoise(self,log_sigma):
         """explicitly set noise variance other than default"""
-        self.likfunc = lik.likGauss(noise_variance)
+        self.likfunc = lik.likGauss(log_sigma)
 
-    def plotPrediction(self,axisvals=None):
+    def plot(self,axisvals=[-1.9, 1.9, -0.9, 3.9]):
         xs = self.xs
         x = self.x
         y = self.y

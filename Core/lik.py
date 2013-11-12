@@ -129,8 +129,8 @@ class Likelihood(object):
 
 
 class likGauss(Likelihood):
-    def __init__(self, noise=None):
-        self.hyp = [noise]
+    def __init__(self, log_sigma=np.log(0.1) ):
+        self.hyp = [log_sigma]
         '''
         if len(hyp) == 1:
             self.hyp = hyp

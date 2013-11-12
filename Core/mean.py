@@ -240,8 +240,10 @@ class meanOne(Mean):
             A = np.zeros((n,1))
         return A
 
-class meanConst(Mean):
-    def __init__(self,hyp):
+class Const(Mean):
+    def __init__(self, const=5.):
+        self.hyp = [const]
+        '''
         if len(hyp) == 1:
             self.hyp = hyp
             self.name = 'c'
@@ -253,7 +255,9 @@ class meanConst(Mean):
             print "hyp = [c]"
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
+        '''
     def proceed(self, x=None, der=None):
+        print self.hyp
         n,D = x.shape
         if der == None:                            # evaluate mean
             A = self.hyp[0] * np.ones((n,1)) 
@@ -263,13 +267,19 @@ class meanConst(Mean):
             A = np.zeros((n,1)) 
         return A
 
-class meanLinear(Mean):
-    def __init__(self,hyp):
-        self.hyp = hyp
+
+class Linear(Mean):
+    def __init__(self, alpha_list=None):
+        if alpha_list == None:
+            self.hyp = []
+        else:
+            self.hyp = alpha_list
         self.name = 'sum_i (a_i * x_i)'
     def proceed(self, x=None, der=None):
     	n, D = x.shape
-        if len(self.hyp) != D: 
+        if self.hyp == []:
+            self.hyp = [0.5 for i in xrange(D) ]
+            '''
             print "Linear mean function is parameterized as:"
             print "m(x) = sum_i (a_i * x_i) "
             print ""
@@ -277,16 +287,17 @@ class meanLinear(Mean):
             print "hyp = [a_1, a_2, ... , a_D]"
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
-        else:                                       # continue here if number of hyp is correct
-            c = np.array(self.hyp)
-            c = np.reshape(c,(len(c),1))
-            if der == None:                         # evaluate mean
-                A = np.dot(x,c)
-            elif isinstance(der, int) and der < D:  # compute derivative vector wrt meanparameters
-                A = np.reshape(x[:,der], (len(x[:,der]),1) ) 
-            else:   
-                A = np.zeros((n,1)) 
-            return A
+            '''
+        print 'LINEAR',self.hyp
+        c = np.array(self.hyp)
+        c = np.reshape(c,(len(c),1))
+        if der == None:                         # evaluate mean
+            A = np.dot(x,c)
+        elif isinstance(der, int) and der < D:  # compute derivative vector wrt meanparameters
+            A = np.reshape(x[:,der], (len(x[:,der]),1) ) 
+        else:   
+            A = np.zeros((n,1)) 
+        return A
 
 
 
