@@ -21,9 +21,9 @@ class random_init_conf(object):
         self.mean = mean
         self.cov = cov
         self.lik = lik
-        self._meanRange = [(-10,10) for i in mean.hyp]
-        self._covRange  = [(-10,10) for i in cov.hyp]        
-        self._likRange  = [(-10,10) for i in lik.hyp]
+        self._meanRange = [(-5,5) for i in mean.hyp]
+        self._covRange  = [(-5,5) for i in cov.hyp]        
+        self._likRange  = [(-5,5) for i in lik.hyp]
 
     def getmr(self):
         return self._meanRange

@@ -128,7 +128,7 @@ class Likelihood(object):
         pass
 
 
-class likGauss(Likelihood):
+class Gauss(Likelihood):
     def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [log_sigma]
         '''
@@ -158,36 +158,36 @@ class likGauss(Likelihood):
                 lp = -(y-mu)**2 /sn2/2 - np.log(2.*np.pi*sn2)/2. 
                 s2 = np.zeros_like(s2)
             else:
-                inf_func = inf.infEP()   # prediction
+                inf_func = inf.EP()   # prediction
                 lp = self.proceed(y, mu, s2, inf_func)
             if nargout>1:
                 ymu = mu                 # first y moment
                 if nargout>2:
                     ys2 = s2 + sn2       # second y moment
-                    varargout = [lp,ymu,ys2]
+                    return lp,ymu,ys2
                 else:
-                    varargout = [lp,ymu]
+                    return lp,ymu
             else:
-                varargout = lp
+                return lp
                        
         else:
-            if isinstance(inffunc, inf.infEP):
+            if isinstance(inffunc, inf.EP):
                 if der == None:                                  # no derivative mode
                     lZ = -(y-mu)**2/(sn2+s2)/2. - np.log(2*np.pi*(sn2+s2))/2. # log part function
                     if nargout>1:
                         dlZ  = (y-mu)/(sn2+s2)                   # 1st derivative w.r.t. mean
                         if nargout>2:
                             d2lZ = -1/(sn2+s2)                   # 2nd derivative w.r.t. mean
-                            varargout = [lZ,dlZ,d2lZ]
+                            return lZ,dlZ,d2lZ
                         else:
-                           varargout = [lZ,dlZ]
+                           return lZ,dlZ
                     else:
-                        varargout = lZ
+                        return lZ
                 else:                                            # derivative mode
                     dlZhyp = ((y-mu)**2/(sn2+s2)-1) / (1+s2/sn2) # deriv. w.r.t. hyp.lik
-                    varargout = dlZhyp
+                    return dlZhyp
             
-            elif isinstance(inffunc, inf.infLaplace):
+            elif isinstance(inffunc, inf.Laplace):
                 if der == None:                                  # no derivative mode
                     if y == None: 
                         y=0 
@@ -199,18 +199,18 @@ class likGauss(Likelihood):
                             d2lp = -np.ones_like(ymmu)/sn2
                             if nargout>3:                        # d3lp, 3rd derivative of log likelihood
                                 d3lp = np.zeros_like(ymmu)
-                                varargout = [lp,dlp,d2lp,d3lp]
+                                return lp,dlp,d2lp,d3lp
                             else:
-                                varargout = [lp,dlp,d2lp]
+                                return lp,dlp,d2lp
                         else:
-                            varargout = [lp,dlp]
+                            return lp,dlp
                     else:
-                        varargout = lp
+                        return lp
                 else:                                            # derivative mode
                     lp_dhyp   = (y-mu)**2/sn2 - 1                # derivative of log likelihood w.r.t. hypers
                     dlp_dhyp  = 2*(mu-y)/sn2                     # first derivative,
                     d2lp_dhyp = 2*np.ones_like(mu)/sn2           # and also of the second mu derivative
-                    varargout = [lp_dhyp,dlp_dhyp,d2lp_dhyp]
+                    return lp_dhyp,dlp_dhyp,d2lp_dhyp
             '''
             elif isinstance(inffunc, infVB):
                 if der == None:
@@ -248,7 +248,7 @@ class likGauss(Likelihood):
         '''
         return varargout
 
-class likErf(Likelihood):
+class Erf(Likelihood):
     # likErf - Error function or cumulative Gaussian likelihood function for binary
     # classification or probit regression. The expression for the likelihood is 
     #   likErf(t) = (1+erf(t/sqrt(2)))/2 = normcdf(t).
@@ -268,7 +268,7 @@ class likErf(Likelihood):
                 if np.linalg.norm(s2)>0:
                     s2zero = False                       # s2==0?       
             if s2zero:                                   # log probability evaluation
-                [p,lp] = self.cumGauss(y,mu,2)
+                p,lp = self.cumGauss(y,mu,2)
             else:                                        # prediction
                 lp = self.proceed(y, mu, s2, inf.infEP())
                 p = np.exp(lp)
@@ -276,16 +276,16 @@ class likErf(Likelihood):
                 ymu = 2*p-1                              # first y moment
                 if nargout>2:
                     ys2 = 4*p*(1-p)                      # second y moment
-                    varargout = [lp,ymu,ys2]
+                    return lp,ymu,ys2
                 else:
-                    varargout = [lp,ymu]
+                    return lp,ymu
             else:
-                varargout = lp
+                return lp
         else:                                            # inference mode
-            if isinstance(inffunc, inf.infLaplace):
+            if isinstance(inffunc, inf.Laplace):
                 if der == None:                          # no derivative mode
                     f = mu; yf = y*f                     # product latents and labels
-                    [p,lp] = self.cumGauss(y,f,2)
+                    p,lp = self.cumGauss(y,f,2)
                     if nargout>1:                        # derivative of log likelihood
                         n_p = self.gauOverCumGauss(yf,p)
                         dlp = y*n_p                      # derivative of log likelihood
@@ -293,20 +293,20 @@ class likErf(Likelihood):
                             d2lp = -n_p**2 - yf*n_p
                             if nargout>3:                # 3rd derivative of log likelihood
                                 d3lp = 2*y*n_p**3 + 3*f*n_p**2 + y*(f**2-1)*n_p 
-                                varargout = [lp,dlp,d2lp,d3lp]
+                                return lp,dlp,d2lp,d3lp
                             else:
-                                varargout = [lp,dlp,d2lp]
+                                return lp,dlp,d2lp
                         else:
-                            varargout = [lp,dlp]
+                            return lp,dlp
                     else:
-                        varargout = lp
+                        return lp
                 else:                                    # derivative mode
-                    varargout = nargout*[]               # derivative w.r.t. hypers
+                    return []                            # derivative w.r.t. hypers
 
-            elif isinstance(inffunc, inf.infEP):
+            elif isinstance(inffunc, inf.EP):
                 if der == None:                          # no derivative mode
                     z = mu/np.sqrt(1+s2) 
-                    [junk,lZ] = self.cumGauss(y,z,2)     # log part function
+                    junk,lZ = self.cumGauss(y,z,2)       # log part function
                     if not y == None:
                          z = z*y
                     if nargout>1:
@@ -315,13 +315,13 @@ class likErf(Likelihood):
                         dlZ = y*n_p/np.sqrt(1.+s2)       # 1st derivative wrt mean
                         if nargout>2:
                             d2lZ = -n_p*(z+n_p)/(1.+s2)  # 2nd derivative wrt mean
-                            varargout = [lZ,dlZ,d2lZ]
+                            return lZ,dlZ,d2lZ
                         else:
-                            varargout = [lZ,dlZ]
+                            return lZ,dlZ
                     else:
-                        varargout = lZ
+                        return lZ
                 else:                                    # derivative mode
-                    varargout = []                       # deriv. wrt hyp.lik
+                    return []                       # deriv. wrt hyp.lik
         '''
         if inffunc == 'inf.infVB':
             if der == None:                              # no derivative mode

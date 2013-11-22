@@ -219,7 +219,7 @@ class PowerOfMean(Mean):
 
 
 # simple mean functions below
-class meanZero(Mean):
+class Zero(Mean):
     def __init__(self):
         self.hyp = []
         self.name = '0'
@@ -228,7 +228,7 @@ class meanZero(Mean):
         A = np.zeros((n,1)) 
         return A
 
-class meanOne(Mean):
+class One(Mean):
     def __init__(self):
         self.hyp = []
         self.name = '1'
@@ -241,8 +241,8 @@ class meanOne(Mean):
         return A
 
 class Const(Mean):
-    def __init__(self, const=5.):
-        self.hyp = [const]
+    def __init__(self, c=5.):
+        self.hyp = [c]
         '''
         if len(hyp) == 1:
             self.hyp = hyp
@@ -257,7 +257,6 @@ class Const(Mean):
             raise Exception("Wrong number of hyperparameters.")
         '''
     def proceed(self, x=None, der=None):
-        print self.hyp
         n,D = x.shape
         if der == None:                            # evaluate mean
             A = self.hyp[0] * np.ones((n,1)) 
@@ -269,26 +268,23 @@ class Const(Mean):
 
 
 class Linear(Mean):
-    def __init__(self, alpha_list=None):
+    def __init__(self, D=None, alpha_list=None):
         if alpha_list == None:
-            self.hyp = []
+            self.hyp = [0.5 for i in xrange(D)]
         else:
             self.hyp = alpha_list
-        self.name = 'sum_i (a_i * x_i)'
+
     def proceed(self, x=None, der=None):
     	n, D = x.shape
-        if self.hyp == []:
-            self.hyp = [0.5 for i in xrange(D) ]
-            '''
-            print "Linear mean function is parameterized as:"
-            print "m(x) = sum_i (a_i * x_i) "
-            print ""
-            print "The number of hyperparameters is %d (dimension of inputs):" % D
-            print "hyp = [a_1, a_2, ... , a_D]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-            '''
-        print 'LINEAR',self.hyp
+        '''
+        print "Linear mean function is parameterized as:"
+        print "m(x) = sum_i (a_i * x_i) "
+        print ""
+        print "The number of hyperparameters is %d (dimension of inputs):" % D
+        print "hyp = [a_1, a_2, ... , a_D]"
+        print "------------------------------------------------------------------"
+        raise Exception("Wrong number of hyperparameters.")
+        '''
         c = np.array(self.hyp)
         c = np.reshape(c,(len(c),1))
         if der == None:                         # evaluate mean

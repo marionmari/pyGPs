@@ -259,14 +259,14 @@ class Inference(object):
         return d,P,R
 
 
-class infExact(Inference):
+class Exact(Inference):
 # Exact inference for a GP with Gaussian likelihood. Compute a parametrization
 # of the posterior, the negative log marginal likelihood and its derivatives
 # w.r.t. the hyperparameters.
     def __init__(self):
         self.name = "Exact inference"
     def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
-        if not isinstance(likfunc, lik.likGauss):
+        if not isinstance(likfunc, lik.Gauss):
             raise Exception ('Exact inference only possible with Gaussian likelihood')
         n, D = x.shape
         K = covfunc.proceed(x)                                 # evaluate covariance matrix
@@ -292,13 +292,13 @@ class infExact(Inference):
                 if meanfunc.hyp:
                     for ii in range(len(meanfunc.hyp)): 
                         dnlZ.mean[ii] = np.dot(-meanfunc.proceed(x, ii).T,alpha)
-                        dnlZ.mean[ii] = dnlZ.mean[ii][0]
-                return [post, nlZ[0][0], dnlZ]
-            return [post, nlZ[0][0]]
-        return [post]
+                        dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
+                return post, nlZ[0,0], dnlZ
+            return post, nlZ[0,0]
+        return post
 
 
-class infFITC_Exact(Inference):
+class FITC_Exact(Inference):
 # FITC approximation to the posterior Gaussian process. The function is
 # equivalent to infExact with the covariance function:
 #
@@ -369,13 +369,13 @@ class infFITC_Exact(Inference):
                     dnlZ.mean[ii] = np.dot(-meanfunc.proceed(x, ii).T, al) 
                     dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
 
-                return [post, nlZ[0,0], dnlZ]
-            return [post, nlZ[0,0]]
-        return [post]
+                return post, nlZ[0,0], dnlZ
+            return post, nlZ[0,0]
+        return post
 
 
 
-class infLaplace(Inference):
+class Laplace(Inference):
 # Laplace approximation to the posterior Gaussian process.
     def __init__(self):
         self.last_alpha = None
@@ -474,13 +474,13 @@ class infLaplace(Inference):
                 dnlZ.mean[ii] = -np.dot(alpha.T,dm)                          # explicit part
                 dnlZ.mean[ii] -= np.dot(dfhat.T,dm-np.dot(K,np.dot(Z,dm)))   # implicit part
                 dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
-            vargout = [post,nlZ[0],dnlZ]
+            return post,nlZ[0],dnlZ
         else:
-            vargout = [post, nlZ[0]]
-        return vargout
+            return post, nlZ[0]
 
 
-class infFITC_Laplace(Inference):
+
+class FITC_Laplace(Inference):
 # [post nlZ dnlZ] = infFITC_Laplace(hyp, mean, cov, lik, x, y)
 #
 # FITC-Laplace approximation to the posterior Gaussian process. The function is
@@ -635,13 +635,13 @@ class infFITC_Laplace(Inference):
                 dnlZ.mean[ii] -= np.dot(dfhat.T,(dm-self.mvmK(Zdm,V,d0))) # implicit part
                 dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
 
-            vargout = [post,nlZ[0,0],dnlZ]
+            return post,nlZ[0,0],dnlZ
         else:
-            vargout = [post, nlZ[0,0]]
-        return vargout
+            return post, nlZ[0,0]
 
 
-class infEP(Inference):
+
+class EP(Inference):
 # Expectation Propagation approximation to the posterior Gaussian Process.
     def __init__(self):
         self.name = 'Expectation Propagation'
@@ -720,13 +720,13 @@ class infEP(Inference):
                 dm = meanfunc.proceed(x, ii)
                 dnlZ.mean[ii] = -np.dot(dlZ.T,dm)
                 dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
-            vargout = [post, nlZ[0], dnlZ]
+            return post, nlZ[0], dnlZ
         else:
-            vargout = [post, nlZ[0]]
-        return vargout
+            return post, nlZ[0]
 
 
-class infFITC_EP(Inference):
+
+class FITC_EP(Inference):
 # FITC-EP approximation to the posterior Gaussian process. The function is
 # equivalent to infEP with the covariance function:
 #
@@ -866,11 +866,11 @@ class infFITC_EP(Inference):
                 dnlZ.mean[ii] = -np.dot(dlZ.T,dm)
                 dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
         
-            vargout = [post, nlZ[0,0], dnlZ]
+            return post, nlZ[0,0], dnlZ
         else:
-            vargout = [post, nlZ[0,0]]
+            return post, nlZ[0,0]
     
-        return vargout
+
 
 
 

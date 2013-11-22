@@ -229,12 +229,10 @@ class FITCOfKernel(Kernel):
 
 
 # an example of simple kernel function, the rest are similar
-class covPoly(Kernel):
-    def __init__(self,p):
-        if len(p) == 3:
-            self.hyp = p[:2]
-            self.para = p[-1:]
-            self.name = "sf2 * ( c +  (x^p)'*(x^q) ) ** d"
+class Poly(Kernel):
+    def __init__(self, log_c=0., log_d=np.log(2), log_sigma=0. ):
+        self.hyp = [ log_c, log_sigma, log_d ]
+        '''
         else:
             print "Polynomial covariance function is parameterized as:"
             print "k(x^p,x^q) = sf2 * ( c +  (x^p)'*(x^q) ) ** d"
@@ -245,10 +243,11 @@ class covPoly(Kernel):
             print "      log(d) is a special parameter which will not be optimized"
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
+        '''
     def proceed(self, x=None, z=None, der=None):
         c   = np.exp(self.hyp[0])             # inhomogeneous offset
         sf2 = np.exp(2.*self.hyp[1])          # signal variance
-        ord = np.exp(self.para[0])            # ord of polynomical
+        ord = np.exp(self.para[0])            # order of polynomial
         if np.abs(ord-np.round(ord)) < 1e-8:  # remove numerical error from format of parameter
             ord = int(round(ord))
         assert(ord >= 1.)                     # only nonzero integers for ord
@@ -278,14 +277,10 @@ class covPoly(Kernel):
         return A
    
 
-class rbf(Kernel):
+class RBF(Kernel):
     def __init__(self, log_ell=-1., log_sigma=0.):
         self.hyp = [log_ell, log_sigma]
         '''
-        if len(hyp) == 2:
-            self.hyp = hyp
-            self.name = "sf2 * exp(-(x^p - x^q)'*inv(P)*(x^p - x^q)/2)"
-        else:
             print "Squared Exponential covariance function with isotropic distance measure is parameterized as:"
             print "k(x^p,x^q) = sf2 * exp(-(x^p - x^q)'*inv(P)*(x^p - x^q)/2)"
             print "where the P matrix is ell^2 times the unit matrix and"
@@ -298,7 +293,7 @@ class rbf(Kernel):
     def proceed(self, x=None, z=None, der=None):
 
         ell = np.exp(self.hyp[0])         # characteristic length scale
-        sf2 = np.exp(2.*self.hyp[1])             # signal variance
+        sf2 = np.exp(2.*self.hyp[1])      # signal variance
         n,D = x.shape
         if z == 'diag':
             A = np.zeros((n,1))
@@ -318,11 +313,10 @@ class rbf(Kernel):
         return A
 
 
-class covSEisoU(Kernel):
-    def __init__(self,hyp):
-        if len(hyp) == 1:
-            self.hyp = hyp
-        else:
+class RBFunit(Kernel):
+    def __init__(self, log_ell=-1.):
+        self.hyp = [log_ell]
+        '''
             print "Squared Exponential covariance function with isotropic distance measure with"
             print "unit magnitude. The covariance function is parameterized as:"
             print "k(x^p,x^q) = exp( -(x^p - x^q)' * inv(P) * (x^p - x^q) / 2 )"
@@ -331,6 +325,7 @@ class covSEisoU(Kernel):
             print "hyp = [ log(ell) ]"
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
+        '''
     def proceed(self, x=None, z=None, der=None):
         ell = np.exp(self.hyp[0])  # characteristic length scale
         n,D = x.shape
@@ -350,11 +345,15 @@ class covSEisoU(Kernel):
         return A
 
 
-class covSEard(Kernel):
-    def __init__(self,hyp):
-        self.hyp = hyp
+class RBFard(Kernel):
+    def __init__(self, D=None, log_ell_list=None, log_sigma=0.):
+        if log_ell_list == None:
+            self.hyp = [0.5 for i in xrange(D)] + [log_sigma]
+        else:
+            self.hyp = log_ell_list + [log_sigma]
     def proceed(self, x=None, z=None, der=None):
         n, D = x.shape
+        '''
         if len(self.hyp) != D+1: 
             print "Squared Exponential covariance function with ARD is parameterized as:"
             print "k(x^p,x^q) = sf2 * exp(-(x^p - x^q)'*inv(P)*(x^p - x^q)/2)"
@@ -365,38 +364,41 @@ class covSEard(Kernel):
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
         else:
-            ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
-            sf2 = np.exp(2.*self.hyp[D])      # signal variance
-            if z == 'diag':
-                A = np.zeros((n,1))
-            elif z == None:
-                tem = np.dot(np.diag(ell),x.T).T
-                A = spdist.cdist(tem,tem,'sqeuclidean')
-            else:                # compute covariance between data sets x and z
-                A = spdist.cdist(np.dot(np.diag(ell),x.T).T,np.dot(np.diag(ell),z.T).T,'sqeuclidean')
-            A = sf2*np.exp(-0.5*A)
-            if der:
-                if der < D:      # compute derivative matrix wrt length scale parameters
-                    if z == 'diag':
-                        A = A*0
-                    elif z == None:
-                        tem = np.atleast_2d(x[:,der])/ell[der]
-                        A *= spdist.cdist(tem,tem,'sqeuclidean')
-                    else:
-                        A *= spdist.cdist(np.atleast_2d(x[:,der]).T/ell[der],np.atleast_2d(z[:,der]).T/ell[der],'sqeuclidean')
-                elif der==D:     # compute derivative matrix wrt magnitude parameter
-                    A = 2.*A
+        '''    
+        ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
+        sf2 = np.exp(2.*self.hyp[D])      # signal variance
+        if z == 'diag':
+            A = np.zeros((n,1))
+        elif z == None:
+            tem = np.dot(np.diag(ell),x.T).T
+            A = spdist.cdist(tem,tem,'sqeuclidean')
+        else:                # compute covariance between data sets x and z
+            A = spdist.cdist(np.dot(np.diag(ell),x.T).T,np.dot(np.diag(ell),z.T).T,'sqeuclidean')
+        A = sf2*np.exp(-0.5*A)
+        if der:
+            if der < D:      # compute derivative matrix wrt length scale parameters
+                if z == 'diag':
+                    A = A*0
+                elif z == None:
+                    tem = np.atleast_2d(x[:,der])/ell[der]
+                    A *= spdist.cdist(tem,tem,'sqeuclidean')
                 else:
-                    raise Exception("Wrong derivative index in covSEard")   
-            return A
+                    A *= spdist.cdist(np.atleast_2d(x[:,der]).T/ell[der],np.atleast_2d(z[:,der]).T/ell[der],'sqeuclidean')
+            elif der==D:     # compute derivative matrix wrt magnitude parameter
+                A = 2.*A
+            else:
+                raise Exception("Wrong derivative index in covSEard")   
+        return A
 
             
-class covPPiso(Kernel):
+class PPiso(Kernel):
     pass
 
 
-class covConst(Kernel):
-    def __init__(self,hyp):
+class Const(Kernel):
+    def __init__(self, log_sigma=0.):
+        self.hyp = [log_sigma]
+        '''
         if len(hyp) == 1:
             self.hyp = hyp
         else:
@@ -406,6 +408,7 @@ class covConst(Kernel):
             print "hyp = [ log(sqrt(sf2)) ]"
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
+        '''
     def proceed(self, x=None, z=None, der=None):
         sf2 = np.exp(self.hyp[0])         # s2
         n,m = x.shape
@@ -422,7 +425,7 @@ class covConst(Kernel):
         return A
 
 
-class covLIN(Kernel):
+class LIN(Kernel):
 # Linear covariance function is parameterized as:
 # k(x^p,x^q) = x^p'*x^q
 # There are no hyperparameters
@@ -443,11 +446,16 @@ class covLIN(Kernel):
             raise Exception("No derivative available in covLIN")
 
 
-class covLINard(Kernel):
-    def __init__(self,hyp):
-        self.hyp = hyp
+class LINard(Kernel):
+    def __init__(self, D=None, log_ell_list=None):
+        if log_ell_list == None:
+            self.hyp = [0.5 for i in xrange(D)]
+        else:
+            self.hyp = log_ell_list
+
     def proceed(self, x=None, z=None, der=None):
         n, D = x.shape
+        '''
         if len(self.hyp) != D: 
             print "Linear covariance function with Automatic Relevance Detemination"
             print "(ARD) distance measure is parameterized as:"
@@ -459,30 +467,33 @@ class covLINard(Kernel):
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
         else:
-            ell = np.exp(self.hyp)            # characteristic length scales
-            x = np.dot(x,np.diag(1./ell))
+        '''
+        ell = np.exp(self.hyp)            # ARD parameters
+        x = np.dot(x,np.diag(1./ell))
+        if z == 'diag':
+            A = np.reshape(np.sum(x*x,1), (n,1))
+        elif z == None:
+            A = np.dot(x,x.T)
+        else:                             # compute covariance between data sets x and z
+            z = np.dot(z,np.diag(1./ell))
+            A = np.dot(x,z.T)             # cross covariances
+
+        if not der == None and der < D:
             if z == 'diag':
-                A = np.reshape(np.sum(x*x,1), (n,1))
+                A = -2.*x[:,der]*x[:,der]
             elif z == None:
-                A = np.dot(x,x.T)
-            else:                             # compute covariance between data sets x and z
-                z = np.dot(z,np.diag(1./ell))
-                A = np.dot(x,z.T)             # cross covariances
-
-            if not der == None and der < D:
-                if z == 'diag':
-                    A = -2.*x[:,der]*x[:,der]
-                elif z == None:
-                    A = -2.*np.dot(x[:,der],x[:,der].T)
-                else:
-                    A = -2.*np.dot(x[:,der],z[:,der].T) # cross covariances
-            elif der:
-                raise Exception("Wrong derivative index in covLINard")
-            return A
+                A = -2.*np.dot(x[:,der],x[:,der].T)
+            else:
+                A = -2.*np.dot(x[:,der],z[:,der].T) # cross covariances
+        elif der:
+            raise Exception("Wrong derivative index in covLINard")
+        return A
 
 
-class covMatern(Kernel):
-    def __init__(self,hyp):
+class Matern(Kernel):
+    def __init__(self, log_ell=-1., log_d=0., log_sigma=0. ):
+        self.hyp = [ log_ell, log_sigma, log_d ]
+        '''
         if len(hyp) == 3:
             self.hyp = hyp
         else:
@@ -497,6 +508,7 @@ class covMatern(Kernel):
             print "hyp = [ log(ell), log(sqrt(sf2)), log(d) ]"
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
+        '''
     def func(self,d,t):
         if d == 1:
             return 1
@@ -556,8 +568,10 @@ class covMatern(Kernel):
 
 
 
-class covPeriodic(Kernel):
-    def __init__(self,hyp):
+class Periodic(Kernel):
+    def __init__(self, log_ell=-1, log_p=0., log_sigma=0. ): 
+        self.hyp = [ log_ell, log_p, log_sigma]
+        '''
         if len(hyp) == 3:
             self.hyp = hyp
         else:
@@ -568,6 +582,7 @@ class covPeriodic(Kernel):
             print "hyp = [ log(ell), log(p), log(sqrt(sf2)) ]"
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
+        '''
     def proceed(self, x=None, z=None, der=None):
         ell = np.exp(self.hyp[0])        # characteristic length scale
         p   = np.exp(self.hyp[1])        # period
@@ -603,8 +618,9 @@ class covPeriodic(Kernel):
 
 class covNoise(Kernel):
 # Independent covariance function, ie "white noise", with specified variance.
-# NOTE: Calling this function with z = x does NOT produce the correct result!
-    def __init__(self,hyp):
+    def __init__(self, log_sigma=0.):
+        self.hyp = [log_sigma]
+        '''
         if len(hyp) == 1:
             self.hyp = hyp
         else:
@@ -616,6 +632,7 @@ class covNoise(Kernel):
             print "hyp = [ log(sqrt(s2)) ]"
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
+        '''
     def proceed(self, x=None, z=None, der=None):
         tol = 1.e-9                 # Tolerance for declaring two vectors "equal"
         s2 = np.exp(2.*self.hyp[0]) # noise variance
