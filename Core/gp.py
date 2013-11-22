@@ -319,7 +319,7 @@ class GPR(GP):
         self.likfunc = lik.Gauss(log_sigma)
 
 
-    def setOptimizer(self, s, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
+    def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
         
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
@@ -333,13 +333,13 @@ class GPR(GP):
             if likRange != None:
                 conf.likRange = likRange   
 
-        if s == "Minimize":
+        if method == "Minimize":
             self.optimizer = opt.Minimize(self,conf)            
-        elif s == "SCG":
+        elif method == "SCG":
             self.optimizer = opt.SCG(self,conf)  
-        elif s == "CG":
+        elif method == "CG":
             self.optimizer = opt.CG(self,conf)  
-        elif s == "BFGS":
+        elif method == "BFGS":
             self.optimizer = opt.BFGS(self,conf)  
     
         self.optimizer             

@@ -1,32 +1,162 @@
-# (If you will optimize anyway, just leave parameters to be default)
+'''
+This file is NOT a python script
+Its a text document to show how to use kernels.
+I use .py only to highlight keywords, I intended to put this documentation as a webpage 
+'''
 
-# parameters are passed in logorithms
 
-default init need dimension info. (either D or init)
-# m = mean.Linear( D=x.shape[1] )
+=================================================
+SIMPLE KERNELS 
+=================================================
+# You may already seen, we can specify a kernel function like this:
+# (similar for mean fucntions as well)
+k = cov.RBF( log_ell=-1., log_sigma=0. )
+
+
+There are several points need to be noticed:
+
+1. Most parameters are initilized in their logorithms. 
+This is because we need to make sure they are positive during optimization.
+e.g. Here length scale and signal variance should always be positive.
+@SEE Section: ALL KERNELS AND MEANS & DEFAULT PARAMETERS
+
+2. Most kernel functions have a scalar in front, namely signal variance(set by log_sigma)
+
+3. If you will do optimization later anyway, you can just leave parameters to be default
+
+
+
+
+
+
+
+
+
+
+
+=================================================
+SOME SPECIAL CASES
+=================================================
+1. 
+For some kernels/means, number of hyperparameters depends on the dimension of input data
+
+# You can either enter the dimension, which use default values:
+m = mean.Linear( D=x.shape[1] )
+
+# or you can initialze with the exact hyperparameters,
+# you should enter as a list, one element for each dimension
+m = mean.Linear( alpha_list=[0.2, 0.4, 0.3] )
+
+# These "hyp-dim-dependent" functions are:
+mean.Linear
 cov.RBFard
-
-
-No signal variance(scalar term) in kernel itself:
-(use *)
-cov.LIN
 cov.LINard
 
 
+2. 
+For linear kernel, there is NO signal variance(scalar) in front of the function.
+# If you want to add a scalar for it, you can use:
+k = 0.5 * cov.LIN()
+# If you also want to add a bias term:
+k = 0.5 * cov.LIN() + cov.Const(c=1.)
 
-#  scarlar is also hyperparameter
+Note 0.5 will also be treated as a hyperparameter.
+This also applies in cov.LINard.
 
-"""
 
-# TODO  add demo_kernel 
-# @see demo_kernel  for all default settings
-# @see demo_kernel  for how to use kernel(mean) compositions and how to set hyperparameters
-# @add demo_kernel  for why using logarithm of ell and sigma (to ensure positive)
-#  discription for covPre
-"""
+3. 
+For cov.RBFunit(), its signal variance is always 1(because of unit magnitude)
+so this function do not have a hyperparameter of "signal variance".
 
+
+4.
+You may not want to use cov.Noise explicitly, 
+because noise are already added in liklihood.
+
+
+
+
+
+
+
+
+
+=================================================
+COMPOSITE KERNELS 
+=================================================
+# Adding and muliplying kernels is really simple:
+k = cov.Periodic() * cov.RBF()
+k = 0.5*cov.LIN() + cov.Periodic()
+
+Except linear kernel, all kernel functions have a scalar(signal variance) as hyperparameter.
+Therefore, the only explict scalar is added to cov.LIN()
+ 
+# Beside +/*, There is even a power operator for mean functions:
+m = ( mean.One()+mean.Linear(alpha_list=[0.2]) )**2
+
+
+
+
+
+
+
+
+
+
+=================================================
+FITC APPROXIMATION
+=================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+=================================================
+PRECOMPUTED KERNEL MATRIX
+=================================================
+In certain cases, you may have a precomputed kernel matrix,
+but its non-trivial to write down the exact formula of kernel functions.
+
+# Then you can specify your kernel like this:
+k = cov.Pre(M1, M2)
+
+M1 and M2 are your precomputed kernel matrix,
+
+where,
+M1 (shape: train+1, test)  
+    -> cross covariances matrix (train by test) 
+    -> last row is self covariances (diagonal of test by test)
+M2 (shape: train, train)
+    -> training set covariance matrix (train by train)  
+
+
+# A precomputed kernel can also be composited with other kernels.
+k = 0.5*cov.Pre(M1, M2) + cov.RBF()
+
+Note: Similar to cov.LIN(), you need to explictly add scalar for cov.Pre()
+
+
+
+
+
+
+
+
+
+
+=================================================
+LIST OF ALL KERNELS/MEANS & DEFAULT PARAMETERS
+=================================================
 MEAN:
-----------------------------
+------------------------------
 Zero() 
 
 One()
@@ -36,8 +166,6 @@ Const( c=5. )
 
 Linear( alpha_list=[0.5 for i in xrange(D)] )    
 	alpha_list -> alpha for each dimension
-
-
 
 
 KERNEL:

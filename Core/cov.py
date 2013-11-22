@@ -655,13 +655,13 @@ class covNoise(Kernel):
         return A
 
 
-class covRQiso(Kernel):
+class RQiso(Kernel):
     pass
-class covRQard(Kernel):
+class RQard(Kernel):
     pass
 
 
-class covPre(Kernel):
+class Pre(Kernel):
 # Precomputed kernel matrix
 # M1: cross covariances train by test
 #     last row: self covariances (diagonal of test by test)
