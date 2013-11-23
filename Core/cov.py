@@ -231,7 +231,8 @@ class FITCOfKernel(Kernel):
 # an example of simple kernel function, the rest are similar
 class Poly(Kernel):
     def __init__(self, log_c=0., log_d=np.log(2), log_sigma=0. ):
-        self.hyp = [ log_c, log_sigma, log_d ]
+        self.hyp = [ log_c, log_sigma]
+        self.para =  [log_d] 
         '''
         else:
             print "Polynomial covariance function is parameterized as:"
@@ -444,6 +445,7 @@ class LIN(Kernel):
             A = np.dot(x,z.T)                       # cross covariances
         if der:
             raise Exception("No derivative available in covLIN")
+        return A
 
 
 class LINard(Kernel):

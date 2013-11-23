@@ -70,7 +70,18 @@ so this function do not have a hyperparameter of "signal variance".
 
 
 4.
-You may not want to use cov.Noise explicitly, 
+cov.Poly() has three parameters, where
+hyperparameters are:
+	c -> inhomogeneous offset
+	sigma -> signal deviation 
+	
+however, 
+	d -> order of polynomial 
+	will be treated as normal parameter, i.e. will not be trained
+
+
+5.
+Explicitly set cov.Noise is not necessary, 
 because noise are already added in liklihood.
 
 
@@ -173,27 +184,32 @@ KERNEL:
 # Polynomial kernel
 Poly( log_c=0., log_d=np.log(2), log_sigma=0. )
 	c -> inhomogeneous offset
-	d -> order of polynomial
-	sigma -> signal deviation
+	d -> order of polynomial (treated not as hyperparameter, i.e. will not be trained)
+	sigma -> signal deviation 
+	hyp = [ log_c, log_sigma]
 
 # Squared Exponential kernel with isotropic distance measure
 RBF( log_ell=-1., log_sigma=0.)
 	ell -> characteristic length scale
 	sigma -> signal deviation
+	hyp = [log_ell, log_sigma]
 
 # Squared Exponential kernel with isotropic distance measure with unit magnitude
 # i.e signal variance is always 1
 RBFunit( log_ell=-1. )         
 	ell -> characteristic length scale
+	hyp = [log_ell]
 
 # Squared Exponential kernel with Automatic Relevance Determination
 RBFard( log_ell_list=[0.5 for i in xrange(D)], log_sigma=0.)
 	log_ell_list -> logarithm of characteristic length scale for each dimension
 	sigma -> signal deviation
+	hyp = [log_ell for each dimension, log_sigma]
 
 # Constant kernel
 Const( log_sigma=0. )
 	sigma -> signal deviation
+	hyp = [log_sigma]
 
 # Linear kernel
 LIN()
@@ -201,6 +217,7 @@ LIN()
 # Linear kernel with Automatic Relevance Determination
 LINard( log_ell_list=[0.5 for i in xrange(D)] )
 	log_ell_list -> logarithm of ARD parameters for each dimension
+	hyp = [log_ell for each dimension]
 
 # Matern kernel with nu = d/2 and isotropic distance measure
 # For d=1 the function is also known as the exponential covariance function or the 
@@ -208,18 +225,21 @@ LINard( log_ell_list=[0.5 for i in xrange(D)] )
 Matern( log_ell=-1., log_d=0., log_sigma=0. )
 	d -> 2 times nu
 	ell -> characteristic length scale
-	sigma -> signal deviation	
+	sigma -> signal deviation
+	hyp = [ log_ell, log_sigma, log_d ]	
 
 # Stationary kernel for a smooth periodic function
 Periodic( log_ell=-1, log_p=0., log_sigma=0. )
 	ell -> characteristic length scale
 	p -> period
 	sigma -> signal deviation
+	hyp = [ log_ell, log_p, log_sigma]
 
 # Independent covariance function, ie "white noise"
 # !!! Not used since noise is now added in liklihood!
 Noise( log_sigma=0. )
 	sigma -> signal deviation
+	hyp = [log_sigma]
 
 
 

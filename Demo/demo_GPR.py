@@ -1,6 +1,20 @@
 from pyGP_OO.Core import *
 import numpy as np
 
+
+# This demo will not only introduce GP regression model,
+# but provides a gernel insight of our tourbox.
+
+# You may want to read it before reading other models.
+# current possible models are:
+#     gp.GPR          -> Regression 
+#     gp.GPC          -> Classification
+#     gp.GPR_FITC     -> Sparse GP Regression 
+#     gp.GPC_FITC     -> Sparse GP Classification
+#     (gp.GPMC)       -> Muli-class Classification
+#     (gp.GPMC_FITC)  -> Sparse Muli-class Classification
+
+
 print ''
 print '---------------------GPR DEMO-------------------------'
 

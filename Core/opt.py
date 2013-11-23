@@ -183,6 +183,12 @@ class Minimize(Optimizer):
         likfunc = self.model.likfunc
         inffunc = self.model.inffunc
         hypInArray = self.convert_to_array()
+
+        #Test code(to get rid of try-except)
+        #opt = minimize.run(self.nlzAnddnlz, hypInArray, length=-40)
+        #optimalHyp = deepcopy(opt[0])
+        #funcValue  = opt[1][-1]
+        
         try: 
             opt = minimize.run(self.nlzAnddnlz, hypInArray, length=-40)
             optimalHyp = deepcopy(opt[0])
