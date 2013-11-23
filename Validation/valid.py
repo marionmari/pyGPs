@@ -34,21 +34,10 @@ def k_fold_validation(x, y, K=10, randomise=False):
     assert n > K
 
     for k in xrange(K):
-        x_train = []
-        x_test = []
-        y_train = []
-        y_test = []
-        for i in xrange(n):
-            if i % K == k:
-                x_test.append(list(x[i]))
-                y_test.append(list(y[i]))
-            else:
-                x_train.append(list(x[i]))
-                y_train.append(list(y[i]))
-        x_train = np.array(x_train)
-        x_test = np.array(x_test)
-        y_train = np.array(y_train)
-        y_test = np.array(y_test)
+        x_train = np.array([e for i, e in enumerate(x) if i % K != k])
+        x_test = np.array([e for i, e in enumerate(x) if i % K == k])
+        y_train = np.array([e for i, e in enumerate(y) if i % K != k])
+        y_test = np.array([e for i, e in enumerate(y) if i % K == k])
         yield x_train, x_test, y_train, y_test
 
 
