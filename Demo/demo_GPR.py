@@ -21,7 +21,7 @@ print '---------------------GPR DEMO-------------------------'
 #----------------------------------------------------------------------
 # Load demo data (generated from Gaussians)
 #----------------------------------------------------------------------
-demoData = np.load('pyGP_OO/Data/regression_data.npz')   
+demoData = np.load('data_for_demo/regression_data.npz')   
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
@@ -31,7 +31,6 @@ z = demoData['xstar']        # test data
 
 #----------------------------------------------------------------------
 # A four-line toy example
-# to see how easy to use our toolbox
 #----------------------------------------------------------------------
 model = gp.GPR()             # model 
 model.fit(x, y)              # fit model with data
