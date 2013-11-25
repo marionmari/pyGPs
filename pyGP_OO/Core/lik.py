@@ -270,7 +270,7 @@ class Erf(Likelihood):
             if s2zero:                                   # log probability evaluation
                 p,lp = self.cumGauss(y,mu,2)
             else:                                        # prediction
-                lp = self.proceed(y, mu, s2, inf.infEP())
+                lp = self.proceed(y, mu, s2, inf.EP())
                 p = np.exp(lp)
             if nargout>1:
                 ymu = 2*p-1                              # first y moment

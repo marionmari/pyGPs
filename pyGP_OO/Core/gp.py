@@ -69,16 +69,14 @@ class GP(object):
         self.xs = None
         self.ys = None
         self.ym = None
-        self.ys2 = None
-        
+        self.ys2 = None 
+        self.lp = None
 
     def withData(self, x, y):
         self.x = x
         self.y = y
 
-
-
-    def plotData(self, axisvals=[-1.9, 1.9, -0.9, 3.9]):
+    def plotData_1d(self, axisvals=[-1.9, 1.9, -0.9, 3.9]):
         plt.figure()
         plt.plot(self.x, self.y,' b+', markersize=12)
         plt.axis(axisvals)
@@ -86,8 +84,16 @@ class GP(object):
         plt.xlabel('input x')
         plt.ylabel('target y')
         plt.show()
-
- 
+    
+    def plotData_2d(self,x1,x2,t1,t2,p1,p2,axisvals=[-4, 4, -4, 4]):
+        fig = plt.figure()
+        plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
+        plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
+        pc = plt.contour(t1, t2, np.reshape(p2/(p1+p2), (t1.shape[0],t1.shape[1]) ))
+        fig.colorbar(pc)
+        plt.grid()
+        plt.axis(axisvals)
+        plt.show()
 
     def withPrior(self, mean=None, kernel=None):
         """set prior mean and cov"""
@@ -95,7 +101,6 @@ class GP(object):
             self.meanfunc = mean
         if kernel != None:
             self.covfunc = kernel
-
 
     def train(self, x=None, y=None):
         '''
@@ -114,7 +119,6 @@ class GP(object):
         self.optimizer.apply_in_objects(optimalHyp)
         self.fit()
 
-
     def fit(self,x=None, y=None,der=True):
         '''
         fit the training data
@@ -132,7 +136,7 @@ class GP(object):
             self.y = y
         # call inference method
         if isinstance(self.likfunc, lik.Erf):  #or likLogistic)
-            uy = unique(y)        
+            uy = unique(self.y)        
             ind = ( uy != 1 )
             if any( uy[ind] != -1):
                 raise Exception('You attempt classification using labels different from {+1,-1}')
@@ -148,8 +152,6 @@ class GP(object):
             self._posterior_ = deepcopy(post)
             return nlZ, dnlZ, post    
 
-
-
     def predict(self, xs, ys=None):
         '''
         prediction according to given inputs 
@@ -164,7 +166,6 @@ class GP(object):
                       fs2 is predictive latent variances
                       lp  is log predictive probabilities(if ys is given, otherwise is None)
         '''
-
         meanfunc = self.meanfunc
         covfunc = self.covfunc
         likfunc = self.likfunc
@@ -219,11 +220,11 @@ class GP(object):
 
         self.ym = ymu
         self.ys2 = ys2
+        self.lp = lp
         if ys == None:
             return ymu, ys2, fmu, fs2, None
         else:
             return ymu, ys2, fmu, fs2, lp 
-
 
 
     def predict_with_posterior(self, post, xs, ys=None):
@@ -293,6 +294,7 @@ class GP(object):
         
         self.ym = ymu
         self.ys2 = ys2
+        self.lp = lp
         if ys == None:
             return ymu, ys2, fmu, fs2, None
         else:
@@ -308,19 +310,16 @@ class GPR(GP):
     def __init__(self):
         super(GPR, self).__init__()
         self.meanfunc = mean.Zero()                        # default prior mean 
-        self.covfunc = cov.RBF()                               # default prior covariance
-        self.likfunc = lik.Gauss()                          # likihood with default noise variance 0.1
-        self.inffunc = inf.Exact()                          # inference method
-        self.optimizer = opt.Minimize(self)                    # default optimizer       
-
+        self.covfunc = cov.RBF()                           # default prior covariance
+        self.likfunc = lik.Gauss()                         # likihood with default noise variance 0.1
+        self.inffunc = inf.Exact()                         # inference method
+        self.optimizer = opt.Minimize(self)                # default optimizer       
 
     def withNoise(self,log_sigma):
         """explicitly set noise variance other than default"""
         self.likfunc = lik.Gauss(log_sigma)
 
-
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
-        
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             conf = pyGP_OO.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
@@ -332,7 +331,6 @@ class GPR(GP):
                 conf.covRange = covRange
             if likRange != None:
                 conf.likRange = likRange   
-
         if method == "Minimize":
             self.optimizer = opt.Minimize(self,conf)            
         elif method == "SCG":
@@ -341,10 +339,7 @@ class GPR(GP):
             self.optimizer = opt.CG(self,conf)  
         elif method == "BFGS":
             self.optimizer = opt.BFGS(self,conf)  
-    
-        self.optimizer             
-        
-        
+                       
     def plot(self,axisvals=[-1.9, 1.9, -0.9, 3.9]):
         xs = self.xs
         x = self.x
@@ -366,6 +361,178 @@ class GPR(GP):
 
 
 
+
+
+
+class GPC(GP):
+    """Gaussian Process Classification"""
+    def __init__(self):
+        super(GPC, self).__init__()
+        self.meanfunc = mean.Zero()                        # default prior mean 
+        self.covfunc = cov.RBF()                           # default prior covariance
+        self.likfunc = lik.Erf()                           # erf likihood 
+        self.inffunc = inf.EP()                            # default inference method
+        self.optimizer = opt.Minimize(self)                # default optimizer       
+
+    def useLaplace(self):
+        """use Laplace approxiamation other than EP"""
+        self.inffunc = inf.Laplace() 
+
+    def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
+        conf = None
+        if (num_restarts!=None) or (min_threshold!=None):
+            conf = pyGP_OO.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
+            conf.num_restarts = num_restarts
+            conf.min_threshold = min_threshold
+            if meanRange != None:
+                conf.meanRange = meanRange
+            if covRange != None:
+                conf.covRange = covRange
+            if likRange != None:
+                conf.likRange = likRange   
+        if method == "Minimize":
+            self.optimizer = opt.Minimize(self,conf)            
+        elif method == "SCG":
+            self.optimizer = opt.SCG(self,conf)  
+        elif method == "CG":
+            self.optimizer = opt.CG(self,conf)  
+        elif method == "BFGS":
+            self.optimizer = opt.BFGS(self,conf)  
+                       
+    def plot(self,x1,x2,t1,t2,axisvals=[-4, 4, -4, 4]):
+        fig = plt.figure()
+        plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
+        plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
+        pc = plt.contour(t1, t2, np.reshape(np.exp(self.lp), (t1.shape[0],t1.shape[1]) ))
+        fig.colorbar(pc)
+        plt.grid()
+        plt.axis(axisvals)
+        plt.show()
+
+
+
+
+
+
+class GPR_FITC(GP):
+    """Gaussian Process Regression FITC"""
+    def __init__(self):
+        super(GPR_FITC, self).__init__()
+        self.meanfunc = mean.Zero()                        # default prior mean 
+        self.covfunc = cov.RBF()                           # default prior covariance
+        self.likfunc = lik.Gauss()                         # likihood with default noise variance 0.1
+        self.inffunc = inf.FITC_Exact()                    # inference method
+        self.optimizer = opt.Minimize(self)                # default optimizer 
+        self.u = None                                      # no default inducing points
+
+    def withNoise(self,log_sigma):
+        """explicitly set noise variance other than default"""
+        self.likfunc = lik.Gauss(log_sigma)
+
+    # override
+    def withPrior(self, mean, kernel, inducing_points):
+        """different from its parent method,
+        prior must to be specified explicitly"""
+        self.u = inducing_points
+        self.meanfunc = mean
+        self.covfunc = kernel.fitc(inducing_points)
+
+    def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
+        conf = None
+        if (num_restarts!=None) or (min_threshold!=None):
+            conf = pyGP_OO.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
+            conf.num_restarts = num_restarts
+            conf.min_threshold = min_threshold
+            if meanRange != None:
+                conf.meanRange = meanRange
+            if covRange != None:
+                conf.covRange = covRange
+            if likRange != None:
+                conf.likRange = likRange   
+        if method == "Minimize":
+            self.optimizer = opt.Minimize(self,conf)            
+        elif method == "SCG":
+            self.optimizer = opt.SCG(self,conf)  
+        elif method == "CG":
+            self.optimizer = opt.CG(self,conf)  
+        elif method == "BFGS":
+            self.optimizer = opt.BFGS(self,conf)  
+                       
+    def plot(self,axisvals=[-1.9, 1.9, -0.9, 3.9]):
+        plt.figure()
+        xss  = np.reshape(self.xs,(self.xs.shape[0],))
+        ymm  = np.reshape(self.ym,(self.ym.shape[0],))
+        ys22 = np.reshape(self.ys2,(self.ys2.shape[0],))
+        plt.plot(self.xs, self.ym, 'g-', self.x, self.y, 'r+', linewidth = 3.0, markersize = 10.0)
+        plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=[0.,1.0,0.0,0.8],linewidths=0.0)
+        plt.grid()
+        if axisvals:
+            plt.axis(axisvals)
+        plt.xlabel('input x')
+        plt.ylabel('output y')
+        plt.plot(self.u,np.ones_like(self.u),'kx',markersize=12)
+        plt.show()
+
+
+
+
+
+
+
+class GPC_FITC(GP):
+    """Gaussian Process Classification FITC"""
+    def __init__(self):
+        super(GPC_FITC, self).__init__()
+        self.meanfunc = mean.Zero()                        # default prior mean 
+        self.covfunc = cov.RBF()                           # default prior covariance
+        self.likfunc = lik.Erf()                           # erf liklihood
+        self.inffunc = inf.FITC_EP()                       # default inference method
+        self.optimizer = opt.Minimize(self)                # default optimizer 
+        self.u = None                                      # no default inducing points
+
+    def useLaplace_FITC(self):
+        """use Laplace approxiamation other than EP"""
+        self.inffunc = inf.FITC_Laplace() 
+
+    # override
+    def withPrior(self, mean, kernel, inducing_points):
+        """different from its parent method,
+        prior must to be specified explicitly"""
+        self.u = inducing_points
+        self.meanfunc = mean
+        self.covfunc = kernel.fitc(inducing_points)
+
+    def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
+        conf = None
+        if (num_restarts!=None) or (min_threshold!=None):
+            conf = pyGP_OO.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
+            conf.num_restarts = num_restarts
+            conf.min_threshold = min_threshold
+            if meanRange != None:
+                conf.meanRange = meanRange
+            if covRange != None:
+                conf.covRange = covRange
+            if likRange != None:
+                conf.likRange = likRange   
+        if method == "Minimize":
+            self.optimizer = opt.Minimize(self,conf)            
+        elif method == "SCG":
+            self.optimizer = opt.SCG(self,conf)  
+        elif method == "CG":
+            self.optimizer = opt.CG(self,conf)  
+        elif method == "BFGS":
+            self.optimizer = opt.BFGS(self,conf)  
+                       
+    def plot(self,x1,x2,t1,t2,axisvals=[-4, 4, -4, 4]):
+        fig = plt.figure()
+        plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
+        plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
+        plt.plot(self.u[:,0],self.u[:,1],'ko', markersize=12)
+        pc = plt.contour(t1, t2, np.reshape(np.exp(self.lp), (t1.shape[0],t1.shape[1]) ))
+        fig.colorbar(pc)
+        plt.grid()
+        plt.axis(axisvals)
+        plt.show()  
 
 
 

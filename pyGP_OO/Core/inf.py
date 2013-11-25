@@ -318,7 +318,7 @@ class FITC_Exact(Inference):
     def __init__(self):
         self.name = 'FICT exact inference'
     def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
-        if not isinstance(likfunc, lik.likGauss):               # NOTE: no explicit call to likGauss
+        if not isinstance(likfunc, lik.Gauss):               # NOTE: no explicit call to likGauss
             raise Exception ('Exact inference only possible with Gaussian likelihood')
         if not isinstance(covfunc, cov.FITCOfKernel):
             raise Exception('Only covFITC supported.')          # check cov
@@ -510,7 +510,7 @@ class FITC_Laplace(Inference):
         tol = 1e-6                             # tolerance for when to stop the Newton iterations
         smax = 2; Nline = 100; thr = 1e-4      # line search parameters
         maxit = 20                             # max number of Newton steps in f
-        inffunc = infLaplace()
+        inffunc = Laplace()
         diagK,Kuu,Ku = covfunc.proceed(x)      # evaluate the covariance matrix
         m = meanfunc.proceed(x)                # evaluate the mean vector
         if likfunc.hyp:                        # hard coded inducing inputs noise
@@ -757,7 +757,7 @@ class FITC_EP(Inference):
         if not isinstance(covfunc, cov.FITCOfKernel):
             raise Exception('Only covFITC supported.')  # check cov
         tol = 1e-4; max_sweep = 10; min_sweep = 2       # tolerance to stop EP iterations
-        inffunc = infEP()
+        inffunc = EP()
 
         diagK,Kuu,Ku = covfunc.proceed(x)               # evaluate the covariance matrix
         m = meanfunc.proceed(x)                         # evaluate the mean vector

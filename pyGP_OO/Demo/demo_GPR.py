@@ -1,6 +1,7 @@
 from pyGP_OO.Core import *
 import numpy as np
 
+# export PYTHONPATH=$PYTHONPATH:/.../pyGP_OO/
 
 # This demo will not only introduce GP regression model,
 # but provides a gernel insight of our tourbox.
@@ -30,10 +31,11 @@ z = demoData['xstar']        # test data
 
 
 #----------------------------------------------------------------------
-# A four-line toy example
+# A five-line toy example
 #----------------------------------------------------------------------
 model = gp.GPR()             # model 
 model.fit(x, y)              # fit model with data
+model.train(x, y)            # optimize hyperparamters
 model.predict(z)             # predict test cases
 model.plot()                 # and plot result
 
@@ -46,7 +48,7 @@ model.plot()                 # and plot result
 
 model = gp.GPR()            # start from a new model 
 
-# Specify your priors (mean zero & rbf kernel by default)
+# Specify new priors (mean zero & rbf kernel by default)
 # @SEE doc_kernel for documentation of all kernels/means
 m = mean.Linear( D=x.shape[1] ) + mean.Const()   
 k = cov.RBF()
@@ -56,10 +58,10 @@ model.withPrior(mean=m, kernel=k)
 # Add traning data to model explictly,
 # saves passing them each time when using fit() or train().
 model.withData(x, y)
-model.plotData()
+model.plotData_1d()
 
 
-# Set up optimization method
+# Specify new optimization method (single run "Minimize" by default)
 # @SEE doc_optimization for documentation of optimization methods
 model.setOptimizer("Minimize", num_restarts=30)
 
@@ -100,14 +102,16 @@ model.plot(axisvals=[-1.9, 1.9, -0.9, 3.9])
 # A bit more things you can do
 #----------------------------------------------------------------------
 
-# Specify noise of data (sigma=0.1 by default)
+# [For all model] Speed up prediction time if you know posterior in advance
+post = model._posterior_    # already known before
+ymu, ys2, fmu, fs2, lp = model.predict_with_posterior( post,z )
+# ...other than model.predict(z) 
+
+
+# [Only for Regresstion] Specify noise of data (sigma=0.1 by default)
 # You don't need it if you optimize it later anyway
 model.withNoise( log_sigma=np.log(0.1) )
 
-
-# Speed up prediction time if you know posterior in advance
-post = model._posterior_    
-ymu, ys2, fmu, fs2, lp = model.predict_with_posterior( post,z )
-
+print '--------------------END OF DEMO-----------------------'
 
 
