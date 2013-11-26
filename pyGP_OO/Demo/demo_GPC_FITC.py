@@ -3,7 +3,7 @@ import numpy as np
 
 # To have a gerneral idea, 
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
-# Here only focus on the difference of models.
+# Here, the focus is on the difference of FITC classification.
 
 print ''
 print '-------------------GPC_FITC DEMO----------------------'
@@ -11,11 +11,12 @@ print '-------------------GPC_FITC DEMO----------------------'
 #----------------------------------------------------------------------
 # Load demo data (generated from Gaussians)
 #----------------------------------------------------------------------
+
+# GPC_FITC target class are +1 and -1
 demoData = np.load('data_for_demo/classification_data.npz')
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
-n = z.shape[0]               # number of test points
 
 # only needed for 2-d contour plotting 
 x1 = demoData['x1']          # x for class 1 (with label -1)
@@ -43,16 +44,17 @@ u = np.array(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.s
 # No default value since you need to specify inducing points 
 m = mean.Zero()
 k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
-model.withPrior(mean=m, kernel=k, inducing_points=u) 
+model.setPrior(mean=m, kernel=k, inducing_points=u) 
 
 # The rest is analogous to GPR
-model.withData(x, y)
+model.setData(x, y)
 model.fit()
 print "Negative log marginal liklihood before:", round(model._neg_log_marginal_likelihood_,3)
 model.train()
 print "Negative log marginal liklihood optimized:", round(model._neg_log_marginal_likelihood_,3)
 
 # Prediction
+n = z.shape[0]              
 ymu, ys2, fmu, fs2, lp = model.predict(z, ys=np.ones((n,1)))
 # Again, plot() is a toy method for 2-d data
 model.plot(x1,x2,t1,t2)

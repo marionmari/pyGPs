@@ -4,7 +4,7 @@ import numpy as np
 # export PYTHONPATH=$PYTHONPATH:/.../pyGP_OO/
 
 # This demo will not only introduce GP regression model,
-# but provides a gernel insight of our tourbox.
+# but provides a gerneral insight of our tourbox.
 
 # You may want to read it before reading other models.
 # current possible models are:
@@ -52,12 +52,12 @@ model = gp.GPR()            # start from a new model
 # @SEE doc_kernel_mean for documentation of all kernels/means
 m = mean.Linear( D=x.shape[1] ) + mean.Const()   
 k = cov.RBF()
-model.withPrior(mean=m, kernel=k) 
+model.setPrior(mean=m, kernel=k) 
 
 
 # Add traning data to model explictly,
 # saves passing them each time when using fit() or train().
-model.withData(x, y)
+model.setData(x, y)
 model.plotData_1d()
 
 
@@ -83,6 +83,8 @@ model.train()
 #   model.covfunc.hyp
 #   model.meanfunc.hyp
 #   model.likfunc.hyp
+#   model.ym (predictive mean)
+#   model.lp (log predictive probability)
 print 'Optimized negative log marginal liklihood:', round(model._neg_log_marginal_likelihood_,3)
 
 
@@ -110,7 +112,7 @@ ymu, ys2, fmu, fs2, lp = model.predict_with_posterior( post,z )
 
 # [Only for Regresstion] Specify noise of data (sigma=0.1 by default)
 # You don't need it if you optimize it later anyway
-model.withNoise( log_sigma=np.log(0.1) )
+model.setNoise( log_sigma=np.log(0.1) )
 
 print '--------------------END OF DEMO-----------------------'
 

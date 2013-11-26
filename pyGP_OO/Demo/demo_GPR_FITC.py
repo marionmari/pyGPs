@@ -35,10 +35,10 @@ u = np.reshape(u,(num_u,1))
 # No default value since you need to specify inducing points 
 m = mean.Linear( D=x.shape[1] ) + mean.Const()  
 k = cov.RBF()
-model.withPrior(mean=m, kernel=k, inducing_points=u) 
+model.setPrior(mean=m, kernel=k, inducing_points=u) 
 
 # The rest is analogous to GPR
-model.withData(x, y)
+model.setData(x, y)
 model.fit()
 print "Negative log marginal liklihood before:", round(model._neg_log_marginal_likelihood_,3)
 model.train()

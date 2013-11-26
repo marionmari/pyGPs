@@ -68,11 +68,10 @@ class GP(object):
         self.y = None
         self.xs = None
         self.ys = None
-        self.ym = None
-        self.ys2 = None 
+        self.ym = None 
         self.lp = None
 
-    def withData(self, x, y):
+    def setData(self, x, y):
         self.x = x
         self.y = y
 
@@ -95,7 +94,7 @@ class GP(object):
         plt.axis(axisvals)
         plt.show()
 
-    def withPrior(self, mean=None, kernel=None):
+    def setPrior(self, mean=None, kernel=None):
         """set prior mean and cov"""
         if mean != None:
             self.meanfunc = mean
@@ -315,7 +314,7 @@ class GPR(GP):
         self.inffunc = inf.Exact()                         # inference method
         self.optimizer = opt.Minimize(self)                # default optimizer       
 
-    def withNoise(self,log_sigma):
+    def setNoise(self,log_sigma):
         """explicitly set noise variance other than default"""
         self.likfunc = lik.Gauss(log_sigma)
 
@@ -425,12 +424,12 @@ class GPR_FITC(GP):
         self.optimizer = opt.Minimize(self)                # default optimizer 
         self.u = None                                      # no default inducing points
 
-    def withNoise(self,log_sigma):
+    def setNoise(self,log_sigma):
         """explicitly set noise variance other than default"""
         self.likfunc = lik.Gauss(log_sigma)
 
     # override
-    def withPrior(self, mean, kernel, inducing_points):
+    def setPrior(self, mean, kernel, inducing_points):
         """different from its parent method,
         prior must to be specified explicitly"""
         self.u = inducing_points
@@ -495,7 +494,7 @@ class GPC_FITC(GP):
         self.inffunc = inf.FITC_Laplace() 
 
     # override
-    def withPrior(self, mean, kernel, inducing_points):
+    def setPrior(self, mean, kernel, inducing_points):
         """different from its parent method,
         prior must to be specified explicitly"""
         self.u = inducing_points

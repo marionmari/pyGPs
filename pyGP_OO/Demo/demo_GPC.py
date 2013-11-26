@@ -3,7 +3,7 @@ import numpy as np
 
 # To have a gerneral idea, 
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
-# Here only focus on the difference of models.
+# Here, the focus is on the difference of classification model.
 
 print ''
 print '---------------------GPC DEMO-------------------------'
@@ -11,6 +11,7 @@ print '---------------------GPC DEMO-------------------------'
 #----------------------------------------------------------------------
 # Load demo data (generated from Gaussians)
 #----------------------------------------------------------------------
+# GPC target class are +1 and -1
 demoData = np.load('data_for_demo/classification_data.npz')
 x = demoData['x']            # training data
 y = demoData['y']            # training target
@@ -27,8 +28,12 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 
 
 #----------------------------------------------------------------------
-# A five-line toy example -> state default values
+# First example -> state default values
 #----------------------------------------------------------------------
+model = gp.GPC()             # binary classification (default inference method: EP)
+model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
+model.train(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
+model.predict(z)             # predict test cases
 
 
 
@@ -40,9 +45,9 @@ model = gp.GPC()
 
 # Analogously to GPR
 k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
-model.withPrior(kernel=k) 
+model.setPrior(kernel=k) 
 
-model.withData(x, y)
+model.setData(x, y)
 model.plotData_2d(x1,x2,t1,t2,p1,p2)
 
 model.fit()
@@ -51,6 +56,7 @@ model.train()
 print "Negative log marginal liklihood optimized:", round(model._neg_log_marginal_likelihood_,3)
 
 # Prediction
+n = z.shape[0]
 ymu, ys2, fmu, fs2, lp = model.predict(z, ys=np.ones((n,1)))
 
 # GPC.plot() is a toy method for 2-d data
