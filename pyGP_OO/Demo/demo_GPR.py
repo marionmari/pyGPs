@@ -34,7 +34,7 @@ z = demoData['xstar']        # test data
 # A five-line toy example
 #----------------------------------------------------------------------
 model = gp.GPR()             # model 
-model.fit(x, y)              # fit model with data
+model.fit(x, y)              # fit default model with data
 model.train(x, y)            # optimize hyperparamters
 model.predict(z)             # predict test cases
 model.plot()                 # and plot result
