@@ -15,7 +15,6 @@ demoData = np.load('data_for_demo/classification_data.npz')
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
-n = z.shape[0]               # number of test points
 
 # only needed for 2-d contour plotting 
 x1 = demoData['x1']          # x for class 1 (with label -1)
@@ -25,6 +24,11 @@ t2 = demoData['t2']          # y for class 2 (with label +1)
 p1 = demoData['p1']          # prior for class 1 (with label -1)
 p2 = demoData['p2']          # prior for class 2 (with label +1)
 
+
+
+#----------------------------------------------------------------------
+# A five-line toy example -> state default values
+#----------------------------------------------------------------------
 
 
 
@@ -48,14 +52,16 @@ print "Negative log marginal liklihood optimized:", round(model._neg_log_margina
 
 # Prediction
 ymu, ys2, fmu, fs2, lp = model.predict(z, ys=np.ones((n,1)))
+
 # GPC.plot() is a toy method for 2-d data
+# plot log probability distribution for class +1
 model.plot(x1,x2,t1,t2)
 
 
 #----------------------------------------------------------------------
 # A bit more things you can do
 #----------------------------------------------------------------------
-# GPC uses Expectation Propagation(EP)inference by default,
+# GPC uses Expectation Propagation (EP) inference by default,
 # you can explictly change to Laplace Approximation by:
 model.useLaplace()
 

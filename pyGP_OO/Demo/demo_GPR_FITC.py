@@ -3,7 +3,7 @@ import numpy as np
 
 # To have a gerneral idea, 
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
-# Here only focus on the difference of models.
+# Here, the focus is on the difference of FITC model.
 
 print ''
 print '-------------------GPR_FITC DEMO----------------------'

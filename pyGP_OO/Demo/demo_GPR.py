@@ -34,8 +34,8 @@ z = demoData['xstar']        # test data
 # A five-line toy example
 #----------------------------------------------------------------------
 model = gp.GPR()             # model 
-model.fit(x, y)              # fit default model with data
-model.train(x, y)            # optimize hyperparamters
+model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
+model.train(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
 model.predict(z)             # predict test cases
 model.plot()                 # and plot result
 
@@ -48,8 +48,8 @@ model.plot()                 # and plot result
 
 model = gp.GPR()            # start from a new model 
 
-# Specify new priors (mean zero & rbf kernel by default)
-# @SEE doc_kernel for documentation of all kernels/means
+# Specify non-default mean and covariance functions 
+# @SEE doc_kernel_mean for documentation of all kernels/means
 m = mean.Linear( D=x.shape[1] ) + mean.Const()   
 k = cov.RBF()
 model.withPrior(mean=m, kernel=k) 
@@ -61,7 +61,7 @@ model.withData(x, y)
 model.plotData_1d()
 
 
-# Specify new optimization method (single run "Minimize" by default)
+# Specify optimization method (single run "Minimize" by default)
 # @SEE doc_optimization for documentation of optimization methods
 model.setOptimizer("Minimize", num_restarts=30)
 

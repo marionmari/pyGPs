@@ -93,35 +93,17 @@ because noise are already added in liklihood.
 
 
 =================================================
-COMPOSITE KERNELS 
+COMPOSITE KERNEL AND MEAN FUNCTIONS
 =================================================
 # Adding and muliplying kernels is really simple:
 k = cov.Periodic() * cov.RBF()
 k = 0.5*cov.LIN() + cov.Periodic()
 
-Except linear kernel, all kernel functions have a scalar(signal variance) as hyperparameter.
-Therefore, the only explict scalar is added to cov.LIN()
+Except linear kernel, all kernel functions have a scalar (signal variance) as hyperparameter.
+Therefore, the only explict scalar might be added to cov.LIN()
  
-# Beside +/*, There is even a power operator for mean functions:
+# Besides +/*, there is also a power operator for mean functions:
 m = ( mean.One()+mean.Linear(alpha_list=[0.2]) )**2
-
-
-
-
-
-
-
-
-
-
-=================================================
-FITC APPROXIMATION
-=================================================
-
-
-
-
-
 
 
 
