@@ -1,11 +1,4 @@
-Ionosphere and Forest Fires Data Set are from UCI Machine Learning Repository
-----------------------------------------------------
-Forest Fires Data Set
- 
-This dataset is public available for research. The details are described in [Cortez and Morais, 2007] 
 
-The relevant paper is:
-P. Cortez and A. Morais. A Data Mining Approach to Predict Forest Fires using Meteorological Data. In J. Neves, M. F. Santos and J. Machado Eds., New Trends in Artificial Intelligence, Proceedings of the 13th EPIA 2007 - Portuguese Conference on Artificial Intelligence, December, Guimarães, Portugal, pp. 512-523, 2007. APPIA, ISBN-13 978-989-95618-0-9. 
 
 ----------------------------------------------------
 Johns Hopkins University Ionosphere database
@@ -24,5 +17,30 @@ Sigillito, V. G., Wing, S. P., Hutton, L. V., \& Baker, K. B. (1989). Classifica
 
 ----------------------------------------------------
 
-For more detail attribute description and source information, see the respective "/ionosphere.names.txt" and "/forestfires.names.txt"
+For more detail attribute description and source information, see "ionosphere.names.txt" 
+
+
+
+=========================================================================
+The USPS digits data were gathered at the Center of Excellence in Document Analysis and Recognition (CEDAR) at SUNY Buffalo, as part of a project sponsored by the US Postal Service. The dataset is described in A Database for Handwritten Text Recognition Research, J. J. Hull, IEEE PAMI 16(5) 550-554, 1994.
+=========================================================================
+
+There are two datasets available:
+
+- usps_all.mat       is the original sups dataset
+
+- usps_resampled.mat is collected in a different way of original dataset.
+                     See http://www.gaussianprocess.org/gpml/data/
+
+=========================================================================
+
+If you want to test on binary classification tasks, there are also two scripts for conveniently load databases with only selecting two classes:
+
+- [Matlab]loadBinaryUSPS.m     
+  Copyright (C) 2005 and 2006, Carl Edward Rasmussen
+
+- [Python]loadBinaryUSPS.py
+  Copyright (C) 2013, Shan Huang
+
+With slight changes, you can use these scripts to load any subsets of dataset you want to evaluate on.
 

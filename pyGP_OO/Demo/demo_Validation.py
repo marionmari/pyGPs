@@ -54,13 +54,10 @@ RMSE = []          # root-mean-square error
 cv_run = 0
 for x_train, x_test, y_train, y_test in valid.k_fold_validation(x, y, K):
     print 'Run:', cv_run
-
     # This is a binary classification problem
     model = gp.GPC()
-
     # Since no prior knowldege, leave everything default 
     model.train(x_train, y_train)
-
     # Predit 
     ymu, ys2, fmu, fs2, lp = model.predict(x_test, ys=y_test)
 

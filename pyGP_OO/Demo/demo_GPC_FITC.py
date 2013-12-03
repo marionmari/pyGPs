@@ -33,30 +33,51 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 # Sparse GP classification (FITC) example
 #----------------------------------------------------------------------
 
+print "Example 1: deafult inducing points"
+
 # Start from a new model 
 model = gp.GPC_FITC()            
 
-# Specify inducing points 
+# Notice if you want to use default inducing points:
+# You MUST call setData(x,y) FIRST!
+# The default inducing points is a grid(hypercube in higher dimension), where
+# each axis has 5 values in same step between min and max value of data in this dimension.
+model.setData(x, y, value_per_axis=5)
+model.train()
+print "Negative log marginal liklihood optimized:", round(model._neg_log_marginal_likelihood_,3)
+
+# Prediction
+n = z.shape[0]              
+model.predict(z, ys=np.ones((n,1)))
+# Again, plot() is a toy method for 2-d data
+model.plot(x1,x2,t1,t2)
+
+
+
+print '------------------------------------------------------'
+print "Example 2: user-defined inducing points"
+
+model = gp.GPC_FITC() 
+
+# You can define inducing points yourself.
 u1,u2 = np.meshgrid(np.linspace(-2,2,5),np.linspace(-2,2,5))
 u = np.array(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),)))) 
 
-# For FITC model, you must specify prior explicitly 
-# No default value since you need to specify inducing points 
+# and specify inducing point when seting prior
 m = mean.Zero()
 k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
 model.setPrior(mean=m, kernel=k, inducing_points=u) 
 
-# The rest is analogous to GPR
+# The rest is analogous to what we have done before.
 model.setData(x, y)
 model.fit()
 print "Negative log marginal liklihood before:", round(model._neg_log_marginal_likelihood_,3)
 model.train()
 print "Negative log marginal liklihood optimized:", round(model._neg_log_marginal_likelihood_,3)
 
-# Prediction
+# predict
 n = z.shape[0]              
 ymu, ys2, fmu, fs2, lp = model.predict(z, ys=np.ones((n,1)))
-# Again, plot() is a toy method for 2-d data
 model.plot(x1,x2,t1,t2)
 
 

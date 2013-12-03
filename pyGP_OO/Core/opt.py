@@ -185,10 +185,10 @@ class Minimize(Optimizer):
         hypInArray = self.convert_to_array()
 
         #Test code(to get rid of try-except)
-        #opt = minimize.run(self.nlzAnddnlz, hypInArray, length=-40)
-        #optimalHyp = deepcopy(opt[0])
-        #funcValue  = opt[1][-1]
-        
+        opt = minimize.run(self.nlzAnddnlz, hypInArray, length=-40)
+        optimalHyp = deepcopy(opt[0])
+        funcValue  = opt[1][-1]
+        '''
         try: 
             opt = minimize.run(self.nlzAnddnlz, hypInArray, length=-40)
             optimalHyp = deepcopy(opt[0])
@@ -198,7 +198,7 @@ class Minimize(Optimizer):
             if not self.searchConfig:         
                 raise Exception("Can not use minimize. Try other hyparameters")
         self.trailsCounter += 1
-        
+        '''
         if self.searchConfig:
             searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
             if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):

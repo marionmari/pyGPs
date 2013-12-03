@@ -10,7 +10,7 @@
 #    Copyright (c) by
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 30/09/2013
 #================================================================================
-
+import itertools
 import numpy as np
 import matplotlib.pyplot as plt
 import inf, mean, lik, cov, opt
@@ -110,6 +110,7 @@ class GP(object):
             self.x = x  
         if y != None:
             self.y = y
+
         # optimize 
         optimalHyp, optimalNlZ = self.optimizer.findMin(self.x, self.y)
         self._neg_log_marginal_likelihood_ = optimalNlZ
@@ -411,9 +412,190 @@ class GPC(GP):
 
 
 
+class GPMC(object):
+    """This is a one vs. one multi-class wrapper for GP classification"""
+    def __init__(self, n_class):
+        self.meanfunc = mean.Zero()                # default prior mean 
+        self.covfunc = cov.RBF()                   # default prior covariance
+        self.n_class = n_class                     # number of different classes
+        self.x_all = None
+        self.y_all = None
+        self.Laplace = False
+        self.newPrior = False
+
+    def useLaplace(self):
+        """use Laplace approxiamation other than EP"""
+        self.Laplace = True
+
+    def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
+        conf = None
+        if (num_restarts!=None) or (min_threshold!=None):
+            conf = pyGP_OO.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
+            conf.num_restarts = num_restarts
+            conf.min_threshold = min_threshold
+            if meanRange != None:
+                conf.meanRange = meanRange
+            if covRange != None:
+                conf.covRange = covRange
+            if likRange != None:
+                conf.likRange = likRange   
+        if method == "Minimize":
+            self.optimizer = opt.Minimize(self,conf)            
+        elif method == "SCG":
+            self.optimizer = opt.SCG(self,conf)  
+        elif method == "CG":
+            self.optimizer = opt.CG(self,conf)  
+        elif method == "BFGS":
+            self.optimizer = opt.BFGS(self,conf)     
+    
+
+    # for multi-class, data is x_all and y_all
+    def setData(self,x,y):
+        self.x_all = x
+        self.y_all = y
 
 
-class GPR_FITC(GP):
+    def fitAndPredict(self, xs):
+        '''
+        predictive_vote is a matrix where
+        row   -> for each test point
+        column -> for voting value of each class
+
+        '''
+        predictive_vote = np.zeros((xs.shape[0],self.n_class))
+        for i in xrange(self.n_class):         # classifier for class i...
+            for j in xrange(i+1,self.n_class): # ...and class j
+                x,y = self.createBinaryClass(i,j)
+                model = GPC()
+                if self.newPrior:
+                    model.setPrior(mean=self.meanfunc, kernel=self.covfunc)
+                if self.Laplace:
+                    model.useLaplace()
+                model.fit(x,y)               # fitting
+                ym = model.predict(xs)[0]
+                ym += 1     # now scale into 0 to 2,  ym=0 is class j, ym=2 is class i 
+                vote_i = np.zeros((xs.shape[0],self.n_class))
+                vote_j = np.zeros((xs.shape[0],self.n_class))
+                vote_i[:,i:i+1] = ym
+                vote_j[:,j:j+1] = 2-ym
+                predictive_vote += vote_i
+                predictive_vote += vote_j
+        decide_class = np.argmax(predictive_vote, axis=1)
+        decide_class = np.reshape(decide_class, (decide_class.shape[0],1))
+        return decide_class
+
+
+    def trainAndPredict(self, xs):
+        '''
+        predictive_vote is a matrix where
+        row   -> for each test point
+        column -> for voting value of each class
+
+        '''
+        predictive_vote = np.zeros((xs.shape[0],self.n_class))
+        for i in xrange(self.n_class):         # classifier for class i...
+            for j in xrange(i+1,self.n_class): # ...and class j
+                x,y = self.createBinaryClass(i,j)
+                model = GPC()
+                if self.newPrior:
+                    model.setPrior(mean=self.meanfunc, kernel=self.covfunc)
+                if self.Laplace:
+                    model.useLaplace()
+                model.train(x,y)               # training
+                ym = model.predict(xs)[0]
+                ym += 1     # now scale into 0 to 2,  ym=0 is class j, ym=2 is class i 
+                vote_i = np.zeros((xs.shape[0],self.n_class))
+                vote_j = np.zeros((xs.shape[0],self.n_class))
+                vote_i[:,i:i+1] = ym
+                vote_j[:,j:j+1] = 2-ym
+                predictive_vote += vote_i
+                predictive_vote += vote_j
+        decide_class = np.argmax(predictive_vote, axis=1)
+        decide_class = np.reshape(decide_class, (decide_class.shape[0],1))
+        return decide_class
+
+    def setPrior(self, mean=None, kernel=None):
+        """set prior mean and cov"""
+        if mean != None:
+            self.meanfunc = mean
+        if kernel != None:
+            self.covfunc = kernel
+        self.newPrior = True
+
+    def createBinaryClass(self, i,j):
+        ''' create data points x,y which only contains class i and j
+        class_i is +1 and class_j is -1'''
+        class_i = []
+        class_j = []
+        for index in xrange(len(self.y_all)):       # check all classes
+            target = self.y_all[index]
+            if target == i:
+                class_i.append(index)
+            elif target == j:
+                class_j.append(index)
+        n1 = len(class_i)
+        n2 = len(class_j)
+        class_i.extend(class_j)
+        x = self.x_all[class_i,:]
+        y = np.concatenate((np.ones((1,n1)),-np.ones((1,n2))),axis=1).T
+        return x,y
+
+
+
+
+
+
+
+class GP_FITC(GP):
+    """GP_FITC base class"""
+    def __init__(self):
+        super(GP_FITC, self).__init__()
+        self.u = None
+
+    # override
+    def setData(self, x, y, value_per_axis=5):
+        '''set Data and derive deault inducing_points
+
+        value_per_axis is number of value in each dimension...
+        ...when using a default inducing point grid'''
+        self.x = x
+        self.y = y
+        # get range of x in each dimension
+        # 5 uniformally selected value for each dimension
+        gridAxis=[]
+        for d in xrange(x.shape[1]):
+            column = x[:,d]
+            mini = np.min(column)
+            maxi = np.max(column)
+            axis = np.linspace(mini,maxi,value_per_axis)
+            gridAxis.append(axis)
+        # default inducing points-> a grid
+        if self.u == None:
+            self.u = np.array(list(itertools.product(*gridAxis)))
+            self.covfunc = self.covfunc.fitc(self.u)
+
+    # override
+    def setPrior(self, mean=None, kernel=None, inducing_points=None):
+        """set prior and inducing_points"""
+        if kernel != None:
+            if inducing_points != None:
+                self.covfunc = kernel.fitc(inducing_points)
+                self.u = inducing_points
+            else:
+                if self.u != None:
+                    self.covfunc = kernel.fitc(self.u)
+                else:
+                    raise error("To use default inducing points, please call setData() first!")
+        if mean != None:
+            self.meanfunc = mean
+
+
+       
+
+
+
+
+class GPR_FITC(GP_FITC):
     """Gaussian Process Regression FITC"""
     def __init__(self):
         super(GPR_FITC, self).__init__()
@@ -427,14 +609,6 @@ class GPR_FITC(GP):
     def setNoise(self,log_sigma):
         """explicitly set noise variance other than default"""
         self.likfunc = lik.Gauss(log_sigma)
-
-    # override
-    def setPrior(self, mean, kernel, inducing_points):
-        """different from its parent method,
-        prior must to be specified explicitly"""
-        self.u = inducing_points
-        self.meanfunc = mean
-        self.covfunc = kernel.fitc(inducing_points)
 
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
         conf = None
@@ -478,7 +652,7 @@ class GPR_FITC(GP):
 
 
 
-class GPC_FITC(GP):
+class GPC_FITC(GP_FITC):
     """Gaussian Process Classification FITC"""
     def __init__(self):
         super(GPC_FITC, self).__init__()
@@ -492,14 +666,6 @@ class GPC_FITC(GP):
     def useLaplace_FITC(self):
         """use Laplace approxiamation other than EP"""
         self.inffunc = inf.FITC_Laplace() 
-
-    # override
-    def setPrior(self, mean, kernel, inducing_points):
-        """different from its parent method,
-        prior must to be specified explicitly"""
-        self.u = inducing_points
-        self.meanfunc = mean
-        self.covfunc = kernel.fitc(inducing_points)
 
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
         conf = None
