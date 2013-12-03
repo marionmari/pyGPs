@@ -413,7 +413,7 @@ class GPC(GP):
 
 
 class GPMC(object):
-    """This is a one vs. one multi-class wrapper for GP classification"""
+    """This is a one vs. one classification wrapper for GPC"""
     def __init__(self, n_class):
         self.meanfunc = mean.Zero()                # default prior mean 
         self.covfunc = cov.RBF()                   # default prior covariance
@@ -458,9 +458,8 @@ class GPMC(object):
     def fitAndPredict(self, xs):
         '''
         predictive_vote is a matrix where
-        row   -> for each test point
-        column -> for voting value of each class
-
+        row i    -> each test point i
+        column j -> probability for being eahc class j
         '''
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
         for i in xrange(self.n_class):         # classifier for class i...
@@ -480,16 +479,15 @@ class GPMC(object):
                 vote_j[:,j:j+1] = 2-ym
                 predictive_vote += vote_i
                 predictive_vote += vote_j
-        decide_class = np.argmax(predictive_vote, axis=1)
-        decide_class = np.reshape(decide_class, (decide_class.shape[0],1))
-        return decide_class
+        predictive_vote /=  predictive_vote.sum(axis=1)[:,np.newaxis]
+        return predictive_vote
 
 
     def trainAndPredict(self, xs):
         '''
         predictive_vote is a matrix where
-        row   -> for each test point
-        column -> for voting value of each class
+        row i    -> each test point i
+        column j -> probability for being eahc class j
 
         '''
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
@@ -510,9 +508,10 @@ class GPMC(object):
                 vote_j[:,j:j+1] = 2-ym
                 predictive_vote += vote_i
                 predictive_vote += vote_j
-        decide_class = np.argmax(predictive_vote, axis=1)
-        decide_class = np.reshape(decide_class, (decide_class.shape[0],1))
-        return decide_class
+        predictive_vote /=  predictive_vote.sum(axis=1)[:,np.newaxis]
+        return predictive_vote
+
+
 
     def setPrior(self, mean=None, kernel=None):
         """set prior mean and cov"""
