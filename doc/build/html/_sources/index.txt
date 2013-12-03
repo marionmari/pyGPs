@@ -1,21 +1,10 @@
-.. Object-Oriented Gaussian Processes documentation master file, created by sphinx-quickstart on Thu Nov 14 19:54:52 2013.
+.. Procedural Gaussian Processes documentation master file, created by
+   sphinx-quickstart on Thu Nov 14 19:54:52 2013.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-
-pyGP_OO - A Package for Gaussian Processes
+pyGP_PR - Procedural Gaussian Processes
 =======================================
-Welcome to pyGP_OO
-------------------
-
-
-
-
-
-
-
-
-
-
-
 Authors
 -------
     * Marion Neumann [marion dot neumann at uni-bonn dot de]
@@ -71,4 +60,11 @@ The following persons helped to improve this software: Roman Garnett, Maciej Kur
 
 
 
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 

@@ -31,8 +31,12 @@ model = gp.GPR_FITC()
 # Notice if you want to use default inducing points:
 # You MUST call setData(x,y) FIRST!
 # The default inducing points is a grid(hypercube in higher dimension), where
-# each axis has 5 values in same step between min and max value of data in this dimension.
-model.setData(x, y, value_per_axis=5)
+# each dimension has 5 values in same step between min and max value of data by default.
+model.setData(x, y)
+
+# To set value per dimension use:
+# model.setData(x, y, value_per_axis=10)
+
 model.train()
 print "Negative log marginal liklihood optimized:", round(model._neg_log_marginal_likelihood_,3)
 
