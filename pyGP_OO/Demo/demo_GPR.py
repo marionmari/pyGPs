@@ -85,7 +85,7 @@ model.train()
 #   model.likfunc.hyp
 #   model.ym (predictive mean)
 #   model.lp (log predictive probability)
-print 'Optimized negative log marginal liklihood:', round(model._neg_log_marginal_likelihood_,3)
+print 'Optimized negative log marginal likelihood:', round(model._neg_log_marginal_likelihood_,3)
 
 
 # Predict test data

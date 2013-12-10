@@ -69,6 +69,7 @@ class GP(object):
         self.xs = None
         self.ys = None
         self.ym = None 
+        self.ys2 = None
         self.lp = None
 
     def setData(self, x, y):
