@@ -51,6 +51,119 @@
             
   <div class="section" id="kernels-means">
 <h1>Kernels &amp; Means.<a class="headerlink" href="#kernels-means" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="simple-kernel-mean">
+<h2>Simple Kernel &amp; Mean<a class="headerlink" href="#simple-kernel-mean" title="Permalink to this headline">¶</a></h2>
+<p>You may already seen, we can specify a kernel function like this(same for mean fucntions):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">(</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>There are several points need to be noticed:</p>
+<ol class="arabic simple">
+<li>Most parameters are initilized in their logorithms. This is because we need to make sure they are positive during optimization. e.g. Here length scale and signal variance should always be positive.</li>
+<li>Most kernel functions have a scalar in front, namely signal variance(set by log_sigma)</li>
+<li>If you will do optimization later anyway, you can just leave parameters to be default</li>
+</ol>
+</div>
+<div class="section" id="some-special-cases">
+<h2>Some Special Cases<a class="headerlink" href="#some-special-cases" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">For some kernels/means, number of hyperparameters depends on the dimension of input data.
+You can either enter the dimension, which use default values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span> <span class="n">D</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>or you can initialze with the exact hyperparameters,
+you should enter as a list, one element for each dimension</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span> <span class="n">alpha_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span> <span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>All these &#8220;hyp-dim-dependent&#8221; functions are:</dt>
+<dd><ul class="first last simple">
+<li><em>mean.Linear</em></li>
+<li><em>cov.RBFard</em></li>
+<li><em>cov.LINard</em></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">For linear kernel, there is NO signal variance(scalar) in front of the function.</p>
+<p>If you want to add a scalar for it, you can use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">cov</span><span class="o">.</span><span class="n">LIN</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If you also want to add a bias term:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">cov</span><span class="o">.</span><span class="n">LIN</span><span class="p">()</span> <span class="o">+</span> <span class="n">cov</span><span class="o">.</span><span class="n">Const</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note 0.5 will also be treated as a hyperparameter.
+This also applies in <em>cov.LINard</em>.</p>
+</li>
+<li><p class="first">For <em>cov.RBFunit()</em>, its signal variance is always 1 (because of unit magnitude). Therefore this function do not have a hyperparameter of &#8220;signal variance&#8221;.</p>
+</li>
+<li><dl class="first docutils">
+<dt><em>cov.Poly()</em> has three parameters, where hyperparameters are:</dt>
+<dd><ul class="first last simple">
+<li>c     -&gt; inhomogeneous offset</li>
+<li>sigma -&gt; signal deviation</li>
+</ul>
+</dd>
+<dt>however,</dt>
+<dd><ul class="first last simple">
+<li>d     -&gt; order of polynomial
+will be treated as normal parameter, i.e. will not be trained</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Explicitly set <em>cov.Noise</em> is not necessary, because noise are already added in likelihood.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="composite-kernels-meams">
+<h2>Composite Kernels &amp; Meams<a class="headerlink" href="#composite-kernels-meams" title="Permalink to this headline">¶</a></h2>
+<p>Adding and muliplying Kernels(Means) is really simple:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">Periodic</span><span class="p">()</span> <span class="o">*</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">cov</span><span class="o">.</span><span class="n">LIN</span><span class="p">()</span> <span class="o">+</span> <span class="n">cov</span><span class="o">.</span><span class="n">Periodic</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Except linear kernel, all kernel functions have a scalar (signal variance) as hyperparameter.
+Therefore, the only explict scalar might be added to cov.LIN()</p>
+<p>Beside + / <a href="#id1"><span class="problematic" id="id2">*</span></a>, there is also a power operator for mean functions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="p">(</span> <span class="n">mean</span><span class="o">.</span><span class="n">One</span><span class="p">()</span><span class="o">+</span><span class="n">mean</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">alpha_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">])</span> <span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="precomputed-kernel-matrix">
+<h2>Precomputed Kernel Matrix<a class="headerlink" href="#precomputed-kernel-matrix" title="Permalink to this headline">¶</a></h2>
+<p>In certain cases, you may have a precomputed kernel matrix,
+but its non-trivial to write down the exact formula of kernel functions. Then you can specify your kernel in the following way. A precomputed kernel also fits with other kernels. In other words, it can also be composited as the way other kernels functions do.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">M2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>M1 and M2 are your precomputed kernel matrix,</p>
+<p>where,</p>
+<dl class="docutils">
+<dt>M1 is a matrix with shape <strong>number of training points plus 1</strong> by <strong>number of test points</strong></dt>
+<dd><ul class="first last simple">
+<li>cross covariances matrix (train by test)</li>
+<li>last row is self covariances (diagonal of test by test)</li>
+</ul>
+</dd>
+<dt>M2 is a square matrix with <strong>number of training points</strong> for each dimension</dt>
+<dd><ul class="first last simple">
+<li>training set covariance matrix (train by train)</li>
+</ul>
+</dd>
+</dl>
+<p>A precomputed kernel can also be composited with other kernels. Similar to <em>cov.LIN()</em>, you need to explictly add scalar for <em>cov.Pre()</em>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">M2</span><span class="p">)</span> <span class="o">+</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="list-of-kernels-means-and-their-default-parameters">
+<h2>List of Kernels/Means and Their Default Parameters<a class="headerlink" href="#list-of-kernels-means-and-their-default-parameters" title="Permalink to this headline">¶</a></h2>
+</div>
 </div>
 
 
@@ -59,6 +172,18 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Kernels &amp; Means.</a><ul>
+<li><a class="reference internal" href="#simple-kernel-mean">Simple Kernel &amp; Mean</a></li>
+<li><a class="reference internal" href="#some-special-cases">Some Special Cases</a></li>
+<li><a class="reference internal" href="#composite-kernels-meams">Composite Kernels &amp; Meams</a></li>
+<li><a class="reference internal" href="#precomputed-kernel-matrix">Precomputed Kernel Matrix</a></li>
+<li><a class="reference internal" href="#list-of-kernels-means-and-their-default-parameters">List of Kernels/Means and Their Default Parameters</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="CV.html"
                         title="previous chapter">K-fold Cross-Validation</a></p>

@@ -104,6 +104,39 @@ class GP(object):
             self.meanfunc = mean
         if kernel != None:
             self.covfunc = kernel
+    
+    def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
+        '''This method is used to sepecify optimization configuration. By default, gp uses a single run "minimize".
+
+        :param method: Optimization methods. Possible values are:
+
+                        "Minimize"   -> minimize by Carl Rasmussen (python implementation of "minimize" in GPML)
+
+                        "CG"         -> conjugent gradient
+
+                        "BFGS"       -> quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)
+
+                        "SCG"        -> scaled conjugent gradient (faster than CG) 
+        :param num_restarts: Set if you want to run mulitiple times of optimization with different initial guess. 
+
+                             It specifys the maximum number of runs/restarts/trials.
+        :param min_threshold: Set if you want to run mulitiple times of optimization with different initial guess. 
+
+                              It specifys the threshold of objective function value. Stop optimization when this value is reached.
+        :param meanRange: The range of initial guess for mean hyperparameters. 
+
+                          e.g. meanRange = [(-2,2), (-5,5), (0,1)]
+
+                          Each tuple specifys the range (low, high) of this hyperparameter,
+
+                          This is only the range of initial guess, during optimization process, optimal hyperparameters may go out of this range.
+
+                          (-5,5) for each hyperparameter by default.
+        :param covRange: The range of initial guess for kernel hyperparameters. Usage see meanRange
+        :param likRange: The range of initial guess for likelihood hyperparameters. Usage see meanRange
+
+        '''
+        pass
 
     def train(self, x=None, y=None):
         '''

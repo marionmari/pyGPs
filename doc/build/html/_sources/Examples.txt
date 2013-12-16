@@ -7,7 +7,7 @@ You will also find the implementation of demos in the source_ folder under `pyGP
 
 .. _pyGP_OO/Demo: https://github.com/marionmari/pyGP_OO/tree/master/pyGP_OO/Demo
 
-Moreover, it may also be useful to have a look at our documentation on `Kernels & Means`_ and `Optimizers`_.
+We also give a few explanation of some theory in the demo. Moreover, it is useful to have a look at our documentation on `Kernels & Means`_ and `Optimizers`_. 
 
 .. _Kernels & Means: Kernels.html
 .. _Optimizers: Opts.html
