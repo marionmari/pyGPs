@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pyGP_OO 1.0.0 documentation" href="index.html" />
-    <link rel="next" title="Basic GP Regression" href="GPR.html" />
+    <link rel="next" title="Basic Regression" href="GPR.html" />
     <link rel="prev" title="Theory &amp; Functionality" href="Theory.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="GPR.html" title="Basic GP Regression"
+          <a href="GPR.html" title="Basic Regression"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="Theory.html" title="Theory &amp; Functionality"
@@ -54,18 +54,42 @@
 <p>There are several demos for Gaussian process tasks in the package.
 We recomand you to have a look at <em>Basic GP Regression</em> before reading other demos,
 which will not only introduce the regression model, but provides a general insight of the package.
-You will also find the implementation of demos in the <a class="reference external" href="https://github.com/marionmari/pyGP_OO">source</a> folder under <em>pyGP_OO/Demo</em>.</p>
+You will also find the implementation of demos in the <a class="reference external" href="https://github.com/marionmari/pyGP_OO">source</a> folder under <a class="reference external" href="https://github.com/marionmari/pyGP_OO/tree/master/pyGP_OO/Demo">pyGP_OO/Demo</a>.</p>
+<p>Moreover, it may also be useful to have a look at our documentation on <a class="reference external" href="Kernels.html">Kernels &amp; Means</a> and <a class="reference external" href="Opts.html">Optimizers</a>.</p>
 <p>Regression</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="GPR.html">Basic GP Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GPR.html">Basic Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GPR.html#import-packages">Import packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GPR.html#load-data">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GPR.html#a-five-line-toy-example">A five-line toy example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GPR.html#a-more-complicated-example">A more complicated example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GPR.html#a-bit-more-things-you-can-do">A bit more things you can do</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GPR_FITC.html">Sparse Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GPR_FITC.html#first-example-default-inducing-points">First example -&gt; default inducing points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GPR_FITC.html#second-example-user-defined-inducing-points">Second example -&gt; user-defined inducing points</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <p>Classfication</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="GPC.html">Basic GP Classification</a></li>
-<li class="toctree-l1"><a class="reference internal" href="GPC_FITC.html">Sparse Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GPC.html">Basic Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GPC.html#load-data">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GPC.html#first-example-state-default-values">First example -&gt; state default values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GPC.html#second-example-gp-classification">Second example -&gt; GP classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GPC.html#a-bit-more-things-you-can-do">A bit more things you can do</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GPC_FITC.html">Sparse Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GPC_FITC.html#first-example-default-inducing-points">First example -&gt; default inducing points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GPC_FITC.html#second-example-user-defined-inducing-points">Second example -&gt; user-defined inducing points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GPC_FITC.html#a-bit-more-things-you-can-do">A bit more things you can do</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="GPMC.html">Multi-class Classification</a></li>
 </ul>
 </div>
@@ -88,7 +112,7 @@ You will also find the implementation of demos in the <a class="reference extern
                         title="previous chapter">Theory &amp; Functionality</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="GPR.html"
-                        title="next chapter">Basic GP Regression</a></p>
+                        title="next chapter">Basic Regression</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/Examples.txt"
@@ -118,7 +142,7 @@ You will also find the implementation of demos in the <a class="reference extern
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="GPR.html" title="Basic GP Regression"
+          <a href="GPR.html" title="Basic Regression"
              >next</a> |</li>
         <li class="right" >
           <a href="Theory.html" title="Theory &amp; Functionality"
@@ -128,7 +152,7 @@ You will also find the implementation of demos in the <a class="reference extern
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

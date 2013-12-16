@@ -1,4 +1,4 @@
-Basic GP Regression
+Basic Regression
 =========================
 
 The code shown in this tutorial can be obtained by running */pyGP_OO/Demo/demo_GPR.py*
@@ -37,8 +37,10 @@ By default, GPR uses zero mean, rbf kernel and Gaussian liklihood. Default optim
 *GPR.plot()* will plot the result, where the dark line is the posterior mean and the green-shaded area is the posterior variance. Since it is not trivial to visualize high dimension result, *plot()* is not a general method for all data. Here, *GPR.plot()* can only plot for 1-d data, while *GPC.plot()* is a toy method dealing with 2-d data.
 
 .. figure:: _images/d1_1.png
+   :height: 600 px
+   :width: 800 px
    :align: center
-   :scale: 70%
+   :scale: 70 %
 
 A more complicated example
 ---------------------------
@@ -60,8 +62,10 @@ Add traning data to model explictly, which saves passing them each time when usi
     model.plotData_1d()
 
 .. figure:: _images/d1_2.png
+   :height: 600 px
+   :width: 800 px
    :align: center
-   :scale: 70%
+   :scale: 70 %
 
 You can specify optimization method other than the default single run Rasmussen's minimize. This is introduced in detail in the documentation of `Optimizers`_ . ::
 
@@ -105,8 +109,10 @@ Set range of axis for plotting. Again, *GPR.plot()* is a toy method only for 1-d
     model.plot(axisvals=[-1.9, 1.9, -0.9, 3.9])
 
 .. figure:: _images/d1_3.png
+   :height: 600 px
+   :width: 800 px
    :align: center
-   :scale: 70%
+   :scale: 70 %
 
 You may have noticed that we have a different posterior by using a different prior other than the default example.
 

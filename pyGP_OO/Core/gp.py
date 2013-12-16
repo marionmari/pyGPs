@@ -52,6 +52,9 @@ import pyGP_OO
 # Copyright (c) by Marion Neumann and Shan Huang, Sep.2013
 
 
+
+SHADEDCOLOR = [0.75,0.98,0.75,1.0]
+
 class GP(object):
     """Base class for GP model"""
     def __init__(self):
@@ -351,8 +354,8 @@ class GPR(GP):
         xss  = np.reshape(xs,(xs.shape[0],))
         ymm  = np.reshape(ym,(ym.shape[0],))
         ys22 = np.reshape(ys2,(ys2.shape[0],))
-        plt.plot(xs, ym, 'g-', x, y, 'r+', linewidth = 3.0, markersize = 10.0)
-        plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=[0.,1.0,0.0,0.8],linewidths=0.0)
+        plt.plot(xs, ym, 'g-', x, y, 'b+', linewidth = 3.0, markersize = 10.0)
+        plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=SHADEDCOLOR,linewidths=0.0)
         plt.grid()
         if axisvals:
             plt.axis(axisvals)
@@ -636,8 +639,8 @@ class GPR_FITC(GP_FITC):
         xss  = np.reshape(self.xs,(self.xs.shape[0],))
         ymm  = np.reshape(self.ym,(self.ym.shape[0],))
         ys22 = np.reshape(self.ys2,(self.ys2.shape[0],))
-        plt.plot(self.xs, self.ym, 'g-', self.x, self.y, 'r+', linewidth = 3.0, markersize = 10.0)
-        plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=[0.,1.0,0.0,0.8],linewidths=0.0)
+        plt.plot(self.xs, self.ym, 'g-', self.x, self.y, 'b+', linewidth = 3.0, markersize = 10.0)
+        plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=SHADEDCOLOR,linewidths=0.0)
         plt.grid()
         if axisvals:
             plt.axis(axisvals)

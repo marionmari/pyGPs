@@ -8,7 +8,7 @@ About the package
 pyGPs is a library hosting Python implementations of Gaussian processes (GPs) for
 machine learning.
 pyGPs bridges the gap between systems designed primarily for users, who mainly
-want to apply gps and need basic ml routines for model training, evaluation, and visualiza-
+want to apply gps and need basic machine learning routines for model training, evaluation, and visualiza-
 gp functiontion, and expressive systems for developers, who focus on extending the core
 functionalities as covariance and likelihood functions, as well as inference techniques.
 
@@ -24,8 +24,6 @@ Further, it includes implementations of
 * scg.py (Copyright (c) Ian T Nabney (1996-2001))
 
 * brentmin.py (Copyright (c) Hannes Nickisch 2010-01-10)
-
-* Mauna Loa CO2 data (Copyright (c) Pieter Tans, Aug 2012)
 
 * FITC functionality (following matlab implementations under Copyright (c) by Ed Snelson, Carl Edward Rasmussen and Hannes Nickisch, 2011-11-02)
 

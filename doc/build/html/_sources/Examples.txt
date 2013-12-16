@@ -3,14 +3,21 @@ Demos
 There are several demos for Gaussian process tasks in the package.
 We recomand you to have a look at *Basic GP Regression* before reading other demos, 
 which will not only introduce the regression model, but provides a general insight of the package.
-You will also find the implementation of demos in the source_ folder under *pyGP_OO/Demo*.
+You will also find the implementation of demos in the source_ folder under `pyGP_OO/Demo`_.
+
+.. _pyGP_OO/Demo: https://github.com/marionmari/pyGP_OO/tree/master/pyGP_OO/Demo
+
+Moreover, it may also be useful to have a look at our documentation on `Kernels & Means`_ and `Optimizers`_.
+
+.. _Kernels & Means: Kernels.html
+.. _Optimizers: Opts.html
 
 .. _source: https://github.com/marionmari/pyGP_OO
 
 Regression
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    GPR
    GPR_FITC
@@ -18,7 +25,7 @@ Regression
 Classfication
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    GPC
    GPC_FITC

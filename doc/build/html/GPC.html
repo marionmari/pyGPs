@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Basic GP Classification &mdash; pyGP_OO 1.0.0 documentation</title>
+    <title>Basic Classification &mdash; pyGP_OO 1.0.0 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,9 +24,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pyGP_OO 1.0.0 documentation" href="index.html" />
-    <link rel="up" title="Getting started with demos" href="Examples.html" />
+    <link rel="up" title="Demos" href="Examples.html" />
     <link rel="next" title="Sparse Classification" href="GPC_FITC.html" />
-    <link rel="prev" title="Basic GP Regression" href="GPR.html" /> 
+    <link rel="prev" title="Sparse Regression" href="GPR_FITC.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,10 +39,10 @@
           <a href="GPC_FITC.html" title="Sparse Classification"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="GPR.html" title="Basic GP Regression"
+          <a href="GPR_FITC.html" title="Sparse Regression"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">pyGP_OO 1.0.0 documentation</a> &raquo;</li>
-          <li><a href="Examples.html" accesskey="U">Getting started with demos</a> &raquo;</li> 
+          <li><a href="Examples.html" accesskey="U">Demos</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,8 +51,97 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="basic-gp-classification">
-<h1>Basic GP Classification<a class="headerlink" href="#basic-gp-classification" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="basic-classification">
+<h1>Basic Classification<a class="headerlink" href="#basic-classification" title="Permalink to this headline">¶</a></h1>
+<p>The code shown in this tutorial can be obtained by running <em>/pyGP_OO/Demo/demo_GPC.py</em></p>
+<div class="section" id="load-data">
+<h2>Load data<a class="headerlink" href="#load-data" title="Permalink to this headline">¶</a></h2>
+<p>First we import the data (so that it exactly matches the example in GPML):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># GPC target class are +1 and -1</span>
+<span class="n">demoData</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;data_for_demo/classification_data.npz&#39;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>            <span class="c"># training data</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span>            <span class="c"># training target</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;xstar&#39;</span><span class="p">]</span>        <span class="c"># test data</span>
+
+<span class="c"># only needed for 2-d contour plotting</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;x1&#39;</span><span class="p">]</span>          <span class="c"># x for class 1 (with label -1)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;x2&#39;</span><span class="p">]</span>          <span class="c"># x for class 2 (with label +1)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;t1&#39;</span><span class="p">]</span>          <span class="c"># y for class 1 (with label -1)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;t2&#39;</span><span class="p">]</span>          <span class="c"># y for class 2 (with label +1)</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;p1&#39;</span><span class="p">]</span>          <span class="c"># prior for class 1 (with label -1)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;p2&#39;</span><span class="p">]</span>          <span class="c"># prior for class 2 (with label +1)</span>
+</pre></div>
+</div>
+<p><img class="math" src="_images/math/aaa4de95cc6371d125d5cf773cdd9f9913dd1d8e.png" alt="120"/> data points are generated from two Gaussians with different means and covariances. One Gaussian is isotropic and contains
+<img class="math" src="_images/math/38bd36e353df831303c0de895a9ec614cf3e7202.png" alt="2/3"/> of the data (blue), the other is highly correlated and contains <img class="math" src="_images/math/217aedbdc339bacc8ba075a2ec16902b098194e3.png" alt="1/3"/> of the points (red).
+Note, that the labels for the targets are <img class="math" src="_images/math/7cfbd35086ffefb83637d42166582b43c8a1ff4a.png" alt="\pm 1"/> (and not <img class="math" src="_images/math/e15d84dfcdccf6b0d8fb485020852b5b0f4ea097.png" alt="0/1"/>).</p>
+<p>In the plot, we superimpose the data points with the posterior equi-probability contour lines for the probability of the second class
+given complete information about the generating mechanism.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/d2_1.png"><img alt="_images/d2_1.png" src="_images/d2_1.png" style="width: 560.0px; height: 420.0px;" /></a>
+</div>
+</div>
+<div class="section" id="first-example-state-default-values">
+<h2>First example -&gt; state default values<a class="headerlink" href="#first-example-state-default-values" title="Permalink to this headline">¶</a></h2>
+<p>Again, lets see the simplest use of gp classification at first</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>             <span class="c"># binary classification (default inference method: EP)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>              <span class="c"># fit default model (mean zero &amp; rbf kernel) with data</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>            <span class="c"># optimize hyperparamters (default optimizer: single run minimize)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>             <span class="c"># predict test cases</span>
+</pre></div>
+</div>
+<p>Note the inference is done by done with the Expectation Propagation (EP) by deault. We also support Laplacian Approximation inference, see example below.</p>
+</div>
+<div class="section" id="second-example-gp-classification">
+<h2>Second example -&gt; GP classification<a class="headerlink" href="#second-example-gp-classification" title="Permalink to this headline">¶</a></h2>
+<p>So we first state the model to be gp classification now</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The rest is similar to GPR</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Analogously to GPR</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBFard</span><span class="p">(</span><span class="n">log_ell_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.17</span><span class="p">],</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">setPrior</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">plotData_2d</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;Negative log marginal liklihood before:&quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_neg_log_marginal_likelihood_</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<span class="k">print</span> <span class="s">&quot;Negative log marginal liklihood optimized:&quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_neg_log_marginal_likelihood_</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c"># Prediction</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ymu</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fmu</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p><strong>[Theory]</strong>
+In this example, we used a a squared exponential with automatic relevance determination (ARD) covariance function. This covariance function has one
+characteristic length-scale parameter for each dimension of the input space (<img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/> total), and a signal magnitude parameter, for
+a total of <img class="math" src="_images/math/7cde695f2e4542fd01f860a89189f47a27143b66.png" alt="3"/> hyperparameters. ARD with separate length-scales for each input dimension is a very powerful tool to learn which
+inputs are important for predictions: if length-scales are short, inputs are very important, and when they grow very long
+(compared to the spread of the data), the corresponding inputs will be largely ignored.</p>
+<p>Note <em>GPC.plot()</em> is a toy method for 2-d data.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The contour plot for the predictive distribution is shown below. Note, that the predictive
+probability is fairly close to the probabilities of the generating process in regions of high data density. Note also, that as you move
+away from the data, the probability approaches <img class="math" src="_images/math/217aedbdc339bacc8ba075a2ec16902b098194e3.png" alt="1/3"/>, the overall class probability.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/d2_2.png"><img alt="_images/d2_2.png" src="_images/d2_2.png" style="width: 560.0px; height: 420.0px;" /></a>
+</div>
+<p>Examining the two ARD characteristic length-scale parameters after learning, you will find that they are fairly similar, reflecting the fact
+that for this data set, both inputs are important.</p>
+</div>
+<div class="section" id="a-bit-more-things-you-can-do">
+<h2>A bit more things you can do<a class="headerlink" href="#a-bit-more-things-you-can-do" title="Permalink to this headline">¶</a></h2>
+<p>GPC uses Expectation Propagation (EP) inference by default, you can explictly change to Laplace Approximation by:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">useLaplace</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -61,9 +150,20 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Basic Classification</a><ul>
+<li><a class="reference internal" href="#load-data">Load data</a></li>
+<li><a class="reference internal" href="#first-example-state-default-values">First example -&gt; state default values</a></li>
+<li><a class="reference internal" href="#second-example-gp-classification">Second example -&gt; GP classification</a></li>
+<li><a class="reference internal" href="#a-bit-more-things-you-can-do">A bit more things you can do</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="GPR.html"
-                        title="previous chapter">Basic GP Regression</a></p>
+  <p class="topless"><a href="GPR_FITC.html"
+                        title="previous chapter">Sparse Regression</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="GPC_FITC.html"
                         title="next chapter">Sparse Classification</a></p>
@@ -99,15 +199,15 @@
           <a href="GPC_FITC.html" title="Sparse Classification"
              >next</a> |</li>
         <li class="right" >
-          <a href="GPR.html" title="Basic GP Regression"
+          <a href="GPR_FITC.html" title="Sparse Regression"
              >previous</a> |</li>
         <li><a href="index.html">pyGP_OO 1.0.0 documentation</a> &raquo;</li>
-          <li><a href="Examples.html" >Getting started with demos</a> &raquo;</li> 
+          <li><a href="Examples.html" >Demos</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
