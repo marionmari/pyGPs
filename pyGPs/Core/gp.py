@@ -11,6 +11,33 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 30/09/2013
 #================================================================================
 
+<<<<<<< HEAD
+=======
+#   MEANING OF NOTATION:
+#  
+#   inffunc      function specifying the inference method 
+#   covfunc      prior covariance function (see below)
+#   meanfunc     prior mean function
+#   likfunc      likelihood function
+#   x            n by D matrix of training inputs
+#   y            column vector of length n of training targets
+#   xs           n by D matrix of test inputs
+#   ys           column vector of length nn of true test targets (optional)
+#   der          flag for dnlZ computation determination (when xs == None also)
+#
+#   nlZ          returned value of the negative log marginal likelihood
+#   dnlZ         column vector of partial derivatives of the negative
+#                    log marginal likelihood w.r.t. each hyperparameter
+#   ym           column vector (of length ns) of predictive output means
+#   ys2          column vector (of length ns) of predictive output variances
+#   fmu          column vector (of length ns) of predictive latent means
+#   fs2          column vector (of length ns) of predictive latent variances
+#   lp           column vector (of length ns) of log predictive probabilities
+#
+#   post         struct representation of the (approximate) posterior
+#                post consists of post.alpha, post.L, post.sW
+#
+>>>>>>> a6c4b674e65916cc1fa5a1d40f1414f3490877f6
 # @author: Shan Huang (last update Sep.2013)
 # This is a object-oriented python implementation of gpml functionality 
 # (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
@@ -143,7 +170,7 @@ class GP(object):
             where nlZ  is the negative log marginal likelihood
                   dnlZ is partial derivatives of nlZ w.r.t. each hyperparameter
                   post is struct representation of the (approximate) posterior
-                  post is consist of post.alpha, post.L, post.sW
+                  post consists of post.alpha, post.L, post.sW
         '''
         if x != None:
             self.x = x  
