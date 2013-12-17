@@ -53,7 +53,9 @@ import pyGP_OO
 
 
 
-SHADEDCOLOR = [0.75,0.98,0.75,1.0]
+SHADEDCOLOR = [0.7539, 0.89453125, 0.62890625, 1.0]
+MEANCOLOR = [ 0.2109375, 0.63385, 0.1796875, 1.0]
+DATACOLOR = [0.12109375, 0.46875, 1., 1.0]
 
 class GP(object):
     """Base class for GP model"""
@@ -81,7 +83,7 @@ class GP(object):
 
     def plotData_1d(self, axisvals=[-1.9, 1.9, -0.9, 3.9]):
         plt.figure()
-        plt.plot(self.x, self.y,' b+', markersize=12)
+        plt.plot(self.x, self.y, ls='None', marker='+', color=DATACOLOR, ms=12, mew=2)
         plt.axis(axisvals)
         plt.grid()
         plt.xlabel('input x')
@@ -387,7 +389,9 @@ class GPR(GP):
         xss  = np.reshape(xs,(xs.shape[0],))
         ymm  = np.reshape(ym,(ym.shape[0],))
         ys22 = np.reshape(ys2,(ys2.shape[0],))
-        plt.plot(xs, ym, 'g-', x, y, 'b+', linewidth = 3.0, markersize = 10.0)
+        plt.plot(x, y, color=DATACOLOR, ls='None', marker='+',ms=12, mew=2)
+        plt.plot(xs, ym, color=MEANCOLOR, ls='-', lw=3.)
+
         plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=SHADEDCOLOR,linewidths=0.0)
         plt.grid()
         if axisvals:
@@ -672,22 +676,19 @@ class GPR_FITC(GP_FITC):
         xss  = np.reshape(self.xs,(self.xs.shape[0],))
         ymm  = np.reshape(self.ym,(self.ym.shape[0],))
         ys22 = np.reshape(self.ys2,(self.ys2.shape[0],))
-        plt.plot(self.xs, self.ym, 'g-', self.x, self.y, 'b+', linewidth = 3.0, markersize = 10.0)
+        plt.plot(self.x, self.y, color=DATACOLOR, ls='None', marker='+',ms=12, mew=2)
+        plt.plot(self.xs, self.ym, color=MEANCOLOR, ls='-', lw=3.)
         plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=SHADEDCOLOR,linewidths=0.0)
         plt.grid()
         if axisvals:
             plt.axis(axisvals)
         plt.xlabel('input x')
         plt.ylabel('output y')
-        plt.plot(self.u,np.ones_like(self.u),'kx',markersize=12)
+        plt.plot(self.u,np.ones_like(self.u), ls='None', color='k',marker='x',markersize=12,mew=2)
         plt.show()
 
-
-
-
-
-
-
+   
+   
 class GPC_FITC(GP_FITC):
     """Gaussian Process Classification FITC"""
     def __init__(self):
