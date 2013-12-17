@@ -4,16 +4,16 @@
     Shan Huang [shan dot huang at iais dot fraunhofer dot de]
     Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 
-    This file is part of pyGP_OO.
+    This file is part of pyGPs.
     The software package is released under the BSD 2-Clause (FreeBSD) License.
 
     Copyright (c) by
     Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 30/09/2013
 ================================================================================
 
-pyGP_OO is a library containing code for Gaussian Process (GP) Regression and Classification.
+pyGPs is a library containing code for Gaussian Process (GP) Regression and Classification.
 
-pyGP_OO is an object-oriented implementation of GPs. Its functionalities follow roughly the gpml matlab implementaion by Carl Edward Rasmussen and Hannes Nickisch (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-01-21).
+pyGPs is an object-oriented implementation of GPs. Its functionalities follow roughly the gpml matlab implementaion by Carl Edward Rasmussen and Hannes Nickisch (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-01-21).
 
 Standard GP regression and (binary) classification as well as FITC (spares GPs) inference is implemented.  
 For a list of implemented covariance, mean, likelihood, and inference functions see list_of_functions.txt.  
@@ -26,11 +26,11 @@ Further, it includes implementations of
 - brentmin.py (Copyright (c) by Hannes Nickisch 2010-01-10.)
 
 
-installing pyGP_OO
+installing pyGPs
 ------------------
 Download the archive and extract it to any local directory.
 Add the local directory to your PYTHONPATH:
-	export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/ (parent directory of pyGP_OO)
+	export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/ (parent directory of pyGPs)
 
 requirements
 --------------

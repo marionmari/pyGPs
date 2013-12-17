@@ -2,11 +2,11 @@ Installation
 ============================
 1. First, download_ the archive from github and extract it to any local directory.
 
-.. _download: https://github.com/marionmari/pyGP_OO
+.. _download: https://github.com/marionmari/pyGPs
 
 2. You can either add the local directory to your PYTHONPATH ::
 
-       export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/../pyGP_OO
+       export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/../pyGPs
 
 
 3. Or intall the package using setup.py::
