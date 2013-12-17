@@ -10,6 +10,15 @@
 #    Copyright (c) by
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 30/09/2013
 #================================================================================
+
+# @author: Shan Huang (last update Sep.2013)
+# This is a object-oriented python implementation of gpml functionality 
+# (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
+# based on the functional-version of python implementation
+# (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)
+# 
+# Copyright (c) by Marion Neumann and Shan Huang, 30/092013
+
 import itertools
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,41 +26,6 @@ import inf, mean, lik, cov, opt
 from tools import unique
 from copy import deepcopy
 import pyGPs
-
-#   MEANING OF NOTATION:
-#  
-#   inffunc      function specifying the inference method 
-#   covfunc      prior covariance function (see below)
-#   meanfunc     prior mean function
-#   likfunc      likelihood function
-#   x            n by D matrix of training inputs
-#   y            column vector of length n of training targets
-#   xs           n by D matrix of test inputs
-#   ys           column vector of length nn of true test targets (optional)
-#   der          flag for dnlZ computation determination (when xs == None also)
-#
-#   nlZ          returned value of the negative log marginal likelihood
-#   dnlZ         column vector of partial derivatives of the negative
-#                    log marginal likelihood w.r.t. each hyperparameter
-#   ym           column vector (of length ns) of predictive output means
-#   ys2          column vector (of length ns) of predictive output variances
-#   fmu          column vector (of length ns) of predictive latent means
-#   fs2          column vector (of length ns) of predictive latent variances
-#   lp           column vector (of length ns) of log predictive probabilities
-#
-#   post         struct representation of the (approximate) posterior
-#                post is consist of post.alpha, post.L, post.sW
-#
-# @author: Shan Huang (last update Sep.2013)
-# This is a object-oriented python implementation of gpml functionality 
-# (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
-# based on the functional-version of python implementation
-# (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)
-# 
-#
-# Copyright (c) by Marion Neumann and Shan Huang, Sep.2013
-
-
 
 SHADEDCOLOR = [0.7539, 0.89453125, 0.62890625, 1.0]
 MEANCOLOR = [ 0.2109375, 0.63385, 0.1796875, 1.0]
@@ -68,14 +42,16 @@ class GP(object):
         self.optimizer = None
         self._neg_log_marginal_likelihood_ = None
         self._neg_log_marginal_likelihood_gradient_ = None  
-        self._posterior_ = None  
-        self.x = None
-        self.y = None
-        self.xs = None
-        self.ys = None
-        self.ym = None 
-        self.ys2 = None
-        self.lp = None
+        self._posterior_ = None   # struct representation of the (approximate) posterior 
+        self.x = None             # n by D matrix of training inputs
+        self.y = None             # column vector of length n of training targets
+        self.xs = None            # n by D matrix of test inputs
+        self.ys = None            # column vector of length nn of true test targets (optional)
+        self.ym = None            # column vector (of length ns) of predictive output means
+        self.ys2 = None           # column vector (of length ns) of predictive output variances
+        self.fm = None            # column vector (of length ns) of predictive latent means
+        self.fs2 = None           # column vector (of length ns) of predictive latent variances
+        self.lp = None            # column vector (of length ns) of log predictive probabilities
 
     def setData(self, x, y):
         self.x = x

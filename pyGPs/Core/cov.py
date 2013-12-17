@@ -17,7 +17,6 @@
 # based on the functional-version of python implementation
 # (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)
 # 
-#
 # Copyright (c) by Marion Neumann and Shan Huang, 30/092013
 
 
@@ -227,8 +226,6 @@ class FITCOfKernel(Kernel):
         return K, Kuu, Ku
 
 
-
-# an example of simple kernel function, the rest are similar
 class Poly(Kernel):
     def __init__(self, log_c=0., log_d=np.log(2), log_sigma=0. ):
         self.hyp = [ log_c, log_sigma]
@@ -691,11 +688,6 @@ class Pre(Kernel):
     
 
     
-# You can make some test codes below:
-    
-# UPDATE USAGE:
-# here I decided to get rid of the data structure hyp = np.array([1,2,3]), 
-# a simple list hyp = [1,2,3] might be enough
 
 if __name__ == '__main__':
     # test1: combinations of kernel functions
