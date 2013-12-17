@@ -35,6 +35,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="Opts.html" title="Optimizers"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -163,9 +166,9 @@ but its non-trivial to write down the exact formula of kernel functions. Then yo
 </div>
 <div class="section" id="customizing-kernel-mean">
 <h2>Customizing Kernel &amp; Mean<a class="headerlink" href="#customizing-kernel-mean" title="Permalink to this headline">¶</a></h2>
-<p>We also support you to create your own kernel/mean class, your customized class need to follow the structure template as below:</p>
+<p>We also support you to create your own kernel/mean class, your customized kernel class need to follow the structure template as below:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Your kernel class needs to inherit base class Kernel,</span>
-<span class="c"># which is in the module of Core.cov.py</span>
+<span class="c"># which is in the module of Core.cov</span>
 <span class="k">class</span> <span class="nc">MyKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para3</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
@@ -188,9 +191,39 @@ but its non-trivial to write down the exact formula of kernel functions. Then yo
 </ul>
 </dd>
 </dl>
+<p>and for customized mean class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Your mean class needs to inherit base class Mean,</span>
+<span class="c"># which is in the module of Core.mean</span>
+<span class="k">class</span> <span class="nc">MyMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para3</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">para1</span><span class="p">,</span> <span class="n">para2</span><span class="p">]</span>     <span class="c"># hyperparameters that can be trained</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span> <span class="p">[</span><span class="n">para3</span><span class="p">]</span>           <span class="c"># static parameters</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; x is n by D training patterns matrix&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">A</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>where the returning matrix A depends on the input:</dt>
+<dd><ul class="first last simple">
+<li>if <em>der == None</em>, return A as the mean of x</li>
+<li>else <em>der != None</em>, return the derivative of mean wrt. to <img class="math" src="_images/math/b7c4e88b1e586595ec86d07f8f90f47f442eca27.png" alt="k_{th}"/> hyperparameter.</li>
+</ul>
+</dd>
+</dl>
 </div>
 <div class="section" id="list-of-kernels-means-and-their-default-parameters">
 <h2>List of Kernels/Means and Their Default Parameters<a class="headerlink" href="#list-of-kernels-means-and-their-default-parameters" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-pyGPs.Core.cov"></span><dl class="class">
+<dt id="pyGPs.Core.cov.Kernel">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Kernel</tt><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a base class of Kernel functions
+there is no computation in this class, it just defines rules about a kernel class should have
+each covariance function will inherite it and implement its own behaviour</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -247,6 +280,9 @@ but its non-trivial to write down the exact formula of kernel functions. Then yo
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="Opts.html" title="Optimizers"
              >next</a> |</li>

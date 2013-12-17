@@ -102,10 +102,10 @@ A precomputed kernel can also be composited with other kernels. Similar to *cov.
 
 Customizing Kernel & Mean
 ---------------------
-We also support you to create your own kernel/mean class, your customized class need to follow the structure template as below: ::
+We also support you to create your own kernel/mean class, your customized kernel class need to follow the structure template as below: ::
 
     # Your kernel class needs to inherit base class Kernel, 
-    # which is in the module of Core.cov.py
+    # which is in the module of Core.cov
     class MyKernel(Kernel):
 
         def __init__(self, para1=0., para2=0., para3=0.):
@@ -123,12 +123,31 @@ where the returning matrix A depends on the input:
   - if *der == None*, return A as defined previously.
   - else *der != None*, i.e. given der as an integer der = :math:`k`, return the derivative matrix wrt. to :math:`k_{th}` hyperparameter.
 
+and for customized mean class: ::
+
+    # Your mean class needs to inherit base class Mean, 
+    # which is in the module of Core.mean
+    class MyMean(Mean):
+
+        def __init__(self, para1=0., para2=0., para3=0.):
+            self.hyp = [para1, para2]     # hyperparameters that can be trained 
+            self.para = [para3]           # static parameters
+
+        def proceed(self, x=None, der=None):
+            ''' x is n by D training patterns matrix'''
+            return A
+
+where the returning matrix A depends on the input:
+  - if *der == None*, return A as the mean of x
+  - else *der != None*, return the derivative of mean wrt. to :math:`k_{th}` hyperparameter.
+
+
 
 
 
 List of Kernels/Means and Their Default Parameters
 ---------------------------------
-
-
+.. automodule:: pyGPs.Core.cov
+   :members:
 
 

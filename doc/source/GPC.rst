@@ -1,7 +1,7 @@
 Basic Classification
 =========================
 
-The code shown in this tutorial can be obtained by running */pyGP_OO/Demo/demo_GPC.py*
+The code shown in this tutorial can be obtained by running */pyGPs/Demo/demo_GPC.py*
 
 Load data
 --------------------
