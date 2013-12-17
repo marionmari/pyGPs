@@ -167,7 +167,7 @@ class GP(object):
             where nlZ  is the negative log marginal likelihood
                   dnlZ is partial derivatives of nlZ w.r.t. each hyperparameter
                   post is struct representation of the (approximate) posterior
-                  post is consist of post.alpha, post.L, post.sW
+                  post consists of post.alpha, post.L, post.sW
         '''
         if x != None:
             self.x = x  
