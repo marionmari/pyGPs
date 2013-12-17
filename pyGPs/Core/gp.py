@@ -40,7 +40,7 @@ import pyGPs
 #   lp           column vector (of length ns) of log predictive probabilities
 #
 #   post         struct representation of the (approximate) posterior
-#                post is consist of post.alpha, post.L, post.sW
+#                post consists of post.alpha, post.L, post.sW
 #
 # @author: Shan Huang (last update Sep.2013)
 # This is a object-oriented python implementation of gpml functionality 
