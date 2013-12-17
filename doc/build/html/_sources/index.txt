@@ -1,7 +1,7 @@
 .. Object-Oriented Gaussian Processes documentation master file, created by sphinx-quickstart on Thu Nov 14 19:54:52 2013.
 
 
-pyGP_OO - A Package for Gaussian Processes
+pyGPs - A Package for Gaussian Processes
 =======================================
 About the package
 -------

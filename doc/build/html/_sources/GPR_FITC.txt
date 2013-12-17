@@ -1,7 +1,7 @@
 Sparse Regression
 =========================
 
-The code shown in this tutorial can be obtained by running */pyGP_OO/Demo/demo_GPR_FITC.py*
+The code shown in this tutorial can be obtained by running */pyGPs/Demo/demo_GPR_FITC.py*
 This demo is more or less repeated of the demo of FITC classification.
 
 First example -> default inducing points

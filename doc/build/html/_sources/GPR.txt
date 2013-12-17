@@ -1,15 +1,15 @@
 Basic Regression
 =========================
 
-The code shown in this tutorial can be obtained by running */pyGP_OO/Demo/demo_GPR.py*
+The code shown in this tutorial can be obtained by running */pyGPs/Demo/demo_GPR.py*
 
 This demo will not only introduce the regression model, but also provides the general insight of using the package. These general information will not be repeated in other demos.
 
 Import packages
 --------------------
-Once you installed pyGP_OO, the typical way we recomand to import it is ::
+Once you installed pyGPs, the typical way we recomand to import it is ::
 
-    from pyGP_OO.Core import *
+    from pyGPs.Core import *
     import numpy as np
 
 Load data
