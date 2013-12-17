@@ -1,4 +1,4 @@
-Kernels & Means.
+Kernels & Means
 ============================
 
 Simple Kernel & Mean
@@ -98,6 +98,32 @@ M2 is a square matrix with **number of training points** for each dimension
 A precomputed kernel can also be composited with other kernels. Similar to *cov.LIN()*, you need to explictly add scalar for *cov.Pre()*. ::
     
     k = 0.5*cov.Pre(M1, M2) + cov.RBF()
+
+
+Customizing Kernel & Mean
+---------------------
+We also support you to create your own kernel/mean class, your customized class need to follow the structure template as below: ::
+
+    # Your kernel class needs to inherit base class Kernel, 
+    # which is in the module of Core.cov.py
+    class MyKernel(Kernel):
+
+        def __init__(self, para1=0., para2=0., para3=0.):
+            self.hyp = [para1, para2]     # hyperparameters that can be trained 
+            self.para = [para3]           # static parameters
+
+        def proceed(self, x=None, z=None, der=None):
+            ''' x is n by D training patterns matrix, and z is nn by D test case matrix'''
+            return A
+
+where the returning matrix A depends on the input:
+  - if *z == None*, A is covariance matrix of x with shape (n,n)
+  - elif *z == 'diag'*, A is self covariance matrix with shape (n,1)
+  - else *z is a matrix (given test points)*, A is covariance between data sets x and z with shape (n,nn)
+  - if *der == None*, return A as defined previously.
+  - else *der != None*, i.e. given der as an integer der = :math:`k`, return the derivative matrix wrt. to :math:`k_{th}` hyperparameter.
+
+
 
 
 List of Kernels/Means and Their Default Parameters

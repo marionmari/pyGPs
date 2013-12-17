@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Kernels &amp; Means. &mdash; pyGP_OO 1.0.0 documentation</title>
+    <title>Kernels &amp; Means &mdash; pyGP_OO 1.0.0 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -50,7 +50,7 @@
           <div class="body">
             
   <div class="section" id="kernels-means">
-<h1>Kernels &amp; Means.<a class="headerlink" href="#kernels-means" title="Permalink to this headline">¶</a></h1>
+<h1>Kernels &amp; Means<a class="headerlink" href="#kernels-means" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="simple-kernel-mean">
 <h2>Simple Kernel &amp; Mean<a class="headerlink" href="#simple-kernel-mean" title="Permalink to this headline">¶</a></h2>
 <p>You may already seen, we can specify a kernel function like this(same for mean fucntions):</p>
@@ -161,6 +161,34 @@ but its non-trivial to write down the exact formula of kernel functions. Then yo
 </pre></div>
 </div>
 </div>
+<div class="section" id="customizing-kernel-mean">
+<h2>Customizing Kernel &amp; Mean<a class="headerlink" href="#customizing-kernel-mean" title="Permalink to this headline">¶</a></h2>
+<p>We also support you to create your own kernel/mean class, your customized class need to follow the structure template as below:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Your kernel class needs to inherit base class Kernel,</span>
+<span class="c"># which is in the module of Core.cov.py</span>
+<span class="k">class</span> <span class="nc">MyKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para3</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">para1</span><span class="p">,</span> <span class="n">para2</span><span class="p">]</span>     <span class="c"># hyperparameters that can be trained</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span> <span class="p">[</span><span class="n">para3</span><span class="p">]</span>           <span class="c"># static parameters</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; x is n by D training patterns matrix, and z is nn by D test case matrix&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">A</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>where the returning matrix A depends on the input:</dt>
+<dd><ul class="first last simple">
+<li>if <em>z == None</em>, A is covariance matrix of x with shape (n,n)</li>
+<li>elif <em>z == &#8216;diag&#8217;</em>, A is self covariance matrix with shape (n,1)</li>
+<li>else <em>z is a matrix (given test points)</em>, A is covariance between data sets x and z with shape (n,nn)</li>
+<li>if <em>der == None</em>, return A as defined previously.</li>
+<li>else <em>der != None</em>, i.e. given der as an integer der = <img class="math" src="_images/math/8c325612684d41304b9751c175df7bcc0f61f64f.png" alt="k"/>, return the derivative matrix wrt. to <img class="math" src="_images/math/b7c4e88b1e586595ec86d07f8f90f47f442eca27.png" alt="k_{th}"/> hyperparameter.</li>
+</ul>
+</dd>
+</dl>
+</div>
 <div class="section" id="list-of-kernels-means-and-their-default-parameters">
 <h2>List of Kernels/Means and Their Default Parameters<a class="headerlink" href="#list-of-kernels-means-and-their-default-parameters" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -174,11 +202,12 @@ but its non-trivial to write down the exact formula of kernel functions. Then yo
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Kernels &amp; Means.</a><ul>
+<li><a class="reference internal" href="#">Kernels &amp; Means</a><ul>
 <li><a class="reference internal" href="#simple-kernel-mean">Simple Kernel &amp; Mean</a></li>
 <li><a class="reference internal" href="#some-special-cases">Some Special Cases</a></li>
 <li><a class="reference internal" href="#composite-kernels-meams">Composite Kernels &amp; Meams</a></li>
 <li><a class="reference internal" href="#precomputed-kernel-matrix">Precomputed Kernel Matrix</a></li>
+<li><a class="reference internal" href="#customizing-kernel-mean">Customizing Kernel &amp; Mean</a></li>
 <li><a class="reference internal" href="#list-of-kernels-means-and-their-default-parameters">List of Kernels/Means and Their Default Parameters</a></li>
 </ul>
 </li>
