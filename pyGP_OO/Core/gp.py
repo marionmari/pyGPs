@@ -26,14 +26,14 @@ import pyGP_OO
 #   likfunc      likelihood function
 #   x            n by D matrix of training inputs
 #   y            column vector of length n of training targets
-#   xs           ns by D matrix of test inputs
-#   ys           column vector of length nn of test targets
+#   xs           n by D matrix of test inputs
+#   ys           column vector of length nn of true test targets (optional)
 #   der          flag for dnlZ computation determination (when xs == None also)
 #
 #   nlZ          returned value of the negative log marginal likelihood
 #   dnlZ         column vector of partial derivatives of the negative
 #                    log marginal likelihood w.r.t. each hyperparameter
-#   ymu          column vector (of length ns) of predictive output means
+#   ym           column vector (of length ns) of predictive output means
 #   ys2          column vector (of length ns) of predictive output variances
 #   fmu          column vector (of length ns) of predictive latent means
 #   fs2          column vector (of length ns) of predictive latent variances
