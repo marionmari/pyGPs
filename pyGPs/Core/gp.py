@@ -263,6 +263,8 @@ class GP(object):
         self.ym = ymu
         self.ys2 = ys2
         self.lp = lp
+        self.fm = fm2
+        self.fs2 = fs2
         if ys == None:
             return ymu, ys2, fmu, fs2, None
         else:
@@ -337,6 +339,8 @@ class GP(object):
         self.ym = ymu
         self.ys2 = ys2
         self.lp = lp
+        self.fm = fm2
+        self.fs2 = fs2
         if ys == None:
             return ymu, ys2, fmu, fs2, None
         else:

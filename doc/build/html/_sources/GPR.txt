@@ -90,8 +90,10 @@ There are several propertys you can get from the model. ::
     model.covfunc.hyp
     model.meanfunc.hyp
     model.likfunc.hyp  
-    model.ys2                   # predictive variance
+    model.fm                    # latent mean
+    model.fs2                   # latent variance
     model.ym                    # predictive mean
+    model.ys2                   # predictive variance
     model.lp                    # log predictive probability
 
 For example, getting the log marginal likelihood: ::

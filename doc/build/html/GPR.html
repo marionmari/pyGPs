@@ -36,9 +36,6 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="GPR_FITC.html" title="Sparse Regression"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -130,8 +127,10 @@ Using the package is really simple. Here is one example.</p>
 <span class="n">model</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="n">hyp</span>
 <span class="n">model</span><span class="o">.</span><span class="n">meanfunc</span><span class="o">.</span><span class="n">hyp</span>
 <span class="n">model</span><span class="o">.</span><span class="n">likfunc</span><span class="o">.</span><span class="n">hyp</span>
-<span class="n">model</span><span class="o">.</span><span class="n">ys2</span>                   <span class="c"># predictive variance</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fm</span>                    <span class="c"># latent mean</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fs2</span>                   <span class="c"># latent variance</span>
 <span class="n">model</span><span class="o">.</span><span class="n">ym</span>                    <span class="c"># predictive mean</span>
+<span class="n">model</span><span class="o">.</span><span class="n">ys2</span>                   <span class="c"># predictive variance</span>
 <span class="n">model</span><span class="o">.</span><span class="n">lp</span>                    <span class="c"># log predictive probability</span>
 </pre></div>
 </div>
@@ -219,9 +218,6 @@ output mean(ymu)/variance(ys2), latent mean(fmu)/variance(fs2), and log predicti
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="GPR_FITC.html" title="Sparse Regression"
              >next</a> |</li>
