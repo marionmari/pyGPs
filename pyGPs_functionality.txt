@@ -55,7 +55,7 @@
 	----------------------------
 	Erf             - Error function, classification, probit regression
 	Gauss           - Gaussian likelihood function for regression
-	Laplace	        - Laplacian likelihood function for regression
+	Laplace         - Laplacian likelihood function for regression
 	Logistic        - Logistic function for binary classification or logit regression
 
 
