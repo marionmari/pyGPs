@@ -126,7 +126,7 @@ Note, that we got a different posterior from using a different prior other than 
 
 A bit more things you can do
 ----------------------
-**[For all model]** Speed up computation time for prediction if you know posterior in advance. Posterior is passed as an object with three fields (attributes) post.alpha, post.sW and post.L. How to use these vectors to represent the posterior can be best seen from Algorithm 2.1 (page 19) in Chapeter 2 of the `GPML`_ book by Rasmussen and Williams, 2006. ::
+**[For all Models]** Speed up computation time for prediction if you know posterior in advance. Posterior is passed as an object with three fields (attributes) post.alpha, post.sW and post.L. How to use these vectors to represent the posterior can be best seen from Algorithm 2.1 (page 19) in Chapeter 2 of the `GPML`_ book by Rasmussen and Williams, 2006. ::
 
     post = myPosterior()        # known in advance
     ymu, ys2, fmu, fs2, lp = model.predict_with_posterior( post,z )
@@ -134,11 +134,11 @@ A bit more things you can do
 .. _GPML: http://www.gaussianprocess.org/gpml/chapters/RW2.pdf
 
 
-**[Only for Regresstion]** Specify noise of data (with :math:`\sigma=0.1` by default). You don't need to specify it if you are optimizing the hyperparamters later anyhow. ::
+**[Only for Regression]** Specify noise of data (with :math:`\sigma=0.1` by default): ::
 
     model.setNoise( log_sigma = np.log(0.1) )
 
-
+You don't need to specify it if you are optimizing the hyperparamters later anyhow.
 
 
 
