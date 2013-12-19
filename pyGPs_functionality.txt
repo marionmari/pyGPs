@@ -24,10 +24,10 @@
 	Pre             - precomputed kernel matrix
 
 	* composite covariance functions:
-
-	ScaleOfKernel or "*"    - composition of a covariance function as a scaled version of another covariance function
+	
+	ProductOfKernel or "*"  - product of covariance functions
+	ScaleOfKernel or "*"    - scale covariance function (by scalar)
 	SumOfKernel or "+"      - sum of (parameterized) covariance functions
-	ProductOfKernel or "**" - product of (parametrized) covariance functions
 	FITCOfKernel            - covariance function to be used together with the FITC approximation
 
 
