@@ -11,8 +11,6 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 30/09/2013
 #================================================================================
 
-<<<<<<< HEAD
-=======
 #   MEANING OF NOTATION:
 #  
 #   inffunc      function specifying the inference method 
@@ -37,7 +35,6 @@
 #   post         struct representation of the (approximate) posterior
 #                post consists of post.alpha, post.L, post.sW
 #
->>>>>>> a6c4b674e65916cc1fa5a1d40f1414f3490877f6
 # @author: Shan Huang (last update Sep.2013)
 # This is a object-oriented python implementation of gpml functionality 
 # (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
