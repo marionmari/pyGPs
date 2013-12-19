@@ -8,27 +8,27 @@
 
 	* simple covariance functions:
 
-	Poly 		- polynomial covariance function
-	RBF   		- radial basis function kernel (squared exponential)
+	Poly		- polynomial covariance function
+	RBF		- radial basis function kernel (squared exponential)
 	RBFunit		- RBF with unit magnitude
 	RBFard		- RBF with automatic relevance detemination
-	[todo] PPiso 	- piecewise polynomial covariance function with compact support
-	Const 		- constant covariance function
-	LIN 		- linear covariance function
-	LINard 		- linear covariance function with ard
-	Matern 		- Matern covariance function
-	Periodic 	- periodic covariance function
-	Noise 		- independent covariance function (ie white noise)
+	[todo] PPiso	- piecewise polynomial covariance function with compact support
+	Const		- constant covariance function
+	LIN		- linear covariance function
+	LINard		- linear covariance function with ard
+	Matern		- Matern covariance function
+	Periodic	- periodic covariance function
+	Noise		- independent covariance function (ie white noise)
 	[todo] RQiso	-
 	[todo] RQard	-
 	Pre		- precomputed kernel matrix
 
 	* composite covariance functions:
 
-	ScaleOfKernel or "*" 	- composition of a covariance function as a scaled version of another covariance function
-	SumOfKernel or "+" 	- sum of (parameterized) covariance functions
-	ProductOfKernel or "**" - product of (parametrized) covariance functions
-	FITCOfKernel 		- covariance function to be used together with the FITC approximation
+	ScaleOfKernel or "*"	- composition of a covariance function as a scaled version of another covariance function
+	SumOfKernel or "+"	- sum of (parameterized) covariance functions
+	ProductOfKernel or "**"	- product of (parametrized) covariance functions
+	FITCOfKernel		- covariance function to be used together with the FITC approximation
 
 
 	----------------------------
