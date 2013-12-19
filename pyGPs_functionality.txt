@@ -1,0 +1,83 @@
+	A list of functionality pyGPs
+	===================================
+	For documentations see respective modules/functions. 
+
+	----------------------------
+	cov functions:			
+	----------------------------
+
+	* simple covariance functions:
+
+	covPoly - polynomial covariance function
+	covPPiso - piecewise polynomial covariance function with compact support
+	covConst - constant covariance function
+	covLIN - linear covariance function
+	covLINard - linear covariance function with ard
+	covMatern - Matern covariance function
+	covSEiso - isotropic squared exponential covariance function
+	covSEard - squared exponential covariance function with ard (Automatic Relevance Determination)
+	covSEisoU - isotropic squared exponential covariance function with unit magnitude
+	covPeriodic - periodic covariance function
+	covNoise - independent covariance function (ie white noise)
+	covFITC - Covariance function to be used together with the FITC approximation
+
+	* composite covariance functions:
+	ScaleOfKernel or "*" - composition of a covariance function as a scaled version of another covariance function - sum of (parameterized) covariance functions
+	SumOfKernel or "+" - sum of (parameterized) covariance functions
+	ProductOfKernel or "**" - product of (parametrized) covariance functions
+	k.fitc() - Covariance function to be used together with the FITC approximation
+	covPre(A,B) - Precomputed kernel matrix
+
+	----------------------------
+	mean functions:
+	----------------------------
+
+	* simple mean functions:
+	
+	meanZero - zero mean function
+	meanOne - one mean function
+	meanConst - constant mean function
+	meanLinear - linear mean function
+
+	* composite covariance functions:
+
+	"*"   - products of mean functions
+	"+"   - sums of mean functions
+	"*"   - scaled version of a mean function
+	"**"  - power of a mean function
+
+	----------------------------
+	lik functions:
+	----------------------------
+	likErf  - Error function, classification, probit regression
+	likGauss - Gaussian, regression
+
+	----------------------------
+	inf functions:
+	----------------------------
+	infExact - Exact inference (only possible with Gaussian likelihood)
+	infEP - Expectation Propagation
+	infLaplace - Laplace's Approximation
+
+	infFITC_Exact - Large scale regression with approximate covariance matrix
+	infFITC_EP - Large scale inference  with approximate covariance matrix
+	infFITC_Laplace - Large scale inference  with approximate covariance matrix
+
+	----------------------------
+	optimization methods:
+	----------------------------
+	Minimize - Minimize by Carl Rasmussen
+	CG - Conjugent gradient
+	BFGS - Quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)
+	SCG - Scaled conjugent gradient (faster than CG) 
+
+	----------------------------
+	evaluation measures:
+	----------------------------
+	RMSE - Root mean squared error
+	ACC - Classification accuracy
+	Prec - Precision for class +1
+	Recall - Recall for class +1
+	NLPD - Negative log predictive density in transformed observation space
+	
+
