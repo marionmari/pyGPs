@@ -29,8 +29,9 @@ z = demoData['xstar']        # test data
 
 
 #----------------------------------------------------------------------
-# A five-line toy example
+# A five-line example
 #----------------------------------------------------------------------
+print 'Basic Example'
 model = gp.GPR()             # model 
 model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
 model.train(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
@@ -43,7 +44,7 @@ model.plot()                 # and plot result
 #----------------------------------------------------------------------
 # Now lets do another example to get more insight to the toolbox
 #----------------------------------------------------------------------
-
+print 'More Advanced Example'
 model = gp.GPR()            # start from a new model 
 
 # Specify non-default mean and covariance functions 
@@ -104,6 +105,8 @@ model.plot(axisvals=[-1.9, 1.9, -0.9, 3.9])
 
 # [For all model] Speed up prediction time if you know posterior in advance
 post = model._posterior_    # already known before
+
+
 ymu, ys2, fmu, fs2, lp = model.predict_with_posterior( post,z )
 # ...other than model.predict(z) 
 

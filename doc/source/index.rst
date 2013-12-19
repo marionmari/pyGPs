@@ -28,7 +28,7 @@ Further, it includes implementations of
 * FITC functionality (following matlab implementations under Copyright (c) by Ed Snelson, Carl Edward Rasmussen and Hannes Nickisch, 2011-11-02)
 
 This is a stable release. If you observe problems or bugs, please let us know.
-You can also download from Github a `procedual implementation`_ of GP functionality. However, the procedual version is not under active maintainess.
+You can also download a `procedual implementation`_ of GP functionality from Github. However, the procedual version will not be supported in future.
 
 .. _procedual implementation: https://github.com/marionmari/pyGP_PR/  
 

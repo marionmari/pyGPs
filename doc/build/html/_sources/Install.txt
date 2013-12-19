@@ -9,13 +9,17 @@ Installation
        export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/../pyGPs
 
 
-3. Or intall the package using setup.py::
+3. Or install the package using setup.py::
 
         python setup.py install
 
 Requirements
 ------------
-* python 2.6 or 2.7
-* scipy, numpy, and matplotlib: open-source packages for scientific computing using the Python programming language. 
+* `python 2.6 or 2.7`_
+* `scipy`_, `numpy`_, and `matplotlib`_: open-source packages for scientific computing in Python. 
 
+.. _python 2.6 or 2.7: http://www.python.org/
+.. _scipy: http://www.scipy.org/
+.. _numpy: http://www.numpy.org/
+.. _matplotlib: http://matplotlib.org/
 

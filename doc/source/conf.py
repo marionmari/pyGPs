@@ -52,7 +52,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'pyGP_OO'
+project = u'pyGPs'
 copyright = u'2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting'
 
 # The version info for the project you're documenting, acts as replacement for

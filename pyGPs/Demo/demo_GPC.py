@@ -41,7 +41,7 @@ model.predict(z)             # predict test cases
 # GP classification example
 #----------------------------------------------------------------------
 # Start from a new model 
-model = gp.GPC()            
+model = gp.GPC()    
 
 # Analogously to GPR
 k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
