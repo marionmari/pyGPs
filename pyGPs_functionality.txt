@@ -1,6 +1,6 @@
 	A list of functionality pyGPs
 	===================================
-	For documentations see respective modules/functions. 
+	For documentations see documentation and respective modules/functions. 
 
 	----------------------------
 	cov functions:			
