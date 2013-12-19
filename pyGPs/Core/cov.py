@@ -261,15 +261,12 @@ class Poly(Kernel):
         if der == None:                    # compute covariance matix for dataset x
             A = sf2 * (c + A)**ord
         else:
-            # compute derivative matrix wrt 1st parameter
-            if der == 0:                   
+            if der == 0:      			# compute derivative matrix wrt 1st parameter             
                 A = c * ord * sf2 * (c+A)**(ord-1)
-            # compute derivative matrix wrt 2nd parameter
-            elif der == 1:  
+            elif der == 1:  			# compute derivative matrix wrt 2nd parameter
                 A = 2. * sf2 * (c + A)**ord
-            # Wants to compute derivative wrt order
-            elif der == 2:  
-                A = np.zeros_like(A)
+            elif der == 2:  			# no derivative wrt 3rd parameter
+                A = np.zeros_like(A)        	# do nothing (d is not learned)
             else:
                 raise Exception("Wrong derivative entry in covPoly")
         return A
@@ -538,7 +535,7 @@ class Matern(Kernel):
             d = int(round(d))
         d = int(d)
         try:
-            assert(d in [1,3,5])         # Check for valid values of d
+            assert(d in [1,3,5])         # check for valid values of d
         except AssertionError:
             d = 3
 
@@ -559,8 +556,8 @@ class Matern(Kernel):
                 A = sf2 * self.dmfunc(d,A)
             elif der == 1:                  # compute derivative matrix wrt 2nd parameter
                 A = 2 * sf2 * self.mfunc(d,A)
-            elif der == 2:                  # Wants to compute derivative wrt nu
-                A = np.zeros_like(A)        # Do nothing
+            elif der == 2:                  # no derivative wrt 3rd parameter
+                A = np.zeros_like(A)        # do nothing (d is not learned)
             else:
                 raise Exception("Wrong derivative value in covMatern")
         return A
