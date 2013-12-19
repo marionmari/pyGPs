@@ -8,25 +8,28 @@
 
 	* simple covariance functions:
 
-	covPoly - polynomial covariance function
-	covPPiso - piecewise polynomial covariance function with compact support
-	covConst - constant covariance function
-	covLIN - linear covariance function
-	covLINard - linear covariance function with ard
-	covMatern - Matern covariance function
-	covSEiso - isotropic squared exponential covariance function
-	covSEard - squared exponential covariance function with ard (Automatic Relevance Determination)
-	covSEisoU - isotropic squared exponential covariance function with unit magnitude
-	covPeriodic - periodic covariance function
-	covNoise - independent covariance function (ie white noise)
-	covFITC - Covariance function to be used together with the FITC approximation
+	Poly 		- polynomial covariance function
+	RBF   		- radial basis function kernel (squared exponential)
+	RBFunit		- RBF with unit magnitude
+	RBFard		- RBF with automatic relevance detemination
+	[todo] PPiso 	- piecewise polynomial covariance function with compact support
+	Const 		- constant covariance function
+	LIN 		- linear covariance function
+	LINard 		- linear covariance function with ard
+	Matern 		- Matern covariance function
+	Periodic 	- periodic covariance function
+	Noise 		- independent covariance function (ie white noise)
+	[todo] RQiso	-
+	[todo] RQard	-
+	Pre		- precomputed kernel matrix
 
 	* composite covariance functions:
-	ScaleOfKernel or "*" - composition of a covariance function as a scaled version of another covariance function
-	SumOfKernel or "+" - sum of (parameterized) covariance functions
+
+	ScaleOfKernel or "*" 	- composition of a covariance function as a scaled version of another covariance function
+	SumOfKernel or "+" 	- sum of (parameterized) covariance functions
 	ProductOfKernel or "**" - product of (parametrized) covariance functions
-	k.fitc() - Covariance function to be used together with the FITC approximation
-	covPre(A,B) - Precomputed kernel matrix
+	FITCOfKernel 		- covariance function to be used together with the FITC approximation
+
 
 	----------------------------
 	mean functions:
@@ -34,50 +37,55 @@
 
 	* simple mean functions:
 	
-	meanZero - zero mean function
-	meanOne - one mean function
-	meanConst - constant mean function
-	meanLinear - linear mean function
+	Zero 		- zero mean function
+	One 		- one mean function
+	Const 		- constant mean function
+	Linear 		- linear mean function
 
 	* composite covariance functions:
 
-	"*"   - products of mean functions
-	"+"   - sums of mean functions
-	"*"   - scaled version of a mean function
-	"**"  - power of a mean function
+	ProductOfMean or "*"	- products of mean functions
+	SumOfMean or "+"   	- sums of mean functions
+	ScaleOfMean "*"   	- scaled version of a mean function
+	PowerOfMean "**"  	- power of a mean function
+
 
 	----------------------------
 	lik functions:
 	----------------------------
-	likErf  - Error function, classification, probit regression
-	likGauss - Gaussian, regression
+	Erf  		- Error function, classification, probit regression
+	Gauss 		- Gaussian likelihood function for regression
+	Laplace		- Laplacian likelihood function for regression
+	Logistic	- Logistic function for binary classification or logit regression
+
 
 	----------------------------
 	inf functions:
 	----------------------------
-	infExact - Exact inference (only possible with Gaussian likelihood)
-	infEP - Expectation Propagation
-	infLaplace - Laplace's Approximation
+	Exact 		- Exact inference (only possible with Gaussian likelihood)
+	EP 		- Expectation Propagation
+	Laplace 	- Laplace's Approximation
 
-	infFITC_Exact - Large scale regression with approximate covariance matrix
-	infFITC_EP - Large scale inference  with approximate covariance matrix
-	infFITC_Laplace - Large scale inference  with approximate covariance matrix
+	FITC_Exact 	- Large scale regression with approximate covariance matrix
+	FITC_EP 	- Large scale inference  with approximate covariance matrix
+	FITC_Laplace 	- Large scale inference  with approximate covariance matrix
+
 
 	----------------------------
 	optimization methods:
 	----------------------------
-	Minimize - Minimize by Carl Rasmussen
-	CG - Conjugent gradient
-	BFGS - Quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)
-	SCG - Scaled conjugent gradient (faster than CG) 
+	Minimize 	- Minimize by Carl Rasmussen
+	CG 		- Conjugent gradient
+	BFGS 		- Quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)
+	SCG 		- Scaled conjugent gradient (faster than CG) 
 
 	----------------------------
 	evaluation measures:
 	----------------------------
-	RMSE - Root mean squared error
-	ACC - Classification accuracy
-	Prec - Precision for class +1
-	Recall - Recall for class +1
-	NLPD - Negative log predictive density in transformed observation space
+	RMSE 		- Root mean squared error
+	ACC 		- Classification accuracy
+	Prec 		- Precision for class +1
+	Recall 		- Recall for class +1
+	NLPD 		- Negative log predictive density in transformed observation space
 	
 
