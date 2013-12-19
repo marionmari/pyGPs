@@ -22,7 +22,7 @@
 	covFITC - Covariance function to be used together with the FITC approximation
 
 	* composite covariance functions:
-	ScaleOfKernel or "*" - composition of a covariance function as a scaled version of another covariance function - sum of (parameterized) covariance functions
+	ScaleOfKernel or "*" - composition of a covariance function as a scaled version of another covariance function
 	SumOfKernel or "+" - sum of (parameterized) covariance functions
 	ProductOfKernel or "**" - product of (parametrized) covariance functions
 	k.fitc() - Covariance function to be used together with the FITC approximation
