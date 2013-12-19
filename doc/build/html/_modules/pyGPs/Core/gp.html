@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -33,6 +34,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../index.html">pyGP_OO 1.0.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
@@ -56,13 +60,6 @@
 <span class="c">#    Copyright (c) by</span>
 <span class="c">#    Marion Neumann, Daniel Marthaler, Shan Huang &amp; Kristian Kersting, 30/09/2013</span>
 <span class="c">#================================================================================</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">inf</span><span class="o">,</span> <span class="nn">mean</span><span class="o">,</span> <span class="nn">lik</span><span class="o">,</span> <span class="nn">cov</span><span class="o">,</span> <span class="nn">opt</span>
-<span class="kn">from</span> <span class="nn">tools</span> <span class="kn">import</span> <span class="n">unique</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">import</span> <span class="nn">pyGPs</span>
 
 <span class="c">#   MEANING OF NOTATION:</span>
 <span class="c">#  </span>
@@ -86,7 +83,7 @@
 <span class="c">#   lp           column vector (of length ns) of log predictive probabilities</span>
 <span class="c">#</span>
 <span class="c">#   post         struct representation of the (approximate) posterior</span>
-<span class="c">#                post is consist of post.alpha, post.L, post.sW</span>
+<span class="c">#                post consists of post.alpha, post.L, post.sW</span>
 <span class="c">#</span>
 <span class="c"># @author: Shan Huang (last update Sep.2013)</span>
 <span class="c"># This is a object-oriented python implementation of gpml functionality </span>
@@ -94,10 +91,15 @@
 <span class="c"># based on the functional-version of python implementation</span>
 <span class="c"># (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)</span>
 <span class="c"># </span>
-<span class="c">#</span>
-<span class="c"># Copyright (c) by Marion Neumann and Shan Huang, Sep.2013</span>
+<span class="c"># Copyright (c) by Marion Neumann and Shan Huang, 30/092013</span>
 
-
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">inf</span><span class="o">,</span> <span class="nn">mean</span><span class="o">,</span> <span class="nn">lik</span><span class="o">,</span> <span class="nn">cov</span><span class="o">,</span> <span class="nn">opt</span>
+<span class="kn">from</span> <span class="nn">tools</span> <span class="kn">import</span> <span class="n">unique</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">import</span> <span class="nn">pyGPs</span>
 
 <span class="n">SHADEDCOLOR</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.7539</span><span class="p">,</span> <span class="mf">0.89453125</span><span class="p">,</span> <span class="mf">0.62890625</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
 <span class="n">MEANCOLOR</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.2109375</span><span class="p">,</span> <span class="mf">0.63385</span><span class="p">,</span> <span class="mf">0.1796875</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
@@ -114,14 +116,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_neg_log_marginal_likelihood_</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_neg_log_marginal_likelihood_gradient_</span> <span class="o">=</span> <span class="bp">None</span>  
-        <span class="bp">self</span><span class="o">.</span><span class="n">_posterior_</span> <span class="o">=</span> <span class="bp">None</span>  
-        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xs</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ys</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ym</span> <span class="o">=</span> <span class="bp">None</span> 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ys2</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lp</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_posterior_</span> <span class="o">=</span> <span class="bp">None</span>   <span class="c"># struct representation of the (approximate) posterior </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c"># n by D matrix of training inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c"># column vector of length n of training targets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xs</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c"># n by D matrix of test inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ys</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c"># column vector of length nn of true test targets (optional)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ym</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c"># column vector (of length ns) of predictive output means</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ys2</span> <span class="o">=</span> <span class="bp">None</span>           <span class="c"># column vector (of length ns) of predictive output variances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fm</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c"># column vector (of length ns) of predictive latent means</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fs2</span> <span class="o">=</span> <span class="bp">None</span>           <span class="c"># column vector (of length ns) of predictive latent variances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lp</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c"># column vector (of length ns) of log predictive probabilities</span>
 
     <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
@@ -213,7 +217,7 @@
 <span class="sd">            where nlZ  is the negative log marginal likelihood</span>
 <span class="sd">                  dnlZ is partial derivatives of nlZ w.r.t. each hyperparameter</span>
 <span class="sd">                  post is struct representation of the (approximate) posterior</span>
-<span class="sd">                  post is consist of post.alpha, post.L, post.sW</span>
+<span class="sd">                  post consists of post.alpha, post.L, post.sW</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>  
@@ -306,6 +310,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ym</span> <span class="o">=</span> <span class="n">ymu</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ys2</span> <span class="o">=</span> <span class="n">ys2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lp</span> <span class="o">=</span> <span class="n">lp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fm</span> <span class="o">=</span> <span class="n">fm2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fs2</span> <span class="o">=</span> <span class="n">fs2</span>
         <span class="k">if</span> <span class="n">ys</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ymu</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fmu</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
@@ -380,6 +386,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ym</span> <span class="o">=</span> <span class="n">ymu</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ys2</span> <span class="o">=</span> <span class="n">ys2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lp</span> <span class="o">=</span> <span class="n">lp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fm</span> <span class="o">=</span> <span class="n">fm2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fs2</span> <span class="o">=</span> <span class="n">fs2</span>
         <span class="k">if</span> <span class="n">ys</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ymu</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fmu</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
@@ -811,13 +819,16 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../../index.html">pyGP_OO 1.0.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

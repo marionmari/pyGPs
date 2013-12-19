@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,7 +14,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -34,6 +35,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="Kernels.html" title="Kernels &amp; Means"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">pyGP_OO 1.0.0 documentation</a> &raquo;</li> 
@@ -50,6 +54,42 @@
 <div class="section" id="optimization-methods">
 <h2>Optimization Methods<a class="headerlink" href="#optimization-methods" title="Permalink to this headline">¶</a></h2>
 <p>As you have already seen in demo, optimizer is initialized in the following way.</p>
+<dl class="method">
+<dt id="pyGPs.Core.gp.GP.setOptimizer">
+<tt class="descclassname">GP.</tt><tt class="descname">setOptimizer</tt><big>(</big><em>method</em>, <em>num_restarts=None</em>, <em>min_threshold=None</em>, <em>meanRange=None</em>, <em>covRange=None</em>, <em>likRange=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/gp.html#GP.setOptimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.gp.GP.setOptimizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is used to sepecify optimization configuration. By default, gp uses a single run &#8220;minimize&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>method</strong> &#8211; <p>Optimization methods. Possible values are:</p>
+<p>&#8220;Minimize&#8221;   -&gt; minimize by Carl Rasmussen (python implementation of &#8220;minimize&#8221; in GPML)</p>
+<p>&#8220;CG&#8221;         -&gt; conjugent gradient</p>
+<p>&#8220;BFGS&#8221;       -&gt; quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)</p>
+<p>&#8220;SCG&#8221;        -&gt; scaled conjugent gradient (faster than CG)</p>
+</li>
+<li><strong>num_restarts</strong> &#8211; <p>Set if you want to run mulitiple times of optimization with different initial guess.</p>
+<p>It specifys the maximum number of runs/restarts/trials.</p>
+</li>
+<li><strong>min_threshold</strong> &#8211; <p>Set if you want to run mulitiple times of optimization with different initial guess.</p>
+<p>It specifys the threshold of objective function value. Stop optimization when this value is reached.</p>
+</li>
+<li><strong>meanRange</strong> &#8211; <p>The range of initial guess for mean hyperparameters.</p>
+<p>e.g. meanRange = [(-2,2), (-5,5), (0,1)]</p>
+<p>Each tuple specifys the range (low, high) of this hyperparameter,</p>
+<p>This is only the range of initial guess, during optimization process, optimal hyperparameters may go out of this range.</p>
+<p>(-5,5) for each hyperparameter by default.</p>
+</li>
+<li><strong>covRange</strong> &#8211; The range of initial guess for kernel hyperparameters. Usage see meanRange</li>
+<li><strong>likRange</strong> &#8211; The range of initial guess for likelihood hyperparameters. Usage see meanRange</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 
@@ -99,6 +139,9 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="Kernels.html" title="Kernels &amp; Means"
              >previous</a> |</li>
         <li><a href="index.html">pyGP_OO 1.0.0 documentation</a> &raquo;</li> 
@@ -106,7 +149,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

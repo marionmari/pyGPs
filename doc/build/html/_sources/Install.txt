@@ -11,7 +11,7 @@ Installation
 
 3. Or intall the package using setup.py::
 
-        python setup.py intall
+        python setup.py install
 
 Requirements
 ------------
