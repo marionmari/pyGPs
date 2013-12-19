@@ -8,9 +8,9 @@
 
 	* simple covariance functions:
 
-	Poly		- polynomial covariance function
-	RBF		- radial basis function kernel (squared exponential)
-	RBFunit		- RBF with unit magnitude
+	Poly            - polynomial covariance function
+	RBF             - radial basis function kernel (squared exponential)
+	RBFunit         - RBF with unit magnitude
 	RBFard		- RBF with automatic relevance detemination
 	[todo] PPiso	- piecewise polynomial covariance function with compact support
 	Const		- constant covariance function
