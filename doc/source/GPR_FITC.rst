@@ -50,20 +50,20 @@ To change the number of inducing points per axis just specify a different value 
 Second example -> user-defined inducing points
 -----------------------------
 
-Alternatively, a random subset of the training points can be used as inducing points. Moreover, there are planty of methods to set these inducing points.
-So in the second example lets use a user-defined set of inducing points. ::
+Alternatively, a random subset of the training points can be used as inducing points. Note, that there are plenty of methods to set these inducing points.
+So, in the second example let us use a user-defined set of inducing points: ::
 
 	num_u = np.fix(x.shape[0]/2)
 	u = np.linspace(-1.3,1.3,num_u).T
 	u = np.reshape(u,(num_u,1))
 
-Here, we also use equi-spaced inducing points :math:`u`, but without the values on the margin of the grid.(i.e. shrinking the range of values) Then, we can just pass :math:`u` when specifying prior. ::
+Here, we also use equidistant inducing points :math:`u`, but without the values on the margin of the grid.(i.e. shrinking the range of values) Then, we can just pass :math:`u` when specifying prior. ::
 
 	m = mean.Zero()
 	k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
 	model.setPrior(mean=m, kernel=k, inducing_points=u) 
 
-The predicting results for this inducing points are shown below
+The prediction results for this set of inducing points are shown below:
 
 .. figure:: _images/d3_2.png
    :height: 600 px
@@ -73,4 +73,5 @@ The predicting results for this inducing points are shown below
 
 **[Theory]**
 Note that the predictive variance is 
-overestimated outside the support of the inducing inputs. In a multivariate example where densely sampled inducing inputs are infeasible, one can simply use a random subset of the training points.
+overestimated outside the support of the inducing inputs. In a multivariate example where densely sampled inducing inputs are infeasible, one can
+also try to simply use a random subset of the training points.
