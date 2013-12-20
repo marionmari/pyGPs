@@ -81,10 +81,11 @@ class GP(object):
         self.x = x
         self.y = y
 
-    def plotData_1d(self, axisvals=[-1.9, 1.9, -0.9, 3.9]):
+    def plotData_1d(self, axisvals=None):#[-1.9, 1.9, -0.9, 3.9]):
         plt.figure()
         plt.plot(self.x, self.y, ls='None', marker='+', color=DATACOLOR, ms=12, mew=2)
-        plt.axis(axisvals)
+        if axisvals:
+            plt.axis(axisvals)
         plt.grid()
         plt.xlabel('input x')
         plt.ylabel('target y')
@@ -383,7 +384,7 @@ class GPR(GP):
         elif method == "BFGS":
             self.optimizer = opt.BFGS(self,conf)  
                        
-    def plot(self,axisvals=[-1.9, 1.9, -0.9, 3.9]):
+    def plot(self,axisvals=None):#[-1.9, 1.9, -0.9, 3.9]): # TODO: edit
         xs = self.xs
         x = self.x
         y = self.y
@@ -400,6 +401,8 @@ class GPR(GP):
         plt.grid()
         if axisvals:
             plt.axis(axisvals)
+        else:
+            axisvals = 'TODO'   # TODO: set to min and max of test inputs resp test targets
         plt.xlabel('input x')
         plt.ylabel('target y')
         plt.show()
@@ -444,7 +447,7 @@ class GPC(GP):
         elif method == "BFGS":
             self.optimizer = opt.BFGS(self,conf)  
                        
-    def plot(self,x1,x2,t1,t2,axisvals=[-4, 4, -4, 4]):
+    def plot(self,x1,x2,t1,t2,axisvals=[-4, 4, -4, 4]): # TODO: edit
         fig = plt.figure()
         plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
         plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
@@ -634,10 +637,6 @@ class GP_FITC(GP):
             self.meanfunc = mean
 
 
-       
-
-
-
 
 class GPR_FITC(GP_FITC):
     """Gaussian Process Regression FITC"""
@@ -675,7 +674,7 @@ class GPR_FITC(GP_FITC):
         elif method == "BFGS":
             self.optimizer = opt.BFGS(self,conf)  
                        
-    def plot(self,axisvals=[-1.9, 1.9, -0.9, 3.9]):
+    def plot(self,axisvals=None):#[-1.9, 1.9, -0.9, 3.9]): # TODO: edit
         plt.figure()
         xss  = np.reshape(self.xs,(self.xs.shape[0],))
         ymm  = np.reshape(self.ym,(self.ym.shape[0],))
@@ -684,7 +683,7 @@ class GPR_FITC(GP_FITC):
         plt.plot(self.xs, self.ym, color=MEANCOLOR, ls='-', lw=3.)
         plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=SHADEDCOLOR,linewidths=0.0)
         plt.grid()
-        if axisvals:
+        if axisvals:                # TODO: edit
             plt.axis(axisvals)
         plt.xlabel('input x')
         plt.ylabel('output y')
@@ -729,7 +728,7 @@ class GPC_FITC(GP_FITC):
         elif method == "BFGS":
             self.optimizer = opt.BFGS(self,conf)  
                        
-    def plot(self,x1,x2,t1,t2,axisvals=[-4, 4, -4, 4]):
+    def plot(self,x1,x2,t1,t2,axisvals=[-4, 4, -4, 4]): # TODO: edit
         fig = plt.figure()
         plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
         plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
