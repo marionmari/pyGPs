@@ -11,13 +11,12 @@ print '-------------------GPR_FITC DEMO----------------------'
 #----------------------------------------------------------------------
 # Load demo data (generated from Gaussians)
 #----------------------------------------------------------------------
-demoData = np.load('data_for_demo/regression_data.npz')   
+demoData = np.load('data_for_demo/regression_data_new.npz') # TODO: change to regression_data.npz again
+
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
-
-
-
+ 
 
 #----------------------------------------------------------------------
 # Sparse GP regression (FITC) example
@@ -30,8 +29,8 @@ model = gp.GPR_FITC()
 
 # Notice if you want to use default inducing points:
 # You MUST call setData(x,y) FIRST!
-# The default inducing points is a grid(hypercube in higher dimension), where
-# each dimension has 5 values in same step between min and max value of data by default.
+# The default inducing points are a grid (hypercube in higher dimension), where
+# each dimension has 5 values in equidistant steps between min and max value of the input data by default.
 model.setData(x, y)
 
 # To set value per dimension use:
