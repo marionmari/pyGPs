@@ -1,7 +1,7 @@
 Basic Regression
 =========================
 
-The code shown in this tutorial can be executed by running */pyGPs/Demo/demo_GPR.py*
+The code shown in this tutorial can be executed by running *pyGPs/Demo/demo_GPR.py*
 
 This demo will not only introduce the regression model, it also provides the general insight of how to use the package. This general information will not be repeated in the other demos.
 
