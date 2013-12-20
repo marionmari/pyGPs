@@ -35,7 +35,7 @@ given complete information about the generating mechanism.
    :scale: 70 %
 
 
-First example -> state default values
+First example :math:`\rightarrow` state default values
 ----------------------------------
 Again, lets see the simplest use of gp classification at first ::
 
@@ -47,7 +47,7 @@ Again, lets see the simplest use of gp classification at first ::
 Note, that inference is done via expectation propagation (EP) approximation by deault. How to set inference to Laplace approximation, see :ref:`more_on_GPC`.
 
 
-Second example -> GP classification 
+Second example :math:`\rightarrow` GP classification 
 ------------------------------
 So we first state the model to be :math:`GP` classification now::
 

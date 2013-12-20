@@ -57,12 +57,12 @@
   <div class="section" id="sparse-regression">
 <h1>Sparse Regression<a class="headerlink" href="#sparse-regression" title="Permalink to this headline">¶</a></h1>
 <p>The code shown in this tutorial can be obtained by running <em>pyGPs/Demo/demo_GPR_FITC.py</em>
-This demo is more or less similar to the demo of FITC classification.</p>
+This demo is more or less similar to the demo of <a class="reference external" href="GPC_FITC.html">FITC classification</a>.</p>
 <div class="section" id="first-example-default-inducing-points">
-<h2>First example -&gt; default inducing points<a class="headerlink" href="#first-example-default-inducing-points" title="Permalink to this headline">¶</a></h2>
+<h2>First example <img class="math" src="_images/math/e12b6767375342ed57d27678e3ea1cdb97f47e15.png" alt="\rightarrow"/> default inducing points<a class="headerlink" href="#first-example-default-inducing-points" title="Permalink to this headline">¶</a></h2>
 <p>First load the same data as in the GPR demo.</p>
 <p><strong>[Theory]</strong>
-In case the number of training inputs <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2a1049c48c89a5e6.png" alt="x"/> exceeds a few hundred, approximate inference using Laplacian Approximation or Expectation Propagation takes too long. We offer the FITC approximation
+In case the number of training inputs <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2a1049c48c89a5e6.png" alt="x"/> exceeds a few hundred, approximate inference using Laplace approximation or expectation propagation takes too long. We offer the FITC approximation
 based on a low-rank plus diagonal approximation to the exact covariance to deal with these cases. The general idea is to use inducing points
 <img class="math" src="_images/math/9ad99798ec4c38e165cf517cb9e02b1c9e824103.png" alt="u"/> and to base the computations on cross-covariances between training, test and inducing points only.</p>
 <p>Okay, now the model is FITC regression:</p>
@@ -94,7 +94,7 @@ In order to specify the dimension of input data, we HAVE TO set data first:</p>
 </div>
 </div>
 <div class="section" id="second-example-user-defined-inducing-points">
-<h2>Second example -&gt; user-defined inducing points<a class="headerlink" href="#second-example-user-defined-inducing-points" title="Permalink to this headline">¶</a></h2>
+<h2>Second example <img class="math" src="_images/math/e12b6767375342ed57d27678e3ea1cdb97f47e15.png" alt="\rightarrow"/> user-defined inducing points<a class="headerlink" href="#second-example-user-defined-inducing-points" title="Permalink to this headline">¶</a></h2>
 <p>Alternatively, a random subset of the training points can be used as inducing points. Note, that there are plenty of methods to set these inducing points.
 So, in the second example let us use a user-defined set of inducing points:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">num_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
@@ -128,8 +128,8 @@ also try to simply use a random subset of the training points.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Sparse Regression</a><ul>
-<li><a class="reference internal" href="#first-example-default-inducing-points">First example -&gt; default inducing points</a></li>
-<li><a class="reference internal" href="#second-example-user-defined-inducing-points">Second example -&gt; user-defined inducing points</a></li>
+<li><a class="reference internal" href="#first-example-default-inducing-points">First example <img class="math" src="_images/math/e12b6767375342ed57d27678e3ea1cdb97f47e15.png" alt="\rightarrow"/> default inducing points</a></li>
+<li><a class="reference internal" href="#second-example-user-defined-inducing-points">Second example <img class="math" src="_images/math/e12b6767375342ed57d27678e3ea1cdb97f47e15.png" alt="\rightarrow"/> user-defined inducing points</a></li>
 </ul>
 </li>
 </ul>

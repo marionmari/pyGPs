@@ -2,18 +2,20 @@ Sparse Regression
 =========================
 
 The code shown in this tutorial can be obtained by running *pyGPs/Demo/demo_GPR_FITC.py*
-This demo is more or less similar to the demo of FITC classification.
+This demo is more or less similar to the demo of `FITC classification`_.
 
-First example -> default inducing points
+.. _FITC classification: GPC_FITC.html 
+
+First example :math:`\rightarrow` default inducing points
 -------------------
 First load the same data as in the GPR demo.
 
 **[Theory]**
-In case the number of training inputs :math:`x` exceeds a few hundred, approximate inference using Laplacian Approximation or Expectation Propagation takes too long. We offer the FITC approximation 
+In case the number of training inputs :math:`x` exceeds a few hundred, approximate inference using Laplace approximation or expectation propagation takes too long. We offer the FITC approximation 
 based on a low-rank plus diagonal approximation to the exact covariance to deal with these cases. The general idea is to use inducing points 
 :math:`u` and to base the computations on cross-covariances between training, test and inducing points only.
 
-Okay, now the model is FITC regression: ::
+Okay, now the model is FITC regression::
 
 	model = gp.GPR_FITC()  
 
@@ -22,7 +24,7 @@ In the first example here, we will introduce you how to use the default settings
 
 The default inducing points are a grid (hypercube for higher dimensions), where each dimension has 5 values in equidistant steps in :math:`[min, max]`,
 where :math:`min` and :math:`max` are the minimum and maximum values of the input data by default.
-In order to specify the dimension of input data, we HAVE TO set data first: ::
+In order to specify the dimension of input data, we HAVE TO set data first::
 
     model.setData(x, y)
 
@@ -42,12 +44,12 @@ Now, the regular training and prediction routines follow: ::
 
 The equidistant default inducing points :math:`u` that are shown in the figure as black x's.
 
-To change the number of inducing points per axis just specify a different value per axis: ::
+To change the number of inducing points per axis just specify a different value per axis::
 
     model.setData(x, y, value_per_axis=10)
 
 
-Second example -> user-defined inducing points
+Second example :math:`\rightarrow` user-defined inducing points
 -----------------------------
 
 Alternatively, a random subset of the training points can be used as inducing points. Note, that there are plenty of methods to set these inducing points.

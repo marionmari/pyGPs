@@ -1,9 +1,11 @@
 Sparse Classification
 ========================
-The code shown in this tutorial can be obtained by running */pyGPs/Demo/demo_GPC_FITC.py*
-This demo is more or less repeated of the demo of FITC regression.
+The demo in this tutorial can be obtained by running *pyGPs/Demo/demo_GPC_FITC.py*. 
+This demo is more or less a repetition of the demo of `FITC regression`_.
 
-First example -> default inducing points
+.. _FITC regression: GPR_FITC.html 
+
+First example :math:`\rightarrow` default inducing points
 -------------------
 First load the same data as in the GPC demo.
 
@@ -12,22 +14,23 @@ In case the number of training inputs :math:`x` exceeds a few hundred, approxima
 based on a low-rank plus diagonal approximation to the exact covariance to deal with these cases. The general idea is to use inducing points 
 :math:`u` and to base the computations on cross-covariances between training, test and inducing points only.
 
-Okay, now the model is FITC classificiation ::
+Okay, now the model is FITC classificiation::
 
 	model = gp.GPC_FITC()  
 
-The difference betwwen the usage of basic gp is that we will have to specify inducing points.
-In the first example here, we'll introduce you how to use default settings.
+The difference between the usage of basic :math:`GP` is that we will have to specify inducing points.
+In our first example, we will introduce how to perform sparse GPC with the default settings.
 
-The default inducing points is a grid(hypercube in higher dimension), where each dimension has 5 values in same step between min and max value of data by default. In order to let the model know the dimension of input data, we HAVE TO set data first. ::
+The default inducing points form a grid (hypercube in higher dimension), where each dimension has :math:`5` values in equidistant steps in :math:`[min, max]`,
+where :math:`min` and :math:`max` are the minimum and maximum values of the input data by default.
+In order to specify the dimension of input data, we HAVE TO set data first::
 
     model.setData(x, y)
 
-This number of value per axis for default inducing points can also be changed ::
+The number of inducing points per axis is :math:`5` per default. How to change this, see :ref:`more_on_GPC_FITC`.
 
-    model.setData(x, y, value_per_axis=10)
 
-Then the regular process follows: ::
+Then, the regular process follows::
 
 	model.train()           
 	model.predict(z, ys=np.ones((z.shape[0],1))) 
@@ -39,25 +42,25 @@ Then the regular process follows: ::
    :align: center
    :scale: 70 %
 
-The equispaced default inducing points :math:`u` that are shown in the figure as black circles.
+The equispaced default inducing points :math:`u` are shown as black circles in the plot.
 
 
-Second example -> user-defined inducing points
+Second example :math:`\rightarrow` user-defined inducing points
 -----------------------------
 
-Alternatively, a random subset of the training points can be used as inducing points. Moreover, there are planty of methods to set these inducing points.
-So in the second example lets use a user-defined set of inducing points. ::
+Alternatively, a random subset of the training points can be used as inducing points. Note, that there are various different ways of how to set the inducing points.
+So, in the second example let us use a user-defined set of inducing points::
 
 	u1,u2 = np.meshgrid(np.linspace(-2,2,5),np.linspace(-2,2,5))
 	u = np.array(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),)))) 
 
-Here, we also use a grid euqually spaced, but without the values on the margin of the grid.(i.e. shrinking the grid) Then, we can just pass :math:`u` when specifying prior. ::
+Here, we also use a grid euqually spaced, but without the values on the margin of the grid.(i.e. shrinking the grid) Then, we can just pass :math:`u` when specifying prior::
 
 	m = mean.Zero()
 	k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
 	model.setPrior(mean=m, kernel=k, inducing_points=u) 
 
-The predicting results for this inducing points are shown below
+The prediction results for this  set of inducing points are shown below:
 
 .. figure:: _images/d4_2.png
    :height: 600 px
@@ -65,10 +68,14 @@ The predicting results for this inducing points are shown below
    :align: center
    :scale: 70 %
 
+.. _more_on_GPC_FITC:
 
 A bit more things you can do
 ------------------------------
-As GPC, it is possible to use FITC Laplacian Approximation by ::
+As in standard GPC, it is possible to perform inference via Laplace approximation in the FITC method::
 
     model.useLaplace_FITC() 
 
+Change the number of inducing points per axis::
+
+    model.setData(x, y, value_per_axis=10)
