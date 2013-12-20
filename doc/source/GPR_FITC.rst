@@ -2,7 +2,7 @@ Sparse Regression
 =========================
 
 The code shown in this tutorial can be obtained by running */pyGPs/Demo/demo_GPR_FITC.py*
-This demo is more or less repeated of the demo of FITC classification.
+This demo is more or less similar to the demo of FITC classification.
 
 First example -> default inducing points
 -------------------
@@ -13,22 +13,24 @@ In case the number of training inputs :math:`x` exceeds a few hundred, approxima
 based on a low-rank plus diagonal approximation to the exact covariance to deal with these cases. The general idea is to use inducing points 
 :math:`u` and to base the computations on cross-covariances between training, test and inducing points only.
 
-Okay, now the model is FITC regression ::
+Okay, now the model is FITC regression: ::
 
 	model = gp.GPR_FITC()  
 
-The difference betwwen the usage of basic gp is that we will have to specify inducing points.
-In the first example here, we'll introduce you how to use default settings.
+The difference between the usage of basic :math:`GP` regression is that we will have to specify inducing points.
+In the first example here, we will introduce you how to use the default settings.
 
-The default inducing points is a grid(hypercube in higher dimension), where each dimension has 5 values in same step between min and max value of data by default. In order to let the model know the dimension of input data, we HAVE TO set data first. ::
+The default inducing points are a grid (hypercube for higher dimensions), where each dimension has 5 values in equidistant steps in :math:`[min, max]`,
+where :math:`min` and :math:`max` are the minimum and maximum values of the input data by default.
+In order to specify the dimension of input data, we HAVE TO set data first: ::
 
     model.setData(x, y)
 
-This number of value per axis for default inducing points can also be changed ::
+The number of inducing points per axis is :math:`5` per default; this can be changed by just specifying a different value per axis: ::
 
     model.setData(x, y, value_per_axis=10)
 
-Then the regular process follows: ::
+Then the regular training and prediction routines follow: ::
 
 	model.train()            
 	model.predict(z)
@@ -40,7 +42,7 @@ Then the regular process follows: ::
    :align: center
    :scale: 70 %
 
-The equispaced default inducing points :math:`u` that are shown in the figure as black X's.
+The equidistant default inducing points :math:`u` that are shown in the figure as black x's.
 
 
 Second example -> user-defined inducing points

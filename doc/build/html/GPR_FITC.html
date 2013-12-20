@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -14,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -58,7 +57,7 @@
   <div class="section" id="sparse-regression">
 <h1>Sparse Regression<a class="headerlink" href="#sparse-regression" title="Permalink to this headline">¶</a></h1>
 <p>The code shown in this tutorial can be obtained by running <em>/pyGPs/Demo/demo_GPR_FITC.py</em>
-This demo is more or less repeated of the demo of FITC classification.</p>
+This demo is more or less similar to the demo of FITC classification.</p>
 <div class="section" id="first-example-default-inducing-points">
 <h2>First example -&gt; default inducing points<a class="headerlink" href="#first-example-default-inducing-points" title="Permalink to this headline">¶</a></h2>
 <p>First load the same data as in the GPR demo.</p>
@@ -66,21 +65,23 @@ This demo is more or less repeated of the demo of FITC classification.</p>
 In case the number of training inputs <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2a1049c48c89a5e6.png" alt="x"/> exceeds a few hundred, approximate inference using Laplacian Approximation or Expectation Propagation takes too long. We offer the FITC approximation
 based on a low-rank plus diagonal approximation to the exact covariance to deal with these cases. The general idea is to use inducing points
 <img class="math" src="_images/math/9ad99798ec4c38e165cf517cb9e02b1c9e824103.png" alt="u"/> and to base the computations on cross-covariances between training, test and inducing points only.</p>
-<p>Okay, now the model is FITC regression</p>
+<p>Okay, now the model is FITC regression:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPR_FITC</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>The difference betwwen the usage of basic gp is that we will have to specify inducing points.
-In the first example here, we&#8217;ll introduce you how to use default settings.</p>
-<p>The default inducing points is a grid(hypercube in higher dimension), where each dimension has 5 values in same step between min and max value of data by default. In order to let the model know the dimension of input data, we HAVE TO set data first.</p>
+<p>The difference between the usage of basic <img class="math" src="_images/math/192d69ed9c7bd67b3f34486786531bae08ba2d88.png" alt="GP"/> regression is that we will have to specify inducing points.
+In the first example here, we will introduce you how to use the default settings.</p>
+<p>The default inducing points is a grid (hypercube for higher dimensions), where each dimension has 5 values in equidistant steps in <img class="math" src="_images/math/be18b391e67fbfe425533182c5081c066a971f77.png" alt="[min, max]"/>,
+where <img class="math" src="_images/math/958563059042b1cc80498ccde6f26d9d07bf6c02.png" alt="min"/> and <img class="math" src="_images/math/1bea903b827fedcdb4ef688ce9aa2ba330f6da15.png" alt="max"/> are the minimum and maximum values of the input data by default.
+In order to specify the dimension of input data, we HAVE TO set data first:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This number of value per axis for default inducing points can also be changed</p>
+<p>The number of inducing points per axis is <img class="math" src="_images/math/fc606f7f1e530731ab4f1cc364c01dc64a4455ee.png" alt="10"/> per default; this can be changed by just specifying a different value per axis:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">value_per_axis</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Then the regular process follows:</p>
+<p>Then the regular training and prediction routines follow:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -89,7 +90,7 @@ In the first example here, we&#8217;ll introduce you how to use default settings
 <div class="figure align-center">
 <a class="reference internal image-reference" href="_images/d3_1.png"><img alt="_images/d3_1.png" src="_images/d3_1.png" style="width: 560.0px; height: 420.0px;" /></a>
 </div>
-<p>The equispaced default inducing points <img class="math" src="_images/math/9ad99798ec4c38e165cf517cb9e02b1c9e824103.png" alt="u"/> that are shown in the figure as black X&#8217;s.</p>
+<p>The equidistant default inducing points <img class="math" src="_images/math/9ad99798ec4c38e165cf517cb9e02b1c9e824103.png" alt="u"/> that are shown in the figure as black x&#8217;s.</p>
 </div>
 <div class="section" id="second-example-user-defined-inducing-points">
 <h2>Second example -&gt; user-defined inducing points<a class="headerlink" href="#second-example-user-defined-inducing-points" title="Permalink to this headline">¶</a></h2>
@@ -180,7 +181,7 @@ overestimated outside the support of the inducing inputs. In a multivariate exam
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

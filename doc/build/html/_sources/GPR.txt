@@ -138,7 +138,7 @@ A bit more things you can do
 
     model.setNoise( log_sigma = np.log(0.1) )
 
-You don't need to specify the noise parameter if you are optimizing the hyperparamters later anyhow.
+You do not need to specify the noise parameter if you are optimizing the hyperparamters later anyhow.
 
 
 
