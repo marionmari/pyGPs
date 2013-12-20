@@ -77,11 +77,8 @@ In order to specify the dimension of input data, we HAVE TO set data first:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The number of inducing points per axis is <img class="math" src="_images/math/79069377f91364c2f87a64e5f9f562a091c8a6c1.png" alt="5"/> per default; this can be changed by just specifying a different value per axis:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">value_per_axis</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Then the regular training and prediction routines follow:</p>
+<p>The number of inducing points per axis is <img class="math" src="_images/math/79069377f91364c2f87a64e5f9f562a091c8a6c1.png" alt="5"/> per default.</p>
+<p>Now, the regular training and prediction routines follow:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -91,6 +88,10 @@ In order to specify the dimension of input data, we HAVE TO set data first:</p>
 <a class="reference internal image-reference" href="_images/d3_1.png"><img alt="_images/d3_1.png" src="_images/d3_1.png" style="width: 560.0px; height: 420.0px;" /></a>
 </div>
 <p>The equidistant default inducing points <img class="math" src="_images/math/9ad99798ec4c38e165cf517cb9e02b1c9e824103.png" alt="u"/> that are shown in the figure as black x&#8217;s.</p>
+<p>To change the number of inducing points per axis just specify a different value per axis:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">value_per_axis</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="second-example-user-defined-inducing-points">
 <h2>Second example -&gt; user-defined inducing points<a class="headerlink" href="#second-example-user-defined-inducing-points" title="Permalink to this headline">¶</a></h2>

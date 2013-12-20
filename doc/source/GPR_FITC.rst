@@ -26,11 +26,9 @@ In order to specify the dimension of input data, we HAVE TO set data first: ::
 
     model.setData(x, y)
 
-The number of inducing points per axis is :math:`5` per default; this can be changed by just specifying a different value per axis: ::
+The number of inducing points per axis is :math:`5` per default.
 
-    model.setData(x, y, value_per_axis=10)
-
-Then the regular training and prediction routines follow: ::
+Now, the regular training and prediction routines follow: ::
 
 	model.train()            
 	model.predict(z)
@@ -43,6 +41,10 @@ Then the regular training and prediction routines follow: ::
    :scale: 70 %
 
 The equidistant default inducing points :math:`u` that are shown in the figure as black x's.
+
+To change the number of inducing points per axis just specify a different value per axis: ::
+
+    model.setData(x, y, value_per_axis=10)
 
 
 Second example -> user-defined inducing points
