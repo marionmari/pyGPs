@@ -20,13 +20,13 @@ Okay, now the model is FITC regression: ::
 The difference between the usage of basic :math:`GP` regression is that we will have to specify inducing points.
 In the first example here, we will introduce you how to use the default settings.
 
-The default inducing points is a grid (hypercube for higher dimensions), where each dimension has 5 values in equidistant steps in :math:`[min, max]`,
+The default inducing points are a grid (hypercube for higher dimensions), where each dimension has 5 values in equidistant steps in :math:`[min, max]`,
 where :math:`min` and :math:`max` are the minimum and maximum values of the input data by default.
 In order to specify the dimension of input data, we HAVE TO set data first: ::
 
     model.setData(x, y)
 
-The number of inducing points per axis is :math:`10` per default; this can be changed by just specifying a different value per axis: ::
+The number of inducing points per axis is :math:`5` per default; this can be changed by just specifying a different value per axis: ::
 
     model.setData(x, y, value_per_axis=10)
 

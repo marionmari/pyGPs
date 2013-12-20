@@ -71,13 +71,13 @@ based on a low-rank plus diagonal approximation to the exact covariance to deal 
 </div>
 <p>The difference between the usage of basic <img class="math" src="_images/math/192d69ed9c7bd67b3f34486786531bae08ba2d88.png" alt="GP"/> regression is that we will have to specify inducing points.
 In the first example here, we will introduce you how to use the default settings.</p>
-<p>The default inducing points is a grid (hypercube for higher dimensions), where each dimension has 5 values in equidistant steps in <img class="math" src="_images/math/be18b391e67fbfe425533182c5081c066a971f77.png" alt="[min, max]"/>,
+<p>The default inducing points are a grid (hypercube for higher dimensions), where each dimension has 5 values in equidistant steps in <img class="math" src="_images/math/be18b391e67fbfe425533182c5081c066a971f77.png" alt="[min, max]"/>,
 where <img class="math" src="_images/math/958563059042b1cc80498ccde6f26d9d07bf6c02.png" alt="min"/> and <img class="math" src="_images/math/1bea903b827fedcdb4ef688ce9aa2ba330f6da15.png" alt="max"/> are the minimum and maximum values of the input data by default.
 In order to specify the dimension of input data, we HAVE TO set data first:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The number of inducing points per axis is <img class="math" src="_images/math/fc606f7f1e530731ab4f1cc364c01dc64a4455ee.png" alt="10"/> per default; this can be changed by just specifying a different value per axis:</p>
+<p>The number of inducing points per axis is <img class="math" src="_images/math/79069377f91364c2f87a64e5f9f562a091c8a6c1.png" alt="5"/> per default; this can be changed by just specifying a different value per axis:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">value_per_axis</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
