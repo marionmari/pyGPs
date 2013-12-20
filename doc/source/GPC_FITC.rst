@@ -74,7 +74,7 @@ A bit more things you can do
 ------------------------------
 As in standard GPC, it is possible to perform inference via Laplace approximation in the FITC method::
 
-    model.useLaplace_FITC() 
+    model.useLaplace_FITC()  
 
 Change the number of inducing points per axis::
 
