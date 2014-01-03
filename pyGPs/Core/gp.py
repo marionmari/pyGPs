@@ -122,17 +122,12 @@ class GP(object):
 
                         "SCG"        -> scaled conjugent gradient (faster than CG) 
         :param num_restarts: Set if you want to run mulitiple times of optimization with different initial guess. 
-
                              It specifys the maximum number of runs/restarts/trials.
         :param min_threshold: Set if you want to run mulitiple times of optimization with different initial guess. 
-
                               It specifys the threshold of objective function value. Stop optimization when this value is reached.
         :param meanRange: The range of initial guess for mean hyperparameters. 
-
-                          e.g. meanRange = [(-2,2), (-5,5), (0,1)]
-
+                          e.g. meanRange = [(-2,2), (-5,5), (0,1)].
                           Each tuple specifys the range (low, high) of this hyperparameter,
-
                           This is only the range of initial guess, during optimization process, optimal hyperparameters may go out of this range.
 
                           (-5,5) for each hyperparameter by default.

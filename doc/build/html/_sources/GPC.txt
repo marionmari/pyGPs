@@ -13,14 +13,6 @@ First, we import the data::
 	y = demoData['y']            # training target
 	z = demoData['xstar']        # test data
 
-	# only needed for 2-d contour plotting 
-	x1 = demoData['x1']          # x for class 1 (with label -1)
-	x2 = demoData['x2']          # x for class 2 (with label +1)     
-	t1 = demoData['t1']          # y for class 1 (with label -1)
-	t2 = demoData['t2']          # y for class 2 (with label +1)
-	p1 = demoData['p1']          # prior for class 1 (with label -1)
-	p2 = demoData['p2']          # prior for class 2 (with label +1)
-
 The :math:`120` data points were generated from two Gaussians with different means and covariances. One Gaussian is isotropic and contains 
 :math:`2/3` of the data (blue), the other is highly correlated and contains :math:`1/3` of the points (red). 
 Note, that the labels for the targets are specified to be :math:`\pm 1` (and not :math:`0/1`).

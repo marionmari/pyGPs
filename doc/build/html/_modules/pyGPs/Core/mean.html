@@ -1,0 +1,431 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyGPs.Core.mean &mdash; pyGPs 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pyGPs 1.0.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pyGPs 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyGPs.Core.mean</h1><div class="highlight"><pre>
+<span class="c">#================================================================================</span>
+<span class="c">#    Marion Neumann [marion dot neumann at uni-bonn dot de]</span>
+<span class="c">#    Daniel Marthaler [marthaler at ge dot com]</span>
+<span class="c">#    Shan Huang [shan dot huang at iais dot fraunhofer dot de]</span>
+<span class="c">#    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]</span>
+<span class="c">#</span>
+<span class="c">#    This file is part of pyGPs.</span>
+<span class="c">#    The software package is released under the BSD 2-Clause (FreeBSD) License.</span>
+<span class="c">#</span>
+<span class="c">#    Copyright (c) by</span>
+<span class="c">#    Marion Neumann, Daniel Marthaler, Shan Huang &amp; Kristian Kersting, 30/09/2013</span>
+<span class="c">#================================================================================</span>
+
+<span class="c"># mean functions to be use by Gaussian process functions. There are two</span>
+<span class="c"># different kinds of mean functions: simple and composite:</span>
+<span class="c">#</span>
+<span class="c"># simple mean functions:</span>
+<span class="c">#</span>
+<span class="c">#   meanZero      - zero mean function</span>
+<span class="c">#   meanOne       - one mean function</span>
+<span class="c">#   meanConst     - constant mean function</span>
+<span class="c">#   meanLinear    - linear mean function</span>
+<span class="c"># </span>
+<span class="c"># composite covariance functions (see explanation at the bottom):</span>
+<span class="c">#</span>
+<span class="c">#   meanScale     - scaled version of a mean function</span>
+<span class="c">#   meanPow       - power of a mean function</span>
+<span class="c">#   meanProd      - products of mean functions</span>
+<span class="c">#   meanSum       - sums of mean functions</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c"># Naming convention: all mean functions are named &quot;mean*&quot;.</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c"># 1) With one input arguments:</span>
+<span class="c">#</span>
+<span class="c">#    m = mean.proceed(x) </span>
+<span class="c">#</span>
+<span class="c"># The function computes and returns the mean vector where x is an n by D matrix </span>
+<span class="c"># of cases, where D is the dimension of the input space. </span>
+<span class="c"># The returned mean vector is of size n by 1.</span>
+<span class="c">#</span>
+<span class="c"># 2) With two input arguments:</span>
+<span class="c">#</span>
+<span class="c">#    dm = mean.proceed(x, i)</span>
+<span class="c">#</span>
+<span class="c"># The function computes and returns the n by 1 vector of partial derivatives</span>
+<span class="c"># of the mean vector w.r.t. hyp(i) i.e. hyperparameter number i.</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c"># @author: Shan Huang (last update Sep.2013)</span>
+<span class="c"># This is a object-oriented python implementation of gpml functionality </span>
+<span class="c"># (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).</span>
+<span class="c"># based on the functional-version of python implementation</span>
+<span class="c"># (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)</span>
+<span class="c"># </span>
+<span class="c">#</span>
+<span class="c"># Copyright (c) by Marion Neumann and Shan Huang, Sep.2013</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<div class="viewcode-block" id="Mean"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.Mean">[docs]</a><span class="k">class</span> <span class="nc">Mean</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The base function for mean function&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Mean</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="c"># overloading operators</span>
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SumOfMean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+        <span class="c"># using * for both scalar and production</span>
+        <span class="c"># depending on the types of two objects.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ScaleOfMean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Mean</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ProductOfMean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;only numbers and Means are allowed for *&quot;</span>
+    <span class="k">def</span> <span class="nf">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">number</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">number</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PowerOfMean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">number</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;only non-zero integers are supported for **&quot;</span>
+    
+
+</div>
+<span class="k">class</span> <span class="nc">ProductOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean1</span><span class="p">,</span><span class="n">mean2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span> <span class="o">=</span> <span class="n">mean1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean2</span> <span class="o">=</span> <span class="n">mean2</span>
+        <span class="k">if</span> <span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span> <span class="ow">and</span> <span class="n">mean2</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span> <span class="o">+</span> <span class="n">mean2</span><span class="o">.</span><span class="n">hyp</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="n">mean2</span><span class="o">.</span><span class="n">hyp</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">mean2</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span>
+    <span class="k">def</span> <span class="nf">sethyp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hyp</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">hyp</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span><span class="p">)</span>
+        <span class="n">len1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="n">hyp</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span><span class="p">[:</span><span class="n">len1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean2</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span><span class="p">[</span><span class="n">len1</span><span class="p">:]</span>
+    <span class="k">def</span> <span class="nf">gethyp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span>
+    <span class="n">hyp</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">gethyp</span><span class="p">,</span><span class="n">sethyp</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>                      <span class="c"># allocate space for mean vector</span>
+        <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                          <span class="c"># compute mean vector</span>
+            <span class="n">A</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">A</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean2</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">der</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>               <span class="c"># compute derivative vector  </span>
+            <span class="k">if</span> <span class="n">der</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span><span class="p">):</span>
+                <span class="n">A</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">der</span><span class="p">)</span>
+                <span class="n">A</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean2</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">):</span>
+                <span class="n">der2</span> <span class="o">=</span> <span class="n">der</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span><span class="p">)</span>
+                <span class="n">A</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean2</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">der2</span><span class="p">)</span>
+                <span class="n">A</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Error: der out of range for meanProduct&quot;</span><span class="p">)</span>            
+        <span class="k">return</span> <span class="n">A</span>
+
+
+<span class="k">class</span> <span class="nc">SumOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean1</span><span class="p">,</span><span class="n">mean2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span> <span class="o">=</span> <span class="n">mean1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean2</span> <span class="o">=</span> <span class="n">mean2</span>
+        <span class="k">if</span> <span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span> <span class="ow">and</span> <span class="n">mean2</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span> <span class="o">+</span> <span class="n">mean2</span><span class="o">.</span><span class="n">hyp</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="n">mean2</span><span class="o">.</span><span class="n">hyp</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">mean2</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span>
+    <span class="k">def</span> <span class="nf">sethyp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hyp</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">hyp</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span><span class="p">)</span>
+        <span class="n">len1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="n">hyp</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span><span class="p">[:</span><span class="n">len1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean2</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span><span class="p">[</span><span class="n">len1</span><span class="p">:]</span>
+    <span class="k">def</span> <span class="nf">gethyp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span>
+    <span class="n">hyp</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">gethyp</span><span class="p">,</span><span class="n">sethyp</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>                     <span class="c"># allocate space for mean vector</span>
+        <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                          <span class="c"># compute mean vector</span>
+            <span class="n">A</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">A</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean2</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">der</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>               <span class="c"># compute derivative vector  </span>
+            <span class="k">if</span> <span class="n">der</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span><span class="p">):</span>
+                <span class="n">A</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">der</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">):</span>
+                <span class="n">der2</span> <span class="o">=</span> <span class="n">der</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean1</span><span class="o">.</span><span class="n">hyp</span><span class="p">)</span>
+                <span class="n">A</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean2</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">der2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Error: der out of range for meanSum&quot;</span><span class="p">)</span>            
+        <span class="k">return</span> <span class="n">A</span>
+
+
+<span class="k">class</span> <span class="nc">ScaleOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="p">,</span><span class="n">scalar</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span>
+        <span class="k">if</span> <span class="n">mean</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">scalar</span><span class="p">]</span> <span class="o">+</span> <span class="n">mean</span><span class="o">.</span><span class="n">hyp</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">scalar</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">sethyp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hyp</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">hyp</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="n">hyp</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">def</span> <span class="nf">gethyp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span>
+    <span class="n">hyp</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">gethyp</span><span class="p">,</span><span class="n">sethyp</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                              <span class="c"># scale parameter</span>
+        <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                              <span class="c"># compute mean vector</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>             <span class="c"># accumulate means</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">der</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>      <span class="c"># compute derivative w.r.t. c</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>                                 
+            <span class="n">A</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">der</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">A</span>
+
+
+<span class="k">class</span> <span class="nc">PowerOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span>
+        <span class="k">if</span> <span class="n">mean</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">+</span> <span class="n">mean</span><span class="o">.</span><span class="n">hyp</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">sethyp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hyp</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">hyp</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span> <span class="o">=</span> <span class="n">hyp</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">def</span> <span class="nf">gethyp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hyp</span>
+    <span class="n">hyp</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">gethyp</span><span class="p">,</span><span class="n">sethyp</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> 
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                               <span class="c"># compute mean vector</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">**</span><span class="n">d</span>              <span class="c"># accumulate means</span>
+        <span class="k">else</span><span class="p">:</span>                                         <span class="c"># compute derivative vector</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">der</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>      
+        <span class="k">return</span> <span class="n">A</span>
+
+
+
+
+<span class="c"># simple mean functions </span>
+
+<div class="viewcode-block" id="Zero"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.Zero">[docs]</a><span class="k">class</span> <span class="nc">Zero</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Zero mean.&#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;0&#39;</span>
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> 
+        <span class="k">return</span> <span class="n">A</span>
+</div>
+<div class="viewcode-block" id="One"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.One">[docs]</a><span class="k">class</span> <span class="nc">One</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; One mean.&#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;1&#39;</span>
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                           
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> 
+        <span class="k">else</span><span class="p">:</span>   
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">A</span>
+</div>
+<div class="viewcode-block" id="Const"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.Const">[docs]</a><span class="k">class</span> <span class="nc">Const</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Constant mean function. hyp = [c]</span>
+
+<span class="sd">    :param c: constant value for mean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">5.</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">n</span><span class="p">,</span><span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                            <span class="c"># evaluate mean</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> 
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">der</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>    <span class="c"># compute derivative vector wrt c</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> 
+        <span class="k">else</span><span class="p">:</span>   
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> 
+        <span class="k">return</span> <span class="n">A</span>
+
+</div>
+<div class="viewcode-block" id="Linear"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.Linear">[docs]</a><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Linear mean function. self.hyp = alpha_list</span>
+
+<span class="sd">    :param D: dimension of training data. Set if you want default alpha, which is 0.5 for each dimension.</span>
+<span class="sd">    :alpha_list: scalar alpha for each dimension</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">alpha_list</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">alpha_list</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">D</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="n">alpha_list</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    	<span class="n">n</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        print &quot;Linear mean function is parameterized as:&quot;</span>
+<span class="sd">        print &quot;m(x) = sum_i (a_i * x_i) &quot;</span>
+<span class="sd">        print &quot;&quot;</span>
+<span class="sd">        print &quot;The number of hyperparameters is %d (dimension of inputs):&quot; % D</span>
+<span class="sd">        print &quot;hyp = [a_1, a_2, ... , a_D]&quot;</span>
+<span class="sd">        print &quot;------------------------------------------------------------------&quot;</span>
+<span class="sd">        raise Exception(&quot;Wrong number of hyperparameters.&quot;)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">c</span><span class="p">,(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">),</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                         <span class="c"># evaluate mean</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">der</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">der</span> <span class="o">&lt;</span> <span class="n">D</span><span class="p">:</span>  <span class="c"># compute derivative vector wrt meanparameters</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="n">der</span><span class="p">],</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="n">der</span><span class="p">]),</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span> 
+        <span class="k">else</span><span class="p">:</span>   
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> 
+        <span class="k">return</span> <span class="n">A</span>
+
+
+
+<span class="c"># You can make some test codes below:</span>
+    
+<span class="c"># UPDATE</span>
+<span class="c"># just as the OO kernel usage: instead of hyp = np.array([1,2,3]), </span>
+<span class="c"># here I use hyp = [1,2,3]</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c"># test1: combinations of mean functions</span>
+    <span class="n">m1</span> <span class="o">=</span> <span class="n">meanConst</span><span class="p">([</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">m2</span> <span class="o">=</span> <span class="n">meanOne</span><span class="p">()</span>
+    <span class="n">myMean</span> <span class="o">=</span> <span class="p">(</span> <span class="n">m1</span><span class="o">*</span><span class="mi">4</span> <span class="p">)</span>
+    <span class="k">print</span> <span class="n">myMean</span><span class="o">.</span><span class="n">hyp</span>
+    <span class="n">myMean</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">print</span> <span class="n">m1</span><span class="o">.</span><span class="n">hyp</span>
+    <span class="k">print</span> <span class="n">m2</span><span class="o">.</span><span class="n">hyp</span>
+
+
+    <span class="c">#########################################</span>
+    
+    <span class="c"># test2: Does proceed() perform correctly compare to feval()?</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">20</span> <span class="c"># number of labeled/training data</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="c"># Dimension of input data</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.083970427750732</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.821018066101379</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.617870699182597</span><span class="p">,</span>  <span class="o">-</span><span class="mf">1.183822608860694</span><span class="p">,</span>\
+              <span class="mf">0.274087442277144</span><span class="p">,</span>   <span class="mf">0.599441729295593</span><span class="p">,</span>   <span class="mf">1.768897919204435</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.465645549031928</span><span class="p">,</span>\
+              <span class="mf">0.588852784375935</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.832982214438054</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.512106527960363</span><span class="p">,</span>   <span class="mf">0.277883144210116</span><span class="p">,</span>\
+              <span class="o">-</span><span class="mf">0.065870426922211</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.821412363806325</span><span class="p">,</span>   <span class="mf">0.185399443778088</span><span class="p">,</span>  <span class="o">-</span><span class="mf">0.858296174995998</span><span class="p">,</span>\
+               <span class="mf">0.370786630037059</span><span class="p">,</span>  <span class="o">-</span><span class="mf">1.409869162416639</span><span class="p">,</span><span class="o">-</span><span class="mf">0.144668412325022</span><span class="p">,</span><span class="o">-</span><span class="mf">0.553299615220374</span><span class="p">]);</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,(</span><span class="n">n</span><span class="p">,</span><span class="n">D</span><span class="p">))</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">1.9</span><span class="p">,</span><span class="mf">1.9</span><span class="p">,</span><span class="mi">101</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span>
+
+
+    <span class="k">print</span> <span class="n">myMean</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c"># same result as feval</span>
+    <span class="c"># ALL simple mean functions work the same as feval (tested)!</span>
+
+    
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pyGPs 1.0.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

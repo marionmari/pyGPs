@@ -52,7 +52,7 @@
 <h1>Optimizers<a class="headerlink" href="#optimizers" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="optimization-methods">
 <h2>Optimization Methods<a class="headerlink" href="#optimization-methods" title="Permalink to this headline">¶</a></h2>
-<p>As you have already seen in demo, optimizer is initialized in the following way.</p>
+<p>As you may have already seen in demo, optimizer is initialized in the following way.</p>
 <dl class="method">
 <dt id="pyGPs.Core.gp.GP.setOptimizer">
 <tt class="descclassname">GP.</tt><tt class="descname">setOptimizer</tt><big>(</big><em>method</em>, <em>num_restarts=None</em>, <em>min_threshold=None</em>, <em>meanRange=None</em>, <em>covRange=None</em>, <em>likRange=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/gp.html#GP.setOptimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.gp.GP.setOptimizer" title="Permalink to this definition">¶</a></dt>
@@ -68,16 +68,14 @@
 <p>&#8220;BFGS&#8221;       -&gt; quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)</p>
 <p>&#8220;SCG&#8221;        -&gt; scaled conjugent gradient (faster than CG)</p>
 </li>
-<li><strong>num_restarts</strong> &#8211; <p>Set if you want to run mulitiple times of optimization with different initial guess.</p>
-<p>It specifys the maximum number of runs/restarts/trials.</p>
-</li>
-<li><strong>min_threshold</strong> &#8211; <p>Set if you want to run mulitiple times of optimization with different initial guess.</p>
-<p>It specifys the threshold of objective function value. Stop optimization when this value is reached.</p>
-</li>
-<li><strong>meanRange</strong> &#8211; <p>The range of initial guess for mean hyperparameters.</p>
-<p>e.g. meanRange = [(-2,2), (-5,5), (0,1)]</p>
-<p>Each tuple specifys the range (low, high) of this hyperparameter,</p>
-<p>This is only the range of initial guess, during optimization process, optimal hyperparameters may go out of this range.</p>
+<li><strong>num_restarts</strong> &#8211; Set if you want to run mulitiple times of optimization with different initial guess. 
+It specifys the maximum number of runs/restarts/trials.</li>
+<li><strong>min_threshold</strong> &#8211; Set if you want to run mulitiple times of optimization with different initial guess. 
+It specifys the threshold of objective function value. Stop optimization when this value is reached.</li>
+<li><strong>meanRange</strong> &#8211; <p>The range of initial guess for mean hyperparameters. 
+e.g. meanRange = [(-2,2), (-5,5), (0,1)].
+Each tuple specifys the range (low, high) of this hyperparameter,
+This is only the range of initial guess, during optimization process, optimal hyperparameters may go out of this range.</p>
 <p>(-5,5) for each hyperparameter by default.</p>
 </li>
 <li><strong>covRange</strong> &#8211; The range of initial guess for kernel hyperparameters. Usage see meanRange</li>

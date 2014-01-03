@@ -61,14 +61,14 @@ model.setData(x,y)
 
 # Train default GPC model (see demo_GPC) for each binary classification problem, 
 # and decide label for test patterns of hand-writen digits
-# prdict_vote[i,j] is the probability of being class j for test pattern i
-predict_vote = model.trainAndPredict(xs)
+# prdictive_vote[i,j] is the probability of being class j for test pattern i
+predictive_vote = model.trainAndPredict(xs)
 
-y_predict = np.argmax(predictive_vote, axis=1)
-y_predict = np.reshape(y_predict, (y_predict.shape[0],1))
+predictive_class = np.argmax(predictive_vote, axis=1)
+predictive_class = np.reshape(predictive_class, (predictive_class.shape[0],1))
 
 # Accuracy of recognized digit
-acc = valid.ACC(y_predict, ys)
+acc = valid.ACC(predictive_class, ys)
 print "Accuracy of recognizing hand-writen digits:", round(acc,2)
 
 
@@ -76,14 +76,12 @@ print "Accuracy of recognizing hand-writen digits:", round(acc,2)
 # A bit more things you can do
 #----------------------------------------------------------------------
 # Just like we did for GP classification
-# You can use specify the setting by:
+# You can use specify the setting for each binary classificiation problem by:
 m = mean.Zero()
 k = cov.RBF()
 model.setPrior(mean=m,kernel=k)
-
 model.useLaplace()
-
-mdoel.setOptimizer("SCG", num_restarts=20)
+model.setOptimizer("SCG", num_restarts=20)
 
 # Beside trainAndPredict(xs),
 # there is also an option to predict without optimization

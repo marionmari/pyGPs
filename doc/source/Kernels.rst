@@ -143,11 +143,15 @@ where the returning matrix A depends on the input:
 
 
 
+List of Kernels and Default Parameters
+---------------------------------------
 
-
-List of Kernels/Means and Their Default Parameters
----------------------------------
 .. automodule:: pyGPs.Core.cov
    :members:
 
 
+List of Means and Default Parameters
+-----------------------------------------
+ 
+.. automodule:: pyGPs.Core.mean
+   :members:

@@ -278,7 +278,7 @@
 
 
 <span class="c"># an example of simple kernel function, the rest are similar</span>
-<span class="k">class</span> <span class="nc">Poly</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="Poly"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Poly">[docs]</a><span class="k">class</span> <span class="nc">Poly</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_c</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">log_d</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span> <span class="n">log_c</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span>  <span class="p">[</span><span class="n">log_d</span><span class="p">]</span> 
@@ -326,8 +326,8 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative entry in covPoly&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
    
-
-<span class="k">class</span> <span class="nc">RBF</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RBF"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RBF">[docs]</a><span class="k">class</span> <span class="nc">RBF</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">log_ell</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">]</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -362,8 +362,8 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Calling for a derivative in covSEiso that does not exist&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
-
-<span class="k">class</span> <span class="nc">RBFunit</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RBFunit"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RBFunit">[docs]</a><span class="k">class</span> <span class="nc">RBFunit</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mf">1.</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">log_ell</span><span class="p">]</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -394,8 +394,8 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covSEisoU&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
-
-<span class="k">class</span> <span class="nc">RBFard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RBFard"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RBFard">[docs]</a><span class="k">class</span> <span class="nc">RBFard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_ell_list</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">log_ell_list</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">D</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="n">log_sigma</span><span class="p">]</span>
@@ -440,12 +440,12 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covSEard&quot;</span><span class="p">)</span>   
         <span class="k">return</span> <span class="n">A</span>
 
-            
+            </div>
 <span class="k">class</span> <span class="nc">PPiso</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">Const</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="Const"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Const">[docs]</a><span class="k">class</span> <span class="nc">Const</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">log_sigma</span><span class="p">]</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -474,8 +474,8 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative entry in covConst&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
-
-<span class="k">class</span> <span class="nc">LIN</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="LIN"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.LIN">[docs]</a><span class="k">class</span> <span class="nc">LIN</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
 <span class="c"># Linear covariance function is parameterized as:</span>
 <span class="c"># k(x^p,x^q) = x^p&#39;*x^q</span>
 <span class="c"># There are no hyperparameters</span>
@@ -496,8 +496,8 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No derivative available in covLIN&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
-
-<span class="k">class</span> <span class="nc">LINard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="LINard"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.LINard">[docs]</a><span class="k">class</span> <span class="nc">LINard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_ell_list</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">log_ell_list</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">D</span><span class="p">)]</span>
@@ -540,8 +540,8 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covLINard&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
-
-<span class="k">class</span> <span class="nc">Matern</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Matern"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Matern">[docs]</a><span class="k">class</span> <span class="nc">Matern</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">log_d</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span> <span class="n">log_ell</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">,</span> <span class="n">log_d</span> <span class="p">]</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -618,8 +618,8 @@
         <span class="k">return</span> <span class="n">A</span>
 
 
-
-<span class="k">class</span> <span class="nc">Periodic</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Periodic"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Periodic">[docs]</a><span class="k">class</span> <span class="nc">Periodic</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">log_p</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">):</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span> <span class="n">log_ell</span><span class="p">,</span> <span class="n">log_p</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">]</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -666,8 +666,8 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covPeriodic&quot;</span><span class="p">)</span>            
         <span class="k">return</span> <span class="n">A</span>
 
-
-<span class="k">class</span> <span class="nc">covNoise</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="covNoise"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.covNoise">[docs]</a><span class="k">class</span> <span class="nc">covNoise</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
 <span class="c"># Independent covariance function, ie &quot;white noise&quot;, with specified variance.</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">log_sigma</span><span class="p">]</span>
@@ -705,14 +705,14 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covNoise&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
-
+</div>
 <span class="k">class</span> <span class="nc">RQiso</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">pass</span>
 <span class="k">class</span> <span class="nc">RQard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">Pre</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="Pre"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Pre">[docs]</a><span class="k">class</span> <span class="nc">Pre</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
 <span class="c"># Precomputed kernel matrix</span>
 <span class="c"># M1: cross covariances train by test</span>
 <span class="c">#     last row: self covariances (diagonal of test by test)</span>
@@ -745,7 +745,7 @@
 <span class="c"># UPDATE USAGE:</span>
 <span class="c"># here I decided to get rid of the data structure hyp = np.array([1,2,3]), </span>
 <span class="c"># a simple list hyp = [1,2,3] might be enough</span>
-
+</div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="c"># test1: combinations of kernel functions</span>
     <span class="n">k1</span> <span class="o">=</span> <span class="n">covPoly</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>

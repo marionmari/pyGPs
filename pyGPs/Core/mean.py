@@ -61,7 +61,7 @@ import numpy as np
 import math
 
 class Mean(object):
-    """the base function for mean function"""
+    """The base function for mean function"""
     def __init__(self):
         super(Mean, self).__init__()
         self.hyp = []
@@ -89,7 +89,6 @@ class Mean(object):
     
 
 
-# combinations
 class ProductOfMean(Mean):
     def __init__(self,mean1,mean2):
         self.mean1 = mean1
@@ -128,6 +127,7 @@ class ProductOfMean(Mean):
                 raise Exception("Error: der out of range for meanProduct")            
         return A
 
+
 class SumOfMean(Mean):
     def __init__(self,mean1,mean2):
         self.mean1 = mean1
@@ -164,6 +164,7 @@ class SumOfMean(Mean):
                 raise Exception("Error: der out of range for meanSum")            
         return A
 
+
 class ScaleOfMean(Mean):
     def __init__(self,mean,scalar):
         self.mean = mean
@@ -189,9 +190,8 @@ class ScaleOfMean(Mean):
             A = c * self.mean.proceed(x,der-1) 
         return A
 
+
 class PowerOfMean(Mean):
-# Compose a mean function as the power of another one
-# m(x) = m0(x) ** d
     def __init__(self, mean, d):
         self.mean = mean
         if mean.hyp:
@@ -218,8 +218,10 @@ class PowerOfMean(Mean):
 
 
 
-# simple mean functions below
+# simple mean functions 
+
 class Zero(Mean):
+    '''Zero mean.'''
     def __init__(self):
         self.hyp = []
         self.name = '0'
@@ -229,6 +231,7 @@ class Zero(Mean):
         return A
 
 class One(Mean):
+    ''' One mean.'''
     def __init__(self):
         self.hyp = []
         self.name = '1'
@@ -241,21 +244,14 @@ class One(Mean):
         return A
 
 class Const(Mean):
+    '''
+    Constant mean function. hyp = [c]
+
+    :param c: constant value for mean
+    '''
     def __init__(self, c=5.):
         self.hyp = [c]
-        '''
-        if len(hyp) == 1:
-            self.hyp = hyp
-            self.name = 'c'
-        else:
-            print "Constant mean function is parameterized as:"
-            print "m(x) = c"
-            print ""
-            print "The number of hyperparameters is 1"
-            print "hyp = [c]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-        '''
+
     def proceed(self, x=None, der=None):
         n,D = x.shape
         if der == None:                            # evaluate mean
@@ -268,6 +264,12 @@ class Const(Mean):
 
 
 class Linear(Mean):
+    '''
+    Linear mean function. self.hyp = alpha_list
+
+    :param D: dimension of training data. Set if you want default alpha, which is 0.5 for each dimension.
+    :alpha_list: scalar alpha for each dimension
+    '''
     def __init__(self, D=None, alpha_list=None):
         if alpha_list == None:
             self.hyp = [0.5 for i in xrange(D)]
@@ -276,15 +278,6 @@ class Linear(Mean):
 
     def proceed(self, x=None, der=None):
     	n, D = x.shape
-        '''
-        print "Linear mean function is parameterized as:"
-        print "m(x) = sum_i (a_i * x_i) "
-        print ""
-        print "The number of hyperparameters is %d (dimension of inputs):" % D
-        print "hyp = [a_1, a_2, ... , a_D]"
-        print "------------------------------------------------------------------"
-        raise Exception("Wrong number of hyperparameters.")
-        '''
         c = np.array(self.hyp)
         c = np.reshape(c,(len(c),1))
         if der == None:                         # evaluate mean

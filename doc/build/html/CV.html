@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pyGPs 1.0.0 documentation" href="index.html" />
     <link rel="up" title="Demos" href="Examples.html" />
-    <link rel="next" title="Kernels &amp; Means" href="Kernels.html" />
+    <link rel="next" title="Regression on UCI Housing data" href="demoHousing.html" />
     <link rel="prev" title="Multi-class Classification" href="GPMC.html" /> 
   </head>
   <body>
@@ -39,7 +39,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Kernels.html" title="Kernels &amp; Means"
+          <a href="demoHousing.html" title="Regression on UCI Housing data"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="GPMC.html" title="Multi-class Classification"
@@ -59,67 +59,27 @@
 <p>In this demo, we&#8217;ll show you the typical process of using GP for machine learning from loading data, preprocessing, training,  predicting to validation and evaluation.</p>
 <div class="section" id="load-data">
 <h2>Load data<a class="headerlink" href="#load-data" title="Permalink to this headline">¶</a></h2>
-<p>We use the ionosphere dataset from UCI machine learning repository.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">data_source</span> <span class="o">=</span> <span class="s">&quot;data_for_demo/ionosphere.data.txt&quot;</span>
-<span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_source</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span><span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-        <span class="n">feature</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
-        <span class="n">attr</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">attr</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">attr</span><span class="p">]</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="n">feature</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-        <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
-        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="preprocessing">
-<h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">¶</a></h2>
-<p>Then, we do some data cleaning. Here we deal with label in ionosphere data, change &#8220;b&#8221; to&#8221;-1&#8221;, and &#8220;g&#8221; to &#8220;+1&#8221;</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">n</span><span class="p">,</span><span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;g&#39;</span><span class="p">:</span>
-        <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>We use the ionosphere dataset <a class="footnote-reference" href="#id2" id="id1">[1]</a> from Johns Hopkins University Ionosphere database.
+It is available in UCI machine learning repository. ::
+Then we need to do some data cleaning. Here we deal with label in ionosphere data, change &#8220;b&#8221; to&#8221;-1&#8221;, and &#8220;g&#8221; to &#8220;+1&#8221;. These preprocessing implementation are availabe in the source code.</p>
 </div>
 <div class="section" id="cross-validation">
 <h2>Cross Validation<a class="headerlink" href="#cross-validation" title="Permalink to this headline">¶</a></h2>
-<p>Now, lets focus on the use of cross-validation. Lets see the complete process by this example.</p>
+<p>Now, lets focus on the use of cross-validation.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">K</span> <span class="o">=</span> <span class="mi">10</span>             <span class="c"># number of fold</span>
-<span class="n">ACC</span> <span class="o">=</span> <span class="p">[]</span>           <span class="c"># accuracy</span>
-<span class="n">RMSE</span> <span class="o">=</span> <span class="p">[]</span>          <span class="c"># root-mean-square error</span>
-<span class="n">cv_run</span> <span class="o">=</span> <span class="mi">0</span>
-
 <span class="k">for</span> <span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="ow">in</span> <span class="n">valid</span><span class="o">.</span><span class="n">k_fold_validation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
-    <span class="k">print</span> <span class="s">&#39;Run:&#39;</span><span class="p">,</span> <span class="n">cv_run</span>
     <span class="c"># This is a binary classification problem</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>
     <span class="c"># Since no prior knowldege, leave everything default</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-    <span class="c"># Predit</span>
+    <span class="c"># Predition</span>
     <span class="n">ymu</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fmu</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="n">y_test</span><span class="p">)</span>
-
     <span class="c"># ymu for classification is a continuous value over -1 to +1</span>
     <span class="c"># If you want predicting result to either one of the classes, take a sign of ymu.</span>
     <span class="n">ymu_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">ymu</span><span class="p">)</span>
-
     <span class="c"># Evluation</span>
-    <span class="n">acc</span> <span class="o">=</span> <span class="n">valid</span><span class="o">.</span><span class="n">ACC</span><span class="p">(</span><span class="n">ymu_class</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
-    <span class="k">print</span> <span class="s">&#39;   accuracy =&#39;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">acc</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">rmse</span> <span class="o">=</span> <span class="n">valid</span><span class="o">.</span><span class="n">RMSE</span><span class="p">(</span><span class="n">ymu_class</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
-    <span class="k">print</span> <span class="s">&#39;   rmse =&#39;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">rmse</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">ACC</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">acc</span><span class="p">)</span>
-    <span class="n">RMSE</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rmse</span><span class="p">)</span>
-
-    <span class="c"># Toward next run</span>
-    <span class="n">cv_run</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">acc</span> <span class="o">=</span> <span class="n">valid</span><span class="o">.</span><span class="n">ACC</span><span class="p">(</span><span class="n">ymu_class</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>       <span class="c"># accuracy</span>
+    <span class="n">rmse</span> <span class="o">=</span> <span class="n">valid</span><span class="o">.</span><span class="n">RMSE</span><span class="p">(</span><span class="n">ymu_class</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>     <span class="c"># root-mean-square error</span>
 </pre></div>
 </div>
 </div>
@@ -136,6 +96,12 @@
 </ul>
 </dd>
 </dl>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Sigillito, V. G., Wing, S. P., Hutton, L. V., &amp; Baker, K. B. (1989). Classification of radar returns from the ionosphere using neural networks. Johns Hopkins APL Technical Digest, 10, 262-266.</td></tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -149,7 +115,6 @@
   <ul>
 <li><a class="reference internal" href="#">K-fold Cross-Validation</a><ul>
 <li><a class="reference internal" href="#load-data">Load data</a></li>
-<li><a class="reference internal" href="#preprocessing">Preprocessing</a></li>
 <li><a class="reference internal" href="#cross-validation">Cross Validation</a></li>
 <li><a class="reference internal" href="#evaluation-measures">Evaluation measures</a></li>
 </ul>
@@ -160,8 +125,8 @@
   <p class="topless"><a href="GPMC.html"
                         title="previous chapter">Multi-class Classification</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="Kernels.html"
-                        title="next chapter">Kernels &amp; Means</a></p>
+  <p class="topless"><a href="demoHousing.html"
+                        title="next chapter">Regression on UCI Housing data</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/CV.txt"
@@ -194,7 +159,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Kernels.html" title="Kernels &amp; Means"
+          <a href="demoHousing.html" title="Regression on UCI Housing data"
              >next</a> |</li>
         <li class="right" >
           <a href="GPMC.html" title="Multi-class Classification"

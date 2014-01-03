@@ -29,7 +29,7 @@ class Kernel(object):
     """
     This is a base class of Kernel functions
     there is no computation in this class, it just defines rules about a kernel class should have
-    each covariance function will inherite it and implement its own behaviour
+    each covariance function will inherit it and implement its own behaviour
     """
     def __init__(self):
         self.hyp = []
@@ -227,21 +227,17 @@ class FITCOfKernel(Kernel):
 
 
 class Poly(Kernel):
+    '''
+    Polynomial covariance function. hyp = [ log_c, log_sigma ]
+
+    :param log_c: inhomogeneous offset. 
+    :param log_sigma: signal deviation. 
+    :param log_d: order of polynomial (treated not as hyperparameter, i.e. will not be trained). 
+    '''
     def __init__(self, log_c=0., log_d=np.log(2), log_sigma=0. ):
         self.hyp = [ log_c, log_sigma]
         self.para =  [log_d] 
-        '''
-        else:
-            print "Polynomial covariance function is parameterized as:"
-            print "k(x^p,x^q) = sf2 * ( c +  (x^p)'*(x^q) ) ** d"
-            print "The number of parameters is 3:"
-            print "hyp = [ log(c), log(sqrt(sf2)), log(d) ]"
-            print "where,"
-            print "      log(c), log(sqrt(sf2))  is hyperparameters"
-            print "      log(d) is a special parameter which will not be optimized"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-        '''
+
     def proceed(self, x=None, z=None, der=None):
         c   = np.exp(self.hyp[0])             # inhomogeneous offset
         sf2 = np.exp(2.*self.hyp[1])          # signal variance
@@ -273,18 +269,15 @@ class Poly(Kernel):
    
 
 class RBF(Kernel):
+    '''
+    Squared Exponential kernel with isotropic distance measure. hyp = [log_ell, log_sigma]
+
+    :param log_ell: characteristic length scale. 
+    :param log_sigma: signal deviation. 
+    '''
     def __init__(self, log_ell=-1., log_sigma=0.):
         self.hyp = [log_ell, log_sigma]
-        '''
-            print "Squared Exponential covariance function with isotropic distance measure is parameterized as:"
-            print "k(x^p,x^q) = sf2 * exp(-(x^p - x^q)'*inv(P)*(x^p - x^q)/2)"
-            print "where the P matrix is ell^2 times the unit matrix and"
-            print "sf2 is the signal variance"
-            print "The number of hyperparameters is 2:"
-            print "hyp = [ log(ell), log(sqrt(sf2)) ]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-        '''
+
     def proceed(self, x=None, z=None, der=None):
 
         ell = np.exp(self.hyp[0])         # characteristic length scale
@@ -309,18 +302,16 @@ class RBF(Kernel):
 
 
 class RBFunit(Kernel):
+    '''
+    Squared Exponential kernel with isotropic distance measure with unit magnitude.
+    i.e signal variance is always 1. hyp = [ log_ell ]
+
+    :param log_ell: characteristic length scale. 
+    '''
     def __init__(self, log_ell=-1.):
+
         self.hyp = [log_ell]
-        '''
-            print "Squared Exponential covariance function with isotropic distance measure with"
-            print "unit magnitude. The covariance function is parameterized as:"
-            print "k(x^p,x^q) = exp( -(x^p - x^q)' * inv(P) * (x^p - x^q) / 2 )"
-            print "where the P matrix is ell^2 times the unit matrix"
-            print "The number of hyperparameters is 1:"
-            print "hyp = [ log(ell) ]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-        '''
+
     def proceed(self, x=None, z=None, der=None):
         ell = np.exp(self.hyp[0])  # characteristic length scale
         n,D = x.shape
@@ -341,25 +332,21 @@ class RBFunit(Kernel):
 
 
 class RBFard(Kernel):
+    '''
+    Squared Exponential kernel with Automatic Relevance Determination.
+    hyp = log_ell_list + [log_sigma]
+
+    :param D: dimension of pattern. set if you want default ell, which is 0.5 for each dimension.
+    :param log_ell_list: characteristic length scale for each dimension.
+    :param log_sigma: signal deviation. 
+    '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0.):
         if log_ell_list == None:
             self.hyp = [0.5 for i in xrange(D)] + [log_sigma]
         else:
             self.hyp = log_ell_list + [log_sigma]
     def proceed(self, x=None, z=None, der=None):
-        n, D = x.shape
-        '''
-        if len(self.hyp) != D+1: 
-            print "Squared Exponential covariance function with ARD is parameterized as:"
-            print "k(x^p,x^q) = sf2 * exp(-(x^p - x^q)'*inv(P)*(x^p - x^q)/2)"
-            print "where the P matrix is diagonal with ARD parameters ell_1^2,...,ell_D^2, where"
-            print "D is the dimension of the input space and sf2 is the signal variance."
-            print "The number of hyperparameters is %d (dimension of inputs +1):" % (D+1)
-            print "hyp = [log(ell_1), log(ell_2), ..., log(ell_D), log(sqrt(sf2))]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-        else:
-        '''    
+        n, D = x.shape  
         ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
         if z == 'diag':
@@ -391,19 +378,14 @@ class PPiso(Kernel):
 
 
 class Const(Kernel):
+    '''
+    Constant kernel. hyp = [ log_sigma ]
+
+    :param log_sigma: signal deviation. 
+    '''
     def __init__(self, log_sigma=0.):
         self.hyp = [log_sigma]
-        '''
-        if len(hyp) == 1:
-            self.hyp = hyp
-        else:
-            print "Constant covariance function is parameterized as:"
-            print "k(x^p,x^q) = sf2 "
-            print "The number of hyperparameters is 1" 
-            print "hyp = [ log(sqrt(sf2)) ]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-        '''
+
     def proceed(self, x=None, z=None, der=None):
         sf2 = np.exp(self.hyp[0])         # s2
         n,m = x.shape
@@ -421,12 +403,9 @@ class Const(Kernel):
 
 
 class LIN(Kernel):
-# Linear covariance function is parameterized as:
-# k(x^p,x^q) = x^p'*x^q
-# There are no hyperparameters
-#
-# Note that there is no bias or scale term
-# use covConst and * to add these
+    '''
+    Linear kernel. No hyperparameters.
+    '''
     def __init__(self):
         self.hyp = []
     def proceed(self, x=None, z=None, der=None):
@@ -443,6 +422,14 @@ class LIN(Kernel):
 
 
 class LINard(Kernel):
+    '''
+    Linear covariance function with Automatic Relevance Detemination.
+    hyp = log_ell_list 
+
+    :param D: dimension of training data. Set if you want default ell, which is 0.5 for each dimension.
+    :param log_ell_list: characteristic length scale for each dimension.
+    '''
+
     def __init__(self, D=None, log_ell_list=None):
         if log_ell_list == None:
             self.hyp = [0.5 for i in xrange(D)]
@@ -451,19 +438,6 @@ class LINard(Kernel):
 
     def proceed(self, x=None, z=None, der=None):
         n, D = x.shape
-        '''
-        if len(self.hyp) != D: 
-            print "Linear covariance function with Automatic Relevance Detemination"
-            print "(ARD) distance measure is parameterized as:"
-            print "k(x^p,x^q) = x^p' * inv(P) * x^q"
-            print "where the P matrix is diagonal with ARD parameters ell_1^2,...,ell_D^2, where"
-            print "D is the dimension of the input space and sf2 is the signal variance."
-            print "The number of hyperparameters is %d (dimension of inputs):" % D
-            print "hyp = [log(ell_1), log(ell_2), ..., log(ell_D) ]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-        else:
-        '''
         ell = np.exp(self.hyp)            # ARD parameters
         x = np.dot(x,np.diag(1./ell))
         if z == 'diag':
@@ -487,24 +461,18 @@ class LINard(Kernel):
 
 
 class Matern(Kernel):
+    '''
+    Matern covariance function with nu = d/2 and isotropic distance measure. 
+    For d=1 the function is also known as the exponential covariance function or the Ornstein-Uhlenbeck covariance in 1d.
+    hyp = [ log_ell, log_sigma, log_d ]
+    
+    :param log_d: d is 2 times nu
+    :param log_ell: characteristic length scale. 
+    :param log_sigma: signal deviation. 
+    '''
     def __init__(self, log_ell=-1., log_d=0., log_sigma=0. ):
         self.hyp = [ log_ell, log_sigma, log_d ]
-        '''
-        if len(hyp) == 3:
-            self.hyp = hyp
-        else:
-            print "Matern covariance function with nu = d/2 and isotropic distance measure."
-            print "For d=1 the function is also known as the exponential covariance function or the "
-            print "Ornstein-Uhlenbeck covariance in 1d. The covariance function is:"
-            print "k(x^p,x^q) = s2f * f( sqrt(d)*r ) * exp(-sqrt(d)*r)"
-            print "with f(t)=1 for d=1, f(t)=1+t for d=3 and f(t)=1+t+(t*t)/3 for d=5."
-            print "Here, r is the distance sqrt( (x^p-x^q)'*inv(P)*(x^p-x^q)), "
-            print "where P is ell times the unit matrix and sf2 is the signal variance."
-            print "The number of hyperparameters is 3" 
-            print "hyp = [ log(ell), log(sqrt(sf2)), log(d) ]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-        '''
+
     def func(self,d,t):
         if d == 1:
             return 1
@@ -565,20 +533,17 @@ class Matern(Kernel):
 
 
 class Periodic(Kernel):
+    '''
+    Stationary kernel for a smooth periodic function. 
+    hyp = [ log_ell, log_p, log_sigma]
+
+    :param log_p: period.
+    :param log_ell: characteristic length scale. 
+    :param log_sigma: signal deviation. 
+    '''
     def __init__(self, log_ell=-1, log_p=0., log_sigma=0. ): 
         self.hyp = [ log_ell, log_p, log_sigma]
-        '''
-        if len(hyp) == 3:
-            self.hyp = hyp
-        else:
-            print "Stationary covariance function for a smooth periodic function,"
-            print "with period p:"
-            print "k(x^p,x^q) = sf2 * exp( -2*sin^2( pi*||x^p - x^q)||/p )/ell**2 )"
-            print "The number of hyperparameters is 3" 
-            print "hyp = [ log(ell), log(p), log(sqrt(sf2)) ]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-        '''
+
     def proceed(self, x=None, z=None, der=None):
         ell = np.exp(self.hyp[0])        # characteristic length scale
         p   = np.exp(self.hyp[1])        # period
@@ -613,22 +578,16 @@ class Periodic(Kernel):
 
 
 class covNoise(Kernel):
-# Independent covariance function, ie "white noise", with specified variance.
+    '''
+    Independent covariance function, i.e "white noise", with specified variance.
+    Normally NOT used anymore since noise is now added in liklihood.
+    hyp = [ log_sigma ]
+
+    :param log_sigma: signal deviation. 
+    '''
     def __init__(self, log_sigma=0.):
         self.hyp = [log_sigma]
-        '''
-        if len(hyp) == 1:
-            self.hyp = hyp
-        else:
-            print "Noise covariance function is specified as:,"
-            print "k(x^p,x^q) = s2 * \delta(p,q)"
-            print "where s2 is the noise variance and \delta(p,q) is a Kronecker delta function"
-            print "which is 1 iff p=q and zero otherwise."
-            print "The number of hyperparameters is 1" 
-            print "hyp = [ log(sqrt(s2)) ]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-        '''
+
     def proceed(self, x=None, z=None, der=None):
         tol = 1.e-9                 # Tolerance for declaring two vectors "equal"
         s2 = np.exp(2.*self.hyp[0]) # noise variance
@@ -658,11 +617,14 @@ class RQard(Kernel):
 
 
 class Pre(Kernel):
-# Precomputed kernel matrix
-# M1: cross covariances train by test
-#     last row: self covariances (diagonal of test by test)
-# M2: training set covariance matrix (train by train)   
-#-> no hyperparameters have to be optimised. 
+    '''
+    Precomputed kernel matrix. No hyperparameters and thus nothing will be optimised. 
+
+    :param M1: cross covariances matrix(train+1 by test).
+               last row is self covariances (diagonal of test by test)
+    :param M2: training set covariance matrix (train by train)   
+
+    '''
     def __init__(self,M1,M2):
         self.M1 = M1
         self.M2 = M2

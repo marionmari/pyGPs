@@ -18,7 +18,7 @@ The Demos give some theoretical explanations. Further, it is useful to have a lo
 Regression
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    GPR
    GPR_FITC
@@ -26,15 +26,24 @@ Regression
 Classfication
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    GPC
    GPC_FITC
    GPMC
 
-Validation
+Cross-Validation
 
 .. toctree::
    :maxdepth: 1
 
    CV
+
+Some examples of real-world data
+
+.. toctree::
+   :maxdepth: 1
+
+   demoHousing
+   demoMaunaLoa
+
