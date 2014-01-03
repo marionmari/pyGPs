@@ -58,7 +58,9 @@ Here, we use a composite mean as the sum of a linear and a constant function, an
 
 .. _Kernels & Means: Kernels.html
 
-You can add the traning data to the model explicitly by using *setData()*. So, you avoid passing them into *fit()* or *train()* each time used. Further, you can plot the data in the 1-d case: ::
+You can add the traning data to the model explicitly by using *setData()*. So, you avoid passing them into *fit()* or *train()* each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels :math:`y` (if you do not specify mean function by your own).
+
+Further, you can plot the data in the 1-d case: ::
 
     model.setData(x, y)
     model.plotData_1d()

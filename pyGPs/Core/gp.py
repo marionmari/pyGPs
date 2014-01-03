@@ -59,6 +59,7 @@ class GP(object):
     """Base class for GP model"""
     def __init__(self):
         super(GP, self).__init__()
+        self.usingDefaultMean = True  # was using default mean function now?
         self.meanfunc = None
         self.covfunc = None
         self.likfunc = None
@@ -77,9 +78,13 @@ class GP(object):
         self.fs2 = None           # column vector (of length ns) of predictive latent variances
         self.lp = None            # column vector (of length ns) of log predictive probabilities
 
+
     def setData(self, x, y):
         self.x = x
         self.y = y
+        if self.usingDefaultMean:
+            c = np.mean(y)
+            self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
 
     def plotData_1d(self, axisvals=None):
         plt.figure()
@@ -106,6 +111,7 @@ class GP(object):
         """set prior mean and cov"""
         if mean != None:
             self.meanfunc = mean
+            self.usingDefaultMean = False
         if kernel != None:
             self.covfunc = kernel
     
@@ -553,8 +559,6 @@ class GPMC(object):
         predictive_vote /=  predictive_vote.sum(axis=1)[:,np.newaxis]
         return predictive_vote
 
-
-
     def setPrior(self, mean=None, kernel=None):
         """set prior mean and cov"""
         if mean != None:
@@ -601,6 +605,10 @@ class GP_FITC(GP):
         ...when using a default inducing point grid'''
         self.x = x
         self.y = y
+        if self.usingDefaultMean:
+            c = np.mean(y)
+            self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
+
         # get range of x in each dimension
         # 5 uniformally selected value for each dimension
         gridAxis=[]

@@ -32,18 +32,13 @@ Classfication
    GPC_FITC
    GPMC
 
-Cross-Validation
+Some examples for real-world data
 
 .. toctree::
    :maxdepth: 1
-
+   
    CV
-
-Some examples of real-world data
-
-.. toctree::
-   :maxdepth: 1
-
-   demoHousing
    demoMaunaLoa
+   demoHousing
+
 

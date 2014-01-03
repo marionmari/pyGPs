@@ -54,6 +54,9 @@ model.setPrior(mean=m, kernel=k)
 
 # Add traning data to model explictly,
 # saves passing them each time when using fit() or train().
+# More importantly, 
+# the deafult mean will be adapted to the average value of the trainging labels.. 
+# ..if you do not specify mean function by your own).
 model.setData(x, y)
 model.plotData_1d()
 
