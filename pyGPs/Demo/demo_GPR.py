@@ -20,12 +20,10 @@ print '---------------------GPR DEMO-------------------------'
 #----------------------------------------------------------------------
 # Load demo data (generated from Gaussians)
 #----------------------------------------------------------------------
-demoData = np.load('data_for_demo/regression_data_new.npz')   
+demoData = np.load('data_for_demo/regression_data.npz')   
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
-
-
 
 
 #----------------------------------------------------------------------
@@ -94,9 +92,8 @@ ymu, ys2, fmu, fs2, lp = model.predict(z)
 
 # Set range of axis for plotting 
 # NOTE: plot() is a toy method only for 1-d data
-model.plot() # axisvals=[-1.9, 1.9, -0.9, 3.9]) # TODO: edit
-
-
+model.plot()   
+# model.plot(axisvals=[-1.9, 1.9, -0.9, 3.9])) 
 
 
 #----------------------------------------------------------------------

@@ -66,6 +66,7 @@
 <span class="c"># based on the functional-version of python implementation</span>
 <span class="c"># (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)</span>
 <span class="c"># </span>
+<span class="c">#</span>
 <span class="c"># Copyright (c) by Marion Neumann and Shan Huang, 30/092013</span>
 
 
@@ -275,6 +276,8 @@
         <span class="k">return</span> <span class="n">K</span><span class="p">,</span> <span class="n">Kuu</span><span class="p">,</span> <span class="n">Ku</span>
 
 
+
+<span class="c"># an example of simple kernel function, the rest are similar</span>
 <span class="k">class</span> <span class="nc">Poly</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_c</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">log_d</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span> <span class="n">log_c</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">]</span>
@@ -310,12 +313,15 @@
         <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                    <span class="c"># compute covariance matix for dataset x</span>
             <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span><span class="n">c</span> <span class="o">+</span> <span class="n">A</span><span class="p">)</span><span class="o">**</span><span class="nb">ord</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>      			<span class="c"># compute derivative matrix wrt 1st parameter             </span>
+            <span class="c"># compute derivative matrix wrt 1st parameter</span>
+            <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>                   
                 <span class="n">A</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="nb">ord</span> <span class="o">*</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span><span class="n">c</span><span class="o">+</span><span class="n">A</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="nb">ord</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  			<span class="c"># compute derivative matrix wrt 2nd parameter</span>
+            <span class="c"># compute derivative matrix wrt 2nd parameter</span>
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  
                 <span class="n">A</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span><span class="n">c</span> <span class="o">+</span> <span class="n">A</span><span class="p">)</span><span class="o">**</span><span class="nb">ord</span>
-            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  			<span class="c"># no derivative wrt 3rd parameter</span>
-                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>        	<span class="c"># do nothing (d is not learned)</span>
+            <span class="c"># Wants to compute derivative wrt order</span>
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  
+                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative entry in covPoly&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
@@ -584,7 +590,7 @@
             <span class="n">d</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
         <span class="n">d</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span><span class="p">(</span><span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>         <span class="c"># check for valid values of d</span>
+            <span class="k">assert</span><span class="p">(</span><span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>         <span class="c"># Check for valid values of d</span>
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
             <span class="n">d</span> <span class="o">=</span> <span class="mi">3</span>
 
@@ -605,8 +611,8 @@
                 <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dmfunc</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">A</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>                  <span class="c"># compute derivative matrix wrt 2nd parameter</span>
                 <span class="n">A</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sf2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mfunc</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">A</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>                  <span class="c"># no derivative wrt 3rd parameter</span>
-                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>        <span class="c"># do nothing (d is not learned)</span>
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>                  <span class="c"># Wants to compute derivative wrt nu</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>        <span class="c"># Do nothing</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative value in covMatern&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
@@ -734,6 +740,11 @@
     
 
     
+<span class="c"># You can make some test codes below:</span>
+    
+<span class="c"># UPDATE USAGE:</span>
+<span class="c"># here I decided to get rid of the data structure hyp = np.array([1,2,3]), </span>
+<span class="c"># a simple list hyp = [1,2,3] might be enough</span>
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="c"># test1: combinations of kernel functions</span>

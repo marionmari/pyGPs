@@ -65,14 +65,12 @@ Now, lets focus on the use of cross-validation. Lets see the complete process by
 
 	    # Toward next run
 	    cv_run += 1   
-
-	print '\nAccuracy: ', np.round(np.mean(ACC),2), '('+str(np.round(np.std(ACC),2))+')'
-	print 'Root-Mean-Square Error: ', np.round(np.mean(RMSE),2)   
+ 
 
 
 Evaluation measures
 ---------------
-We implemented some classical evaluation measures. Off course you can implement your own methods for evaluation.
+We implemented some classical evaluation measures. 
     - RMSE - Root mean squared error
     - ACC - Classification accuracy
     - Prec - Precision for class +1

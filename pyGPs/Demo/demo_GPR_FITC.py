@@ -11,7 +11,7 @@ print '-------------------GPR_FITC DEMO----------------------'
 #----------------------------------------------------------------------
 # Load demo data (generated from Gaussians)
 #----------------------------------------------------------------------
-demoData = np.load('data_for_demo/regression_data_new.npz') # TODO: change to regression_data.npz again
+demoData = np.load('data_for_demo/regression_data.npz') 
 
 x = demoData['x']            # training data
 y = demoData['y']            # training target

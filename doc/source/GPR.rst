@@ -112,9 +112,11 @@ output mean (ymu) resp. variance (ys2), latent mean (fmu) resp. variance (fs2), 
 
     ymu, ys2, fmu, fs2, lp = model.predict(z)
 
-To adjust the range for plotting use: ::
 
-    model.plot(axisvals=[-1.9, 1.9, -0.9, 3.9])
+Plot data. Note that *GPR.plot()* is a toy method only for visualising 1-d data. Here we got a different posterior by using a different prior other than in the default example.  ::
+
+    model.plot()
+
 
 .. figure:: _images/d1_3.png
    :height: 600 px
@@ -122,7 +124,7 @@ To adjust the range for plotting use: ::
    :align: center
    :scale: 70 %
 
-Note, that we got a different posterior from using a different prior other than in the default example. Again, *GPR.plot()* is a toy method only for visualising 1-d data.
+
 
 A bit more things you can do
 ----------------------
@@ -141,6 +143,9 @@ A bit more things you can do
 You do not need to specify the noise parameter if you are optimizing the hyperparamters later anyhow.
 
 
+All plotting methods have keyword axisvals. You can adjust plotting range if you want. For example: ::
+
+    model.plot(axisvals = [-1.9, 1.9, -0.9, 3.9])
 
 
 

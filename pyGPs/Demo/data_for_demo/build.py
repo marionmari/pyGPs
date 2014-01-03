@@ -15,8 +15,9 @@ def save_data_regresssion():
               0.503774817336353,   1.942525313820564,   0.579133950013327,   0.670874423968554,   0.377353755100965]]).T
 
     # TEST points
-    # test points evenly distributed in the interval [-2, 2]
-    xstar = np.array([np.linspace(-2,2,101)]).T
+    # test points evenly distributed in the interval [-2, 2.5]
+    xstar = np.array(range(-200,250,4), dtype=np.float64, ndmin=2).T
+    xstar /= 100
     np.savez('regression_data', x=x, y=y, xstar=xstar) 
 
 def save_data_classification():
@@ -171,8 +172,8 @@ def save_data_classification():
 
 
 if __name__=='__main__':
-    # save_data_regression()
-    save_data_classification()
+    save_data_regresssion()
+    #save_data_classification()
     
 
 

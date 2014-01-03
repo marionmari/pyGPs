@@ -151,14 +151,13 @@ output mean (ymu) resp. variance (ys2), latent mean (fmu) resp. variance (fs2), 
 <div class="highlight-python"><div class="highlight"><pre><span class="n">ymu</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fmu</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To adjust the range for plotting use:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axisvals</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">1.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">3.9</span><span class="p">])</span>
+<p>Plot data. Note that <em>GPR.plot()</em> is a toy method only for visualising 1-d data. Here we got a different posterior by using a different prior other than in the default example.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="figure align-center">
 <a class="reference internal image-reference" href="_images/d1_3.png"><img alt="_images/d1_3.png" src="_images/d1_3.png" style="width: 560.0px; height: 420.0px;" /></a>
 </div>
-<p>Note, that we got a different posterior from using a different prior other than in the default example. Again, <em>GPR.plot()</em> is a toy method only for visualising 1-d data.</p>
 </div>
 <div class="section" id="a-bit-more-things-you-can-do">
 <h2>A bit more things you can do<a class="headerlink" href="#a-bit-more-things-you-can-do" title="Permalink to this headline">¶</a></h2>
@@ -172,6 +171,10 @@ output mean (ymu) resp. variance (ys2), latent mean (fmu) resp. variance (fs2), 
 </pre></div>
 </div>
 <p>You do not need to specify the noise parameter if you are optimizing the hyperparamters later anyhow.</p>
+<p>All plotting methods have keyword axisvals. You can adjust plotting range if you want. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axisvals</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">3.9</span><span class="p">])</span>
+</pre></div>
+</div>
 </div>
 </div>
 
