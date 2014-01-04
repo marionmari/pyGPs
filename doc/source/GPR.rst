@@ -112,7 +112,7 @@ For example, to get the log marginal likelihood use: ::
 Prediction on the test data will return five values, which are
 output mean (ymu) resp. variance (ys2), latent mean (fmu) resp. variance (fs2), and log predictive probabilities (lp) ::
 
-    ymu, ys2, fmu, fs2, lp = model.predict(z)
+    ym, ys2, fm, fs2, lp = model.predict(z)
 
 
 Plot data. Note that *GPR.plot()* is a toy method only for visualising 1-d data. Here we got a different posterior by using a different prior other than in the default example.  ::
@@ -133,7 +133,7 @@ A bit more things you can do
 **[For all Models]** Speed up computation time for prediction if you know posterior in advance. Posterior is passed as an object with three fields (attributes) post.alpha, post.sW and post.L. How to use these vectors to represent the posterior can be best seen from Algorithm 2.1 (page 19) in Chapeter 2 of the `GPML`_ book by Rasmussen and Williams, 2006. ::
 
     post = myPosterior()        # known in advance
-    ymu, ys2, fmu, fs2, lp = model.predict_with_posterior( post,z )
+    ym, ys2, fm, fs2, lp = model.predict_with_posterior( post,z )
 
 .. _GPML: http://www.gaussianprocess.org/gpml/chapters/RW2.pdf
 

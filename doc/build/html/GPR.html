@@ -149,7 +149,7 @@ The whole functionality for optimization is introduced in detail in the document
 </div>
 <p>Prediction on the test data will return five values, which are
 output mean (ymu) resp. variance (ys2), latent mean (fmu) resp. variance (fs2), and log predictive probabilities (lp)</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">ymu</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fmu</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ym</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fm</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Plot data. Note that <em>GPR.plot()</em> is a toy method only for visualising 1-d data. Here we got a different posterior by using a different prior other than in the default example.</p>
@@ -164,7 +164,7 @@ output mean (ymu) resp. variance (ys2), latent mean (fmu) resp. variance (fs2), 
 <h2>A bit more things you can do<a class="headerlink" href="#a-bit-more-things-you-can-do" title="Permalink to this headline">¶</a></h2>
 <p><strong>[For all Models]</strong> Speed up computation time for prediction if you know posterior in advance. Posterior is passed as an object with three fields (attributes) post.alpha, post.sW and post.L. How to use these vectors to represent the posterior can be best seen from Algorithm 2.1 (page 19) in Chapeter 2 of the <a class="reference external" href="http://www.gaussianprocess.org/gpml/chapters/RW2.pdf">GPML</a> book by Rasmussen and Williams, 2006.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">post</span> <span class="o">=</span> <span class="n">myPosterior</span><span class="p">()</span>        <span class="c"># known in advance</span>
-<span class="n">ymu</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fmu</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_with_posterior</span><span class="p">(</span> <span class="n">post</span><span class="p">,</span><span class="n">z</span> <span class="p">)</span>
+<span class="n">ym</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fm</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_with_posterior</span><span class="p">(</span> <span class="n">post</span><span class="p">,</span><span class="n">z</span> <span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>[Only for Regression]</strong> Specify noise of data (with <img class="math" src="_images/math/2072174f4575230fae760c1122545fbe6ef35eb7.png" alt="\sigma=0.1"/> by default):</p>

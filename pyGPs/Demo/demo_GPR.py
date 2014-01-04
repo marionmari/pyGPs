@@ -83,14 +83,17 @@ model.train()
 #   model.covfunc.hyp
 #   model.meanfunc.hyp
 #   model.likfunc.hyp
-#   model.ym (predictive mean)
+#   model.ym (predictive means)
+#   model.ys2 (predictive variances)
+#   model.fm (predictive latent means)
+#   model.fs2 (predictive latent variances)
 #   model.lp (log predictive probability)
 print 'Optimized negative log marginal likelihood:', round(model._neg_log_marginal_likelihood_,3)
 
 
 # Predict test data
 # output mean(ymu)/variance(ys2), latent mean(fmu)/variance(fs2), and log predictive probabilities(lp)
-ymu, ys2, fmu, fs2, lp = model.predict(z)
+ym, ys2, fmu, fs2, lp = model.predict(z)
 
 
 # Set range of axis for plotting 
@@ -107,7 +110,7 @@ model.plot()
 post = model._posterior_    # already known before
 
 
-ymu, ys2, fmu, fs2, lp = model.predict_with_posterior( post,z )
+ym, ys2, fmu, fs2, lp = model.predict_with_posterior( post,z )
 # ...other than model.predict(z) 
 
 
