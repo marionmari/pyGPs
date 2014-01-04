@@ -463,7 +463,10 @@ class LINard(Kernel):
 class Matern(Kernel):
     '''
     Matern covariance function with nu = d/2 and isotropic distance measure. 
-    For d=1 the function is also known as the exponential covariance function or the Ornstein-Uhlenbeck covariance in 1d.
+    For d=1 the function is also known as the exponential covariance function 
+    or the Ornstein-Uhlenbeck covariance in 1d.
+    d will be rounded to 1, 3, or 5.
+
     hyp = [ log_ell, log_sigma, log_d ]
     
     :param log_d: d is 2 times nu
@@ -577,7 +580,7 @@ class Periodic(Kernel):
         return A
 
 
-class covNoise(Kernel):
+class Noise(Kernel):
     '''
     Independent covariance function, i.e "white noise", with specified variance.
     Normally NOT used anymore since noise is now added in liklihood.
@@ -610,10 +613,98 @@ class covNoise(Kernel):
         return A
 
 
-class RQiso(Kernel):
-    pass
+
+class RQ(Kernel):
+    ''' 
+    Rational Quadratic covariance function with isotropic distance measure.
+    hyp = [ log_ell, log_sigma, log_alpha ]
+    
+    :param log_ell: characteristic length scale. 
+    :param log_sigma: signal deviation.
+    :param log_alpha: hape parameter for the RQ covariance.
+    '''
+    def __init__(self, log_ell=-1, log_sigma=0., log_alpha=0.):
+        self.hyp = [ log_ell, log_sigma, log_alpha ]
+
+    def proceed(self, x=None, z=None, der=None):
+        ell   = np.exp(self.hyp[0])            # characteristic length scale
+        sf2   = np.exp(2.*self.hyp[1])         # signal variance
+        alpha = np.exp(self.hyp[2])            
+        n,D = x.shape
+        if z == 'diag':
+            D2 = np.zeros((n,1))
+        elif z == None:
+            D2 = spdist.cdist(x/ell, x/ell, 'sqeuclidean')
+        else:
+            D2 = spdist.cdist(x/ell, z/ell, 'sqeuclidean')
+        if der == None:                  # compute covariance matix for dataset x
+            A = sf2 * ( ( 1.0 + 0.5*D2/alpha )**(-alpha) )
+        else:
+            if der == 0:                # compute derivative matrix wrt 1st parameter
+                A = sf2 * ( 1.0 + 0.5*D2/alpha )**(-alpha-1) * D2
+
+            elif der == 1:              # compute derivative matrix wrt 2nd parameter
+                A = 2.* sf2 * ( ( 1.0 + 0.5*D2/alpha )**(-alpha) )
+
+            elif der == 2:              # compute derivative matrix wrt 3rd parameter
+                K = ( 1.0 + 0.5*D2/alpha )
+                A = sf2 * K**(-alpha) * (0.5*D2/K - alpha*np.log(K) )
+            else:
+                raise Exception("Wrong derivative index in covRQiso")
+        return A
+
+
+
 class RQard(Kernel):
-    pass
+    '''
+    Rational Quadratic covariance function with Automatic Relevance Detemination
+     (ARD) distance measure.
+    hyp = log_ell_list + [ log_sigma, log_alpha ]
+
+    :param D: dimension of pattern. set if you want default ell, which is 0.5 for each dimension.
+    :param log_ell_list: characteristic length scale for each dimension.
+    :param log_sigma: signal deviation. 
+    :param log_alpha: hape parameter for the RQ covariance.
+    '''
+    def __init__(self, D=None, log_ell_list=None, log_sigma=0., log_alpha=0.):
+        if log_ell_list == None:
+            self.hyp = [0.5 for i in xrange(D)] + [ log_sigma, log_alpha ]
+        else:
+            self.hyp = log_ell_list + [ log_sigma, log_alpha ]
+
+    def proceed(self, x=None, z=None, der=None):
+        n, D = x.shape  
+        ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
+        sf2 = np.exp(2.*self.hyp[D])      # signal variance
+        alpha = np.exp(self.hyp[D+1])
+        if z == 'diag':
+            D2 = np.zeros((n,1))
+        elif z == None:
+            tmp = np.dot(np.diag(ell),x.T).T
+            D2 = spdist.cdist(tmp, tmp, 'sqeuclidean')
+        else:
+            D2 = spdist.cdist(np.dot(np.diag(ell),x.T).T, np.dot(np.diag(ell),z.T).T, 'sqeuclidean')
+        if der == None:                 # compute covariance matix for dataset x
+            A = sf2 * ( ( 1.0 + 0.5*D2/alpha )**(-alpha) )
+        else:
+            if der < D:                 # compute derivative matrix wrt length scale parameters
+                if z == 'diag':
+                    A = D2*0
+                elif z == None:
+                    tmp = np.atleast_2d(x[:,der])/ell[der]
+                    A = sf2 * ( 1.0 + 0.5*D2/alpha )**(-alpha-1) * spdist.cdist(tmp, tmp, 'sqeuclidean')
+                else:
+                    A = sf2 * ( 1.0 + 0.5*D2/alpha )**(-alpha-1) * spdist.cdist(np.atleast_2d(x[:,der]).T/ell[der], np.atleast_2d(z[:,der]).T/ell[der], 'sqeuclidean') 
+            elif der==D:                # compute derivative matrix wrt magnitude parameter
+                A = 2. * sf2 * ( ( 1.0 + 0.5*D2/alpha )**(-alpha) )
+
+            elif der==(D+1):            # compute derivative matrix wrt magnitude parameter
+                K = ( 1.0 + 0.5*D2/alpha )
+                A = sf2 * K**(-alpha) * ( 0.5*D2/K - alpha*np.log(K) )
+            else:
+                raise Exception("Wrong derivative index in covRQard") 
+        return A
+
 
 
 class Pre(Kernel):
