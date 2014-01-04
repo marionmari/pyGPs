@@ -268,6 +268,85 @@ class Poly(Kernel):
         return A
    
 
+
+class PiecePoly(Kernel):
+    '''
+    Piecewise polynomial kernel with compact support.
+    hyp = [log_ell, log_sigma, log_v]
+
+    :param log_ell: characteristic length scale. 
+    :param log_sigma: signal deviation. 
+    :param log_v: degree in piecewise polynomial kernel. v will be rounded to 0,1,2,or 3.
+    '''
+    def __init__(self, log_c=0., log_d=np.log(2), log_sigma=0. ):
+        self.hyp = [log_ell, log_sigma, log_v]
+
+    def ppmax(self,A,B):
+        return np.maximum(A,B*np.ones_like(A))
+
+    def func(self,v,r,j):
+        if v == 0:
+            return 1
+        elif v == 1:
+            return ( 1. + (j+1) * r )
+        elif v == 2:
+            return ( 1. + (j+2)*r + (j*j + 4.*j+ 3)/3.*r*r )
+        elif v == 3:
+            return ( 1. + (j+3)*r + (6.*j*j+36.*j+45.)/15.*r*r + (j*j*j+9.*j*j+23.*j+15.)/15.*r*r*r )
+        else:
+             raise Exception (["Wrong degree in covPPiso.  Should be 0,1,2 or 3, is " + str(v)])
+
+    def dfunc(self,v,r,j):
+        if v == 0:
+            return 0
+        elif v == 1:
+            return ( j+1 )
+        elif v == 2:
+            return ( (j+2) + 2.*(j*j+ 4.*j+ 3.)/3.*r )
+        elif v == 3:
+            return ( (j+3) + 2.*(6.*j*j+36.*j+45.)/15.*r + (j*j*j+9.*j*j+23.*j+15.)/5.*r*r )
+        else:
+            raise Exception (["Wrong degree in covPPiso.  Should be 0,1,2 or 3, is " + str(v)])
+
+    def pp(self,r,j,v,func):
+        return func(v,r,j)*(ppmax(1-r,0)**(j+v))
+
+    def dpp(self,r,j,v,func,dfunc):
+        return ppmax(1-r,0)**(j+v-1) * r * ( (j+v)*func(v,r,j) - ppmax(1-r,0) * dfunc(v,r,j) )
+
+    def proceed(self, x=None, z=None, der=None)
+        ell = np.exp(self.hyp[0])            # characteristic length scale
+        sf2 = np.exp(2.*self.hyp[1])         # signal variance
+        v   = np.exp(self.hyp[2])            # degree (v = 0,1,2 or 3 only)
+        if np.abs(v-np.round(v)) < 1e-8:     # remove numerical error from format of parameter
+            v = int(round(v))
+        assert(int(v) in range(4))           # Only allowed degrees: 0,1,2 or 3
+        v = int(v)        
+        n, D = x.shape
+        j = np.floor(0.5*D) + v + 1
+        if z == 'diag':
+            A = np.zeros((n,1))
+        elif z == None:
+            A = np.sqrt( spdist.cdist(x/ell, x/ell, 'sqeuclidean') )
+        else:                                       # compute covariance between data sets x and z
+            A = np.sqrt( spdist.cdist(x/ell, z/ell, 'sqeuclidean') )     # cross covariances 
+        if der == None:                             # compute covariance matix for dataset x
+            A = sf2 * pp(A,j,v,func)
+        else:
+            if der == 0:                            # compute derivative matrix wrt 1st parameter
+                A = sf2 * dpp(A,j,v,func,dfunc)
+
+            elif der == 1:                          # compute derivative matrix wrt 2nd parameter
+                A = 2. * sf2 * pp(A,j,v,func)
+
+            elif der == 2:                          # wants to compute derivative wrt order
+                A = np.zeros_like(A)
+            else:
+                raise Exception("Wrong derivative entry in covPPiso")
+        return A
+
+
+
 class RBF(Kernel):
     '''
     Squared Exponential kernel with isotropic distance measure. hyp = [log_ell, log_sigma]
@@ -373,8 +452,7 @@ class RBFard(Kernel):
         return A
 
             
-class PPiso(Kernel):
-    pass
+
 
 
 class Const(Kernel):
