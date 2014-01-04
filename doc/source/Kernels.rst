@@ -32,6 +32,7 @@ Some Special Cases
      * *mean.Linear*
      * *cov.RBFard*
      * *cov.LINard*
+     * *cov.RQard*
 
   
 2. For linear kernel, there is NO signal variance(scalar) in front of the function.
