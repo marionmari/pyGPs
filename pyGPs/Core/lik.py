@@ -129,23 +129,15 @@ class Likelihood(object):
 
 
 class Gauss(Likelihood):
+    '''
+    Gaussian likelihood function for regression. The expression is 
+    likGauss(t) = exp(-(t-y)^2/2*sn^2) / sqrt(2*pi*sn^2),
+    where y is the mean and sn is the standard deviation.
+    hyp = [log(sn)]
+    '''
     def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [log_sigma]
-        '''
-        if len(hyp) == 1:
-            self.hyp = hyp
-            self.name = 'exp(-(t-y)^2/2*sn^2) / sqrt(2*pi*sn^2)'
-            self.hypname = 'log(sn)'
-        else:
-            print "Gaussian likelihood function for regression. The expression is:"
-            print "likGauss(t) = exp(-(t-y)^2/2*sn^2) / sqrt(2*pi*sn^2),"
-            print "where y is the mean and sn is the standard deviation."
-            print ""
-            print "The number of hyperparameters is 1"
-            print "hyp = [log(sn)]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")         
-        '''  
+
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn2 = np.exp(2. * self.hyp[0])
         if inffunc == None:              # prediction mode 
@@ -249,10 +241,12 @@ class Gauss(Likelihood):
         return varargout
 
 class Erf(Likelihood):
-    # likErf - Error function or cumulative Gaussian likelihood function for binary
-    # classification or probit regression. The expression for the likelihood is 
-    #   likErf(t) = (1+erf(t/sqrt(2)))/2 = normcdf(t).
-    #
+    '''
+    likErf - Error function or cumulative Gaussian likelihood function for binary
+    classification or probit regression. The expression for the likelihood is 
+    likErf(t) = (1+erf(t/sqrt(2)))/2 = normcdf(t).
+    
+    '''
     def __init__(self):
         self.hyp = []
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
@@ -379,12 +373,315 @@ class Erf(Likelihood):
 
 
 
+class Logistic(Likelihood):
+    ''' 
+    Logistic function for binary classification or logit regression.
+    The expression for the likelihood is:
+        likLogistic(t) = 1./(1+exp(-t)).
+    
+    Several modes are provided, for computing likelihoods, derivatives and moments
+    respectively, see likFunctions.m for the details. In general, care is taken
+    to avoid numerical issues when the arguments are extreme. The moments
+    :math:`\int f^k Logistic(y,f) N(f|mu,var) df` are calculated via a cumulative 
+    Gaussian scale mixture approximation.
+    
+    Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-09-02.
+    '''
+    def __init__(self, log_sigma=np.log(0.1) ):
+        self.hyp = []
+
+    def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
+        if not y == None:
+            y = np.sign(y)
+            y[y==0] = 1
+        else:
+            y = 1                                        # allow only +/- 1 values
+        if inffunc == None:                              # prediction mode if inf is not present
+            y = y*np.ones_like(mu)                       # make y a vector
+            s2zero = True; 
+            if not s2 == None: 
+                if np.linalg.norm(s2)>0:
+                    s2zero = False                       # s2==0?       
+            if s2zero:                                   # log probability evaluation
+                yf = y*mu
+                lp = yf
+                ok = -35 < yf
+                lp[ok] = -np.log(1.+np.exp(-yf[ok]))
+            else:                                        # prediction
+                lp = self.proceed(y, mu, s2, inf.Logistic())
+
+            if nargout>1:
+                p = np.exp(lp)
+                ymu = 2*p-1                              # first y moment
+                if nargout>2:
+                    ys2 = 4*p*(1-p)                      # second y moment
+                    return lp,ymu,ys2
+                else:
+                    return lp,ymu
+            else:
+                return lp
+        else:                                            # inference mode
+            if isinstance(inffunc, inf.Laplace):
+                if der == None:                          # no derivative mode
+                    f = mu; yf = y*f; s = -yf            # product latents and labels
+                    ps = max(0,s)
+                    lp = -(ps+np.log(np.exp(-ps)+np.exp(s-ps)))
+                    if nargout>1:                        # derivative of log likelihood
+                        s = min(0,f)
+                        p = np.exp(s)/(np.exp(s)+np.exp(s-f))
+                        dlp = (y+1)/2-p                      # derivative of log likelihood
+                        if nargout>2:                    # 2nd derivative of log likelihood
+                            d2lp = -np.exp(2*s-f)/(np.exp(s)+np.exp(s-f))**2
+                            if nargout>3:                # 3rd derivative of log likelihood
+                                d3lp = 2*d2lp*(0.5-p)
+                                return lp,dlp,d2lp,d3lp
+                            else:
+                                return lp,dlp,d2lp
+                        else:
+                            return lp,dlp
+                    else:
+                        return lp
+                else:                                    # derivative mode
+                    return []                            # derivative w.r.t. hypers
+            elif isinstance(inffunc, inf.EP):
+                if der == None:                          # no derivative mode
+                    y = y*np.ones_like(mu)
+                    lam = np.sqrt(2)*np.reshape(np.array([0.44, 0.41, 0.40, 0.39, 0.36]),(1,5))    # approx coeffs lam_i and c_i
+                    c = np.reshape(np.array([1.146480988574439e+02, -1.508871030070582e+03, 2.676085036831241e+03, -1.356294962039222e+03, 7.543285642111850e+01]),(5,1))
+                    l = Erf()
+                    a = l.proceed(y=np.reshape(y,(1,5)), mu=np.dot(mu,lam), s2=np.dot(s2,lam**2), inffunc=inffunc, der=True, nargout=3)
+                    lZc = a[0]; dlZc = a[1]; d2lZc = a[2]
+
+                    lZ   = self._log_expA_x(lZc,c)
+                    dlZ  = self._expABz_expAx(lZc, c, dlZc, c*lam.T)
+                    d2lZ = self._expABz_expAx(lZc, c, dlZc**22+d2lZc, c*(lam**2).T) - dlZ**2
+
+                    # The scale mixture approximation does not capture the correct asymptotic
+                    # behavior; we have linear decay instead of quadratic decay as suggested
+                    # by the scale mixture approximation. By observing that for large values
+                    # of -f*y ln(p(y|f)) for likLogistic is linear in f with slope y, we are
+                    # able to analytically integrate the tail region.
+
+                    val = np.abs(mu)-196/200*s2-4       # empirically determined bound at val==0
+                    lam = 1/(1+np.exp(-10*val))         # interpolation weights
+                    lZtail = min(s2/2-np.abs(mu),-0.1)  # apply the same to p(y|f) = 1 - p(-y|f)
+                    dlZtail = -np.sign(mu); d2lZtail = np.zeros_like(mu)
+                    id = (y*mu)>0; lZtail[id] = np.log(1-np.exp(lZtail[id])) # label and mean agree
+                    dlZtail[id] = 0
+                    lZ   = (1-lam)*lZ + lam*lZtail      # interpolate between scale ..
+                    dlZ  = (1-lam)*dlZ + lam*dlZtail    # ..  mixture and   ..
+                    d2lZ = (1-lam)*d2lZ + lam*d2lZtail  # .. tail approximation
+                    if nargout>1:
+                        if nargout>2:
+                            return lZ,dlZ,d2lZ
+                        else:
+                            return lZ,dlZ
+                    else:
+                        return lZ
+                else:                               # derivative mode
+                    return []                       # deriv. wrt hyp.lik
+            elif isinstance(inffunc, inf.VB):
+                n = len(s2.flatten); b = (y/2)*np.ones((n,1)); z = np.zeros_like(b)
+                return b,z
+        return varargout
+
+    def _log_expA_x(self,A,x):
+        '''  
+        Computes y = log( exp(A)*x ) in a numerically safe way by subtracting the
+        maximal value in each row to avoid cancelation after taking the exp
+        '''
+        N = A.shape[1];  maxA = np.max(A,axis=0)      # number of columns, max over columns
+        y = np.log(np.exp(A-maxA*np.ones((1,N)))*x) + maxA
+        return y
+  
+    def _expABz_expAx(self,A,x,B,z):
+        ''' 
+        Computes y = ( (exp(A).*B)*z ) ./ ( exp(A)*x ) in a numerically safe way
+        The function is not general in the sense that it yields correct values for
+        all types of inputs. We assume that the values are close together.
+        '''
+        N = A.shape[1];  maxA = np.max(A,axis=0)      # number of columns, max over columns
+        A = A-maxA*np.ones((1,N))                     # subtract maximum value
+        y = ( np.dot((np.exp(A)*B),z) ) / ( np.dot(np.exp(A),x) )
+        return y
 
 
+
+
+class Laplace(Likelihood):
+    ''' 
+    Laplacian likelihood function for regression. 
+    The expression for the likelihood is 
+    likLaplace(t) = exp(-|t-y|/b)/(2*b) with b = sn/sqrt(2),
+    where y is the mean and sn^2 is the variance.
+
+    The hyperparameters are:
+
+    hyp = [  log(sn)  ]
+
+    Several modes are provided, for computing likelihoods, derivatives and moments
+    respectively, see likFunctions.m for the details. In general, care is taken
+    to avoid numerical issues when the arguments are extreme. 
+
+    Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-10-16.
+    '''
+
+    def __init__(self, log_hyp=np.log(0.1) ):
+        self.hyp = [log_hyp]
+
+    def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
+        sn = np.exp(self.hyp); b = sn/np.sqrt(2);
+        if y == None:
+            y = np.zeros_like(mu) 
+        if inffunc == None:                              # prediction mode if inf is not present
+            if y == None:
+                y = np.zeros_like(mu)
+            s2zero = True; 
+            if not s2 == None: 
+                if np.linalg.norm(s2)>0:
+                    s2zero = False                       # s2==0?       
+            if s2zero:                                   # log probability evaluation
+                lp = -np.abs(y-mu)/b -np.log(2*b); s2 = 0
+            else:                                        # prediction
+                lp = self.proceed(y, mu, s2, inf.EP())
+            if nargout>1:
+                ymu = mu                              # first y moment
+                if nargout>2:
+                    ys2 = s2 + sn**2                  # second y moment
+                    return lp,ymu,ys2
+                else:
+                    return lp,ymu
+            else:
+                return lp
+        else:                                            # inference mode
+            if isinstance(inffunc, inf.Laplace):
+                if der == None:                          # no derivative mode
+                    if y == None:
+                        y = np.zeros_like(mu) 
+                    ymmu = y-mu
+                    lp = np.abs(ymmu)/b - np.log(2*b)
+                    if nargout>1:                        # derivative of log likelihood
+                        dip = np.sign(ymmu)/b
+                        if nargout>2:                    # 2nd derivative of log likelihood
+                            d2lp = np.zeros_like(ymmu)
+                            if nargout>3:                # 3rd derivative of log likelihood
+                                d3lp = np.zeros_like(ymmu)
+                                return lp,dlp,d2lp,d3lp
+                            else:
+                                return lp,dlp,d2lp
+                        else:
+                            return lp,dlp
+                    else:
+                        return lp
+                else:                                    # derivative mode
+                    return []                            # derivative w.r.t. hypers
+            elif isinstance(inffunc, inf.EP):
+                n = np.max([len(y.flatten),len(mu.flatte),len(s2.flatten),len(sn.flatten)]); on = np.ones((n,1))
+                y = y*on; mu = mu*on; s2 = s2*on; sn = sn*on; 
+                fac = 1e3;          # factor between the widths of the two distributions ...
+                                    # ... from when one considered a delta peak, we use 3 orders of magnitude
+                idlik = (fac*sn) < np.sqrt(s2)           # Likelihood is a delta peak
+                idgau = (fac*np.sqrt(s2)) < sn           # Gaussian is a delta peak
+                id = notidgau and not idlik              # interesting case in between
+                if der == None:                          # no derivative mode
+                    lZ = np.zeros((n,1)); dlZ = lZ[:]; d2lZ = lZ[:]
+                    if np.any(idlik):
+                        l = Gauss(log_sigma=np.log(s2[idlik])/2)
+                        a = l.proceed(mu[idlik], y[idlik])
+                        lZ[idlik] = a[0]; dlZ[idlik] = a[1]; d2lZ[idlik] = a[2]
+                    if np.any(idgau):
+                        l = Laplace(log_hyp=np.log(sn[idgau]))
+                        a = l.proceed(mu=mu[idgau], y=y[idgau])
+                        lZ[idgau] = a[0]; dlZ[idgau] = a[1]; d2lZ[idgau] = a[2] 
+                    if np.any(id):
+                        # substitution to obtain unit variance, zero mean Laplacian
+                        tmu = (mu[id]-y[id])/(sn[id]+1e-16); tvar = s2[id]/(sn[id]**2+1e-16)
+                        # an implementation based on logphi(t) = log(normcdf(t))
+                        zp = (tmu+np.sqrt(2)*tvar)/np.sqrt(tvar)
+                        zm = (tmu-np.sqrt(2)*tvar)/np.sqrt(tvar)
+                        ap =  logphi(-zp)+np.sqrt(2)*tmu
+                        am =  logphi( zm)-np.sqrt(2)*tmu
+                        lZ[id] = np.logaddexp2(np.array([ap,am])) + tvar - np.log(sn[id]*np.sqrt(2))
+        
+                    if nargout>1:
+                        lqp = -zp**22/2 - np.log(2*np.pi)/2 - logphi(-zp);       # log( N(z)/Phi(z) )
+                        lqm = -zm**22/2 - np.log(2*np.pi)/2 - logphi( zm);
+                        dap = -np.exp(lqp-np.log(s2[id])/2) + np.sqrt(2)/sn[id]
+                        dam =  np.exp(lqm-np.log(s2[id])/2) - np.sqrt(2)/sn[id]
+                        dlZ[id] = self._expABz_expAx(np.array([ap,am]),np.reshape(np.array([1,1]),(2,1)),np.array([dap,dam]),np.reshape(np.array([1,1]),(2,1)))
+          
+                        if nargout>2:
+                            a = p.sqrt(8.)/sn[id]/np.sqrt(s2[id]);
+                            bp = 2/sn[id]**2 - (a - zp/s2[id])*np.exp(lqp)
+                            bm = 2/sn[id]**2 - (a + zm/s2[id])*np.exp(lqm)
+                            d2lZ[id] = self._expABz_expAx(np.array([ap,am]),np.reshape(np.array([1,1]),(2,1)),np.array([bp,bm]),np.reshape(np.array([1,1]),(2,1))) - dlZ[id]**2;
+                            return lZ,dlZ,d2lZ
+                        else:
+                            return lZ,dlZ
+                    else:
+                        return lZ
+                else:                                    # derivative mode
+                    dlZhyp = np.zeros((n,1))
+                    if np.any(idlik):
+                        dlZhyp[idlik] = 0
+                    if np.any(idgau):
+                        l = Laplace(log_hyp=np.log(sn[idgau]))
+                        a =  l.proceed(mu=mu[idgau], y=y[idgau], inffunc='inf.Laplace', nargout=1)
+                        dlZhyp[idgau] = a[0]
+
+                    if np.any(id):
+                        # substitution to obtain unit variance, zero mean Laplacian
+                        tmu = (mu[id]-y[id])/(sn[id]+1e-16);        tvar = s2[id]/(sn[id]**2+1e-16)
+                        zp  = (tvar+tmu/np.sqrt(2))/np.sqrt(tvar);  vp = tvar+np.sqrt(2)*tmu
+                        zm  = (tvar-tmu/sqrt(2))/sqrt(tvar);  vm = tvar-np.sqrt(2)*tmu
+                        dzp = (-s2[id]/sn[id]+tmu*sn[id]/np.sqrt(2)) / np.sqrt(s2[id])
+                        dvp = -2*tvar - np.sqrt(2)*tmu
+                        dzm = (-s2[id]/sn[id]-tmu*sn[id]/np.sqrt(2)) / np.sqrt(s2[id])
+                        dvm = -2*tvar + np.sqrt(2)*tmu
+                        lezp = self._lerfc(zp); # ap = exp(vp).*ezp
+                        lezm = self._lerfc(zm); # am = exp(vm).*ezm
+                        vmax = max(np.array([vp+lezp,vm+lezm]),axis=0); # subtract max to avoid numerical pb
+                        ep  = np.exp(vp+lezp-vmax)
+                        em  = np.exp(vm+lezm-vmax)
+                        dap = ep*(dvp - 2/np.sqrt(np.pi)*np.exp(-zp**2-lezp)*dzp)
+                        dam = em*(dvm - 2/np.sqrt(np.pi)*np.exp(-zm**2-lezm)*dzm)        
+                        dlZhyp[id] = (dap+dam)/(ep+em) - 1;       
+                    return dlZhyp               # deriv. wrt hyp.lik
+            elif isinstance(inffunc, inf.VB):
+                n = len(s2.flatten); b = np.zeros((n,1)); y = y*np.ones((n,1)); z = y
+                return b,z
+        return varargout
+
+    def _lerfc(self,t):
+        ''' numerically safe implementation of f(t) = log(1-erf(t)) = log(erfc(t))'''
+        from scipy.special import erfc
+        f  = np.zeros_like(t)
+        tmin = 20; tmax = 25
+        ok = t < tmin                              # log(1-erf(t)) is safe to evaluate
+        bd = t > tmax                              # evaluate tight bound
+        interp = not ok and  not bd                # linearly interpolate between both of them
+        f[not ok] = np.log(2/np.sqrt(np.pi)) -t[not ok]**2 -np.log(t[ not ok]+np.sqrt( t[not ok]**2+4/np.pi ))
+        lam = 1/(1+np.exp( 12*(0.5-(t[interp]-tmin)/(tmax-tmin)) ))   # interp. weights
+        f[interp] = lam*f[interp] + (1-lam)*np.log(erfc( t[interp] ))
+        f[ok] += np.log(erfc( t[ok] ))             # safe eval
+        return f
+
+    def _expABz_expAx(self,A,x,B,z):
+        ''' 
+        Computes y = ( (exp(A).*B)*z ) ./ ( exp(A)*x ) in a numerically safe way
+        The function is not general in the sense that it yields correct values for
+        all types of inputs. We assume that the values are close together.
+        '''
+        N = A.shape[1];  maxA = np.max(A,axis=0)      # number of columns, max over columns
+        A = A-maxA*np.ones((1,N))                     # subtract maximum value
+        y = ( np.dot((np.exp(A)*B),z) ) / ( np.dot(np.exp(A),x) )
+        return y
+
+ 
 
 # test
 if __name__ == '__main__':
-    l = likErf()
+    l = Logistic()
     mu = np.array([1,2,3])
     a = l.proceed(mu=mu, nargout=3)
     print a 

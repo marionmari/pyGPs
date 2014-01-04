@@ -314,7 +314,7 @@ class PiecePoly(Kernel):
     def dpp(self,r,j,v,func,dfunc):
         return ppmax(1-r,0)**(j+v-1) * r * ( (j+v)*func(v,r,j) - ppmax(1-r,0) * dfunc(v,r,j) )
 
-    def proceed(self, x=None, z=None, der=None)
+    def proceed(self, x=None, z=None, der=None):
         ell = np.exp(self.hyp[0])            # characteristic length scale
         sf2 = np.exp(2.*self.hyp[1])         # signal variance
         v   = np.exp(self.hyp[2])            # degree (v = 0,1,2 or 3 only)
