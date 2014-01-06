@@ -52,7 +52,9 @@ Getting started
    Theory 
    Examples
    Kernels
+   Likelihoods
    Opts
+   Graph
 
 
 

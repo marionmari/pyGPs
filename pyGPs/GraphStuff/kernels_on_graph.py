@@ -1,6 +1,5 @@
-'''
-@author: Marion
-'''
+# @author: Marion
+
 
 import numpy as np
 import scipy.linalg as spla
@@ -8,10 +7,8 @@ import scipy.sparse as spsp
 
 
 def normalizeKernel(K):
-    
     K_min = np.float(np.min(K))
-    K_max = np.float(np.max(K))
-    
+    K_max = np.float(np.max(K))  
     #K_norm = (K - K_min)/(np.float(K_max-K_min))
     K_norm = K/K_max
     
@@ -25,14 +22,13 @@ def normalizeKernel(K):
     return K_norm
 
 
-
-def regLapKernel(A, param=1):
-    ''' Regularized Laplacian Kernel 
+def regLapKernel(A, sigma=1):
+    '''
+    Regularized Laplacian Kernel 
         
-        INPUT:     A     adjacency matrix
-                   param  (hyper)parameter(s) -> sigma
-            
-        OUTPUT:    K     kernel matrix.'''
+    :param A:  adjacency matrix
+    :param sigma: (hyper)parameter(s)
+    '''
 
     I = np.identity(A.shape[0])
     d = A.sum(axis=0)
@@ -42,16 +38,16 @@ def regLapKernel(A, param=1):
     D = np.diag(d)
     L = I - np.dot( np.dot(D,A),D )
 
-    K = np.linalg.inv( I+(param**2)*L )
+    K = np.linalg.inv( I+(sigma**2)*L )
     return K
 
 
-
 def psInvLapKernel(A):
-    '''Pseudo inverse of the normalized Laplacian.
+    '''
+    Pseudo inverse of the normalized Laplacian.
 
-        INPUT:     A     adjacency matrix 
-        OUTPUT:    K     kernel matrix.'''
+    :param A:  adjacency matrix
+    '''
 
     I = np.identity(A.shape[0])
     d = A.sum(axis=0)
@@ -65,17 +61,17 @@ def psInvLapKernel(A):
     return K
 
 
-
 def diffKernel(A, beta=0.5):
-    ''' Diffusion Process Kernel 
+    '''
+    Diffusion Process Kernel 
         
-        K = exp(beta * H), where H = -L = A-D
-        K = Q exp(beta * Lambda) Q.T
+    K = exp(beta * H), where H = -L = A-D
+    
+    K = Q exp(beta * Lambda) Q.T
         
-        INPUT:     A     adjacency matrix 
-                   beta  (hyper)parameter(s)
-            
-        OUTPUT:    K     kernel matrix.'''
+    :param A:  adjacency matrix
+    :param beta: (hyper)parameter(s)
+    '''
 
     A = np.array(A) # make sure that A is a numpy array!!
 
@@ -88,15 +84,15 @@ def diffKernel(A, beta=0.5):
 
 
 def VNDKernel(A, alpha=0.5):
-    ''' VON NEUMANN DIFFUSION KERNEL on graph (Zhou et al., 2004)
-        (also label spreading kernel)
+    ''' 
+    Von Neumann Diffusion Kernel on graph (Zhou et al., 2004)
+    (also label spreading kernel)
         
-        K = (I - alpha*S)^-1, where S = D^-1/2*A*D^-1/2
+    K = (I - alpha*S)^-1, where S = D^-1/2*A*D^-1/2
         
-        INPUT:     A     adjacency matrix 
-                   alpha  (hyper)parameter(s)
-            
-        OUTPUT:    K     kernel matrix.''' 
+    :param A:  adjacency matrix
+    :param alpha: (hyper)parameter(s)
+    '''
         
     I = np.identity(A.shape[0])
     d = A.sum(axis=0)
@@ -110,23 +106,28 @@ def VNDKernel(A, alpha=0.5):
 
 
 def rwKernel(A, param):
-    ''' p-step Random Walk Kernel 
+    '''
+    p-step Random Walk Kernel 
             
-        INPUT:     A     adjacency matrix
-                   param  (hyper)parameter(s)
+    :param A:  adjacency matrix
+    :param param: (hyper)parameter(s)
             
-        OUTPUT:    K     kernel matrix.'''
+    NOT IMPLEMENTED IN THIS VERSION
+    '''
 
     K = 'not implemented'
     return K
 
 
+
 def cosKernel(A):
-    ''' Cosine Kernel (also Inverse Cosine Kernel)
-        
-        INPUT:     A     adjacency matrix
+    '''
+    Cosine Kernel (also Inverse Cosine Kernel)
             
-        OUTPUT:    K     kernel matrix.'''
+    :param A:  adjacency matrix
+            
+    NOT IMPLEMENTED IN THIS VERSION
+    '''
         
     K = 'not implemented'
     return K 

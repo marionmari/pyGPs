@@ -64,10 +64,10 @@ algorithms, or combinations of many or all of the above.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="13%" />
-<col width="17%" />
+<col width="18%" />
 <col width="12%" />
 <col width="23%" />
-<col width="15%" />
+<col width="14%" />
 <col width="20%" />
 </colgroup>
 <thead valign="bottom">
@@ -80,7 +80,7 @@ algorithms, or combinations of many or all of the above.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td rowspan="12">Simple</td>
+<tr class="row-even"><td rowspan="13">Simple</td>
 <td>Constant</td>
 <td>Constant</td>
 <td>Gaussian</td>
@@ -95,64 +95,74 @@ algorithms, or combinations of many or all of the above.</p>
 </tr>
 <tr class="row-even"><td>Linear with ARD</td>
 <td>One</td>
-<td rowspan="10">&nbsp;</td>
+<td>Laplace</td>
 <td>Laplace</td>
 <td>SCG</td>
 </tr>
 <tr class="row-odd"><td>Matern</td>
 <td>Zero</td>
-<td rowspan="9">&nbsp;</td>
+<td>Logistic</td>
+<td rowspan="10">&nbsp;</td>
 <td>Rasmussen&#8217;s Minimize</td>
 </tr>
 <tr class="row-even"><td>Periodic</td>
-<td rowspan="8">&nbsp;</td>
-<td rowspan="8">&nbsp;</td>
+<td rowspan="9">&nbsp;</td>
+<td rowspan="9">&nbsp;</td>
+<td rowspan="9">&nbsp;</td>
 </tr>
 <tr class="row-odd"><td>Polynomial</td>
 </tr>
-<tr class="row-even"><td>RBF</td>
+<tr class="row-even"><td>Piecewise Poly</td>
 </tr>
-<tr class="row-odd"><td>RBF with ARD</td>
+<tr class="row-odd"><td>RBF</td>
 </tr>
-<tr class="row-even"><td>RBF unit</td>
+<tr class="row-even"><td>RBF with ARD</td>
 </tr>
-<tr class="row-odd"><td>RQ</td>
+<tr class="row-odd"><td>RBF unit</td>
 </tr>
-<tr class="row-even"><td>RQ  with ARD</td>
+<tr class="row-even"><td>RQ</td>
 </tr>
-<tr class="row-odd"><td>Noise</td>
+<tr class="row-odd"><td>RQ  with ARD</td>
 </tr>
-<tr class="row-even"><td rowspan="4">Composition</td>
+<tr class="row-even"><td>Noise</td>
+</tr>
+<tr class="row-odd"><td rowspan="4">Composition</td>
 <td>Sum</td>
 <td>Sum</td>
 <td rowspan="4">&nbsp;</td>
 <td rowspan="4">&nbsp;</td>
 <td rowspan="4">&nbsp;</td>
 </tr>
-<tr class="row-odd"><td>Product</td>
+<tr class="row-even"><td>Product</td>
 <td>Product</td>
 </tr>
-<tr class="row-even"><td>Scale</td>
+<tr class="row-odd"><td>Scale</td>
 <td>Scale</td>
 </tr>
-<tr class="row-odd"><td>&nbsp;</td>
+<tr class="row-even"><td>&nbsp;</td>
 <td>Power</td>
 </tr>
-<tr class="row-even"><td rowspan="2">Sparse GP</td>
+<tr class="row-odd"><td rowspan="2">Sparse GP</td>
 <td rowspan="2">&nbsp;</td>
 <td rowspan="2">&nbsp;</td>
 <td rowspan="2">&nbsp;</td>
 <td>FITC EP</td>
 <td rowspan="2">&nbsp;</td>
 </tr>
-<tr class="row-odd"><td>FITC Laplace</td>
+<tr class="row-even"><td>FITC Laplace</td>
 </tr>
-<tr class="row-even"><td>Graph</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<tr class="row-odd"><td rowspan="4">Structured</td>
+<td>Diffusion</td>
+<td rowspan="4">&nbsp;</td>
+<td rowspan="4">&nbsp;</td>
+<td rowspan="4">&nbsp;</td>
+<td rowspan="4">&nbsp;</td>
+</tr>
+<tr class="row-even"><td>VN Diffusion</td>
+</tr>
+<tr class="row-odd"><td>Pseudo Inv Laplace</td>
+</tr>
+<tr class="row-even"><td>Regularized Laplace</td>
 </tr>
 <tr class="row-odd"><td rowspan="2">Other</td>
 <td>Customized</td>

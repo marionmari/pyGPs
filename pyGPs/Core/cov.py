@@ -147,11 +147,6 @@ class SumOfKernel(Kernel):
     
 
 class ScaleOfKernel(Kernel):
-# Compose a covariance function as a scaled version of another one
-# k(x^p,x^q) = sf2 * k0(x^p,x^q)
-#
-# The hyperparameter is :
-# hyp = [ log(sf2) ]
     def __init__(self,cov,scalar):
         self.cov = cov
         if cov.hyp:

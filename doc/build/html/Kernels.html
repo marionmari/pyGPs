@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pyGPs 1.0.0 documentation" href="index.html" />
-    <link rel="next" title="Optimizers" href="Opts.html" />
+    <link rel="next" title="Likelihoods &amp; Inference" href="Likelihoods.html" />
     <link rel="prev" title="Regression on UCI Housing data" href="demoHousing.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Opts.html" title="Optimizers"
+          <a href="Likelihoods.html" title="Likelihoods &amp; Inference"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="demoHousing.html" title="Regression on UCI Housing data"
@@ -324,6 +324,26 @@ hyp = [ log_ell, log_p, log_sigma]</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="pyGPs.Core.cov.PiecePoly">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">PiecePoly</tt><big>(</big><em>log_c=0.0</em>, <em>log_d=0.69314718055994529</em>, <em>log_sigma=0.0</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.PiecePoly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Piecewise polynomial kernel with compact support.
+hyp = [log_ell, log_sigma, log_v]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>log_ell</strong> &#8211; characteristic length scale.</li>
+<li><strong>log_sigma</strong> &#8211; signal deviation.</li>
+<li><strong>log_v</strong> &#8211; degree in piecewise polynomial kernel. v will be rounded to 0,1,2,or 3.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
 <dt id="pyGPs.Core.cov.Poly">
 <em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Poly</tt><big>(</big><em>log_c=0.0</em>, <em>log_d=0.69314718055994529</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Poly" title="Permalink to this definition">¶</a></dt>
 <dd><p>Polynomial covariance function. hyp = [ log_c, log_sigma ]</p>
@@ -536,8 +556,8 @@ hyp = [ log_ell, log_sigma, log_alpha ]</p>
   <p class="topless"><a href="demoHousing.html"
                         title="previous chapter">Regression on UCI Housing data</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="Opts.html"
-                        title="next chapter">Optimizers</a></p>
+  <p class="topless"><a href="Likelihoods.html"
+                        title="next chapter">Likelihoods &amp; Inference</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/Kernels.txt"
@@ -570,7 +590,7 @@ hyp = [ log_ell, log_sigma, log_alpha ]</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Opts.html" title="Optimizers"
+          <a href="Likelihoods.html" title="Likelihoods &amp; Inference"
              >next</a> |</li>
         <li class="right" >
           <a href="demoHousing.html" title="Regression on UCI Housing data"

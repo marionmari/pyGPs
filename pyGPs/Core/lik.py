@@ -121,7 +121,7 @@ from scipy.special import erf
 import inf
 
 class Likelihood(object):
-    """the base function for Likelihood function"""
+    """Base function for Likelihood function"""
     def __init__(self):
         self.hyp = []
     def proceed(self):
@@ -502,7 +502,7 @@ class Laplace(Likelihood):
     ''' 
     Laplacian likelihood function for regression. ONLY work with EP inference!
     The expression for the likelihood is 
-    likLaplace(t) = exp(-|t-y|/b)/(2*b) with b = sn/sqrt(2),
+    likLaplace(t) = exp(-|t-y|/b) / (2*b) with b = sn/sqrt(2),
     where y is the mean and sn^2 is the variance.
     The hyperparameters is: hyp = [ log_sigma ]
     '''
