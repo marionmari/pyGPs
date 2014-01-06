@@ -406,6 +406,23 @@ class GPR(GP):
         plt.ylabel('target y')
         plt.show()
 
+    ### !!!TODO: debug starting from GPR and lik Laplace
+    def useInference(self, newInf):
+        if newInf == "Laplace":
+            self.inffunc = inf.Laplace()
+        elif newInf == "EP":
+            self.inffunc = inf.EP()
+        else:
+            raise Exception('Possible inf values are "Laplace", "EP".')
+
+    def useLikelihood(self,newLik):
+        if newLik == "Laplace":
+            self.likfunc = lik.Laplace()
+            self.inffunc = inf.EP()
+        else:
+            raise Exception('Possible lik values are "Laplace".')
+
+
 
 
 

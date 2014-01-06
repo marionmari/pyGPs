@@ -31,6 +31,10 @@ z = demoData['xstar']        # test data
 #----------------------------------------------------------------------
 print 'Basic Example'
 model = gp.GPR()             # model 
+
+model.useLikelihood("Laplace")
+
+
 model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
 model.train(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
 model.predict(z)             # predict test cases
@@ -38,7 +42,7 @@ model.plot()                 # and plot result
 
 
 
-
+'''
 #----------------------------------------------------------------------
 # Now lets do another example to get more insight to the toolbox
 #----------------------------------------------------------------------
@@ -120,4 +124,4 @@ model.setNoise( log_sigma=np.log(0.1) )
 
 print '--------------------END OF DEMO-----------------------'
 
-
+'''

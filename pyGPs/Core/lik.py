@@ -133,7 +133,7 @@ class Gauss(Likelihood):
     Gaussian likelihood function for regression. The expression is 
     likGauss(t) = exp(-(t-y)^2/2*sn^2) / sqrt(2*pi*sn^2),
     where y is the mean and sn is the standard deviation.
-    hyp = [log(sn)]
+    hyp = [ log_sigma ]
     '''
     def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [log_sigma]
@@ -160,8 +160,7 @@ class Gauss(Likelihood):
                 else:
                     return lp,ymu
             else:
-                return lp
-                       
+                return lp  
         else:
             if isinstance(inffunc, inf.EP):
                 if der == None:                                  # no derivative mode
@@ -178,7 +177,6 @@ class Gauss(Likelihood):
                 else:                                            # derivative mode
                     dlZhyp = ((y-mu)**2/(sn2+s2)-1) / (1+s2/sn2) # deriv. w.r.t. hyp.lik
                     return dlZhyp
-            
             elif isinstance(inffunc, inf.Laplace):
                 if der == None:                                  # no derivative mode
                     if y == None: 
@@ -242,13 +240,13 @@ class Gauss(Likelihood):
 
 class Erf(Likelihood):
     '''
-    likErf - Error function or cumulative Gaussian likelihood function for binary
+    Error function or cumulative Gaussian likelihood function for binary
     classification or probit regression. The expression for the likelihood is 
-    likErf(t) = (1+erf(t/sqrt(2)))/2 = normcdf(t).
-    
+    Erf(t) = (1+erf(t/sqrt(2)))/2 = normcdf(t).
     '''
     def __init__(self):
         self.hyp = []
+
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         if not y == None:
             y = np.sign(y)
@@ -377,17 +375,9 @@ class Logistic(Likelihood):
     ''' 
     Logistic function for binary classification or logit regression.
     The expression for the likelihood is:
-        likLogistic(t) = 1./(1+exp(-t)).
-    
-    Several modes are provided, for computing likelihoods, derivatives and moments
-    respectively, see likFunctions.m for the details. In general, care is taken
-    to avoid numerical issues when the arguments are extreme. The moments
-    :math:`\int f^k Logistic(y,f) N(f|mu,var) df` are calculated via a cumulative 
-    Gaussian scale mixture approximation.
-    
-    Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-09-02.
+    Logistic(t) = 1./(1+exp(-t)).
     '''
-    def __init__(self, log_sigma=np.log(0.1) ):
+    def __init__(self):
         self.hyp = []
 
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
@@ -481,7 +471,7 @@ class Logistic(Likelihood):
                 else:                               # derivative mode
                     return []                       # deriv. wrt hyp.lik
             elif isinstance(inffunc, inf.VB):
-                n = len(s2.flatten); b = (y/2)*np.ones((n,1)); z = np.zeros_like(b)
+                n = len(s2.flatten()); b = (y/2)*np.ones((n,1)); z = np.zeros_like(b)
                 return b,z
         return varargout
 
@@ -510,24 +500,15 @@ class Logistic(Likelihood):
 
 class Laplace(Likelihood):
     ''' 
-    Laplacian likelihood function for regression. 
+    Laplacian likelihood function for regression. ONLY work with EP inference!
     The expression for the likelihood is 
     likLaplace(t) = exp(-|t-y|/b)/(2*b) with b = sn/sqrt(2),
     where y is the mean and sn^2 is the variance.
-
-    The hyperparameters are:
-
-    hyp = [  log(sn)  ]
-
-    Several modes are provided, for computing likelihoods, derivatives and moments
-    respectively, see likFunctions.m for the details. In general, care is taken
-    to avoid numerical issues when the arguments are extreme. 
-
-    Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-10-16.
+    The hyperparameters is: hyp = [ log_sigma ]
     '''
 
-    def __init__(self, log_hyp=np.log(0.1) ):
-        self.hyp = [log_hyp]
+    def __init__(self, log_sigma=np.log(0.1) ):
+        self.hyp = [ log_sigma ]
 
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn = np.exp(self.hyp); b = sn/np.sqrt(2);
@@ -576,13 +557,13 @@ class Laplace(Likelihood):
                 else:                                    # derivative mode
                     return []                            # derivative w.r.t. hypers
             elif isinstance(inffunc, inf.EP):
-                n = np.max([len(y.flatten),len(mu.flatte),len(s2.flatten),len(sn.flatten)]); on = np.ones((n,1))
+                n = np.max([len(y.flatten()),len(mu.flatten()),len(s2.flatten()),len(sn.flatten())]); on = np.ones((n,1))
                 y = y*on; mu = mu*on; s2 = s2*on; sn = sn*on; 
                 fac = 1e3;          # factor between the widths of the two distributions ...
                                     # ... from when one considered a delta peak, we use 3 orders of magnitude
                 idlik = (fac*sn) < np.sqrt(s2)           # Likelihood is a delta peak
                 idgau = (fac*np.sqrt(s2)) < sn           # Gaussian is a delta peak
-                id = notidgau and not idlik              # interesting case in between
+                id = not idgau.any() and not idlik.any() # interesting case in between
                 if der == None:                          # no derivative mode
                     lZ = np.zeros((n,1)); dlZ = lZ[:]; d2lZ = lZ[:]
                     if np.any(idlik):
@@ -599,17 +580,15 @@ class Laplace(Likelihood):
                         # an implementation based on logphi(t) = log(normcdf(t))
                         zp = (tmu+np.sqrt(2)*tvar)/np.sqrt(tvar)
                         zm = (tmu-np.sqrt(2)*tvar)/np.sqrt(tvar)
-                        ap =  logphi(-zp)+np.sqrt(2)*tmu
-                        am =  logphi( zm)-np.sqrt(2)*tmu
+                        ap =  self.logphi(-zp)+np.sqrt(2)*tmu
+                        am =  self.logphi( zm)-np.sqrt(2)*tmu
                         lZ[id] = np.logaddexp2(np.array([ap,am])) + tvar - np.log(sn[id]*np.sqrt(2))
-        
                     if nargout>1:
-                        lqp = -zp**22/2 - np.log(2*np.pi)/2 - logphi(-zp);       # log( N(z)/Phi(z) )
-                        lqm = -zm**22/2 - np.log(2*np.pi)/2 - logphi( zm);
+                        lqp = -zp**22/2 - np.log(2*np.pi)/2 - self.logphi(-zp);       # log( N(z)/Phi(z) )
+                        lqm = -zm**22/2 - np.log(2*np.pi)/2 - self.logphi( zm);
                         dap = -np.exp(lqp-np.log(s2[id])/2) + np.sqrt(2)/sn[id]
                         dam =  np.exp(lqm-np.log(s2[id])/2) - np.sqrt(2)/sn[id]
                         dlZ[id] = self._expABz_expAx(np.array([ap,am]),np.reshape(np.array([1,1]),(2,1)),np.array([dap,dam]),np.reshape(np.array([1,1]),(2,1)))
-          
                         if nargout>2:
                             a = p.sqrt(8.)/sn[id]/np.sqrt(s2[id]);
                             bp = 2/sn[id]**2 - (a - zp/s2[id])*np.exp(lqp)
@@ -648,7 +627,7 @@ class Laplace(Likelihood):
                         dlZhyp[id] = (dap+dam)/(ep+em) - 1;       
                     return dlZhyp               # deriv. wrt hyp.lik
             elif isinstance(inffunc, inf.VB):
-                n = len(s2.flatten); b = np.zeros((n,1)); y = y*np.ones((n,1)); z = y
+                n = len(s2.flatten()); b = np.zeros((n,1)); y = y*np.ones((n,1)); z = y
                 return b,z
         return varargout
 
@@ -676,6 +655,24 @@ class Laplace(Likelihood):
         A = A-maxA*np.ones((1,N))                     # subtract maximum value
         y = ( np.dot((np.exp(A)*B),z) ) / ( np.dot(np.exp(A),x) )
         return y
+
+    # % safe implementation of the log of phi(x) = \int_{-\infty}^x N(f|0,1) df
+    # % logphi(z) = log(normcdf(z))
+    # function lp = logphi(z)
+    # lp = zeros(size(z));                                         % allocate memory
+    # zmin = -6.2; zmax = -5.5;
+    # ok = z>zmax;                                % safe evaluation for large values
+    # bd = z<zmin;                                                 % use asymptotics
+    # ip = ~ok & ~bd;                             % interpolate between both of them
+    # lam = 1./(1+exp( 25*(1/2-(z(ip)-zmin)/(zmax-zmin)) ));       % interp. weights
+    # lp( ok) = log( (1+erf(z(ok)/sqrt(2)))/2 );
+    # % use lower and upper bound acoording to Abramowitz&Stegun 7.1.13 for z<0
+    # % lower -log(pi)/2 -z.^2/2 -log( sqrt(z.^2/2+2   ) -z/sqrt(2) )
+    # % upper -log(pi)/2 -z.^2/2 -log( sqrt(z.^2/2+4/pi) -z/sqrt(2) )
+    # % the lower bound captures the asymptotics
+    # lp(~ok) = -log(pi)/2 -z(~ok).^2/2 -log( sqrt(z(~ok).^2/2+2)-z(~ok)/sqrt(2) );
+    # lp( ip) = (1-lam).*lp(ip) + lam.*log( (1+erf(z(ip)/sqrt(2)))/2 );
+
 
  
 

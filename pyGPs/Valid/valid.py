@@ -32,13 +32,31 @@ def k_fold_validation(x, y, K=10, randomise=False):
 
     n, D = x.shape
     assert n > K
-
     for k in xrange(K):
         x_train = np.array([e for i, e in enumerate(x) if i % K != k])
         x_test = np.array([e for i, e in enumerate(x) if i % K == k])
         y_train = np.array([e for i, e in enumerate(y) if i % K != k])
         y_test = np.array([e for i, e in enumerate(y) if i % K == k])
         yield x_train, x_test, y_train, y_test
+
+
+def k_fold_indice(n, K=10):
+    '''
+    Similar to k_fold_validation,
+    but only return the indice instead of data
+
+    n is number of instances of data
+    K is number of folder 
+    '''
+    for k in xrange(K):
+        indice_train = []
+        indice_test = []
+        for i in xrange(n):
+            if i % K == k:
+                indice_test.append(i)
+            else:
+                indice_train.append(i)
+        yield indice_train,indice_test
 
 
 def RMSE(predict,target):
