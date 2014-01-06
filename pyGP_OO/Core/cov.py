@@ -310,7 +310,38 @@ class RBF(Kernel):
             elif der == 1:  # compute derivative matrix wrt 2nd parameter
                 A = 2. * sf2 * np.exp(-0.5*A)
             else:
-                raise Exception("Calling for a derivative in covSEiso that does not exist")
+                raise Exception("Calling for a derivative in RBF that does not exist")
+        return A
+
+class RBFtime(Kernel):
+    def __init__(self, log_ell=-1., log_sigma=0., log_delay = 0):
+        self.hyp = [log_ell, log_sigma, log_delay]
+
+    def proceed(self, x=None, z=None, der=None):
+
+        ell = np.exp(self.hyp[0])         # characteristic length scale
+        sf2 = np.exp(2.*self.hyp[1])      # signal variance
+        delay = np.exp(self.hyp[2])       # time delay
+        n,D = x.shape
+        x = x - delay
+
+        if z == 'diag':
+            A = np.zeros((n,1))
+        elif z == None:
+            A = spdist.cdist(x/ell,x/ell,'sqeuclidean')
+        else:                              # compute covariance between data sets x and z
+            A = spdist.cdist(x/ell,z/ell,'sqeuclidean') # self covariances      
+        if der == None:                    # compute covariance matix for dataset x
+            A = sf2 * np.exp(-0.5*A)
+        else:
+            if der == 0:    # compute derivative matrix wrt 1st parameter
+                A = sf2 * np.exp(-0.5*A) * A
+            elif der == 1:  # compute derivative matrix wrt 2nd parameter
+                A = 2. * sf2 * np.exp(-0.5*A)
+            elif der == 2:  # compute derivative matrix wrt 3rd parameter
+                A = sf2 * np.exp(-0.5*A) * A
+            else:
+                raise Exception("Calling for a derivative in RBF that does not exist")
         return A
 
 
@@ -342,7 +373,7 @@ class RBFunit(Kernel):
             if der == 0:           # compute derivative matrix wrt 1st parameter
                 A = np.exp(-0.5*A) * A
             else:
-                raise Exception("Wrong derivative index in covSEisoU")
+                raise Exception("Wrong derivative index in RDFunit")
         return A
 
 
@@ -354,8 +385,7 @@ class RBFard(Kernel):
             self.hyp = log_ell_list + [log_sigma]
     def proceed(self, x=None, z=None, der=None):
         n, D = x.shape
-        '''
-        if len(self.hyp) != D+1: 
+        '''if len(self.hyp) != D+1: 
             print "Squared Exponential covariance function with ARD is parameterized as:"
             print "k(x^p,x^q) = sf2 * exp(-(x^p - x^q)'*inv(P)*(x^p - x^q)/2)"
             print "where the P matrix is diagonal with ARD parameters ell_1^2,...,ell_D^2, where"
@@ -364,8 +394,8 @@ class RBFard(Kernel):
             print "hyp = [log(ell_1), log(ell_2), ..., log(ell_D), log(sqrt(sf2))]"
             print "------------------------------------------------------------------"
             raise Exception("Wrong number of hyperparameters.")
-        else:
-        '''    
+        else:'''
+    
         ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
         if z == 'diag':
@@ -388,7 +418,7 @@ class RBFard(Kernel):
             elif der==D:     # compute derivative matrix wrt magnitude parameter
                 A = 2.*A
             else:
-                raise Exception("Wrong derivative index in covSEard")   
+                raise Exception("Wrong derivative index in RDFard")   
         return A
 
             
