@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Theory &amp; Functionality &mdash; pyGP_OO 1.0.0 documentation</title>
+    <title>GPs &amp; Functionality &mdash; pyGPs 1.0.0 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyGP_OO 1.0.0 documentation" href="index.html" />
+    <link rel="top" title="pyGPs 1.0.0 documentation" href="index.html" />
     <link rel="next" title="Demos" href="Examples.html" />
-    <link rel="prev" title="Intall the package" href="Install.html" /> 
+    <link rel="prev" title="Installation" href="Install.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,12 +35,15 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="Examples.html" title="Demos"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="Install.html" title="Intall the package"
+          <a href="Install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyGP_OO 1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs 1.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -49,13 +52,133 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="theory-functionality">
-<h1>Theory &amp; Functionality<a class="headerlink" href="#theory-functionality" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="gps-functionality">
+<h1>GPs &amp; Functionality<a class="headerlink" href="#gps-functionality" title="Permalink to this headline">¶</a></h1>
 <p>Gaussian Processes (GPs) can conveniently be used for Bayesian supervised learning, such as regression and classification.
 In its simplest form, GP inference can be implemented in a few lines of code. However, in practice, things typically
 get a little more complicated: you might want to use complicated covariance functions and mean functions, learn good values
 for hyperparameters, use non-Gaussian likelihood functions (rendering exact inference intractable), use approximate inference
 algorithms, or combinations of many or all of the above.</p>
+<div class="section" id="list-of-functionality">
+<h2>List of Functionality<a class="headerlink" href="#list-of-functionality" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="18%" />
+<col width="12%" />
+<col width="23%" />
+<col width="14%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Functionality</th>
+<th class="head">Kernel</th>
+<th class="head">Mean</th>
+<th class="head">Likelihood</th>
+<th class="head">Inference</th>
+<th class="head">Optimizer</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td rowspan="13">Simple</td>
+<td>Constant</td>
+<td>Constant</td>
+<td>Gaussian</td>
+<td>Exact</td>
+<td>BFGS</td>
+</tr>
+<tr class="row-odd"><td>Linear</td>
+<td>Linear</td>
+<td>Cumulative Gaussian(Erf)</td>
+<td>EP</td>
+<td>CG</td>
+</tr>
+<tr class="row-even"><td>Linear with ARD</td>
+<td>One</td>
+<td>Laplace</td>
+<td>Laplace</td>
+<td>SCG</td>
+</tr>
+<tr class="row-odd"><td>Matern</td>
+<td>Zero</td>
+<td>Logistic</td>
+<td rowspan="10">&nbsp;</td>
+<td>Rasmussen&#8217;s Minimize</td>
+</tr>
+<tr class="row-even"><td>Periodic</td>
+<td rowspan="9">&nbsp;</td>
+<td rowspan="9">&nbsp;</td>
+<td rowspan="9">&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>Polynomial</td>
+</tr>
+<tr class="row-even"><td>Piecewise Poly</td>
+</tr>
+<tr class="row-odd"><td>RBF</td>
+</tr>
+<tr class="row-even"><td>RBF with ARD</td>
+</tr>
+<tr class="row-odd"><td>RBF unit</td>
+</tr>
+<tr class="row-even"><td>RQ</td>
+</tr>
+<tr class="row-odd"><td>RQ  with ARD</td>
+</tr>
+<tr class="row-even"><td>Noise</td>
+</tr>
+<tr class="row-odd"><td rowspan="4">Composition</td>
+<td>Sum</td>
+<td>Sum</td>
+<td rowspan="4">&nbsp;</td>
+<td rowspan="4">&nbsp;</td>
+<td rowspan="4">&nbsp;</td>
+</tr>
+<tr class="row-even"><td>Product</td>
+<td>Product</td>
+</tr>
+<tr class="row-odd"><td>Scale</td>
+<td>Scale</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>Power</td>
+</tr>
+<tr class="row-odd"><td rowspan="2">Sparse GP</td>
+<td rowspan="2">&nbsp;</td>
+<td rowspan="2">&nbsp;</td>
+<td rowspan="2">&nbsp;</td>
+<td>FITC EP</td>
+<td rowspan="2">&nbsp;</td>
+</tr>
+<tr class="row-even"><td>FITC Laplace</td>
+</tr>
+<tr class="row-odd"><td rowspan="4">Structured</td>
+<td>Diffusion</td>
+<td rowspan="4">&nbsp;</td>
+<td rowspan="4">&nbsp;</td>
+<td rowspan="4">&nbsp;</td>
+<td rowspan="4">&nbsp;</td>
+</tr>
+<tr class="row-even"><td>VN Diffusion</td>
+</tr>
+<tr class="row-odd"><td>Pseudo Inv Laplace</td>
+</tr>
+<tr class="row-even"><td>Regularized Laplace</td>
+</tr>
+<tr class="row-odd"><td rowspan="2">Other</td>
+<td>Customized</td>
+<td>Customized</td>
+<td>&nbsp;</td>
+<td rowspan="2">&nbsp;</td>
+<td rowspan="2">&nbsp;</td>
+</tr>
+<tr class="row-even"><td>Precomputed Matrix</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>pyGPs also provide cross-validation and some built-in evalation methods.</p>
+</div>
 </div>
 
 
@@ -64,9 +187,17 @@ algorithms, or combinations of many or all of the above.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">GPs &amp; Functionality</a><ul>
+<li><a class="reference internal" href="#list-of-functionality">List of Functionality</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="Install.html"
-                        title="previous chapter">Intall the package</a></p>
+                        title="previous chapter">Installation</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="Examples.html"
                         title="next chapter">Demos</a></p>
@@ -99,17 +230,20 @@ algorithms, or combinations of many or all of the above.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="Examples.html" title="Demos"
              >next</a> |</li>
         <li class="right" >
-          <a href="Install.html" title="Intall the package"
+          <a href="Install.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">pyGP_OO 1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs 1.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

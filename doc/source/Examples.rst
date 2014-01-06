@@ -1,11 +1,19 @@
 Demos
 =========================
-There are several demos for Gaussian process tasks in the package.
-We recomand you to have a look at *Basic GP Regression* before reading other demos, 
-which will not only introduce the regression model, but provides a general insight of the package.
-You will also find the implementation of demos in the source_ folder under *pyGP_OO/Demo*.
+There are several demos exemplifying the use of pyGPs for various Gaussian process (:math:`GP`) tasks. 
+We recommend to first go through *Basic GP Regression* which introduces the :math:`GP` regression model. 
+Basic regression is the most intuitive and simplest learning task feasable with :math:`GPs`. 
+The other demos will then provide a general insight into more advanced functionalities of the package. 
+You will also find the implementation of the demos in the source_ folder under `pyGPs/Demo`_.
 
-.. _source: https://github.com/marionmari/pyGP_OO
+.. _pyGPs/Demo: https://github.com/marionmari/pyGPs/tree/master/pyGPs/Demo
+
+The Demos give some theoretical explanations. Further, it is useful to have a look at our documentation on `Kernels & Means`_ and `Optimizers`_. 
+
+.. _Kernels & Means: Kernels.html
+.. _Optimizers: Opts.html
+
+.. _source: https://github.com/marionmari/pyGPs
 
 Regression
 
@@ -24,9 +32,13 @@ Classfication
    GPC_FITC
    GPMC
 
-Validation
+Some examples for real-world data
 
 .. toctree::
    :maxdepth: 1
-
+   
    CV
+   demoMaunaLoa
+   demoHousing
+
+

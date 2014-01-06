@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Kernels &amp; Means. &mdash; pyGP_OO 1.0.0 documentation</title>
+    <title>Kernels &amp; Means &mdash; pyGPs 1.0.0 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyGP_OO 1.0.0 documentation" href="index.html" />
-    <link rel="next" title="Optimizers" href="Opts.html" />
-    <link rel="prev" title="K-fold Cross-Validation" href="CV.html" /> 
+    <link rel="top" title="pyGPs 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="Likelihoods &amp; Inference" href="Likelihoods.html" />
+    <link rel="prev" title="Regression on UCI Housing data" href="demoHousing.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,12 +35,15 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="Opts.html" title="Optimizers"
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Likelihoods.html" title="Likelihoods &amp; Inference"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="CV.html" title="K-fold Cross-Validation"
+          <a href="demoHousing.html" title="Regression on UCI Housing data"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyGP_OO 1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs 1.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,7 +53,483 @@
           <div class="body">
             
   <div class="section" id="kernels-means">
-<h1>Kernels &amp; Means.<a class="headerlink" href="#kernels-means" title="Permalink to this headline">¶</a></h1>
+<h1>Kernels &amp; Means<a class="headerlink" href="#kernels-means" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="simple-kernel-mean">
+<h2>Simple Kernel &amp; Mean<a class="headerlink" href="#simple-kernel-mean" title="Permalink to this headline">¶</a></h2>
+<p>You may already seen, we can specify a kernel function like this(same for mean fucntions):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">(</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>There are several points need to be noticed:</p>
+<ol class="arabic simple">
+<li>Most parameters are initilized in their logorithms. This is because we need to make sure they are positive during optimization. e.g. Here length scale and signal variance should always be positive.</li>
+<li>Most kernel functions have a scalar in front, namely signal variance(set by log_sigma)</li>
+<li>If you will do optimization later anyway, you can just leave parameters to be default</li>
+</ol>
+</div>
+<div class="section" id="some-special-cases">
+<h2>Some Special Cases<a class="headerlink" href="#some-special-cases" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">For some kernels/means, number of hyperparameters depends on the dimension of input data.
+You can either enter the dimension, which use default values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span> <span class="n">D</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>or you can initialze with the exact hyperparameters,
+you should enter as a list, one element for each dimension</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span> <span class="n">alpha_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span> <span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>All these &#8220;hyp-dim-dependent&#8221; functions are:</dt>
+<dd><ul class="first last simple">
+<li><em>mean.Linear</em></li>
+<li><em>cov.RBFard</em></li>
+<li><em>cov.LINard</em></li>
+<li><em>cov.RQard</em></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">For linear kernel, there is NO signal variance(scalar) in front of the function.</p>
+<p>If you want to add a scalar for it, you can use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">cov</span><span class="o">.</span><span class="n">LIN</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If you also want to add a bias term:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">cov</span><span class="o">.</span><span class="n">LIN</span><span class="p">()</span> <span class="o">+</span> <span class="n">cov</span><span class="o">.</span><span class="n">Const</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note 0.5 will also be treated as a hyperparameter.
+This also applies in <em>cov.LINard</em>.</p>
+</li>
+<li><p class="first">For <em>cov.RBFunit()</em>, its signal variance is always 1 (because of unit magnitude). Therefore this function do not have a hyperparameter of &#8220;signal variance&#8221;.</p>
+</li>
+<li><dl class="first docutils">
+<dt><em>cov.Poly()</em> has three parameters, where hyperparameters are:</dt>
+<dd><ul class="first last simple">
+<li>c     -&gt; inhomogeneous offset</li>
+<li>sigma -&gt; signal deviation</li>
+</ul>
+</dd>
+<dt>however,</dt>
+<dd><ul class="first last simple">
+<li>d     -&gt; order of polynomial
+will be treated as normal parameter, i.e. will not be trained</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Explicitly set <em>cov.Noise</em> is not necessary, because noise are already added in likelihood.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="composite-kernels-meams">
+<h2>Composite Kernels &amp; Meams<a class="headerlink" href="#composite-kernels-meams" title="Permalink to this headline">¶</a></h2>
+<p>Adding and muliplying Kernels(Means) is really simple:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">Periodic</span><span class="p">()</span> <span class="o">*</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">cov</span><span class="o">.</span><span class="n">LIN</span><span class="p">()</span> <span class="o">+</span> <span class="n">cov</span><span class="o">.</span><span class="n">Periodic</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Except linear kernel, all kernel functions have a scalar (signal variance) as hyperparameter.
+Therefore, the only explict scalar might be added to cov.LIN()</p>
+<p>Beside + / <a href="#id1"><span class="problematic" id="id2">*</span></a>, there is also a power operator for mean functions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="p">(</span> <span class="n">mean</span><span class="o">.</span><span class="n">One</span><span class="p">()</span><span class="o">+</span><span class="n">mean</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">alpha_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">])</span> <span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="precomputed-kernel-matrix">
+<h2>Precomputed Kernel Matrix<a class="headerlink" href="#precomputed-kernel-matrix" title="Permalink to this headline">¶</a></h2>
+<p>In certain cases, you may have a precomputed kernel matrix,
+but its non-trivial to write down the exact formula of kernel functions. Then you can specify your kernel in the following way. A precomputed kernel also fits with other kernels. In other words, it can also be composited as the way other kernels functions do.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">M2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>M1 and M2 are your precomputed kernel matrix,</p>
+<p>where,</p>
+<dl class="docutils">
+<dt>M1 is a matrix with shape <strong>number of training points plus 1</strong> by <strong>number of test points</strong></dt>
+<dd><ul class="first last simple">
+<li>cross covariances matrix (train by test)</li>
+<li>last row is self covariances (diagonal of test by test)</li>
+</ul>
+</dd>
+<dt>M2 is a square matrix with <strong>number of training points</strong> for each dimension</dt>
+<dd><ul class="first last simple">
+<li>training set covariance matrix (train by train)</li>
+</ul>
+</dd>
+</dl>
+<p>A precomputed kernel can also be composited with other kernels. Similar to <em>cov.LIN()</em>, you need to explictly add scalar for <em>cov.Pre()</em>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">M2</span><span class="p">)</span> <span class="o">+</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="customizing-kernel-mean">
+<h2>Customizing Kernel &amp; Mean<a class="headerlink" href="#customizing-kernel-mean" title="Permalink to this headline">¶</a></h2>
+<p>We also support you to create your own kernel/mean class, your customized kernel class need to follow the structure template as below:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Your kernel class needs to inherit base class Kernel,</span>
+<span class="c"># which is in the module of Core.cov</span>
+<span class="k">class</span> <span class="nc">MyKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para3</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">para1</span><span class="p">,</span> <span class="n">para2</span><span class="p">]</span>     <span class="c"># hyperparameters that can be trained</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span> <span class="p">[</span><span class="n">para3</span><span class="p">]</span>           <span class="c"># static parameters</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; x is n by D training patterns matrix, and z is nn by D test case matrix&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">A</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>where the returning matrix A depends on the input:</dt>
+<dd><ul class="first last simple">
+<li>if <em>z == None</em>, A is covariance matrix of x with shape (n,n)</li>
+<li>elif <em>z == &#8216;diag&#8217;</em>, A is self covariance matrix with shape (n,1)</li>
+<li>else <em>z is a matrix (given test points)</em>, A is covariance between data sets x and z with shape (n,nn)</li>
+<li>if <em>der == None</em>, return A as defined previously.</li>
+<li>else <em>der != None</em>, i.e. given der as an integer der = <img class="math" src="_images/math/8c325612684d41304b9751c175df7bcc0f61f64f.png" alt="k"/>, return the derivative matrix wrt. to <img class="math" src="_images/math/b7c4e88b1e586595ec86d07f8f90f47f442eca27.png" alt="k_{th}"/> hyperparameter.</li>
+</ul>
+</dd>
+</dl>
+<p>and for customized mean class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Your mean class needs to inherit base class Mean,</span>
+<span class="c"># which is in the module of Core.mean</span>
+<span class="k">class</span> <span class="nc">MyMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para3</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">para1</span><span class="p">,</span> <span class="n">para2</span><span class="p">]</span>     <span class="c"># hyperparameters that can be trained</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span> <span class="p">[</span><span class="n">para3</span><span class="p">]</span>           <span class="c"># static parameters</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; x is n by D training patterns matrix&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">A</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>where the returning matrix A depends on the input:</dt>
+<dd><ul class="first last simple">
+<li>if <em>der == None</em>, return A as the mean of x</li>
+<li>else <em>der != None</em>, return the derivative of mean wrt. to <img class="math" src="_images/math/b7c4e88b1e586595ec86d07f8f90f47f442eca27.png" alt="k_{th}"/> hyperparameter.</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="module-pyGPs.Core.cov">
+<span id="list-of-kernels-and-default-parameters"></span><h2>List of Kernels and Default Parameters<a class="headerlink" href="#module-pyGPs.Core.cov" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyGPs.Core.cov.Const">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Const</tt><big>(</big><em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Const"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Const" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constant kernel. hyp = [ log_sigma ]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>log_sigma</strong> &#8211; signal deviation.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.Kernel">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Kernel</tt><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a base class of Kernel functions
+there is no computation in this class, it just defines rules about a kernel class should have
+each covariance function will inherit it and implement its own behaviour</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.LIN">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">LIN</tt><a class="reference internal" href="_modules/pyGPs/Core/cov.html#LIN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.LIN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear kernel. No hyperparameters.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.LINard">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">LINard</tt><big>(</big><em>D=None</em>, <em>log_ell_list=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#LINard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.LINard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear covariance function with Automatic Relevance Detemination.
+hyp = log_ell_list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>D</strong> &#8211; dimension of training data. Set if you want default ell, which is 0.5 for each dimension.</li>
+<li><strong>log_ell_list</strong> &#8211; characteristic length scale for each dimension.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.Matern">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Matern</tt><big>(</big><em>log_ell=-1.0</em>, <em>log_d=0.0</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Matern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Matern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matern covariance function with nu = d/2 and isotropic distance measure. 
+For d=1 the function is also known as the exponential covariance function 
+or the Ornstein-Uhlenbeck covariance in 1d.
+d will be rounded to 1, 3, or 5.</p>
+<p>hyp = [ log_ell, log_sigma, log_d ]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>log_d</strong> &#8211; d is 2 times nu</li>
+<li><strong>log_ell</strong> &#8211; characteristic length scale.</li>
+<li><strong>log_sigma</strong> &#8211; signal deviation.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.Noise">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Noise</tt><big>(</big><em>log_sigma=0.0</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.Noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Independent covariance function, i.e &#8220;white noise&#8221;, with specified variance.
+Normally NOT used anymore since noise is now added in liklihood.
+hyp = [ log_sigma ]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>log_sigma</strong> &#8211; signal deviation.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.Periodic">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Periodic</tt><big>(</big><em>log_ell=-1</em>, <em>log_p=0.0</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Periodic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Periodic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stationary kernel for a smooth periodic function. 
+hyp = [ log_ell, log_p, log_sigma]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>log_p</strong> &#8211; period.</li>
+<li><strong>log_ell</strong> &#8211; characteristic length scale.</li>
+<li><strong>log_sigma</strong> &#8211; signal deviation.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.PiecePoly">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">PiecePoly</tt><big>(</big><em>log_c=0.0</em>, <em>log_d=0.69314718055994529</em>, <em>log_sigma=0.0</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.PiecePoly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Piecewise polynomial kernel with compact support.
+hyp = [log_ell, log_sigma, log_v]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>log_ell</strong> &#8211; characteristic length scale.</li>
+<li><strong>log_sigma</strong> &#8211; signal deviation.</li>
+<li><strong>log_v</strong> &#8211; degree in piecewise polynomial kernel. v will be rounded to 0,1,2,or 3.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.Poly">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Poly</tt><big>(</big><em>log_c=0.0</em>, <em>log_d=0.69314718055994529</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Poly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polynomial covariance function. hyp = [ log_c, log_sigma ]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>log_c</strong> &#8211; inhomogeneous offset.</li>
+<li><strong>log_sigma</strong> &#8211; signal deviation.</li>
+<li><strong>log_d</strong> &#8211; order of polynomial (treated not as hyperparameter, i.e. will not be trained).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.Pre">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Pre</tt><big>(</big><em>M1</em>, <em>M2</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Pre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Pre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Precomputed kernel matrix. No hyperparameters and thus nothing will be optimised.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>M1</strong> &#8211; cross covariances matrix(train+1 by test).
+last row is self covariances (diagonal of test by test)</li>
+<li><strong>M2</strong> &#8211; training set covariance matrix (train by train)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.RBF">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RBF</tt><big>(</big><em>log_ell=-1.0</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#RBF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.RBF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Squared Exponential kernel with isotropic distance measure. hyp = [log_ell, log_sigma]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>log_ell</strong> &#8211; characteristic length scale.</li>
+<li><strong>log_sigma</strong> &#8211; signal deviation.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.RBFard">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RBFard</tt><big>(</big><em>D=None</em>, <em>log_ell_list=None</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#RBFard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.RBFard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Squared Exponential kernel with Automatic Relevance Determination.
+hyp = log_ell_list + [log_sigma]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>D</strong> &#8211; dimension of pattern. set if you want default ell, which is 0.5 for each dimension.</li>
+<li><strong>log_ell_list</strong> &#8211; characteristic length scale for each dimension.</li>
+<li><strong>log_sigma</strong> &#8211; signal deviation.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.RBFunit">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RBFunit</tt><big>(</big><em>log_ell=-1.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#RBFunit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.RBFunit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Squared Exponential kernel with isotropic distance measure with unit magnitude.
+i.e signal variance is always 1. hyp = [ log_ell ]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>log_ell</strong> &#8211; characteristic length scale.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.RQ">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RQ</tt><big>(</big><em>log_ell=-1</em>, <em>log_sigma=0.0</em>, <em>log_alpha=0.0</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.RQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rational Quadratic covariance function with isotropic distance measure.
+hyp = [ log_ell, log_sigma, log_alpha ]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>log_ell</strong> &#8211; characteristic length scale.</li>
+<li><strong>log_sigma</strong> &#8211; signal deviation.</li>
+<li><strong>log_alpha</strong> &#8211; hape parameter for the RQ covariance.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.RQard">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RQard</tt><big>(</big><em>D=None</em>, <em>log_ell_list=None</em>, <em>log_sigma=0.0</em>, <em>log_alpha=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#RQard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.RQard" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Rational Quadratic covariance function with Automatic Relevance Detemination</dt>
+<dd>(ARD) distance measure.</dd>
+</dl>
+<p>hyp = log_ell_list + [ log_sigma, log_alpha ]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>D</strong> &#8211; dimension of pattern. set if you want default ell, which is 0.5 for each dimension.</li>
+<li><strong>log_ell_list</strong> &#8211; characteristic length scale for each dimension.</li>
+<li><strong>log_sigma</strong> &#8211; signal deviation.</li>
+<li><strong>log_alpha</strong> &#8211; hape parameter for the RQ covariance.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyGPs.Core.mean">
+<span id="list-of-means-and-default-parameters"></span><h2>List of Means and Default Parameters<a class="headerlink" href="#module-pyGPs.Core.mean" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyGPs.Core.mean.Const">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.mean.</tt><tt class="descname">Const</tt><big>(</big><em>c=5.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/mean.html#Const"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.mean.Const" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constant mean function. hyp = [c]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>c</strong> &#8211; constant value for mean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.mean.Linear">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.mean.</tt><tt class="descname">Linear</tt><big>(</big><em>D=None</em>, <em>alpha_list=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/mean.html#Linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.mean.Linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear mean function. self.hyp = alpha_list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>D</strong> &#8211; dimension of training data. Set if you want default alpha, which is 0.5 for each dimension.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Alpha_list:</th><td class="field-body">scalar alpha for each dimension</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.mean.Mean">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.mean.</tt><tt class="descname">Mean</tt><a class="reference internal" href="_modules/pyGPs/Core/mean.html#Mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.mean.Mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>The base function for mean function</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.mean.One">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.mean.</tt><tt class="descname">One</tt><a class="reference internal" href="_modules/pyGPs/Core/mean.html#One"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.mean.One" title="Permalink to this definition">¶</a></dt>
+<dd><p>One mean.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.mean.Zero">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.mean.</tt><tt class="descname">Zero</tt><a class="reference internal" href="_modules/pyGPs/Core/mean.html#Zero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.mean.Zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zero mean.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -59,12 +538,26 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Kernels &amp; Means</a><ul>
+<li><a class="reference internal" href="#simple-kernel-mean">Simple Kernel &amp; Mean</a></li>
+<li><a class="reference internal" href="#some-special-cases">Some Special Cases</a></li>
+<li><a class="reference internal" href="#composite-kernels-meams">Composite Kernels &amp; Meams</a></li>
+<li><a class="reference internal" href="#precomputed-kernel-matrix">Precomputed Kernel Matrix</a></li>
+<li><a class="reference internal" href="#customizing-kernel-mean">Customizing Kernel &amp; Mean</a></li>
+<li><a class="reference internal" href="#module-pyGPs.Core.cov">List of Kernels and Default Parameters</a></li>
+<li><a class="reference internal" href="#module-pyGPs.Core.mean">List of Means and Default Parameters</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="CV.html"
-                        title="previous chapter">K-fold Cross-Validation</a></p>
+  <p class="topless"><a href="demoHousing.html"
+                        title="previous chapter">Regression on UCI Housing data</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="Opts.html"
-                        title="next chapter">Optimizers</a></p>
+  <p class="topless"><a href="Likelihoods.html"
+                        title="next chapter">Likelihoods &amp; Inference</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/Kernels.txt"
@@ -94,17 +587,20 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="Opts.html" title="Optimizers"
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Likelihoods.html" title="Likelihoods &amp; Inference"
              >next</a> |</li>
         <li class="right" >
-          <a href="CV.html" title="K-fold Cross-Validation"
+          <a href="demoHousing.html" title="Regression on UCI Housing data"
              >previous</a> |</li>
-        <li><a href="index.html">pyGP_OO 1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs 1.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

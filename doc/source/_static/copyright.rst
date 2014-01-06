@@ -7,7 +7,7 @@ Authors
     * Daniel Marthaler [marthaler at ge dot com]
     * Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
  
-    This file is part of pyGP_OO.
+    This file is part of pyGPs.
     
 License
 -------

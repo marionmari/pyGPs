@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyGP_OO - A Package for Gaussian Processes &mdash; pyGP_OO 1.0.0 documentation</title>
+    <title>pyGPs - A Package for Gaussian Processes &mdash; pyGPs 1.0.0 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyGP_OO 1.0.0 documentation" href="#" />
+    <link rel="top" title="pyGPs 1.0.0 documentation" href="#" />
     <link rel="next" title="Installation" href="Install.html" /> 
   </head>
   <body>
@@ -34,9 +34,12 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="Install.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li><a href="#">pyGP_OO 1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="#">pyGPs 1.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -45,14 +48,14 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="pygp-oo-a-package-for-gaussian-processes">
-<h1>pyGP_OO - A Package for Gaussian Processes<a class="headerlink" href="#pygp-oo-a-package-for-gaussian-processes" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="pygps-a-package-for-gaussian-processes">
+<h1>pyGPs - A Package for Gaussian Processes<a class="headerlink" href="#pygps-a-package-for-gaussian-processes" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="about-the-package">
 <h2>About the package<a class="headerlink" href="#about-the-package" title="Permalink to this headline">¶</a></h2>
 <p>pyGPs is a library hosting Python implementations of Gaussian processes (GPs) for
 machine learning.
 pyGPs bridges the gap between systems designed primarily for users, who mainly
-want to apply gps and need basic ml routines for model training, evaluation, and visualiza-
+want to apply gps and need basic machine learning routines for model training, evaluation, and visualiza-
 gp functiontion, and expressive systems for developers, who focus on extending the core
 functionalities as covariance and likelihood functions, as well as inference techniques.</p>
 <p>The software package is released under the BSD 2-Clause (FreeBSD) License.
@@ -63,11 +66,10 @@ Marion Neumann, Shan Huang, Daniel Marthaler, &amp; Kristian Kersting, Nov.2013<
 <li>minimize.py implemented in python by Roland Memisevic 2008, following minimize.m (Copyright (c) Carl Edward Rasmussen (1999-2006))</li>
 <li>scg.py (Copyright (c) Ian T Nabney (1996-2001))</li>
 <li>brentmin.py (Copyright (c) Hannes Nickisch 2010-01-10)</li>
-<li>Mauna Loa CO2 data (Copyright (c) Pieter Tans, Aug 2012)</li>
 <li>FITC functionality (following matlab implementations under Copyright (c) by Ed Snelson, Carl Edward Rasmussen and Hannes Nickisch, 2011-11-02)</li>
 </ul>
 <p>This is a stable release. If you observe problems or bugs, please let us know.
-You can also download from Github a <a class="reference external" href="https://github.com/marionmari/pyGP_PR/">procedual implementation</a> of GP functionality. However, the procedual version is not under active maintainess.</p>
+You can also download a <a class="reference external" href="https://github.com/marionmari/pyGP_PR/">procedual implementation</a> of GP functionality from Github. However, the procedual version will not be supported in future.</p>
 <dl class="docutils">
 <dt>Authors:</dt>
 <dd><ul class="first last simple">
@@ -85,10 +87,12 @@ You can also download from Github a <a class="reference external" href="https://
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Theory.html">Theory &amp; Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Theory.html">GPs &amp; Functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Examples.html">Demos</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Kernels.html">Kernels &amp; Means.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Kernels.html">Kernels &amp; Means</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Likelihoods.html">Likelihoods &amp; Inference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Opts.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Graph.html">Structured Kernels</a></li>
 </ul>
 </div>
 </div>
@@ -102,7 +106,7 @@ You can also download from Github a <a class="reference external" href="https://
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">pyGP_OO - A Package for Gaussian Processes</a><ul>
+<li><a class="reference internal" href="#">pyGPs - A Package for Gaussian Processes</a><ul>
 <li><a class="reference internal" href="#about-the-package">About the package</a></li>
 <li><a class="reference internal" href="#getting-started">Getting started</a><ul>
 </ul>
@@ -143,14 +147,17 @@ You can also download from Github a <a class="reference external" href="https://
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="Install.html" title="Installation"
              >next</a> |</li>
-        <li><a href="#">pyGP_OO 1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="#">pyGPs 1.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
