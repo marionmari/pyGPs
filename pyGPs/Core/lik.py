@@ -500,11 +500,11 @@ class Logistic(Likelihood):
 
 class Laplace(Likelihood):
     ''' 
-    Laplacian likelihood function for regression. ONLY work with EP inference!
+    Laplacian likelihood function for regression. ONLY works with EP inference!
     The expression for the likelihood is 
     likLaplace(t) = exp(-|t-y|/b) / (2*b) with b = sn/sqrt(2),
     where y is the mean and sn^2 is the variance.
-    The hyperparameters is: hyp = [ log_sigma ]
+    The hyperparameter is: hyp = [ log_sigma ]
     '''
 
     def __init__(self, log_sigma=np.log(0.1) ):
@@ -557,13 +557,17 @@ class Laplace(Likelihood):
                 else:                                    # derivative mode
                     return []                            # derivative w.r.t. hypers
             elif isinstance(inffunc, inf.EP):
-                n = np.max([len(y.flatten()),len(mu.flatten()),len(s2.flatten()),len(sn.flatten())]); on = np.ones((n,1))
+                n = np.max([len(y.flatten()),len(mu.flatten()),len(s2.flatten()),len(sn.flatten())])
+                on = np.ones((n,1))
                 y = y*on; mu = mu*on; s2 = s2*on; sn = sn*on; 
                 fac = 1e3;          # factor between the widths of the two distributions ...
                                     # ... from when one considered a delta peak, we use 3 orders of magnitude
-                idlik = (fac*sn) < np.sqrt(s2)           # Likelihood is a delta peak
-                idgau = (fac*np.sqrt(s2)) < sn           # Gaussian is a delta peak
-                id = not idgau.any() and not idlik.any() # interesting case in between
+                #idlik = np.reshape( (fac*sn) < np.sqrt(s2) , (sn.shape[0],) ) # Likelihood is a delta peak
+                #idgau = np.reshape( (fac*np.sqrt(s2)) < sn , (sn.shape[0],) ) # Gaussian is a delta peak
+                idlik = (fac*sn) < np.sqrt(s2) 
+                idgau = (fac*np.sqrt(s2)) < sn 
+                id    = np.logical_and(np.logical_not(idgau),np.logical_not(idlik)) # interesting case in between
+
                 if der == None:                          # no derivative mode
                     lZ = np.zeros((n,1)); dlZ = lZ[:]; d2lZ = lZ[:]
                     if np.any(idlik):
@@ -576,24 +580,33 @@ class Laplace(Likelihood):
                         lZ[idgau] = a[0]; dlZ[idgau] = a[1]; d2lZ[idgau] = a[2] 
                     if np.any(id):
                         # substitution to obtain unit variance, zero mean Laplacian
-                        tmu = (mu[id]-y[id])/(sn[id]+1e-16); tvar = s2[id]/(sn[id]**2+1e-16)
+                        tvar = s2[id]/(sn[id]**2+1e-16)
+                        tmu = (mu[id]-y[id])/(sn[id]+1e-16); 
                         # an implementation based on logphi(t) = log(normcdf(t))
                         zp = (tmu+np.sqrt(2)*tvar)/np.sqrt(tvar)
                         zm = (tmu-np.sqrt(2)*tvar)/np.sqrt(tvar)
-                        ap =  self.logphi(-zp)+np.sqrt(2)*tmu
-                        am =  self.logphi( zm)-np.sqrt(2)*tmu
-                        lZ[id] = np.logaddexp2(np.array([ap,am])) + tvar - np.log(sn[id]*np.sqrt(2))
+                        ap =  self._logphi(-zp)+np.sqrt(2)*tmu
+                        am =  self._logphi( zm)-np.sqrt(2)*tmu
+                        lZ[id] = np.logaddexp2(ap,am) + tvar - np.log(sn[id]*np.sqrt(2.))
                     if nargout>1:
-                        lqp = -zp**22/2 - np.log(2*np.pi)/2 - self.logphi(-zp);       # log( N(z)/Phi(z) )
-                        lqm = -zm**22/2 - np.log(2*np.pi)/2 - self.logphi( zm);
-                        dap = -np.exp(lqp-np.log(s2[id])/2) + np.sqrt(2)/sn[id]
-                        dam =  np.exp(lqm-np.log(s2[id])/2) - np.sqrt(2)/sn[id]
-                        dlZ[id] = self._expABz_expAx(np.array([ap,am]),np.reshape(np.array([1,1]),(2,1)),np.array([dap,dam]),np.reshape(np.array([1,1]),(2,1)))
+                        lqp = -0.5*zp**2 - 0.5*np.log(2*np.pi) - self._logphi(-zp);       # log( N(z)/Phi(z) )
+                        lqm = -0.5*zm**2 - 0.5*np.log(2*np.pi) - self._logphi( zm);
+                        dap = -np.exp(lqp-0.5*np.log(s2[id])) + np.sqrt(2)/sn[id]
+                        dam =  np.exp(lqm-0.5*np.log(s2[id])) - np.sqrt(2)/sn[id]
+        
+                        _z1 = np.reshape(np.array([ap,am]),(1,2))
+                        _z2 = np.reshape(np.array([dap,dam]),(1,2))
+                        _x = np.reshape(np.array([1,1]),(2,1))
+                        dlZ[id] = self._expABz_expAx(_z1, _x, _z2, _x)
+
                         if nargout>2:
-                            a = p.sqrt(8.)/sn[id]/np.sqrt(s2[id]);
+                            a = np.sqrt(8.)/sn[id]/np.sqrt(s2[id]);
                             bp = 2/sn[id]**2 - (a - zp/s2[id])*np.exp(lqp)
                             bm = 2/sn[id]**2 - (a + zm/s2[id])*np.exp(lqm)
-                            d2lZ[id] = self._expABz_expAx(np.array([ap,am]),np.reshape(np.array([1,1]),(2,1)),np.array([bp,bm]),np.reshape(np.array([1,1]),(2,1))) - dlZ[id]**2;
+                            _x = np.reshape(np.array([1,1]),(2,1))
+                            _z1 = np.reshape(np.array([ap,am]),(1,2))
+                            _z2 = np.reshape(np.array([bp,bm]),(1,2))
+                            d2lZ[id] = self._expABz_expAx(_z1, _x, _z2, _x) - dlZ[id]**2
                             return lZ,dlZ,d2lZ
                         else:
                             return lZ,dlZ
@@ -651,28 +664,27 @@ class Laplace(Likelihood):
         The function is not general in the sense that it yields correct values for
         all types of inputs. We assume that the values are close together.
         '''
-        N = A.shape[1];  maxA = np.max(A,axis=0)      # number of columns, max over columns
-        A = A-maxA*np.ones((1,N))                     # subtract maximum value
+        N = A.shape[1];  maxA = np.max(A,axis=0)*np.ones((1,N)) # number of columns, max over columns
+        A = A - maxA                     # subtract maximum value
+
         y = ( np.dot((np.exp(A)*B),z) ) / ( np.dot(np.exp(A),x) )
-        return y
+        return y[0]
 
-    # % safe implementation of the log of phi(x) = \int_{-\infty}^x N(f|0,1) df
-    # % logphi(z) = log(normcdf(z))
-    # function lp = logphi(z)
-    # lp = zeros(size(z));                                         % allocate memory
-    # zmin = -6.2; zmax = -5.5;
-    # ok = z>zmax;                                % safe evaluation for large values
-    # bd = z<zmin;                                                 % use asymptotics
-    # ip = ~ok & ~bd;                             % interpolate between both of them
-    # lam = 1./(1+exp( 25*(1/2-(z(ip)-zmin)/(zmax-zmin)) ));       % interp. weights
-    # lp( ok) = log( (1+erf(z(ok)/sqrt(2)))/2 );
-    # % use lower and upper bound acoording to Abramowitz&Stegun 7.1.13 for z<0
-    # % lower -log(pi)/2 -z.^2/2 -log( sqrt(z.^2/2+2   ) -z/sqrt(2) )
-    # % upper -log(pi)/2 -z.^2/2 -log( sqrt(z.^2/2+4/pi) -z/sqrt(2) )
-    # % the lower bound captures the asymptotics
-    # lp(~ok) = -log(pi)/2 -z(~ok).^2/2 -log( sqrt(z(~ok).^2/2+2)-z(~ok)/sqrt(2) );
-    # lp( ip) = (1-lam).*lp(ip) + lam.*log( (1+erf(z(ip)/sqrt(2)))/2 );
-
+    def _logphi(self,z):
+        ''' Safe implementation of the log of phi(x) = \int_{-\infty}^x N(f|0,1) df
+         returns lp = log(normcdf(z))
+        '''
+        lp = np.zeros_like(z)                       # allocate memory
+        zmin = -6.2; zmax = -5.5;
+        ok = z>zmax                                 # safe evaluation for large values
+        bd = z<zmin                                 # use asymptotics
+        nok = np.logical_not(ok)
+        ip = np.logical_and(nok,np.logical_not(bd)) # interpolate between both of them
+        lam = 1./(1.+np.exp( 25.*(0.5-(z[ip]-zmin)/(zmax-zmin)) ))  # interp. weights
+        lp[ok] = np.log( 0.5*( 1.+erf(z[ok]/np.sqrt(2.)) ) )
+        lp[nok] = -0.5*(np.log(np.pi) - z[nok]**2) - np.log( np.sqrt(2.+0.5*(z[nok]**2)) ) 
+        lp[ip] = (1-lam)*lp[ip] + lam*np.log( 0.5*( 1.+erf(z[ip]/np.sqrt(2.)) ) )
+        return lp
 
  
 

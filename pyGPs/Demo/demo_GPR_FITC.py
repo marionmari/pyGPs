@@ -22,7 +22,7 @@ z = demoData['xstar']        # test data
 # Sparse GP regression (FITC) example
 #----------------------------------------------------------------------
 
-print "Example 1: deafult inducing points"
+print "Example 1: default inducing points"
 
 # Start from a new model 
 model = gp.GPR_FITC()            
@@ -65,7 +65,7 @@ model.setPrior(mean=m, kernel=k, inducing_points=u)
 # The rest is analogous to what we have done before
 model.setData(x, y)
 model.fit()
-print "Negative log marginal liklihood before:", round(model._neg_log_marginal_likelihood_,3)
+print "Negative log marginal liklihood before optimization:", round(model._neg_log_marginal_likelihood_,3)
 model.train()
 print "Negative log marginal liklihood optimized:", round(model._neg_log_marginal_likelihood_,3)
 

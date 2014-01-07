@@ -15,17 +15,6 @@ from pyGPs.Core import *
 import numpy as np
 import matplotlib.pyplot as plt
 
-def HousingPlotter(x,y,xm,ym,ys2,xt,yt):
-    _convertData = lambda z: np.reshape(z,(z.shape[0],))
-    plt.plot(x,y, 'r.', linewidth = 3.0)
-    plt.plot(xm,ym,'g-', linewidth = 3.0)
-    plt.fill_between(xm, _convertData(ym + 2.*np.sqrt(ys2)), _convertData(ym - 2.*np.sqrt(ys2)), facecolor=[0.,1.0,0.0,0.7],linewidths=0.0)    
-    plt.plot(xt,yt, 'bx', linewidth = 3.0, markersize = 5.0)
-    plt.grid()
-    plt.xlabel('Index')
-    plt.ylabel('Median Home Values (normalized)')
-    plt.show()    
-
 if __name__ == '__main__':
 
     infile = 'data_for_demo/housing.txt'
@@ -56,6 +45,9 @@ if __name__ == '__main__':
     model.train(x,y)
     t1 = clock()
     ym, ys2, fm, fs2, lp = model.predict(xs)
+    xa  = np.concatenate((data[:,:4],data[:,5:-1]),axis=1)
+    xa = (xa - np.mean(xa,axis=0))/(np.std(xa,axis=0)+1.e-16)
+    ya, ys2a, fma, fs2a, lpa = model.predict(xa)
 
     print 'Time to optimize = ', t1-t0
     print 'Optimized mean = ', model.meanfunc.hyp
@@ -63,4 +55,20 @@ if __name__ == '__main__':
     print 'Optimized liklihood = ', model.likfunc.hyp
     print 'Final negative log marginal likelihood = ', round(model._neg_log_marginal_likelihood_,3)
 
-    HousingPlotter(range(len(y)),y,range(len(ym)),ym,ys2,range(len(y),len(y)+len(ys)),ys)
+    #HousingPlotter(range(len(y)),y,range(len(ym)),ym,ys2,range(len(y),len(y)+len(ys)),ys)
+    xm = np.array(range(len(y),len(y)+ym.shape[0]))
+    ym = np.reshape(ym,(ym.shape[0],))
+    zm = np.reshape(ys2,(ym.shape[0],))
+
+    plt.plot(ya,'g')
+    plt.fill_between(xm, ym + 1.*np.sqrt(zm), ym - 1.*np.sqrt(zm), facecolor=[0.,1.0,0.0,0.9],linewidths=0.0)
+    plt.fill_between(xm, ym + 2.*np.sqrt(zm), ym - 2.*np.sqrt(zm), facecolor=[0.,1.0,0.0,0.7],linewidths=0.0)
+    plt.fill_between(xm, ym + 3.*np.sqrt(zm), ym - 3.*np.sqrt(zm), facecolor=[0.,1.0,0.0,0.5],linewidths=0.0)
+
+    plt.plot(y,'r.',linewidth = 3.0, markersize = 5.0)
+    plt.plot(xm,ym[-N:], 'bx', linewidth = 3.0, markersize = 5.0)
+    plt.grid()
+    plt.xlabel('Index')
+    plt.ylabel('Median Home Values (normalized)')
+    plt.axis([0.,510.,-3.5,3.5])
+    plt.show()

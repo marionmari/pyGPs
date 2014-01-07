@@ -451,7 +451,6 @@ class RBFard(Kernel):
         else:
             self.hyp = log_ell_list + [log_sigma]
     def proceed(self, x=None, z=None, der=None):
-<<<<<<< HEAD:pyGP_OO/Core/cov.py
         n, D = x.shape
         '''if len(self.hyp) != D+1: 
             print "Squared Exponential covariance function with ARD is parameterized as:"
@@ -464,9 +463,7 @@ class RBFard(Kernel):
             raise Exception("Wrong number of hyperparameters.")
         else:'''
     
-=======
         n, D = x.shape  
->>>>>>> d899ce930e8adeadddf60c39e1a292630578702b:pyGPs/Core/cov.py
         ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
         if z == 'diag':
