@@ -259,7 +259,7 @@ class Poly(Kernel):
             elif der == 2:  			# no derivative wrt 3rd parameter
                 A = np.zeros_like(A)        	# do nothing (d is not learned)
             else:
-                raise Exception("Wrong derivative entry in covPoly")
+                raise Exception("Wrong derivative entry in Poly")
         return A
    
 
@@ -273,7 +273,7 @@ class PiecePoly(Kernel):
     :param log_sigma: signal deviation. 
     :param log_v: degree in piecewise polynomial kernel. v will be rounded to 0,1,2,or 3.
     '''
-    def __init__(self, log_c=0., log_d=np.log(2), log_sigma=0. ):
+    def __init__(self, log_c=0., log_v=np.log(2), log_sigma=0. ):
         self.hyp = [log_ell, log_sigma, log_v]
 
     def ppmax(self,A,B):
@@ -301,7 +301,7 @@ class PiecePoly(Kernel):
         elif v == 3:
             return ( (j+3) + 2.*(6.*j*j+36.*j+45.)/15.*r + (j*j*j+9.*j*j+23.*j+15.)/5.*r*r )
         else:
-            raise Exception (["Wrong degree in covPPiso.  Should be 0,1,2 or 3, is " + str(v)])
+            raise Exception (["Wrong degree in PiecePoly.  Should be 0,1,2 or 3, is " + str(v)])
 
     def pp(self,r,j,v,func):
         return func(v,r,j)*(ppmax(1-r,0)**(j+v))
@@ -337,7 +337,7 @@ class PiecePoly(Kernel):
             elif der == 2:                          # wants to compute derivative wrt order
                 A = np.zeros_like(A)
             else:
-                raise Exception("Wrong derivative entry in covPPiso")
+                raise Exception("Wrong derivative entry in PiecePoly")
         return A
 
 
@@ -625,7 +625,7 @@ class Matern(Kernel):
             assert(d in [1,3,5])         # check for valid values of d
         except AssertionError:
             d = 3
-
+	    	
         if z == 'diag':
             A = np.zeros((x.shape[0],1))
         elif z == None:

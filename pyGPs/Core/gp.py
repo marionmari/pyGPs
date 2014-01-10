@@ -28,7 +28,7 @@
 #                    log marginal likelihood w.r.t. each hyperparameter
 #   ym           column vector (of length ns) of predictive output means
 #   ys2          column vector (of length ns) of predictive output variances
-#   fmu          column vector (of length ns) of predictive latent means
+#   fm           column vector (of length ns) of predictive latent means
 #   fs2          column vector (of length ns) of predictive latent variances
 #   lp           column vector (of length ns) of log predictive probabilities
 #
