@@ -236,7 +236,7 @@ class Gauss(Likelihood):
             else:
                 raise Exception('Incorrect inference in lik.Gauss\n')
         '''
-        return varargout
+
 
 class Erf(Likelihood):
     '''
@@ -327,7 +327,7 @@ class Erf(Likelihood):
             else:                                        # derivative mode
                 varargout = []                           # deriv. wrt hyp.lik
         '''
-        return varargout
+
 
     def cumGauss(self, y=None, f=None, nargout=1):
         # return [p,lp] = cumGauss(y,f)
@@ -473,7 +473,6 @@ class Logistic(Likelihood):
             elif isinstance(inffunc, inf.VB):
                 n = len(s2.flatten()); b = (y/2)*np.ones((n,1)); z = np.zeros_like(b)
                 return b,z
-        return varargout
 
     def _log_expA_x(self,A,x):
         '''  
@@ -506,7 +505,6 @@ class Laplace(Likelihood):
     where y is the mean and sn^2 is the variance.
     The hyperparameter is: hyp = [ log_sigma ]
     '''
-
     def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [ log_sigma ]
 
@@ -642,7 +640,6 @@ class Laplace(Likelihood):
             elif isinstance(inffunc, inf.VB):
                 n = len(s2.flatten()); b = np.zeros((n,1)); y = y*np.ones((n,1)); z = y
                 return b,z
-        return varargout
 
     def _lerfc(self,t):
         ''' numerically safe implementation of f(t) = log(1-erf(t)) = log(erfc(t))'''
@@ -666,7 +663,6 @@ class Laplace(Likelihood):
         '''
         N = A.shape[1];  maxA = np.max(A,axis=0)*np.ones((1,N)) # number of columns, max over columns
         A = A - maxA                     # subtract maximum value
-
         y = ( np.dot((np.exp(A)*B),z) ) / ( np.dot(np.exp(A),x) )
         return y[0]
 

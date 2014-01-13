@@ -113,6 +113,7 @@ class ProductOfKernel(Kernel):
         return A
         
 
+
 class SumOfKernel(Kernel):
     def __init__(self,cov1,cov2):
         self.cov1 = cov1
@@ -146,6 +147,7 @@ class SumOfKernel(Kernel):
         return A
     
 
+
 class ScaleOfKernel(Kernel):
     def __init__(self,cov,scalar):
         self.cov = cov
@@ -171,6 +173,7 @@ class ScaleOfKernel(Kernel):
             A = sf2 * self.cov.proceed(x, z, der-1) 
         return A
      
+
 
 class FITCOfKernel(Kernel):
     def __init__(self,cov,inducingInput):
@@ -221,22 +224,23 @@ class FITCOfKernel(Kernel):
         return K, Kuu, Ku
 
 
+
 class Poly(Kernel):
     '''
     Polynomial covariance function. hyp = [ log_c, log_sigma ]
 
     :param log_c: inhomogeneous offset. 
     :param log_sigma: signal deviation. 
-    :param log_d: order of polynomial (treated not as hyperparameter, i.e. will not be trained). 
+    :param d: degree of polynomial (not treated as hyperparameter, i.e. will not be trained). 
     '''
-    def __init__(self, log_c=0., log_d=np.log(2), log_sigma=0. ):
-        self.hyp = [ log_c, log_sigma]
-        self.para =  [log_d] 
+    def __init__(self, log_c=0., d=2, log_sigma=0. ):
+        self.hyp = [log_c, log_sigma]
+        self.para =  [d] 
 
     def proceed(self, x=None, z=None, der=None):
         c   = np.exp(self.hyp[0])             # inhomogeneous offset
         sf2 = np.exp(2.*self.hyp[1])          # signal variance
-        ord = np.exp(self.para[0])            # order of polynomial
+        ord = self.para[0]                    # order of polynomial
         if np.abs(ord-np.round(ord)) < 1e-8:  # remove numerical error from format of parameter
             ord = int(round(ord))
         assert(ord >= 1.)                     # only nonzero integers for ord
@@ -266,15 +270,16 @@ class Poly(Kernel):
 
 class PiecePoly(Kernel):
     '''
-    Piecewise polynomial kernel with compact support.
-    hyp = [log_ell, log_sigma, log_v]
+    Piecewise polynomial kernel with compact support. 
+    hyp = [log_ell, log_sigma]
 
     :param log_ell: characteristic length scale. 
     :param log_sigma: signal deviation. 
-    :param log_v: degree in piecewise polynomial kernel. v will be rounded to 0,1,2,or 3.
+    :param v: degree v will be rounded to 0,1,2,or 3. (not treated as hyperparameter, i.e. will not be trained). 
     '''
-    def __init__(self, log_c=0., log_v=np.log(2), log_sigma=0. ):
-        self.hyp = [log_ell, log_sigma, log_v]
+    def __init__(self, log_ell=0., v=2, log_sigma=0. ):
+        self.hyp = [log_ell, log_sigma]
+        self.para = [v]
 
     def ppmax(self,A,B):
         return np.maximum(A,B*np.ones_like(A))
@@ -289,7 +294,7 @@ class PiecePoly(Kernel):
         elif v == 3:
             return ( 1. + (j+3)*r + (6.*j*j+36.*j+45.)/15.*r*r + (j*j*j+9.*j*j+23.*j+15.)/15.*r*r*r )
         else:
-             raise Exception (["Wrong degree in covPPiso.  Should be 0,1,2 or 3, is " + str(v)])
+             raise Exception (["Wrong degree in PiecePoly.  Should be 0,1,2 or 3, is " + str(v)])
 
     def dfunc(self,v,r,j):
         if v == 0:
@@ -304,15 +309,15 @@ class PiecePoly(Kernel):
             raise Exception (["Wrong degree in PiecePoly.  Should be 0,1,2 or 3, is " + str(v)])
 
     def pp(self,r,j,v,func):
-        return func(v,r,j)*(ppmax(1-r,0)**(j+v))
+        return func(v,r,j)*(self.ppmax(1-r,0)**(j+v))
 
     def dpp(self,r,j,v,func,dfunc):
-        return ppmax(1-r,0)**(j+v-1) * r * ( (j+v)*func(v,r,j) - ppmax(1-r,0) * dfunc(v,r,j) )
+        return self.ppmax(1-r,0)**(j+v-1) * r * ( (j+v)*self.func(v,r,j) - self.ppmax(1-r,0) * self.dfunc(v,r,j) )
 
     def proceed(self, x=None, z=None, der=None):
         ell = np.exp(self.hyp[0])            # characteristic length scale
         sf2 = np.exp(2.*self.hyp[1])         # signal variance
-        v   = np.exp(self.hyp[2])            # degree (v = 0,1,2 or 3 only)
+        v   = self.para[0]                   # degree (v = 0,1,2 or 3 only)
         if np.abs(v-np.round(v)) < 1e-8:     # remove numerical error from format of parameter
             v = int(round(v))
         assert(int(v) in range(4))           # Only allowed degrees: 0,1,2 or 3
@@ -326,13 +331,13 @@ class PiecePoly(Kernel):
         else:                                       # compute covariance between data sets x and z
             A = np.sqrt( spdist.cdist(x/ell, z/ell, 'sqeuclidean') )     # cross covariances 
         if der == None:                             # compute covariance matix for dataset x
-            A = sf2 * pp(A,j,v,func)
+            A = sf2 * self.pp(A,j,v,self.func)
         else:
             if der == 0:                            # compute derivative matrix wrt 1st parameter
-                A = sf2 * dpp(A,j,v,func,dfunc)
+                A = sf2 * self.dpp(A,j,v,self.func,self.dfunc)
 
             elif der == 1:                          # compute derivative matrix wrt 2nd parameter
-                A = 2. * sf2 * pp(A,j,v,func)
+                A = 2. * sf2 * self.pp(A,j,v,self.func)
 
             elif der == 2:                          # wants to compute derivative wrt order
                 A = np.zeros_like(A)
@@ -374,18 +379,18 @@ class RBF(Kernel):
                 raise Exception("Calling for a derivative in RBF that does not exist")
         return A
 
+
+
 class RBFtime(Kernel):
     def __init__(self, log_ell=-1., log_sigma=0., log_delay = 0):
         self.hyp = [log_ell, log_sigma, log_delay]
 
     def proceed(self, x=None, z=None, der=None):
-
         ell = np.exp(self.hyp[0])         # characteristic length scale
         sf2 = np.exp(2.*self.hyp[1])      # signal variance
         delay = np.exp(self.hyp[2])       # time delay
         n,D = x.shape
         x = x - delay
-
         if z == 'diag':
             A = np.zeros((n,1))
         elif z == None:
@@ -406,6 +411,7 @@ class RBFtime(Kernel):
         return A
 
 
+
 class RBFunit(Kernel):
     '''
     Squared Exponential kernel with isotropic distance measure with unit magnitude.
@@ -414,7 +420,6 @@ class RBFunit(Kernel):
     :param log_ell: characteristic length scale. 
     '''
     def __init__(self, log_ell=-1.):
-
         self.hyp = [log_ell]
 
     def proceed(self, x=None, z=None, der=None):
@@ -436,6 +441,7 @@ class RBFunit(Kernel):
         return A
 
 
+
 class RBFard(Kernel):
     '''
     Squared Exponential kernel with Automatic Relevance Determination.
@@ -450,19 +456,8 @@ class RBFard(Kernel):
             self.hyp = [0.5 for i in xrange(D)] + [log_sigma]
         else:
             self.hyp = log_ell_list + [log_sigma]
+
     def proceed(self, x=None, z=None, der=None):
-        n, D = x.shape
-        '''if len(self.hyp) != D+1: 
-            print "Squared Exponential covariance function with ARD is parameterized as:"
-            print "k(x^p,x^q) = sf2 * exp(-(x^p - x^q)'*inv(P)*(x^p - x^q)/2)"
-            print "where the P matrix is diagonal with ARD parameters ell_1^2,...,ell_D^2, where"
-            print "D is the dimension of the input space and sf2 is the signal variance."
-            print "The number of hyperparameters is %d (dimension of inputs +1):" % (D+1)
-            print "hyp = [log(ell_1), log(ell_2), ..., log(ell_D), log(sqrt(sf2))]"
-            print "------------------------------------------------------------------"
-            raise Exception("Wrong number of hyperparameters.")
-        else:'''
-    
         n, D = x.shape  
         ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
@@ -489,9 +484,7 @@ class RBFard(Kernel):
                 raise Exception("Wrong derivative index in RDFard")   
         return A
 
-            
-
-
+    
 
 class Const(Kernel):
     '''
@@ -518,6 +511,7 @@ class Const(Kernel):
         return A
 
 
+
 class LIN(Kernel):
     '''
     Linear kernel. No hyperparameters.
@@ -537,6 +531,7 @@ class LIN(Kernel):
         return A
 
 
+
 class LINard(Kernel):
     '''
     Linear covariance function with Automatic Relevance Detemination.
@@ -545,7 +540,6 @@ class LINard(Kernel):
     :param D: dimension of training data. Set if you want default ell, which is 0.5 for each dimension.
     :param log_ell_list: characteristic length scale for each dimension.
     '''
-
     def __init__(self, D=None, log_ell_list=None):
         if log_ell_list == None:
             self.hyp = [0.5 for i in xrange(D)]
@@ -576,21 +570,22 @@ class LINard(Kernel):
         return A
 
 
+
 class Matern(Kernel):
     '''
     Matern covariance function with nu = d/2 and isotropic distance measure. 
     For d=1 the function is also known as the exponential covariance function 
     or the Ornstein-Uhlenbeck covariance in 1d.
     d will be rounded to 1, 3, or 5.
-
-    hyp = [ log_ell, log_sigma, log_d ]
+    hyp = [ log_ell, log_sigma]
     
-    :param log_d: d is 2 times nu
+    :param d: d is 2 times nu. Can only be 1,3 or 5.
     :param log_ell: characteristic length scale. 
     :param log_sigma: signal deviation. 
     '''
-    def __init__(self, log_ell=-1., log_d=0., log_sigma=0. ):
-        self.hyp = [ log_ell, log_sigma, log_d ]
+    def __init__(self, log_ell=-1., d=3, log_sigma=0. ):
+        self.hyp = [ log_ell, log_sigma ]
+        self.para = [d]
 
     def func(self,d,t):
         if d == 1:
@@ -600,7 +595,8 @@ class Matern(Kernel):
         elif d == 5:
             return 1 + t*(1+t/3.)
         else:
-            raise Exception("Wrong value for d in covMatern")
+            raise Exception("Wrong value for d in Matern")
+
     def dfunc(self,d,t):
         if d == 1:
             return 1
@@ -609,23 +605,26 @@ class Matern(Kernel):
         elif d == 5:
             return t*(1+t/3.)
         else:
-            raise Exception("Wrong value for d in covMatern")
+            raise Exception("Wrong value for d in Matern")
+
     def mfunc(self,d,t):
         return self.func(d,t)*np.exp(-1.*t)
+
     def dmfunc(self,d,t):
         return self.dfunc(d,t)*t*np.exp(-1.*t)
+
     def proceed(self, x=None, z=None, der=None):
         ell = np.exp(self.hyp[0])        # characteristic length scale
         sf2 = np.exp(2.* self.hyp[1])    # signal variance
-        d   = np.exp(self.hyp[2])        # 2 times nu
+        d   = self.para[0]               # 2 times nu
         if np.abs(d-np.round(d)) < 1e-8: # remove numerical error from format of parameter
             d = int(round(d))
         d = int(d)
         try:
             assert(d in [1,3,5])         # check for valid values of d
         except AssertionError:
+            print "Warning: You specified d to be neither 1,3 nor 5. We set d=3. "
             d = 3
-	    	
         if z == 'diag':
             A = np.zeros((x.shape[0],1))
         elif z == None:
@@ -635,7 +634,6 @@ class Matern(Kernel):
             x = np.sqrt(d)*x/ell
             z = np.sqrt(d)*z/ell
             A = np.sqrt(spdist.cdist(x, z, 'sqeuclidean'))
-
         if der == None:                     # compute covariance matix for dataset x
             A = sf2 * self.mfunc(d,A)
         else:
@@ -646,7 +644,7 @@ class Matern(Kernel):
             elif der == 2:                  # no derivative wrt 3rd parameter
                 A = np.zeros_like(A)        # do nothing (d is not learned)
             else:
-                raise Exception("Wrong derivative value in covMatern")
+                raise Exception("Wrong derivative value in Matern")
         return A
 
 
@@ -694,6 +692,7 @@ class Periodic(Kernel):
             else:
                 raise Exception("Wrong derivative index in covPeriodic")            
         return A
+
 
 
 class Noise(Kernel):

@@ -32,7 +32,7 @@ z = demoData['xstar']        # test data
 print 'Basic Example'
 model = gp.GPR()             # model 
 
-model.useLikelihood("Laplace")
+# model.useLikelihood("Laplace")
 
 
 model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
@@ -42,7 +42,7 @@ model.plot()                 # and plot result
 
 
 
-'''
+
 #----------------------------------------------------------------------
 # Now lets do another example to get more insight to the toolbox
 #----------------------------------------------------------------------
@@ -77,13 +77,13 @@ model.train()
 
 # There are several propertys you can get from the model
 # For example:
-#   model._neg_log_marginal_likelihood_
-#   model._neg_log_marginal_likelihood_gradient_.cov
-#   model._neg_log_marginal_likelihood_gradient_.lik
-#   model._neg_log_marginal_likelihood_gradient_.mean
-#   model._posterior_.sW
-#   model._posterior_.alpha
-#   model._posterior_.L
+#   model.nlZ
+#   model.dnlZ.cov
+#   model.dnlZ.lik
+#   model.dnlZ.mean
+#   model.posterior.sW
+#   model.posterior.alpha
+#   model.posterior.L
 #   model.covfunc.hyp
 #   model.meanfunc.hyp
 #   model.likfunc.hyp
@@ -92,7 +92,7 @@ model.train()
 #   model.fm (predictive latent means)
 #   model.fs2 (predictive latent variances)
 #   model.lp (log predictive probability)
-print 'Optimized negative log marginal likelihood:', round(model._neg_log_marginal_likelihood_,3)
+print 'Optimized negative log marginal likelihood:', round(model.nlZ,3)
 
 
 # Predict test data
@@ -111,10 +111,10 @@ model.plot()
 #----------------------------------------------------------------------
 
 # [For all model] Speed up prediction time if you know posterior in advance
-post = model._posterior_    # already known before
+post = model.posterior    # already known before
 
 
-ym, ys2, fmu, fs2, lp = model.predict_with_posterior( post,z )
+ym, ys2, fmu, fs2, lp = model.predict_with_posterior(post,z)
 # ...other than model.predict(z) 
 
 
@@ -124,4 +124,4 @@ model.setNoise( log_sigma=np.log(0.1) )
 
 print '--------------------END OF DEMO-----------------------'
 
-'''
+

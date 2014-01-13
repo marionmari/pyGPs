@@ -21,8 +21,6 @@
 #   y            column vector of length n of training targets
 #   xs           n by D matrix of test inputs
 #   ys           column vector of length nn of true test targets (optional)
-#   der          flag for dnlZ computation determination (when xs == None also)
-#
 #   nlZ          returned value of the negative log marginal likelihood
 #   dnlZ         column vector of partial derivatives of the negative
 #                    log marginal likelihood w.r.t. each hyperparameter
@@ -31,7 +29,6 @@
 #   fm           column vector (of length ns) of predictive latent means
 #   fs2          column vector (of length ns) of predictive latent variances
 #   lp           column vector (of length ns) of log predictive probabilities
-#
 #   post         struct representation of the (approximate) posterior
 #                post consists of post.alpha, post.L, post.sW
 #
@@ -64,10 +61,11 @@ class GP(object):
         self.covfunc = None
         self.likfunc = None
         self.inffunc = None
-        self.optimizer = None
-        self._neg_log_marginal_likelihood_ = None
-        self._neg_log_marginal_likelihood_gradient_ = None  
-        self._posterior_ = None   # struct representation of the (approximate) posterior 
+        self.optimizer = None 
+        self.nlZ = None           # negative log marginal likelihood
+        self.dnlZ = None          # column vector of partial derivatives of the negative
+                                  # log marginal likelihood w.r.t. each hyperparameter
+        self.posterior = None     # struct representation of the (approximate) posterior 
         self.x = None             # n by D matrix of training inputs
         self.y = None             # column vector of length n of training targets
         self.xs = None            # n by D matrix of test inputs
@@ -143,6 +141,7 @@ class GP(object):
         '''
         pass
 
+
     def train(self, x=None, y=None):
         '''
         train optimal hyperparameters 
@@ -155,11 +154,12 @@ class GP(object):
 
         # optimize 
         optimalHyp, optimalNlZ = self.optimizer.findMin(self.x, self.y)
-        self._neg_log_marginal_likelihood_ = optimalNlZ
+        self.nlZ= optimalNlZ
 
         # apply optimal hyp to all mean/cov/lik functions here
         self.optimizer.apply_in_objects(optimalHyp)
         self.fit()
+
 
     def fit(self,x=None, y=None,der=True):
         '''
@@ -184,15 +184,16 @@ class GP(object):
                 raise Exception('You attempt classification using labels different from {+1,-1}')
         if not der:
             post, nlZ = self.inffunc.proceed(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, 2)
-            self._neg_log_marginal_likelihood_ = nlZ
-            self._posterior_ = deepcopy(post)
+            self.nlZ = nlZ
+            self.posterior = deepcopy(post)
             return nlZ, post          
         else:
             post, nlZ, dnlZ = self.inffunc.proceed(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, 3) 
-            self._neg_log_marginal_likelihood_ = nlZ 
-            self._neg_log_marginal_likelihood_gradient_ = deepcopy(dnlZ)
-            self._posterior_ = deepcopy(post)
+            self.nlZ = nlZ 
+            self.dnlZ = deepcopy(dnlZ)
+            self.posterior = deepcopy(post)
             return nlZ, dnlZ, post    
+
 
     def predict(self, xs, ys=None):
         '''
@@ -217,11 +218,11 @@ class GP(object):
         self.xs = xs
         self.ys = ys
         
-        if self._posterior_ == None:   
+        if self.posterior == None:   
             self.fit()        
-        alpha = self._posterior_.alpha
-        L     = self._posterior_.L
-        sW    = self._posterior_.sW
+        alpha = self.posterior.alpha
+        L     = self.posterior.L
+        sW    = self.posterior.sW
         
         nz = range(len(alpha[:,0]))         # non-sparse representation 
         if L == []:                         # in case L is not provided, we compute it
@@ -259,7 +260,6 @@ class GP(object):
             ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
             ys2[id] = np.reshape( np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1)/N , (len(id),1) ) # .. variance
             nact = id[-1]+1                  # set counter to index of next data point
-
         self.ym = ymu
         self.ys2 = ys2
         self.lp = lp
@@ -294,7 +294,7 @@ class GP(object):
         x = self.x
         y = self.y
         
-        self._posterior_ = deepcopy(post)
+        self.posterior = deepcopy(post)
         alpha = post.alpha
         L     = post.L
         sW    = post.sW
@@ -335,7 +335,6 @@ class GP(object):
             ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
             ys2[id] = np.reshape( np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1)/N , (len(id),1) ) # .. variance
             nact = id[-1]+1                  # set counter to index of next data point
-        
         self.ym = ymu
         self.ys2 = ys2
         self.lp = lp

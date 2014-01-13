@@ -70,7 +70,6 @@ if __name__ == '__main__':
     model.setPrior(kernel=k)
     model.predict(xs)
 
-
     # STANDARD GP (training)
     from time import clock
     t0 = clock()
@@ -82,6 +81,6 @@ if __name__ == '__main__':
     print 'Optimized mean = ', model.meanfunc.hyp
     print 'Optimized covariance = ', model.covfunc.hyp
     print 'Optimized liklihood = ', model.likfunc.hyp
-    print 'Final negative log marginal likelihood = ', round(model._neg_log_marginal_likelihood_,3)
+    print 'Final negative log marginal likelihood = ', round(model.nlZ,3)
     
     model.plot()

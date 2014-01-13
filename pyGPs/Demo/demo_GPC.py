@@ -51,9 +51,9 @@ model.setData(x, y)
 model.plotData_2d(x1,x2,t1,t2,p1,p2)
 
 model.fit()
-print "Negative log marginal liklihood before:", round(model._neg_log_marginal_likelihood_,3)
+print "Negative log marginal liklihood before:", round(model.nlZ,3)
 model.train()
-print "Negative log marginal liklihood optimized:", round(model._neg_log_marginal_likelihood_,3)
+print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
 # Prediction
 n = z.shape[0]

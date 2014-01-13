@@ -37,7 +37,7 @@ if __name__ == '__main__':
     
     model = gp.GPR()
     model.fit(x, y)
-    print 'Initial negative log marginal likelihood = ', round(model._neg_log_marginal_likelihood_,3)
+    print 'Initial negative log marginal likelihood = ', round(model.nlZ,3)
     
     # train and predict
     from time import clock
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     print 'Optimized mean = ', model.meanfunc.hyp
     print 'Optimized covariance = ', model.covfunc.hyp
     print 'Optimized liklihood = ', model.likfunc.hyp
-    print 'Final negative log marginal likelihood = ', round(model._neg_log_marginal_likelihood_,3)
+    print 'Final negative log marginal likelihood = ', round(model.nlZ,3)
 
     #HousingPlotter(range(len(y)),y,range(len(ym)),ym,ys2,range(len(y),len(y)+len(ys)),ys)
     xm = np.array(range(len(y),len(y)+ym.shape[0]))
