@@ -14,11 +14,11 @@
 # likelihood functions are provided to be used by the gp.py function:
 #
 #   likErf         (Error function, classification, probit regression)
-#   likLogistic    [NOT IMPLEMENTED!] (Logistic, classification, logit regression)
+#   likLogistic    (Logistic, classification, logit regression)
 #   likUni         [NOT IMPLEMENTED!] (Uniform likelihood, classification)
 #
 #   likGauss       (Gaussian, regression)
-#   likLaplace     [NOT IMPLEMENTED!] (Laplacian or double exponential, regression)
+#   likLaplace     (Laplacian or double exponential, regression)
 #   likSech2       [NOT IMPLEMENTED!] (Sech-square, regression)
 #   likT           [NOT IMPLEMENTED!] (Student's t, regression)
 #
@@ -32,7 +32,7 @@
 #
 # 1) With two or three input arguments:                       [PREDICTION MODE]
 #
-#    lp = lik(y, mu) OR [lp, ymu, ys2] = lik(y, mu, s2)
+#    lp = lik(y, mu) OR lp, ymu, ys2 = lik(y, mu, s2)
 #
 # This allows to evaluate the predictive distribution. Let p(y_*|f_*) be the
 # likelihood of a test point and N(f_*|mu,s2) an approximation to the posterior
@@ -50,13 +50,12 @@
 #
 # 2) With four or five input arguments, the fouth being an object of class "Inference" [INFERENCE MODE]
 #
-# [varargout] = lik(y, mu, s2, inf) OR
-# [varargout] = lik(y, mu, s2, inf, i)
+#  lik(y, mu, s2, inf) OR lik(y, mu, s2, inf, i)
 #
 # There are three cases for inf, namely a) infLaplace, b) infEP and c) infVB. 
 # The last input i, refers to derivatives w.r.t. the ith hyperparameter. 
 #
-# a1)   [lp,dlp,d2lp,d3lp] = lik(y, f, [], 'infLaplace')
+# a1)   lp,dlp,d2lp,d3lp = lik(y, f, [], 'infLaplace')
 #       lp, dlp, d2lp and d3lp correspond to derivatives of the log likelihood 
 #       log(p(y|f)) w.r.t. to the latent location f.
 #           lp = log( p(y|f) )
@@ -64,25 +63,25 @@
 #           d2lp = d^2 log( p(y|f) ) / df^2
 #           d3lp = d^3 log( p(y|f) ) / df^3
 #
-# a2)   [lp_dhyp,dlp_dhyp,d2lp_dhyp] = lik(y, f, [], 'infLaplace', i)
+# a2)   lp_dhyp,dlp_dhyp,d2lp_dhyp = lik(y, f, [], 'infLaplace', i)
 #       returns derivatives w.r.t. to the ith hyperparameter
 #           lp_dhyp = d   log( p(y|f) ) / (     dhyp_i)
 #           dlp_dhyp = d^2 log( p(y|f) ) / (df   dhyp_i)
 #           d2lp_dhyp = d^3 log( p(y|f) ) / (df^2 dhyp_i)
 #
 #
-# b1)   [lZ,dlZ,d2lZ] = lik(y, mu, s2, 'infEP')
+# b1)   lZ,dlZ,d2lZ = lik(y, mu, s2, 'infEP')
 #       let Z = \int p(y|f) N(f|mu,s2) df then
 #           lZ =     log(Z)
 #           dlZ = d   log(Z) / dmu
 #           d2lZ = d^2 log(Z) / dmu^2
 #
-# b2)   [dlZhyp] = lik(y, mu, s2, 'infEP', i)
+# b2)   dlZhyp = lik(y, mu, s2, 'infEP', i)
 #       returns derivatives w.r.t. to the ith hyperparameter
 #           dlZhyp = d log(Z) / dhyp_i
 #
 #
-# c1)   [h,b,dh,db,d2h,d2b] = lik(y, [], ga, 'infVB')
+# c1)   h,b,dh,db,d2h,d2b = lik(y, [], ga, 'infVB')
 #       ga is the variance of a Gaussian lower bound to the likelihood p(y|f).
 #       p(y|f) \ge exp( b*f - f.^2/(2*ga) - h(ga)/2 ) \propto N(f|b*ga,ga)
 #       The function returns the linear part b and the "scaling function" h(ga) and derivatives
@@ -91,7 +90,7 @@
 #           d2h = d^2 h/dga
 #           d2b = d^2 b/dga
 #
-# c2)   [dhhyp] = lik(y, [], ga, 'infVB', i)
+# c2)   dhhyp = lik(y, [], ga, 'infVB', i)
 #           dhhyp = dh / dhyp_i, the derivative w.r.t. the ith hyperparameter
 #
 # Cumulative likelihoods are designed for binary classification. Therefore, they

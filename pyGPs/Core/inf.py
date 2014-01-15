@@ -35,11 +35,10 @@
 #
 # The interface to the approximation methods is the following:
 #
-#   function [post nlZ dnlZ] = inf.proceed(cov, lik, x, y)
+# post nlZ dnlZ = inf.proceed(cov, lik, x, y)
 #
 # where:
 #   INPUT:
-#   hyp     struct of hyperparameters
 #   cov     name of the covariance function (see covFunctions.m)
 #   lik     name of the likelihood function (see likFunctions.m)
 #   x       n by D matrix of training inputs 
