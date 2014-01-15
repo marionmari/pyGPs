@@ -129,12 +129,14 @@ class Likelihood(object):
 
 class Gauss(Likelihood):
     '''
-    Gaussian likelihood function for regression. The expression is 
-    likGauss(t) = exp(-(t-y)^2/2*sn^2) / sqrt(2*pi*sn^2),
-    where y is the mean and sn is the standard deviation.
+    Gaussian likelihood function for regression. 
+
+    :math:`Gauss(t)=\\frac{1}{\\sqrt{2\\pi\\sigma^2}}e^{-\\frac{(t-y)^2}{2\\sigma^2}}`,
+    where :math:`y` is the mean and :math:`\\sigma` is the standard deviation.
+
     hyp = [ log_sigma ]
     '''
-    def __init__(self, log_sigma=np.log(0.1) ):
+    def __init__(self, log_sigma=-2.3 ):
         self.hyp = [log_sigma]
 
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
@@ -240,8 +242,9 @@ class Gauss(Likelihood):
 class Erf(Likelihood):
     '''
     Error function or cumulative Gaussian likelihood function for binary
-    classification or probit regression. The expression for the likelihood is 
-    Erf(t) = (1+erf(t/sqrt(2)))/2 = normcdf(t).
+    classification or probit regression. 
+
+    :math:`Erf(t)=\\frac{1}{2}(1+erf(\\frac{t}{\\sqrt{2}}))=normcdf(t)`
     '''
     def __init__(self):
         self.hyp = []
@@ -373,8 +376,8 @@ class Erf(Likelihood):
 class Logistic(Likelihood):
     ''' 
     Logistic function for binary classification or logit regression.
-    The expression for the likelihood is:
-    Logistic(t) = 1./(1+exp(-t)).
+
+    :math:`Logistic(t)=\\frac{1}{1+e^{-t}}`
     '''
     def __init__(self):
         self.hyp = []
@@ -499,12 +502,13 @@ class Logistic(Likelihood):
 class Laplace(Likelihood):
     ''' 
     Laplacian likelihood function for regression. ONLY works with EP inference!
-    The expression for the likelihood is 
-    likLaplace(t) = exp(-|t-y|/b) / (2*b) with b = sn/sqrt(2),
-    where y is the mean and sn^2 is the variance.
-    The hyperparameter is: hyp = [ log_sigma ]
+
+    :math:`Laplace(t) = \\frac{1}{2b}e^{-\\frac{|t-y|}{b}}` where :math:`b=\\frac{\\sigma}{\\sqrt{2}}`,
+    :math:`y` is the mean and :math:`\\sigma` is the standard deviation.
+
+    hyp = [ log_sigma ]
     '''
-    def __init__(self, log_sigma=np.log(0.1) ):
+    def __init__(self, log_sigma=-2.3 ):
         self.hyp = [ log_sigma ]
 
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):

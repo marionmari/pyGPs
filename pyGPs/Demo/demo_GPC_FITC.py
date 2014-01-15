@@ -64,6 +64,7 @@ print "Example 2: user-defined inducing points"
 model = gp.GPC_FITC() 
 
 # You can define inducing points yourself.
+# u = np.array([])
 u1,u2 = np.meshgrid(np.linspace(-2,2,5),np.linspace(-2,2,5))
 u = np.array(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),)))) 
 

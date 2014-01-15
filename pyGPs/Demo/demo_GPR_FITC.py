@@ -53,9 +53,14 @@ print "Example 2: user-defined inducing points"
 model = gp.GPR_FITC()            
 
 # You can define inducing points yourself. 
+# You can pick some points by hand
+u = np.array([[-1], [-0.8], [-0.5], [0.3],[1.]])
+
+# or equally-spaced inducing points
 num_u = np.fix(x.shape[0]/2)
 u = np.linspace(-1.3,1.3,num_u).T
 u = np.reshape(u,(num_u,1))
+
 
 # and specify inducing point when seting prior
 m = mean.Linear( D=x.shape[1] ) + mean.Const()  
