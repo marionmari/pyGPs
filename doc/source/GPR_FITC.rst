@@ -55,23 +55,30 @@ Second example :math:`\rightarrow` user-defined inducing points
 Alternatively, a random subset of the training points can be used as inducing points. Note, that there are plenty of methods to set these inducing points.
 So, in the second example let us use a user-defined set of inducing points: ::
 
+You can pick a set of fixed inducing points by hand: ::
+
+	u = np.array([[-1], [-0.8], [-0.5], [0.3],[1.]])
+
+You can also use equidistant inducing points :math:`u`, but without the values on the margin of the grid.(i.e. shrinking the range of values) ::
+
 	num_u = np.fix(x.shape[0]/2)
 	u = np.linspace(-1.3,1.3,num_u).T
 	u = np.reshape(u,(num_u,1))
 
-Here, we also use equidistant inducing points :math:`u`, but without the values on the margin of the grid.(i.e. shrinking the range of values) Then, we can just pass :math:`u` when specifying prior. ::
+Then pass :math:`u` when specifying prior. ::
 
 	m = mean.Zero()
 	k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
 	model.setPrior(mean=m, kernel=k, inducing_points=u) 
 
-The prediction results for this set of inducing points are shown below:
+The left figure below shows the result of fixed inducing points, and the right figure shows the result for equidistant :math:`u`.
 
-.. figure:: _images/d3_2.png
-   :height: 600 px
-   :width: 800 px
-   :align: center
-   :scale: 70 %
+.. image:: _images/d3_2.png
+   :width: 45% 
+
+.. image:: _images/d3_3.png
+   :width: 45% 
+
 
 **[Theory]**
 Note that the predictive variance is 

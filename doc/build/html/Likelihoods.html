@@ -76,11 +76,11 @@ hyp = [ log_sigma ]</p>
 <dl class="class">
 <dt id="pyGPs.Core.lik.Laplace">
 <em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Laplace</tt><big>(</big><em>log_sigma=-2.3025850929940455</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Laplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Laplace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Laplacian likelihood function for regression. ONLY work with EP inference!
+<dd><p>Laplacian likelihood function for regression. ONLY works with EP inference!
 The expression for the likelihood is 
 likLaplace(t) = exp(-<a href="#id5"><span class="problematic" id="id6">|t-y|</span></a>/b) / (2*b) with b = sn/sqrt(2),
 where y is the mean and sn^2 is the variance.
-The hyperparameters is: hyp = [ log_sigma ]</p>
+The hyperparameter is: hyp = [ log_sigma ]</p>
 </dd></dl>
 
 <dl class="class">

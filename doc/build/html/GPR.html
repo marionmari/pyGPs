@@ -125,14 +125,14 @@ The whole functionality for optimization is introduced in detail in the document
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>There are several propertys you can get from the model:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">_neg_log_marginal_likelihood_</span>
-<span class="n">model</span><span class="o">.</span><span class="n">_neg_log_marginal_likelihood_gradient_</span><span class="o">.</span><span class="n">cov</span>
-<span class="n">model</span><span class="o">.</span><span class="n">_neg_log_marginal_likelihood_gradient_</span><span class="o">.</span><span class="n">lik</span>
-<span class="n">model</span><span class="o">.</span><span class="n">_neg_log_marginal_likelihood_gradient_</span><span class="o">.</span><span class="n">mean</span>
-<span class="n">model</span><span class="o">.</span><span class="n">_posterior_</span><span class="o">.</span><span class="n">sW</span>
-<span class="n">model</span><span class="o">.</span><span class="n">_posterior_</span><span class="o">.</span><span class="n">alpha</span>
-<span class="n">model</span><span class="o">.</span><span class="n">_posterior_</span><span class="o">.</span><span class="n">L</span>
+<p>There are several properties you can get from the model:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">nlZ</span>                   <span class="c"># negative log marginal likelihood</span>
+<span class="n">model</span><span class="o">.</span><span class="n">dnlZ</span><span class="o">.</span><span class="n">cov</span>              <span class="c"># direvatives of negative log marginal likelihood</span>
+<span class="n">model</span><span class="o">.</span><span class="n">dnlZ</span><span class="o">.</span><span class="n">lik</span>
+<span class="n">model</span><span class="o">.</span><span class="n">dnlZ</span><span class="o">.</span><span class="n">mean</span>
+<span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="o">.</span><span class="n">sW</span>          <span class="c"># posterior structure</span>
+<span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="o">.</span><span class="n">alpha</span>
+<span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="o">.</span><span class="n">L</span>
 <span class="n">model</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="n">hyp</span>
 <span class="n">model</span><span class="o">.</span><span class="n">meanfunc</span><span class="o">.</span><span class="n">hyp</span>
 <span class="n">model</span><span class="o">.</span><span class="n">likfunc</span><span class="o">.</span><span class="n">hyp</span>
@@ -144,7 +144,7 @@ The whole functionality for optimization is introduced in detail in the document
 </pre></div>
 </div>
 <p>For example, to get the log marginal likelihood use:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="s">&#39;Optimized negative log marginal likelihood:&#39;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_neg_log_marginal_likelihood_</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="s">&#39;Optimized negative log marginal likelihood:&#39;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">nlZ</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Prediction on the test data will return five values, which are

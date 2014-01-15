@@ -86,15 +86,15 @@ Instead of *fit()*, which only fits data using given hyperparameters, *train()* 
     model.train()
 
 
-There are several propertys you can get from the model: ::
+There are several properties you can get from the model: ::
 
-    model._neg_log_marginal_likelihood_
-    model._neg_log_marginal_likelihood_gradient_.cov
-    model._neg_log_marginal_likelihood_gradient_.lik
-    model._neg_log_marginal_likelihood_gradient_.mean
-    model._posterior_.sW
-    model._posterior_.alpha
-    model._posterior_.L        
+    model.nlZ                   # negative log marginal likelihood
+    model.dnlZ.cov              # direvatives of negative log marginal likelihood
+    model.dnlZ.lik 
+    model.dnlZ.mean
+    model.posterior.sW          # posterior structure
+    model.posterior.alpha
+    model.posterior.L        
     model.covfunc.hyp
     model.meanfunc.hyp
     model.likfunc.hyp  
@@ -106,7 +106,7 @@ There are several propertys you can get from the model: ::
 
 For example, to get the log marginal likelihood use: ::
 
-    print 'Optimized negative log marginal likelihood:', round(model._neg_log_marginal_likelihood_,3)
+    print 'Optimized negative log marginal likelihood:', round(model.nlZ,3)
 
 
 Prediction on the test data will return five values, which are

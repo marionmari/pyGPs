@@ -94,21 +94,15 @@ given complete information about the generating mechanism.</p>
 </pre></div>
 </div>
 <p>The rest is similar to GPR:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># Analogously to GPR</span>
-<span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBFard</span><span class="p">(</span><span class="n">log_ell_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.17</span><span class="p">],</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBFard</span><span class="p">(</span><span class="n">log_ell_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.17</span><span class="p">],</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">setPrior</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">plotData_2d</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">)</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="k">print</span> <span class="s">&quot;Negative log marginal liklihood before:&quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_neg_log_marginal_likelihood_</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-<span class="k">print</span> <span class="s">&quot;Negative log marginal liklihood optimized:&quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_neg_log_marginal_likelihood_</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-
-<span class="c"># Prediction</span>
-<span class="n">n</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">ymu</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fmu</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">)))</span>
 </pre></div>
 </div>
 <p><strong>[Theory]</strong>

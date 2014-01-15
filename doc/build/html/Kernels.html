@@ -266,18 +266,18 @@ hyp = log_ell_list</p>
 
 <dl class="class">
 <dt id="pyGPs.Core.cov.Matern">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Matern</tt><big>(</big><em>log_ell=-1.0</em>, <em>log_d=0.0</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Matern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Matern" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Matern</tt><big>(</big><em>log_ell=-1.0</em>, <em>d=3</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Matern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Matern" title="Permalink to this definition">¶</a></dt>
 <dd><p>Matern covariance function with nu = d/2 and isotropic distance measure. 
 For d=1 the function is also known as the exponential covariance function 
 or the Ornstein-Uhlenbeck covariance in 1d.
-d will be rounded to 1, 3, or 5.</p>
-<p>hyp = [ log_ell, log_sigma, log_d ]</p>
+d will be rounded to 1, 3, or 5.
+hyp = [ log_ell, log_sigma]</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>log_d</strong> &#8211; d is 2 times nu</li>
+<li><strong>d</strong> &#8211; d is 2 times nu. Can only be 1,3 or 5.</li>
 <li><strong>log_ell</strong> &#8211; characteristic length scale.</li>
 <li><strong>log_sigma</strong> &#8211; signal deviation.</li>
 </ul>
@@ -325,9 +325,9 @@ hyp = [ log_ell, log_p, log_sigma]</p>
 
 <dl class="class">
 <dt id="pyGPs.Core.cov.PiecePoly">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">PiecePoly</tt><big>(</big><em>log_c=0.0</em>, <em>log_d=0.69314718055994529</em>, <em>log_sigma=0.0</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.PiecePoly" title="Permalink to this definition">¶</a></dt>
-<dd><p>Piecewise polynomial kernel with compact support.
-hyp = [log_ell, log_sigma, log_v]</p>
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">PiecePoly</tt><big>(</big><em>log_ell=0.0</em>, <em>v=2</em>, <em>log_sigma=0.0</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.PiecePoly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Piecewise polynomial kernel with compact support. 
+hyp = [log_ell, log_sigma]</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -335,7 +335,7 @@ hyp = [log_ell, log_sigma, log_v]</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>log_ell</strong> &#8211; characteristic length scale.</li>
 <li><strong>log_sigma</strong> &#8211; signal deviation.</li>
-<li><strong>log_v</strong> &#8211; degree in piecewise polynomial kernel. v will be rounded to 0,1,2,or 3.</li>
+<li><strong>v</strong> &#8211; degree v will be rounded to 0,1,2,or 3. (not treated as hyperparameter, i.e. will not be trained).</li>
 </ul>
 </td>
 </tr>
@@ -345,7 +345,7 @@ hyp = [log_ell, log_sigma, log_v]</p>
 
 <dl class="class">
 <dt id="pyGPs.Core.cov.Poly">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Poly</tt><big>(</big><em>log_c=0.0</em>, <em>log_d=0.69314718055994529</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Poly" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Poly</tt><big>(</big><em>log_c=0.0</em>, <em>d=2</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Poly" title="Permalink to this definition">¶</a></dt>
 <dd><p>Polynomial covariance function. hyp = [ log_c, log_sigma ]</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -354,7 +354,7 @@ hyp = [log_ell, log_sigma, log_v]</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>log_c</strong> &#8211; inhomogeneous offset.</li>
 <li><strong>log_sigma</strong> &#8211; signal deviation.</li>
-<li><strong>log_d</strong> &#8211; order of polynomial (treated not as hyperparameter, i.e. will not be trained).</li>
+<li><strong>d</strong> &#8211; degree of polynomial (not treated as hyperparameter, i.e. will not be trained).</li>
 </ul>
 </td>
 </tr>

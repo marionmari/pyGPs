@@ -47,7 +47,6 @@ So we first state the model to be :math:`GP` classification now::
 
 The rest is similar to GPR::
 
-	# Analogously to GPR
 	k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
 	model.setPrior(kernel=k) 
 
@@ -55,13 +54,8 @@ The rest is similar to GPR::
 	model.plotData_2d(x1,x2,t1,t2,p1,p2)
 
 	model.fit()
-	print "Negative log marginal liklihood before:", round(model._neg_log_marginal_likelihood_,3)
 	model.train()
-	print "Negative log marginal liklihood optimized:", round(model._neg_log_marginal_likelihood_,3)
-
-	# Prediction
-	n = z.shape[0]
-	ymu, ys2, fmu, fs2, lp = model.predict(z, ys=np.ones((n,1)))
+	model.predict(z, ys=np.ones((z.shape[0],1)))
 
 **[Theory]**
 In this example, we used an RBF kernel (squared exponential covariance function) with automatic relevance determination (ARD). This covariance function has one 

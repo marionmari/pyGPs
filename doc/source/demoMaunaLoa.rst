@@ -18,7 +18,10 @@ air samples collected at the Mauna Loa Observatory, Hawaii, between :math:`1958`
 :math:`2003` (with some missing values) `[2]`_.
 
 .. figure:: _images/demoML1.png
+   :height: 600 px
+   :width: 800 px
    :align: center
+   :scale: 70 %
 
 The data is shown in the above plot. Our goal is to model the :math:`CO_2`
 concentration as a function of time :math:`t`. Several features are
@@ -98,7 +101,10 @@ with hyperparameters :math:`\theta = (\theta_1,\ldots,\theta_{11})`
 After running the minimization, the extrapolated data looks like:
 
 .. figure:: _images/demoML2.png
+   :height: 600 px
+   :width: 800 px
    :align: center
+   :scale: 70 %
 
 and the optimized values of the hyperparameters allow for a principled analysis of different components driving the model.
 
