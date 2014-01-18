@@ -33,11 +33,11 @@ Now, lets focus on the use of cross-validation. ::
 Evaluation measures
 ---------------
 We implemented some classical evaluation measures. 
-    - RMSE - Root mean squared error
-    - ACC - Classification accuracy
-    - Prec - Precision for class +1
-    - Recall - Recall for class +1
-    - NLPD - Negative log predictive density in transformed observation space
+    - RMSE - root mean squared error
+    - ACC - classification/regression accuracy
+    - Prec - classification precision for class +1
+    - Recall - classification recall for class +1
+    - NLPD - negative log predictive density in transformed observation space
 
 
 

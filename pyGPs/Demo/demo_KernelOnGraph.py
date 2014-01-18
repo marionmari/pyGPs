@@ -1,6 +1,7 @@
 import os,sys
 import numpy as np
 from scipy.io import loadmat
+import matplotlib.pyplot as plt
 from pyGPs.Core import *
 from pyGPs.GraphStuff.graph_util import *
 from pyGPs.GraphStuff.kernels_on_graph import *
@@ -33,10 +34,46 @@ def load_binary(D1,D2,reduce=False):
     return x_binary,y_binary
 
 
+def plotDigit(digit):
+    fig, ax = plt.subplots()
+    ax.imshow(digit, cmap=plt.cm.gray, interpolation='nearest')
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    plt.show()
+
+
 if __name__ == "__main__":
     # load small reduced dataset with 2 classes
-    # digit 1 for +1 and digit 2 for -1
+    # digit 1 for +1 and digit 7 for -1
     x,y = load_binary(1,7,reduce=True)
+  
+    # plot example digit
+    exampleDigit1_1 = x[38]    # sample digit 1
+    exampleDigit1_1 = np.reshape(exampleDigit1_1,(16,16))
+    plotDigit(exampleDigit1_1)
+
+    exampleDigit1_2 = x[81]    # another sample digit 1
+    exampleDigit1_2 = np.reshape(exampleDigit1_2,(16,16))
+    plotDigit(exampleDigit1_2)
+
+    exampleDigit7_1 = x[124]   # sample digit 7
+    exampleDigit7_1 = np.reshape(exampleDigit7_1,(16,16))
+    plotDigit(exampleDigit7_1)
+
+    exampleDigit7_2 = x[129]   # another sample digit 7
+    exampleDigit7_2 = np.reshape(exampleDigit7_2,(16,16))
+    plotDigit(exampleDigit7_2)
+
+    exampleDigitBad = x[13]    # digit that predicts wrong for rbf and diffusion
+    exampleDigitBad = np.reshape(exampleDigitBad,(16,16))
+    plotDigit(exampleDigitBad)
+
+    exampleDigitBad = x[113]   # digit that predicts wrong for diffusion
+    exampleDigitBad = np.reshape(exampleDigitBad,(16,16))
+    plotDigit(exampleDigitBad)
+
 
     # form a 2-nearest neighbour graph 
     A = form_knn_graph(x,2)
@@ -55,7 +92,10 @@ if __name__ == "__main__":
 
         # start Gaussian process
         model = gp.GPC()
+        # k = cov.RBF()
+        # k = cov.Pre(M1,M2)
         k = cov.Pre(M1,M2) + cov.RBF()
+        model.setPrior(kernel=k)
 
         # if you only use precomputed kernel matrix, there is no training data,
         # but you still need to specify x (due to generality of pyGPs)
@@ -64,7 +104,7 @@ if __name__ == "__main__":
 
         # if you use combination of precomputed matrix and other kernel function,
         # this problem does not exsit
-        # you can use pyGPs in the normal way
+        # you can pass traning data in the normal way
 
         # split training and test data
         x_train = x[indice_train,:]
@@ -75,8 +115,9 @@ if __name__ == "__main__":
         # gp
         model.train(x_train, y_train)
         model.predict(x_test)
-
+        
         # evaluation
+        print indice_test
         predictive_class = np.sign(model.ym)
         acc = valid.ACC(predictive_class, y_test)
         print 'Accuracy: ' , acc

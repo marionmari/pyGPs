@@ -40,5 +40,6 @@ Some examples for real-world data
    CV
    demoMaunaLoa
    demoHousing
+   SemiSupervised
 
 
