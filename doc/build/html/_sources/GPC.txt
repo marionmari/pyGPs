@@ -86,6 +86,7 @@ that for this data set, both input dimensions are important.
 
 A bit more things you can do
 ----------------------
-GPC uses expectation propagation (EP) inference by default, you can explictly change this to Laplace approximation: ::
+GPC uses expectation propagation (EP)  inference and Error function likelihood by default, you can explictly change to other methods: ::
     
-    model.useLaplace()
+    model.useInference("Laplace")
+    model.useLikelihood("Logistic") 

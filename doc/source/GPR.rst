@@ -129,7 +129,7 @@ Plot data. Note that *GPR.plot()* is a toy method only for visualising 1-d data.
 
 
 A bit more things you can do
-----------------------
+-------------------------------
 **[For all Models]** Speed up computation time for prediction if you know posterior in advance. Posterior is passed as an object with three fields (attributes) post.alpha, post.sW and post.L. How to use these vectors to represent the posterior can be best seen from Algorithm 2.1 (page 19) in Chapeter 2 of the `GPML`_ book by Rasmussen and Williams, 2006. ::
 
     post = myPosterior()        # known in advance
@@ -148,6 +148,11 @@ You do not need to specify the noise parameter if you are optimizing the hyperpa
 All plotting methods have keyword axisvals. You can adjust plotting range if you want. For example: ::
 
     model.plot(axisvals = [-1.9, 1.9, -0.9, 3.9])
+
+
+Switch to other Inference and Likelihood functions. ::
+    model.useInference("EP")
+    model.useLikelihood("Laplace")
 
 
 

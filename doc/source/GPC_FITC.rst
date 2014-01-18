@@ -72,9 +72,10 @@ The prediction results for this  set of inducing points are shown below:
 
 A bit more things you can do
 ------------------------------
-As in standard GPC, it is possible to perform inference via Laplace approximation in the FITC method::
+As in standard GPC, it is possible to use other inference/likelihood in the FITC method::
 
-    model.useLaplace_FITC()  
+    model.useInference("Laplace")
+    model.useLikelihood("Logistic") 
 
 Change the number of inducing points per axis::
 

@@ -54,6 +54,40 @@
             
   <div class="section" id="likelihoods-inference">
 <h1>Likelihoods &amp; Inference<a class="headerlink" href="#likelihoods-inference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="changing-likelihood-inference">
+<h2>Changing Likelihood &amp; Inference<a class="headerlink" href="#changing-likelihood-inference" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>By default,</dt>
+<dd><ul class="first last simple">
+<li>GPR uses Gaussian likelihood and exact inference.</li>
+<li>GPC uses Error functionlikelihood and EP inference.</li>
+<li>FITC model uses same default with corresponding FITC inference.</li>
+<li>GPMC calls GPC and thus uses the default setting of GPC</li>
+</ul>
+</dd>
+</dl>
+<p>You can change to other likelihood or inference methods using:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">useLikelihood</span><span class="p">(</span><span class="n">newLik</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">useInference</span><span class="p">(</span><span class="n">newInf</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><em>newLik</em> and <em>newInf</em> are <strong>Strings</strong>. Currently the options are:</dt>
+<dd><ol class="first last arabic simple">
+<li>Regression model<ul>
+<li>newLik: <strong>&#8220;Laplace&#8221;</strong>. Note this will force inference method to be EP.</li>
+<li>newInf: <strong>&#8220;EP&#8221;</strong>, <strong>&#8220;Laplace&#8221;</strong>.</li>
+</ul>
+</li>
+<li>Classification model(including GPMC)<ul>
+<li>newLik: <strong>&#8220;Logistic&#8221;</strong></li>
+<li>newInf: <strong>&#8220;Laplace&#8221;</strong></li>
+</ul>
+</li>
+</ol>
+</dd>
+</dl>
+</div>
 <div class="section" id="module-pyGPs.Core.lik">
 <span id="list-of-likelihoods"></span><h2>List of Likelihoods<a class="headerlink" href="#module-pyGPs.Core.lik" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -174,6 +208,7 @@ parameter sn2, we simply use snu2 = 1e-6.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Likelihoods &amp; Inference</a><ul>
+<li><a class="reference internal" href="#changing-likelihood-inference">Changing Likelihood &amp; Inference</a></li>
 <li><a class="reference internal" href="#module-pyGPs.Core.lik">List of Likelihoods</a></li>
 <li><a class="reference internal" href="#module-pyGPs.Core.inf">List of Inference</a></li>
 </ul>

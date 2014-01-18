@@ -126,8 +126,9 @@ that for this data set, both input dimensions are important.</p>
 </div>
 <div class="section" id="a-bit-more-things-you-can-do">
 <span id="more-on-gpc"></span><h2>A bit more things you can do<a class="headerlink" href="#a-bit-more-things-you-can-do" title="Permalink to this headline">¶</a></h2>
-<p>GPC uses expectation propagation (EP) inference by default, you can explictly change this to Laplace approximation:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">useLaplace</span><span class="p">()</span>
+<p>GPC uses expectation propagation (EP)  inference and Error function likelihood by default, you can explictly change to other methods:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">useInference</span><span class="p">(</span><span class="s">&quot;Laplace&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">useLikelihood</span><span class="p">(</span><span class="s">&quot;Logistic&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

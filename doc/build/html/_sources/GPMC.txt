@@ -48,7 +48,8 @@ you can use specify settings(other than default) for each binary classificiation
 	m = mean.Zero()
 	k = cov.RBF()
 	model.setPrior(mean=m,kernel=k)
-	model.useLaplace()
+	model.useInference("Laplace")
+	model.useLikelihood("Logistic")
 	model.setOptimizer("SCG", num_restarts=20)
 
 

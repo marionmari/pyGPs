@@ -110,8 +110,9 @@ So, in the second example let us use a user-defined set of inducing points:</p>
 </div>
 <div class="section" id="a-bit-more-things-you-can-do">
 <span id="more-on-gpc-fitc"></span><h2>A bit more things you can do<a class="headerlink" href="#a-bit-more-things-you-can-do" title="Permalink to this headline">¶</a></h2>
-<p>As in standard GPC, it is possible to perform inference via Laplace approximation in the FITC method:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">useLaplace_FITC</span><span class="p">()</span>
+<p>As in standard GPC, it is possible to use other inference/likelihood in the FITC method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">useInference</span><span class="p">(</span><span class="s">&quot;Laplace&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">useLikelihood</span><span class="p">(</span><span class="s">&quot;Logistic&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Change the number of inducing points per axis:</p>

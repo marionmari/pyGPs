@@ -121,6 +121,14 @@ Note that the predictive variance is
 overestimated outside the support of the inducing inputs. In a multivariate example where densely sampled inducing inputs are infeasible, one can
 also try to simply use a random subset of the training points.</p>
 </div>
+<div class="section" id="a-bit-more-things-you-can-do">
+<h2>A bit more things you can do<a class="headerlink" href="#a-bit-more-things-you-can-do" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Switch to other Inference and Likelihood functions. ::</dt>
+<dd>model.useInference(&#8220;EP&#8221;)
+model.useLikelihood(&#8220;Laplace&#8221;)</dd>
+</dl>
+</div>
 </div>
 
 
@@ -134,6 +142,7 @@ also try to simply use a random subset of the training points.</p>
 <li><a class="reference internal" href="#">Sparse Regression</a><ul>
 <li><a class="reference internal" href="#first-example-default-inducing-points">First example <img class="math" src="_images/math/e12b6767375342ed57d27678e3ea1cdb97f47e15.png" alt="\rightarrow"/> default inducing points</a></li>
 <li><a class="reference internal" href="#second-example-user-defined-inducing-points">Second example <img class="math" src="_images/math/e12b6767375342ed57d27678e3ea1cdb97f47e15.png" alt="\rightarrow"/> user-defined inducing points</a></li>
+<li><a class="reference internal" href="#a-bit-more-things-you-can-do">A bit more things you can do</a></li>
 </ul>
 </li>
 </ul>

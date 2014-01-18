@@ -84,3 +84,10 @@ The left figure below shows the result of fixed inducing points, and the right f
 Note that the predictive variance is 
 overestimated outside the support of the inducing inputs. In a multivariate example where densely sampled inducing inputs are infeasible, one can
 also try to simply use a random subset of the training points.
+
+
+A bit more things you can do
+-----------------------------
+Switch to other Inference and Likelihood functions. ::
+    model.useInference("EP")
+    model.useLikelihood("Laplace")
