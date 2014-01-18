@@ -306,20 +306,9 @@ class FITC_Exact(Inference):
     '''
     FITC approximation to the posterior Gaussian process. The function is
     equivalent to infExact with the covariance function:
-
-    Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Quu) * Ku;
-
+    Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Quu) * Ku; 
     where Ku and Kuu are covariances w.r.t. to inducing inputs xu, snu2 = sn2/1e6
     is the noise of the inducing inputs and Quu = Kuu + snu2*eye(nu).
-    We fixed the standard deviation of the inducing inputs snu to be a one per mil
-    of the measurement noise's standard deviation sn.
-    The implementation exploits the Woodbury matrix identity
-
-    inv(Kt) = inv(G) - inv(G) * V' * inv(eye(nu) + V * inv(G) * V') * V * inv(G)
-
-    in order to be applicable to large datasets. The computational complexity
-    is O(n nu^2) where n is the number of data points x and nu the number of
-    inducing inputs in xu.
     '''
     def __init__(self):
         self.name = 'FICT exact inference'
@@ -492,23 +481,12 @@ class FITC_Laplace(Inference):
     '''
     FITC-Laplace approximation to the posterior Gaussian process. The function is
     equivalent to infLaplace with the covariance function:
-
     Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Kuu + snu2 * eye(nu)) * Ku;
-
     where Ku and Kuu are covariances w.r.t. to inducing inputs xu and
     snu2 = sn2/1e6 is the noise of the inducing inputs. We fixed the standard
     deviation of the inducing inputs snu to be a one per mil of the measurement 
     noise's standard deviation sn. In case of a likelihood without noise
     parameter sn2, we simply use snu2 = 1e-6.
-
-    The implementation exploits the Woodbury matrix identity
-    inv(Kt) = inv(G) - inv(G)* Ku' * inv(Kuu + Ku * inv(G) * Ku') * Ku * inv(G)
-
-    in order to be applicable to large datasets. The computational complexity
-    is O(n nu^2) where n is the number of data points x and nu the number of
-    inducing inputs in xu.
-    The posterior N(f|h,Sigma) is given by h = m+mu with mu = nn + P'*gg and
-    Sigma = inv(inv(K)+diag(W)) = diag(d) + P' * R0' * R' * R * R0 * P.
     '''
     def __init__(self):
         self.last_alpha = None
@@ -741,9 +719,7 @@ class FITC_EP(Inference):
     '''
     FITC-EP approximation to the posterior Gaussian process. The function is
     equivalent to infEP with the covariance function:
-
     Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Kuu + snu2 * eye(nu)) * Ku;
-
     where Ku and Kuu are covariances w.r.t. to inducing inputs xu and
     snu2 = sn2/1e6 is the noise of the inducing inputs. We fixed the standard
     deviation of the inducing inputs snu to be a one per mil of the measurement 
@@ -751,16 +727,6 @@ class FITC_EP(Inference):
     parameter sn2, we simply use snu2 = 1e-6.
     For details, see The Generalized FITC Approximation, Andrew Naish-Guzman and
     Sean Holden, NIPS, 2007.
-
-    The implementation exploits the Woodbury matrix identity
-    inv(Kt) = inv(G) - inv(G) * Ku' * inv(Kuu + Ku * inv(G) * Ku') * Ku * inv(G)
-    
-    in order to be applicable to large datasets. The computational complexity
-    is O(n nu^2) where n is the number of data points x and nu the number of
-    inducing inputs in xu.
-    The posterior N(f|h,Sigma) is given by h = m+mu with mu = nn + P'*gg and
-    Sigma = inv(inv(K) + diag(W)) = diag(d) + P' * R0' * R' * R * R0 * P. Here, we use the
-    site parameters: b,w=$b,\pi$=tnu,ttau, P=$P'$, nn=$\nu$, gg=$\gamma$
     '''
     def __init__(self):
         self.name = 'FITC Expectation Propagation'
