@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -66,7 +67,6 @@
 <span class="c"># based on the functional-version of python implementation</span>
 <span class="c"># (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)</span>
 <span class="c"># </span>
-<span class="c">#</span>
 <span class="c"># Copyright (c) by Marion Neumann and Shan Huang, 30/092013</span>
 
 
@@ -79,7 +79,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This is a base class of Kernel functions</span>
 <span class="sd">    there is no computation in this class, it just defines rules about a kernel class should have</span>
-<span class="sd">    each covariance function will inherite it and implement its own behaviour</span>
+<span class="sd">    each covariance function will inherit it and implement its own behaviour</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[]</span>
@@ -163,6 +163,7 @@
         <span class="k">return</span> <span class="n">A</span>
         
 
+
 <span class="k">class</span> <span class="nc">SumOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cov1</span><span class="p">,</span><span class="n">cov2</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cov1</span> <span class="o">=</span> <span class="n">cov1</span>
@@ -196,12 +197,8 @@
         <span class="k">return</span> <span class="n">A</span>
     
 
+
 <span class="k">class</span> <span class="nc">ScaleOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
-<span class="c"># Compose a covariance function as a scaled version of another one</span>
-<span class="c"># k(x^p,x^q) = sf2 * k0(x^p,x^q)</span>
-<span class="c">#</span>
-<span class="c"># The hyperparameter is :</span>
-<span class="c"># hyp = [ log(sf2) ]</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">scalar</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cov</span> <span class="o">=</span> <span class="n">cov</span>
         <span class="k">if</span> <span class="n">cov</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
@@ -226,6 +223,7 @@
             <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">der</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> 
         <span class="k">return</span> <span class="n">A</span>
      
+
 
 <span class="k">class</span> <span class="nc">FITCOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">inducingInput</span><span class="p">):</span>
@@ -277,27 +275,22 @@
 
 
 
-<span class="c"># an example of simple kernel function, the rest are similar</span>
 <div class="viewcode-block" id="Poly"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Poly">[docs]</a><span class="k">class</span> <span class="nc">Poly</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_c</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">log_d</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span> <span class="n">log_c</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span>  <span class="p">[</span><span class="n">log_d</span><span class="p">]</span> 
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        else:</span>
-<span class="sd">            print &quot;Polynomial covariance function is parameterized as:&quot;</span>
-<span class="sd">            print &quot;k(x^p,x^q) = sf2 * ( c +  (x^p)&#39;*(x^q) ) ** d&quot;</span>
-<span class="sd">            print &quot;The number of parameters is 3:&quot;</span>
-<span class="sd">            print &quot;hyp = [ log(c), log(sqrt(sf2)), log(d) ]&quot;</span>
-<span class="sd">            print &quot;where,&quot;</span>
-<span class="sd">            print &quot;      log(c), log(sqrt(sf2))  is hyperparameters&quot;</span>
-<span class="sd">            print &quot;      log(d) is a special parameter which will not be optimized&quot;</span>
-<span class="sd">            print &quot;------------------------------------------------------------------&quot;</span>
-<span class="sd">            raise Exception(&quot;Wrong number of hyperparameters.&quot;)</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Polynomial covariance function. hyp = [ log_c, log_sigma ]</span>
+
+<span class="sd">    :param log_c: inhomogeneous offset. </span>
+<span class="sd">    :param log_sigma: signal deviation. </span>
+<span class="sd">    :param d: degree of polynomial (not treated as hyperparameter, i.e. will not be trained). </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_c</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">log_c</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span>  <span class="p">[</span><span class="n">d</span><span class="p">]</span> 
+
     <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">c</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>             <span class="c"># inhomogeneous offset</span>
         <span class="n">sf2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>          <span class="c"># signal variance</span>
-        <span class="nb">ord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">para</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>            <span class="c"># order of polynomial</span>
+        <span class="nb">ord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">para</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                    <span class="c"># order of polynomial</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="nb">ord</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="nb">ord</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">:</span>  <span class="c"># remove numerical error from format of parameter</span>
             <span class="nb">ord</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">ord</span><span class="p">))</span>
         <span class="k">assert</span><span class="p">(</span><span class="nb">ord</span> <span class="o">&gt;=</span> <span class="mf">1.</span><span class="p">)</span>                     <span class="c"># only nonzero integers for ord</span>
@@ -313,33 +306,107 @@
         <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                    <span class="c"># compute covariance matix for dataset x</span>
             <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span><span class="n">c</span> <span class="o">+</span> <span class="n">A</span><span class="p">)</span><span class="o">**</span><span class="nb">ord</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c"># compute derivative matrix wrt 1st parameter</span>
-            <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>                   
+            <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>      			<span class="c"># compute derivative matrix wrt 1st parameter             </span>
                 <span class="n">A</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="nb">ord</span> <span class="o">*</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span><span class="n">c</span><span class="o">+</span><span class="n">A</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="nb">ord</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="c"># compute derivative matrix wrt 2nd parameter</span>
-            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  			<span class="c"># compute derivative matrix wrt 2nd parameter</span>
                 <span class="n">A</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span><span class="n">c</span> <span class="o">+</span> <span class="n">A</span><span class="p">)</span><span class="o">**</span><span class="nb">ord</span>
-            <span class="c"># Wants to compute derivative wrt order</span>
-            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  
-                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  			<span class="c"># no derivative wrt 3rd parameter</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>        	<span class="c"># do nothing (d is not learned)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative entry in covPoly&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative entry in Poly&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
    
+
+</div>
+<div class="viewcode-block" id="PiecePoly"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.PiecePoly">[docs]</a><span class="k">class</span> <span class="nc">PiecePoly</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Piecewise polynomial kernel with compact support. </span>
+<span class="sd">    hyp = [log_ell, log_sigma]</span>
+
+<span class="sd">    :param log_ell: characteristic length scale. </span>
+<span class="sd">    :param log_sigma: signal deviation. </span>
+<span class="sd">    :param v: degree v will be rounded to 0,1,2,or 3. (not treated as hyperparameter, i.e. will not be trained). </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">log_ell</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">ppmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">j</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">v</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span> <span class="mf">1.</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">v</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span> <span class="mf">1.</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">r</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span><span class="o">*</span><span class="n">j</span> <span class="o">+</span> <span class="mf">4.</span><span class="o">*</span><span class="n">j</span><span class="o">+</span> <span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mf">3.</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="n">r</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">v</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span> <span class="mf">1.</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">r</span> <span class="o">+</span> <span class="p">(</span><span class="mf">6.</span><span class="o">*</span><span class="n">j</span><span class="o">*</span><span class="n">j</span><span class="o">+</span><span class="mf">36.</span><span class="o">*</span><span class="n">j</span><span class="o">+</span><span class="mf">45.</span><span class="p">)</span><span class="o">/</span><span class="mf">15.</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="n">r</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span><span class="o">*</span><span class="n">j</span><span class="o">*</span><span class="n">j</span><span class="o">+</span><span class="mf">9.</span><span class="o">*</span><span class="n">j</span><span class="o">*</span><span class="n">j</span><span class="o">+</span><span class="mf">23.</span><span class="o">*</span><span class="n">j</span><span class="o">+</span><span class="mf">15.</span><span class="p">)</span><span class="o">/</span><span class="mf">15.</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="n">r</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+             <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">([</span><span class="s">&quot;Wrong degree in PiecePoly.  Should be 0,1,2 or 3, is &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">dfunc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">j</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">v</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">v</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mf">2.</span><span class="o">*</span><span class="p">(</span><span class="n">j</span><span class="o">*</span><span class="n">j</span><span class="o">+</span> <span class="mf">4.</span><span class="o">*</span><span class="n">j</span><span class="o">+</span> <span class="mf">3.</span><span class="p">)</span><span class="o">/</span><span class="mf">3.</span><span class="o">*</span><span class="n">r</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">v</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mf">2.</span><span class="o">*</span><span class="p">(</span><span class="mf">6.</span><span class="o">*</span><span class="n">j</span><span class="o">*</span><span class="n">j</span><span class="o">+</span><span class="mf">36.</span><span class="o">*</span><span class="n">j</span><span class="o">+</span><span class="mf">45.</span><span class="p">)</span><span class="o">/</span><span class="mf">15.</span><span class="o">*</span><span class="n">r</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span><span class="o">*</span><span class="n">j</span><span class="o">*</span><span class="n">j</span><span class="o">+</span><span class="mf">9.</span><span class="o">*</span><span class="n">j</span><span class="o">*</span><span class="n">j</span><span class="o">+</span><span class="mf">23.</span><span class="o">*</span><span class="n">j</span><span class="o">+</span><span class="mf">15.</span><span class="p">)</span><span class="o">/</span><span class="mf">5.</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="n">r</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span> <span class="p">([</span><span class="s">&quot;Wrong degree in PiecePoly.  Should be 0,1,2 or 3, is &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">pp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ppmax</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="n">v</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">dpp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">func</span><span class="p">,</span><span class="n">dfunc</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ppmax</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="n">v</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="n">v</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">j</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ppmax</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">r</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dfunc</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">j</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">ell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>            <span class="c"># characteristic length scale</span>
+        <span class="n">sf2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>         <span class="c"># signal variance</span>
+        <span class="n">v</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">para</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                   <span class="c"># degree (v = 0,1,2 or 3 only)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">:</span>     <span class="c"># remove numerical error from format of parameter</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="k">assert</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>           <span class="c"># Only allowed degrees: 0,1,2 or 3</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>        
+        <span class="n">n</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">D</span><span class="p">)</span> <span class="o">+</span> <span class="n">v</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="s">&#39;diag&#39;</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">z</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">spdist</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span> <span class="n">x</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span> <span class="s">&#39;sqeuclidean&#39;</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>                                       <span class="c"># compute covariance between data sets x and z</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">spdist</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span> <span class="n">z</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span> <span class="s">&#39;sqeuclidean&#39;</span><span class="p">)</span> <span class="p">)</span>     <span class="c"># cross covariances </span>
+        <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                             <span class="c"># compute covariance matix for dataset x</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>                            <span class="c"># compute derivative matrix wrt 1st parameter</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dpp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">dfunc</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>                          <span class="c"># compute derivative matrix wrt 2nd parameter</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">sf2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>                          <span class="c"># wants to compute derivative wrt order</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative entry in PiecePoly&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">A</span>
+
+
 </div>
 <div class="viewcode-block" id="RBF"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RBF">[docs]</a><span class="k">class</span> <span class="nc">RBF</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Squared Exponential kernel with isotropic distance measure. hyp = [log_ell, log_sigma]</span>
+
+<span class="sd">    :param log_ell: characteristic length scale. </span>
+<span class="sd">    :param log_sigma: signal deviation. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">log_ell</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">]</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">            print &quot;Squared Exponential covariance function with isotropic distance measure is parameterized as:&quot;</span>
-<span class="sd">            print &quot;k(x^p,x^q) = sf2 * exp(-(x^p - x^q)&#39;*inv(P)*(x^p - x^q)/2)&quot;</span>
-<span class="sd">            print &quot;where the P matrix is ell^2 times the unit matrix and&quot;</span>
-<span class="sd">            print &quot;sf2 is the signal variance&quot;</span>
-<span class="sd">            print &quot;The number of hyperparameters is 2:&quot;</span>
-<span class="sd">            print &quot;hyp = [ log(ell), log(sqrt(sf2)) ]&quot;</span>
-<span class="sd">            print &quot;------------------------------------------------------------------&quot;</span>
-<span class="sd">            raise Exception(&quot;Wrong number of hyperparameters.&quot;)</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
         <span class="n">ell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>         <span class="c"># characteristic length scale</span>
@@ -359,23 +426,53 @@
             <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c"># compute derivative matrix wrt 2nd parameter</span>
                 <span class="n">A</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">sf2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">A</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Calling for a derivative in covSEiso that does not exist&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Calling for a derivative in RBF that does not exist&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
+
 </div>
+<span class="k">class</span> <span class="nc">RBFtime</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+    <span class="c"># currently NOT finished</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">log_delay</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">log_ell</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">,</span> <span class="n">log_delay</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">ell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>         <span class="c"># characteristic length scale</span>
+        <span class="n">sf2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>      <span class="c"># signal variance</span>
+        <span class="n">delay</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>       <span class="c"># time delay</span>
+        <span class="n">n</span><span class="p">,</span><span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">delay</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="s">&#39;diag&#39;</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">z</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">spdist</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span><span class="n">x</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span><span class="s">&#39;sqeuclidean&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>                              <span class="c"># compute covariance between data sets x and z</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">spdist</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span><span class="n">z</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span><span class="s">&#39;sqeuclidean&#39;</span><span class="p">)</span> <span class="c"># self covariances      </span>
+        <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                    <span class="c"># compute covariance matix for dataset x</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">A</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>    <span class="c"># compute derivative matrix wrt 1st parameter</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">A</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span>
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c"># compute derivative matrix wrt 2nd parameter</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">sf2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">A</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c"># compute derivative matrix wrt 3rd parameter</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">A</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Calling for a derivative in RBF that does not exist&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">A</span>
+
+
+
 <div class="viewcode-block" id="RBFunit"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RBFunit">[docs]</a><span class="k">class</span> <span class="nc">RBFunit</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Squared Exponential kernel with isotropic distance measure with unit magnitude.</span>
+<span class="sd">    i.e signal variance is always 1. hyp = [ log_ell ]</span>
+
+<span class="sd">    :param log_ell: characteristic length scale. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mf">1.</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">log_ell</span><span class="p">]</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">            print &quot;Squared Exponential covariance function with isotropic distance measure with&quot;</span>
-<span class="sd">            print &quot;unit magnitude. The covariance function is parameterized as:&quot;</span>
-<span class="sd">            print &quot;k(x^p,x^q) = exp( -(x^p - x^q)&#39; * inv(P) * (x^p - x^q) / 2 )&quot;</span>
-<span class="sd">            print &quot;where the P matrix is ell^2 times the unit matrix&quot;</span>
-<span class="sd">            print &quot;The number of hyperparameters is 1:&quot;</span>
-<span class="sd">            print &quot;hyp = [ log(ell) ]&quot;</span>
-<span class="sd">            print &quot;------------------------------------------------------------------&quot;</span>
-<span class="sd">            raise Exception(&quot;Wrong number of hyperparameters.&quot;)</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">ell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c"># characteristic length scale</span>
         <span class="n">n</span><span class="p">,</span><span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
@@ -391,30 +488,28 @@
             <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>           <span class="c"># compute derivative matrix wrt 1st parameter</span>
                 <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">A</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covSEisoU&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in RDFunit&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
+
 
 </div>
 <div class="viewcode-block" id="RBFard"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RBFard">[docs]</a><span class="k">class</span> <span class="nc">RBFard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Squared Exponential kernel with Automatic Relevance Determination.</span>
+<span class="sd">    hyp = log_ell_list + [log_sigma]</span>
+
+<span class="sd">    :param D: dimension of pattern. set if you want default ell, which is 0.5 for each dimension.</span>
+<span class="sd">    :param log_ell_list: characteristic length scale for each dimension.</span>
+<span class="sd">    :param log_sigma: signal deviation. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_ell_list</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">log_ell_list</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">D</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="n">log_sigma</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="n">log_ell_list</span> <span class="o">+</span> <span class="p">[</span><span class="n">log_sigma</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">n</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        if len(self.hyp) != D+1: </span>
-<span class="sd">            print &quot;Squared Exponential covariance function with ARD is parameterized as:&quot;</span>
-<span class="sd">            print &quot;k(x^p,x^q) = sf2 * exp(-(x^p - x^q)&#39;*inv(P)*(x^p - x^q)/2)&quot;</span>
-<span class="sd">            print &quot;where the P matrix is diagonal with ARD parameters ell_1^2,...,ell_D^2, where&quot;</span>
-<span class="sd">            print &quot;D is the dimension of the input space and sf2 is the signal variance.&quot;</span>
-<span class="sd">            print &quot;The number of hyperparameters is %d (dimension of inputs +1):&quot; % (D+1)</span>
-<span class="sd">            print &quot;hyp = [log(ell_1), log(ell_2), ..., log(ell_D), log(sqrt(sf2))]&quot;</span>
-<span class="sd">            print &quot;------------------------------------------------------------------&quot;</span>
-<span class="sd">            raise Exception(&quot;Wrong number of hyperparameters.&quot;)</span>
-<span class="sd">        else:</span>
-<span class="sd">        &#39;&#39;&#39;</span>    
+        <span class="n">n</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>  
         <span class="n">ell</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">D</span><span class="p">])</span>    <span class="c"># characteristic length scale</span>
         <span class="n">sf2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="n">D</span><span class="p">])</span>      <span class="c"># signal variance</span>
         <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="s">&#39;diag&#39;</span><span class="p">:</span>
@@ -437,28 +532,20 @@
             <span class="k">elif</span> <span class="n">der</span><span class="o">==</span><span class="n">D</span><span class="p">:</span>     <span class="c"># compute derivative matrix wrt magnitude parameter</span>
                 <span class="n">A</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">A</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covSEard&quot;</span><span class="p">)</span>   
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in RDFard&quot;</span><span class="p">)</span>   
         <span class="k">return</span> <span class="n">A</span>
 
-            </div>
-<span class="k">class</span> <span class="nc">PPiso</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-
+    
+</div>
 <div class="viewcode-block" id="Const"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Const">[docs]</a><span class="k">class</span> <span class="nc">Const</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Constant kernel. hyp = [ log_sigma ]</span>
+
+<span class="sd">    :param log_sigma: signal deviation. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">log_sigma</span><span class="p">]</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        if len(hyp) == 1:</span>
-<span class="sd">            self.hyp = hyp</span>
-<span class="sd">        else:</span>
-<span class="sd">            print &quot;Constant covariance function is parameterized as:&quot;</span>
-<span class="sd">            print &quot;k(x^p,x^q) = sf2 &quot;</span>
-<span class="sd">            print &quot;The number of hyperparameters is 1&quot; </span>
-<span class="sd">            print &quot;hyp = [ log(sqrt(sf2)) ]&quot;</span>
-<span class="sd">            print &quot;------------------------------------------------------------------&quot;</span>
-<span class="sd">            raise Exception(&quot;Wrong number of hyperparameters.&quot;)</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">sf2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>         <span class="c"># s2</span>
         <span class="n">n</span><span class="p">,</span><span class="n">m</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
@@ -474,14 +561,12 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative entry in covConst&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
+
 </div>
 <div class="viewcode-block" id="LIN"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.LIN">[docs]</a><span class="k">class</span> <span class="nc">LIN</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
-<span class="c"># Linear covariance function is parameterized as:</span>
-<span class="c"># k(x^p,x^q) = x^p&#39;*x^q</span>
-<span class="c"># There are no hyperparameters</span>
-<span class="c">#</span>
-<span class="c"># Note that there is no bias or scale term</span>
-<span class="c"># use covConst and * to add these</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Linear kernel. No hyperparameters.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -496,8 +581,16 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No derivative available in covLIN&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
+
 </div>
 <div class="viewcode-block" id="LINard"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.LINard">[docs]</a><span class="k">class</span> <span class="nc">LINard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Linear covariance function with Automatic Relevance Detemination.</span>
+<span class="sd">    hyp = log_ell_list </span>
+
+<span class="sd">    :param D: dimension of training data. Set if you want default ell, which is 0.5 for each dimension.</span>
+<span class="sd">    :param log_ell_list: characteristic length scale for each dimension.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_ell_list</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">log_ell_list</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">D</span><span class="p">)]</span>
@@ -506,19 +599,6 @@
 
     <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">n</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        if len(self.hyp) != D: </span>
-<span class="sd">            print &quot;Linear covariance function with Automatic Relevance Detemination&quot;</span>
-<span class="sd">            print &quot;(ARD) distance measure is parameterized as:&quot;</span>
-<span class="sd">            print &quot;k(x^p,x^q) = x^p&#39; * inv(P) * x^q&quot;</span>
-<span class="sd">            print &quot;where the P matrix is diagonal with ARD parameters ell_1^2,...,ell_D^2, where&quot;</span>
-<span class="sd">            print &quot;D is the dimension of the input space and sf2 is the signal variance.&quot;</span>
-<span class="sd">            print &quot;The number of hyperparameters is %d (dimension of inputs):&quot; % D</span>
-<span class="sd">            print &quot;hyp = [log(ell_1), log(ell_2), ..., log(ell_D) ]&quot;</span>
-<span class="sd">            print &quot;------------------------------------------------------------------&quot;</span>
-<span class="sd">            raise Exception(&quot;Wrong number of hyperparameters.&quot;)</span>
-<span class="sd">        else:</span>
-<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">ell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">)</span>            <span class="c"># ARD parameters</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">ell</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="s">&#39;diag&#39;</span><span class="p">:</span>
@@ -540,26 +620,24 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covLINard&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
+
 </div>
 <div class="viewcode-block" id="Matern"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Matern">[docs]</a><span class="k">class</span> <span class="nc">Matern</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">log_d</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span> <span class="n">log_ell</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">,</span> <span class="n">log_d</span> <span class="p">]</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        if len(hyp) == 3:</span>
-<span class="sd">            self.hyp = hyp</span>
-<span class="sd">        else:</span>
-<span class="sd">            print &quot;Matern covariance function with nu = d/2 and isotropic distance measure.&quot;</span>
-<span class="sd">            print &quot;For d=1 the function is also known as the exponential covariance function or the &quot;</span>
-<span class="sd">            print &quot;Ornstein-Uhlenbeck covariance in 1d. The covariance function is:&quot;</span>
-<span class="sd">            print &quot;k(x^p,x^q) = s2f * f( sqrt(d)*r ) * exp(-sqrt(d)*r)&quot;</span>
-<span class="sd">            print &quot;with f(t)=1 for d=1, f(t)=1+t for d=3 and f(t)=1+t+(t*t)/3 for d=5.&quot;</span>
-<span class="sd">            print &quot;Here, r is the distance sqrt( (x^p-x^q)&#39;*inv(P)*(x^p-x^q)), &quot;</span>
-<span class="sd">            print &quot;where P is ell times the unit matrix and sf2 is the signal variance.&quot;</span>
-<span class="sd">            print &quot;The number of hyperparameters is 3&quot; </span>
-<span class="sd">            print &quot;hyp = [ log(ell), log(sqrt(sf2)), log(d) ]&quot;</span>
-<span class="sd">            print &quot;------------------------------------------------------------------&quot;</span>
-<span class="sd">            raise Exception(&quot;Wrong number of hyperparameters.&quot;)</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Matern covariance function with nu = d/2 and isotropic distance measure. </span>
+<span class="sd">    For d=1 the function is also known as the exponential covariance function </span>
+<span class="sd">    or the Ornstein-Uhlenbeck covariance in 1d.</span>
+<span class="sd">    d will be rounded to 1, 3, or 5.</span>
+<span class="sd">    hyp = [ log_ell, log_sigma]</span>
+<span class="sd">    </span>
+<span class="sd">    :param d: d is 2 times nu. Can only be 1,3 or 5.</span>
+<span class="sd">    :param log_ell: characteristic length scale. </span>
+<span class="sd">    :param log_sigma: signal deviation. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span> <span class="n">log_ell</span><span class="p">,</span> <span class="n">log_sigma</span> <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">1</span>
@@ -568,7 +646,8 @@
         <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">t</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">t</span><span class="o">/</span><span class="mf">3.</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong value for d in covMatern&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong value for d in Matern&quot;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">dfunc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">1</span>
@@ -577,23 +656,26 @@
         <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">t</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">t</span><span class="o">/</span><span class="mf">3.</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong value for d in covMatern&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong value for d in Matern&quot;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">mfunc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">dmfunc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dfunc</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">t</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">ell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>        <span class="c"># characteristic length scale</span>
         <span class="n">sf2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>    <span class="c"># signal variance</span>
-        <span class="n">d</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>        <span class="c"># 2 times nu</span>
+        <span class="n">d</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">para</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>               <span class="c"># 2 times nu</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">d</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">:</span> <span class="c"># remove numerical error from format of parameter</span>
             <span class="n">d</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
         <span class="n">d</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span><span class="p">(</span><span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>         <span class="c"># Check for valid values of d</span>
+            <span class="k">assert</span><span class="p">(</span><span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>         <span class="c"># check for valid values of d</span>
         <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Warning: You specified d to be neither 1,3 nor 5. We set d=3. &quot;</span>
             <span class="n">d</span> <span class="o">=</span> <span class="mi">3</span>
-
         <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="s">&#39;diag&#39;</span><span class="p">:</span>
             <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">z</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
@@ -603,7 +685,6 @@
             <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="o">/</span><span class="n">ell</span>
             <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">*</span><span class="n">z</span><span class="o">/</span><span class="n">ell</span>
             <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">spdist</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="s">&#39;sqeuclidean&#39;</span><span class="p">))</span>
-
         <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                     <span class="c"># compute covariance matix for dataset x</span>
             <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mfunc</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">A</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -611,29 +692,26 @@
                 <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dmfunc</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">A</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>                  <span class="c"># compute derivative matrix wrt 2nd parameter</span>
                 <span class="n">A</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sf2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mfunc</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">A</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>                  <span class="c"># Wants to compute derivative wrt nu</span>
-                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>        <span class="c"># Do nothing</span>
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>                  <span class="c"># no derivative wrt 3rd parameter</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>        <span class="c"># do nothing (d is not learned)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative value in covMatern&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative value in Matern&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
 
 </div>
 <div class="viewcode-block" id="Periodic"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Periodic">[docs]</a><span class="k">class</span> <span class="nc">Periodic</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Stationary kernel for a smooth periodic function. </span>
+<span class="sd">    hyp = [ log_ell, log_p, log_sigma]</span>
+
+<span class="sd">    :param log_p: period.</span>
+<span class="sd">    :param log_ell: characteristic length scale. </span>
+<span class="sd">    :param log_sigma: signal deviation. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">log_p</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span> <span class="p">):</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span> <span class="n">log_ell</span><span class="p">,</span> <span class="n">log_p</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">]</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        if len(hyp) == 3:</span>
-<span class="sd">            self.hyp = hyp</span>
-<span class="sd">        else:</span>
-<span class="sd">            print &quot;Stationary covariance function for a smooth periodic function,&quot;</span>
-<span class="sd">            print &quot;with period p:&quot;</span>
-<span class="sd">            print &quot;k(x^p,x^q) = sf2 * exp( -2*sin^2( pi*||x^p - x^q)||/p )/ell**2 )&quot;</span>
-<span class="sd">            print &quot;The number of hyperparameters is 3&quot; </span>
-<span class="sd">            print &quot;hyp = [ log(ell), log(p), log(sqrt(sf2)) ]&quot;</span>
-<span class="sd">            print &quot;------------------------------------------------------------------&quot;</span>
-<span class="sd">            raise Exception(&quot;Wrong number of hyperparameters.&quot;)</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">ell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>        <span class="c"># characteristic length scale</span>
         <span class="n">p</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>        <span class="c"># period</span>
@@ -666,24 +744,19 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covPeriodic&quot;</span><span class="p">)</span>            
         <span class="k">return</span> <span class="n">A</span>
 
+
 </div>
-<div class="viewcode-block" id="covNoise"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.covNoise">[docs]</a><span class="k">class</span> <span class="nc">covNoise</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
-<span class="c"># Independent covariance function, ie &quot;white noise&quot;, with specified variance.</span>
+<div class="viewcode-block" id="Noise"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Noise">[docs]</a><span class="k">class</span> <span class="nc">Noise</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Independent covariance function, i.e &quot;white noise&quot;, with specified variance.</span>
+<span class="sd">    Normally NOT used anymore since noise is now added in liklihood.</span>
+<span class="sd">    hyp = [ log_sigma ]</span>
+
+<span class="sd">    :param log_sigma: signal deviation. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">log_sigma</span><span class="p">]</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        if len(hyp) == 1:</span>
-<span class="sd">            self.hyp = hyp</span>
-<span class="sd">        else:</span>
-<span class="sd">            print &quot;Noise covariance function is specified as:,&quot;</span>
-<span class="sd">            print &quot;k(x^p,x^q) = s2 * \delta(p,q)&quot;</span>
-<span class="sd">            print &quot;where s2 is the noise variance and \delta(p,q) is a Kronecker delta function&quot;</span>
-<span class="sd">            print &quot;which is 1 iff p=q and zero otherwise.&quot;</span>
-<span class="sd">            print &quot;The number of hyperparameters is 1&quot; </span>
-<span class="sd">            print &quot;hyp = [ log(sqrt(s2)) ]&quot;</span>
-<span class="sd">            print &quot;------------------------------------------------------------------&quot;</span>
-<span class="sd">            raise Exception(&quot;Wrong number of hyperparameters.&quot;)</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">tol</span> <span class="o">=</span> <span class="mf">1.e-9</span>                 <span class="c"># Tolerance for declaring two vectors &quot;equal&quot;</span>
         <span class="n">s2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c"># noise variance</span>
@@ -705,19 +778,110 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covNoise&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span>
 
+
 </div>
-<span class="k">class</span> <span class="nc">RQiso</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
-    <span class="k">pass</span>
+<div class="viewcode-block" id="RQ"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RQ">[docs]</a><span class="k">class</span> <span class="nc">RQ</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">    Rational Quadratic covariance function with isotropic distance measure.</span>
+<span class="sd">    hyp = [ log_ell, log_sigma, log_alpha ]</span>
+<span class="sd">    </span>
+<span class="sd">    :param log_ell: characteristic length scale. </span>
+<span class="sd">    :param log_sigma: signal deviation.</span>
+<span class="sd">    :param log_alpha: hape parameter for the RQ covariance.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_ell</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">log_alpha</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span> <span class="n">log_ell</span><span class="p">,</span> <span class="n">log_sigma</span><span class="p">,</span> <span class="n">log_alpha</span> <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">ell</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>            <span class="c"># characteristic length scale</span>
+        <span class="n">sf2</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>         <span class="c"># signal variance</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>            
+        <span class="n">n</span><span class="p">,</span><span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="s">&#39;diag&#39;</span><span class="p">:</span>
+            <span class="n">D2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">z</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">D2</span> <span class="o">=</span> <span class="n">spdist</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span> <span class="n">x</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span> <span class="s">&#39;sqeuclidean&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">D2</span> <span class="o">=</span> <span class="n">spdist</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span> <span class="n">z</span><span class="o">/</span><span class="n">ell</span><span class="p">,</span> <span class="s">&#39;sqeuclidean&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                  <span class="c"># compute covariance matix for dataset x</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span> <span class="p">(</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">D2</span><span class="o">/</span><span class="n">alpha</span> <span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>                <span class="c"># compute derivative matrix wrt 1st parameter</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">D2</span><span class="o">/</span><span class="n">alpha</span> <span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">D2</span>
+
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>              <span class="c"># compute derivative matrix wrt 2nd parameter</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span> <span class="p">(</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">D2</span><span class="o">/</span><span class="n">alpha</span> <span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span> <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">der</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>              <span class="c"># compute derivative matrix wrt 3rd parameter</span>
+                <span class="n">K</span> <span class="o">=</span> <span class="p">(</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">D2</span><span class="o">/</span><span class="n">alpha</span> <span class="p">)</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="n">K</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">D2</span><span class="o">/</span><span class="n">K</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">K</span><span class="p">)</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covRQiso&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">A</span>
+
+
+</div>
 <div class="viewcode-block" id="RQard"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RQard">[docs]</a><span class="k">class</span> <span class="nc">RQard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
-    <span class="k">pass</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Rational Quadratic covariance function with Automatic Relevance Detemination</span>
+<span class="sd">     (ARD) distance measure.</span>
+<span class="sd">    hyp = log_ell_list + [ log_sigma, log_alpha ]</span>
+
+<span class="sd">    :param D: dimension of pattern. set if you want default ell, which is 0.5 for each dimension.</span>
+<span class="sd">    :param log_ell_list: characteristic length scale for each dimension.</span>
+<span class="sd">    :param log_sigma: signal deviation. </span>
+<span class="sd">    :param log_alpha: hape parameter for the RQ covariance.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_ell_list</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">log_alpha</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">log_ell_list</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">D</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span> <span class="n">log_sigma</span><span class="p">,</span> <span class="n">log_alpha</span> <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="n">log_ell_list</span> <span class="o">+</span> <span class="p">[</span> <span class="n">log_sigma</span><span class="p">,</span> <span class="n">log_alpha</span> <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>  
+        <span class="n">ell</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">D</span><span class="p">])</span>    <span class="c"># characteristic length scale</span>
+        <span class="n">sf2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="n">D</span><span class="p">])</span>      <span class="c"># signal variance</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">[</span><span class="n">D</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="s">&#39;diag&#39;</span><span class="p">:</span>
+            <span class="n">D2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">z</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">ell</span><span class="p">),</span><span class="n">x</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">D2</span> <span class="o">=</span> <span class="n">spdist</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="s">&#39;sqeuclidean&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">D2</span> <span class="o">=</span> <span class="n">spdist</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">ell</span><span class="p">),</span><span class="n">x</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">ell</span><span class="p">),</span><span class="n">z</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="s">&#39;sqeuclidean&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                 <span class="c"># compute covariance matix for dataset x</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span> <span class="p">(</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">D2</span><span class="o">/</span><span class="n">alpha</span> <span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">der</span> <span class="o">&lt;</span> <span class="n">D</span><span class="p">:</span>                 <span class="c"># compute derivative matrix wrt length scale parameters</span>
+                <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="s">&#39;diag&#39;</span><span class="p">:</span>
+                    <span class="n">A</span> <span class="o">=</span> <span class="n">D2</span><span class="o">*</span><span class="mi">0</span>
+                <span class="k">elif</span> <span class="n">z</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="n">der</span><span class="p">])</span><span class="o">/</span><span class="n">ell</span><span class="p">[</span><span class="n">der</span><span class="p">]</span>
+                    <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">D2</span><span class="o">/</span><span class="n">alpha</span> <span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">spdist</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="s">&#39;sqeuclidean&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">D2</span><span class="o">/</span><span class="n">alpha</span> <span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">spdist</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="n">der</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="n">ell</span><span class="p">[</span><span class="n">der</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">z</span><span class="p">[:,</span><span class="n">der</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="n">ell</span><span class="p">[</span><span class="n">der</span><span class="p">],</span> <span class="s">&#39;sqeuclidean&#39;</span><span class="p">)</span> 
+            <span class="k">elif</span> <span class="n">der</span><span class="o">==</span><span class="n">D</span><span class="p">:</span>                <span class="c"># compute derivative matrix wrt magnitude parameter</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">sf2</span> <span class="o">*</span> <span class="p">(</span> <span class="p">(</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">D2</span><span class="o">/</span><span class="n">alpha</span> <span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span> <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">der</span><span class="o">==</span><span class="p">(</span><span class="n">D</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>            <span class="c"># compute derivative matrix wrt magnitude parameter</span>
+                <span class="n">K</span> <span class="o">=</span> <span class="p">(</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">D2</span><span class="o">/</span><span class="n">alpha</span> <span class="p">)</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">sf2</span> <span class="o">*</span> <span class="n">K</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">D2</span><span class="o">/</span><span class="n">K</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">K</span><span class="p">)</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Wrong derivative index in covRQard&quot;</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">A</span>
+
 
 </div>
 <div class="viewcode-block" id="Pre"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Pre">[docs]</a><span class="k">class</span> <span class="nc">Pre</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
-<span class="c"># Precomputed kernel matrix</span>
-<span class="c"># M1: cross covariances train by test</span>
-<span class="c">#     last row: self covariances (diagonal of test by test)</span>
-<span class="c"># M2: training set covariance matrix (train by train)   </span>
-<span class="c">#-&gt; no hyperparameters have to be optimised. </span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Precomputed kernel matrix. No hyperparameters and thus nothing will be optimised. </span>
+
+<span class="sd">    :param M1: cross covariances matrix(train+1 by test).</span>
+<span class="sd">               last row is self covariances (diagonal of test by test)</span>
+<span class="sd">    :param M2: training set covariance matrix (train by train)   </span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">M1</span><span class="p">,</span><span class="n">M2</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">M1</span> <span class="o">=</span> <span class="n">M1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">M2</span> <span class="o">=</span> <span class="n">M2</span>
@@ -740,11 +904,6 @@
     
 
     
-<span class="c"># You can make some test codes below:</span>
-    
-<span class="c"># UPDATE USAGE:</span>
-<span class="c"># here I decided to get rid of the data structure hyp = np.array([1,2,3]), </span>
-<span class="c"># a simple list hyp = [1,2,3] might be enough</span>
 </div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="c"># test1: combinations of kernel functions</span>
@@ -811,7 +970,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

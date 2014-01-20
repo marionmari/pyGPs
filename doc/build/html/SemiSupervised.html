@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,7 +14,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -63,11 +64,11 @@
 Each digit of <img class="math" src="_images/math/f3c19812b1b3f3cc95f5f55e7fbd1399eee6004a.png" alt="16*16"/> pixels is flattened into a <img class="math" src="_images/math/abd678361b0f40ec2723283c0f2bab3df5cadc68.png" alt="256"/> dimension vector.
 For the simplicity of demo, we only selected digits <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/> s and <img class="math" src="_images/math/e0a0db32027a732ac57d37ef2ae9bb150f65b108.png" alt="7"/> s such that we have a binary classification problem where digit <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/> for class +1 and digit <img class="math" src="_images/math/e0a0db32027a732ac57d37ef2ae9bb150f65b108.png" alt="7"/> for class -1. Binary classification of digits is a easy task with regard to this USPS digit dataset. Therefore, to increase level of difficulty, we choosed digit <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/> s and <img class="math" src="_images/math/e0a0db32027a732ac57d37ef2ae9bb150f65b108.png" alt="7"/> s instead of other combinations because 1 and 7 are most similar in our dataset. We also reduced the dataset into <img class="math" src="_images/math/e59e2c6e83eb78cca610a5fd4070ae01c8d4ae60.png" alt="100"/> samples per digit, where the original dataset consist of thousands of samples for each digit.</p>
 <p>Here are samples for two digits for <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/></p>
-<a class="reference internal image-reference" href="_images/digit1_1.png"><img alt="_images/digit1_1.png" src="_images/digit1_1.png" style="width: 30%;" /></a>
-<a class="reference internal image-reference" href="_images/digit1_2.png"><img alt="_images/digit1_2.png" src="_images/digit1_2.png" style="width: 30%;" /></a>
+<img alt="_images/digit1_1.png" src="_images/digit1_1.png" style="width: 30%;" />
+<img alt="_images/digit1_2.png" src="_images/digit1_2.png" style="width: 30%;" />
 <p>and samples for two digits for <img class="math" src="_images/math/e0a0db32027a732ac57d37ef2ae9bb150f65b108.png" alt="7"/></p>
-<a class="reference internal image-reference" href="_images/digit7_1.png"><img alt="_images/digit7_1.png" src="_images/digit7_1.png" style="width: 30%;" /></a>
-<a class="reference internal image-reference" href="_images/digit7_2.png"><img alt="_images/digit7_2.png" src="_images/digit7_2.png" style="width: 30%;" /></a>
+<img alt="_images/digit7_1.png" src="_images/digit7_1.png" style="width: 30%;" />
+<img alt="_images/digit7_2.png" src="_images/digit7_2.png" style="width: 30%;" />
 </div>
 <div class="section" id="form-a-nearest-neighbour-graph">
 <h2>Form a nearest neighbour graph<a class="headerlink" href="#form-a-nearest-neighbour-graph" title="Permalink to this headline">¶</a></h2>
@@ -135,8 +136,8 @@ You can create any <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2
 <p>For our manually created graph data, an rbf kernel works better than a diffusion kernel on the graph (higher accuracy). The performance in general should depend on the application as well as features of data.</p>
 <p>The left image shows the digit that using diffusion kernel will predict the wrong result (should be <img class="math" src="_images/math/e0a0db32027a732ac57d37ef2ae9bb150f65b108.png" alt="7"/>),
 but rbf kernel does the job fine. The right image shows the digit that all the choices of kernels stated previously will lead to a wrong predictioin (should be <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/>).</p>
-<a class="reference internal image-reference" href="_images/digitBadForDiffu.png"><img alt="_images/digitBadForDiffu.png" src="_images/digitBadForDiffu.png" style="width: 30%;" /></a>
-<a class="reference internal image-reference" href="_images/digitBadBoth.png"><img alt="_images/digitBadBoth.png" src="_images/digitBadBoth.png" style="width: 30%;" /></a>
+<img alt="_images/digitBadForDiffu.png" src="_images/digitBadForDiffu.png" style="width: 30%;" />
+<img alt="_images/digitBadBoth.png" src="_images/digitBadBoth.png" style="width: 30%;" />
 <table class="docutils footnote" frame="void" id="id3" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -219,7 +220,7 @@ but rbf kernel does the job fine. The right image shows the digit that all the c
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

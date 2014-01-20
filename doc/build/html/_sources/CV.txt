@@ -6,7 +6,7 @@ In this demo, we'll show you the typical process of using GP for machine learnin
 Load data
 --------------------
 We use the ionosphere dataset [1]_ from Johns Hopkins University Ionosphere database. 
-It is available in UCI machine learning repository. ::
+It is available in UCI machine learning repository. 
 Then we need to do some data cleaning. Here we deal with label in ionosphere data, change "b" to"-1", and "g" to "+1". These preprocessing implementation are availabe in the source code.
 
 
@@ -14,7 +14,7 @@ Cross Validation
 --------------
 Now, lets focus on the use of cross-validation. ::
 
-	K = 10             # number of fold
+	K = 10             # number of folds
 	for x_train, x_test, y_train, y_test in valid.k_fold_validation(x, y, K):
 	    # This is a binary classification problem
 	    model = gp.GPC()

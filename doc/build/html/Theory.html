@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,7 +14,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -56,19 +57,21 @@
 <h1>GPs &amp; Functionality<a class="headerlink" href="#gps-functionality" title="Permalink to this headline">¶</a></h1>
 <p>Gaussian Processes (GPs) can conveniently be used for Bayesian supervised learning, such as regression and classification.
 In its simplest form, GP inference can be implemented in a few lines of code. However, in practice, things typically
-get a little more complicated: you might want to use complicated covariance functions and mean functions, learn good values
+get a little more complicated: you might want to use expressive covariance and mean functions, learn good values
 for hyperparameters, use non-Gaussian likelihood functions (rendering exact inference intractable), use approximate inference
 algorithms, or combinations of many or all of the above.</p>
+<p>A comprehensive introduction to Gaussian Processes for Machine Learning is provided in the <a class="reference external" href="http://www.gaussianprocess.org/gpml">GPML</a> book by Rasmussen and Williams, 2006.</p>
 <div class="section" id="list-of-functionality">
 <h2>List of Functionality<a class="headerlink" href="#list-of-functionality" title="Permalink to this headline">¶</a></h2>
+<p>This table lists the functionality implemented in pyGPs.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="13%" />
-<col width="18%" />
+<col width="19%" />
 <col width="12%" />
-<col width="23%" />
-<col width="14%" />
-<col width="20%" />
+<col width="25%" />
+<col width="15%" />
+<col width="18%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Functionality</th>
@@ -85,11 +88,11 @@ algorithms, or combinations of many or all of the above.</p>
 <td>Constant</td>
 <td>Gaussian</td>
 <td>Exact</td>
-<td>BFGS</td>
+<td>Minimize</td>
 </tr>
 <tr class="row-odd"><td>Linear</td>
 <td>Linear</td>
-<td>Cumulative Gaussian(Erf)</td>
+<td>Cumulative Gaussian (Erf)</td>
 <td>EP</td>
 <td>CG</td>
 </tr>
@@ -99,11 +102,11 @@ algorithms, or combinations of many or all of the above.</p>
 <td>Laplace</td>
 <td>SCG</td>
 </tr>
-<tr class="row-odd"><td>Matern</td>
+<tr class="row-odd"><td>Matérn (1,3,5)</td>
 <td>Zero</td>
 <td>Logistic</td>
 <td rowspan="10">&nbsp;</td>
-<td>Rasmussen&#8217;s Minimize</td>
+<td>BFGS</td>
 </tr>
 <tr class="row-even"><td>Periodic</td>
 <td rowspan="9">&nbsp;</td>
@@ -142,37 +145,49 @@ algorithms, or combinations of many or all of the above.</p>
 <tr class="row-even"><td>&nbsp;</td>
 <td>Power</td>
 </tr>
-<tr class="row-odd"><td rowspan="2">Sparse GP</td>
-<td rowspan="2">&nbsp;</td>
-<td rowspan="2">&nbsp;</td>
-<td rowspan="2">&nbsp;</td>
-<td>FITC EP</td>
-<td rowspan="2">&nbsp;</td>
+<tr class="row-odd"><td rowspan="3">Sparse GP</td>
+<td rowspan="3">&nbsp;</td>
+<td rowspan="3">&nbsp;</td>
+<td rowspan="3">&nbsp;</td>
+<td>FITC Exact</td>
+<td rowspan="3">&nbsp;</td>
 </tr>
-<tr class="row-even"><td>FITC Laplace</td>
+<tr class="row-even"><td>FITC EP</td>
 </tr>
-<tr class="row-odd"><td rowspan="4">Structured</td>
+<tr class="row-odd"><td>FITC Laplace</td>
+</tr>
+<tr class="row-even"><td rowspan="4">Structured</td>
 <td>Diffusion</td>
 <td rowspan="4">&nbsp;</td>
 <td rowspan="4">&nbsp;</td>
 <td rowspan="4">&nbsp;</td>
 <td rowspan="4">&nbsp;</td>
 </tr>
-<tr class="row-even"><td>VN Diffusion</td>
+<tr class="row-odd"><td>VN Diffusion</td>
 </tr>
-<tr class="row-odd"><td>Pseudo Inv Laplace</td>
+<tr class="row-even"><td>Pseudo Inv Laplace</td>
 </tr>
-<tr class="row-even"><td>Regularized Laplace</td>
+<tr class="row-odd"><td>Regularized Laplace</td>
+</tr>
+<tr class="row-even"><td rowspan="3">Composite</td>
+<td>Sum (+)</td>
+<td rowspan="3">&nbsp;</td>
+<td rowspan="3">&nbsp;</td>
+<td rowspan="3">&nbsp;</td>
+<td rowspan="3">&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>Product (*)</td>
+</tr>
+<tr class="row-even"><td>Scale (*)</td>
 </tr>
 <tr class="row-odd"><td rowspan="2">Other</td>
 <td>Customized</td>
 <td>Customized</td>
-<td>&nbsp;</td>
+<td rowspan="2">&nbsp;</td>
 <td rowspan="2">&nbsp;</td>
 <td rowspan="2">&nbsp;</td>
 </tr>
-<tr class="row-even"><td>Precomputed Matrix</td>
-<td>&nbsp;</td>
+<tr class="row-even"><td>Precomputed Kernel</td>
 <td>&nbsp;</td>
 </tr>
 </tbody>
@@ -243,7 +258,7 @@ algorithms, or combinations of many or all of the above.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

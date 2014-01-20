@@ -23,7 +23,7 @@ Regression
    GPR
    GPR_FITC
 
-Classfication
+Classification
 
 .. toctree::
    :maxdepth: 1

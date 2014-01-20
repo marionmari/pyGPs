@@ -20,7 +20,7 @@ You can change to other likelihood or inference methods using: ::
        * newLik: **"Laplace"**. Note this will force inference method to be EP.
        * newInf: **"EP"**, **"Laplace"**.
 
-    2. Classification model(including GPMC)
+    2. Classification model (including GPMC)
 
        * newLik: **"Logistic"**
        * newInf: **"Laplace"**
