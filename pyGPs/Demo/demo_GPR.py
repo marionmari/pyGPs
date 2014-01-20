@@ -10,8 +10,8 @@ import numpy as np
 #     gp.GPC          -> Classification
 #     gp.GPR_FITC     -> Sparse GP Regression 
 #     gp.GPC_FITC     -> Sparse GP Classification
-#     (gp.GPMC)       -> Muli-class Classification
-#     (gp.GPMC_FITC)  -> Sparse Muli-class Classification
+#     gp.GPMC         -> Muli-class Classification
+
 
 
 print ''
@@ -31,10 +31,6 @@ z = demoData['xstar']        # test data
 #----------------------------------------------------------------------
 print 'Basic Example'
 model = gp.GPR()             # model 
-
-# model.useLikelihood("Laplace")
-
-
 model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
 model.train(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
 model.predict(z)             # predict test cases

@@ -382,6 +382,7 @@ class RBF(Kernel):
 
 
 class RBFtime(Kernel):
+    # currently NOT finished
     def __init__(self, log_ell=-1., log_sigma=0., log_delay = 0):
         self.hyp = [log_ell, log_sigma, log_delay]
 

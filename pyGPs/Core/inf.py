@@ -75,7 +75,7 @@
 
 import numpy as np
 import lik, cov
-from copy import copy
+from copy import copy,deepcopy
 from tools import solve_chol,brentmin,cholupdate
 
 np.seterr(all='ignore')
@@ -652,7 +652,7 @@ class EP(Inference):
         else:
             ttau = self.last_ttau                 # try the tilde values from previous call
             tnu  = self.last_tnu
-            [Sigma, mu, nlZ, L] = self.epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
+            Sigma, mu, nlZ, L = self.epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
             if nlZ > nlZ0:                        # if zero is better ..
                 ttau = np.zeros((n,1))            # .. then initialize with zero instead
                 tnu  = np.zeros((n,1)) 
@@ -662,13 +662,12 @@ class EP(Inference):
         nlZ_old = np.inf; sweep = 0               # converged, max. sweeps or min. sweeps?
         while (np.abs(nlZ-nlZ_old) > tol and sweep < max_sweep) or (sweep < min_sweep):
             nlZ_old = nlZ; sweep += 1
-            rperm = range(n)                      # randperm(n)
+            rperm = xrange(n)                     # randperm(n)
             for ii in rperm:                      # iterate EP updates (in random order) over examples
                 tau_ni = 1/Sigma[ii,ii] - ttau[ii]#  first find the cavity distribution ..
                 nu_ni  = mu[ii]/Sigma[ii,ii] + m[ii]*tau_ni - tnu[ii]    # .. params tau_ni and nu_ni
                 # compute the desired derivatives of the indivdual log partition function
-                vargout = likfunc.proceed(y[ii], nu_ni/tau_ni, 1/tau_ni, inffunc, None, 3)
-                lZ = vargout[0]; dlZ = vargout[1]; d2lZ = vargout[2] 
+                lZ,dlZ,d2lZ = likfunc.proceed(y[ii], nu_ni/tau_ni, 1/tau_ni, inffunc, None, 3)
                 ttau_old = copy(ttau[ii])         # then find the new tilde parameters, keep copy of old
                 ttau[ii] = -d2lZ  /(1.+d2lZ/tau_ni)
                 ttau[ii] = max(ttau[ii],0)        # enforce positivity i.e. lower bound ttau by zero
@@ -678,7 +677,7 @@ class EP(Inference):
                 Sigma = Sigma - ds2/(1.+ds2*si[ii])*np.dot(si,si.T)   # takes 70# of total time
                 mu = np.dot(Sigma,tnu)                                # .. and recompute mu
             # recompute since repeated rank-one updates can destroy numerical precision
-            [Sigma, mu, nlZ, L] = self.epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
+            Sigma, mu, nlZ, L = self.epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
         if sweep == max_sweep:
             raise Exception('maximum number of sweeps reached in function infEP')
         self.last_ttau = ttau; self.last_tnu = tnu          # remember for next call
@@ -703,8 +702,8 @@ class EP(Inference):
                 dnlZ.cov[jj] = -(F*dK).sum()/2.
             for ii in range(len(likfunc.hyp)):
                 dlik = likfunc.proceed(y, nu_n/tau_n, 1/tau_n, inffunc, ii)
-                dnlZ.lik[ii] = -dlik.sum()
-            [junk,dlZ] = likfunc.proceed(y, nu_n/tau_n, 1/tau_n, inffunc, None, 2) # mean hyps
+                dnlZ.lik[ii] = -dlik.sum()    
+            junk,dlZ = likfunc.proceed(y, nu_n/tau_n, 1/tau_n, inffunc, None, 2) # mean hyps
             for ii in range(len(meanfunc.hyp)):
                 dm = meanfunc.proceed(x, ii)
                 dnlZ.mean[ii] = -np.dot(dlZ.T,dm)
@@ -857,7 +856,7 @@ class FITC_EP(Inference):
 
 # test
 if __name__ == '__main__':
-    inf = infEP()
+    pass
 
 
 

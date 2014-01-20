@@ -136,7 +136,7 @@ class Gauss(Likelihood):
 
     hyp = [ log_sigma ]
     '''
-    def __init__(self, log_sigma=-2.3 ):
+    def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [log_sigma]
 
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
@@ -383,6 +383,10 @@ class Logistic(Likelihood):
         self.hyp = []
 
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
+        mu = np.atleast_2d(mu)
+        y = np.atleast_2d(y)
+        s2 = np.atleast_2d(s2)
+
         if not y == None:
             y = np.sign(y)
             y[y==0] = 1
@@ -438,16 +442,16 @@ class Logistic(Likelihood):
             elif isinstance(inffunc, inf.EP):
                 if der == None:                          # no derivative mode
                     y = y*np.ones_like(mu)
-                    lam = np.sqrt(2)*np.reshape(np.array([0.44, 0.41, 0.40, 0.39, 0.36]),(1,5))    # approx coeffs lam_i and c_i
-                    c = np.reshape(np.array([1.146480988574439e+02, -1.508871030070582e+03, 2.676085036831241e+03, -1.356294962039222e+03, 7.543285642111850e+01]),(5,1))
+                    lam = np.sqrt(2)*np.array([[0.44, 0.41, 0.40, 0.39, 0.36]])      # approx coeffs lam_i and c_i
+                    c = np.array([[1.146480988574439e+02, -1.508871030070582e+03, 2.676085036831241e+03, -1.356294962039222e+03, 7.543285642111850e+01]]).T
                     l = Erf()
-                    a = l.proceed(y=np.reshape(y,(1,5)), mu=np.dot(mu,lam), s2=np.dot(s2,lam**2), inffunc=inffunc, der=True, nargout=3)
+                    a = l.proceed(y=np.dot(y,np.ones((1,5))), mu=np.dot(mu,lam), s2=np.dot(s2,lam**2), inffunc=inffunc, der=None, nargout=3)
                     lZc = a[0]; dlZc = a[1]; d2lZc = a[2]
 
                     lZ   = self._log_expA_x(lZc,c)
                     dlZ  = self._expABz_expAx(lZc, c, dlZc, c*lam.T)
-                    d2lZ = self._expABz_expAx(lZc, c, dlZc**22+d2lZc, c*(lam**2).T) - dlZ**2
-
+                    d2lZ = self._expABz_expAx(lZc, c, dlZc**2+d2lZc, c*(lam**2)) - dlZ**2
+                    
                     # The scale mixture approximation does not capture the correct asymptotic
                     # behavior; we have linear decay instead of quadratic decay as suggested
                     # by the scale mixture approximation. By observing that for large values
@@ -455,10 +459,13 @@ class Logistic(Likelihood):
                     # able to analytically integrate the tail region.
 
                     val = np.abs(mu)-196/200*s2-4       # empirically determined bound at val==0
-                    lam = 1/(1+np.exp(-10*val))         # interpolation weights
-                    lZtail = min(s2/2-np.abs(mu),-0.1)  # apply the same to p(y|f) = 1 - p(-y|f)
-                    dlZtail = -np.sign(mu); d2lZtail = np.zeros_like(mu)
-                    id = (y*mu)>0; lZtail[id] = np.log(1-np.exp(lZtail[id])) # label and mean agree
+                    lam = 1./(1+np.exp(-10*val))         # interpolation weights
+                    lZtail = np.minimum((s2/2-np.abs(mu)), -0.1*np.ones_like(mu))  # apply the same to p(y|f) = 1 - p(-y|f)
+                    dlZtail = -np.sign(mu)
+                    d2lZtail = np.zeros_like(mu)
+
+                    id = (y*mu)>0
+                    lZtail[id] = np.log(1-np.exp(lZtail[id])) # label and mean agree
                     dlZtail[id] = 0
                     lZ   = (1-lam)*lZ + lam*lZtail      # interpolate between scale ..
                     dlZ  = (1-lam)*dlZ + lam*dlZtail    # ..  mixture and   ..
@@ -481,8 +488,11 @@ class Logistic(Likelihood):
         Computes y = log( exp(A)*x ) in a numerically safe way by subtracting the
         maximal value in each row to avoid cancelation after taking the exp
         '''
-        N = A.shape[1];  maxA = np.max(A,axis=0)      # number of columns, max over columns
-        y = np.log(np.exp(A-maxA*np.ones((1,N)))*x) + maxA
+        N = A.shape[1]
+        maxA = np.max(A,axis=1)                    # number of columns, max over columns
+        maxA = np.array([maxA]).T
+        A = A - np.dot(maxA, np.ones((1,N)))       # subtract maximum value
+        y = np.log(np.dot(np.exp(A),x)) + maxA
         return y
   
     def _expABz_expAx(self,A,x,B,z):
@@ -491,10 +501,12 @@ class Logistic(Likelihood):
         The function is not general in the sense that it yields correct values for
         all types of inputs. We assume that the values are close together.
         '''
-        N = A.shape[1];  maxA = np.max(A,axis=0)      # number of columns, max over columns
-        A = A-maxA*np.ones((1,N))                     # subtract maximum value
+        N = A.shape[1]
+        maxA = np.max(A,axis=1)                    # number of columns, max over columns
+        maxA = np.array([maxA]).T
+        A = A - np.dot(maxA, np.ones((1,N)))       # subtract maximum value
         y = ( np.dot((np.exp(A)*B),z) ) / ( np.dot(np.exp(A),x) )
-        return y
+        return np.atleast_2d(y[0])
 
 
 
@@ -508,7 +520,7 @@ class Laplace(Likelihood):
 
     hyp = [ log_sigma ]
     '''
-    def __init__(self, log_sigma=-2.3 ):
+    def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [ log_sigma ]
 
     def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
@@ -570,7 +582,9 @@ class Laplace(Likelihood):
                 id    = np.logical_and(np.logical_not(idgau),np.logical_not(idlik)) # interesting case in between
 
                 if der == None:                          # no derivative mode
-                    lZ = np.zeros((n,1)); dlZ = lZ[:]; d2lZ = lZ[:]
+                    lZ = np.zeros((n,1))
+                    dlZ = np.zeros((n,1))
+                    d2lZ = np.zeros((n,1))
                     if np.any(idlik):
                         l = Gauss(log_sigma=np.log(s2[idlik])/2)
                         a = l.proceed(mu[idlik], y[idlik])
@@ -582,28 +596,28 @@ class Laplace(Likelihood):
                     if np.any(id):
                         # substitution to obtain unit variance, zero mean Laplacian
                         tvar = s2[id]/(sn[id]**2+1e-16)
-                        tmu = (mu[id]-y[id])/(sn[id]+1e-16); 
+                        tmu = (mu[id]-y[id])/(sn[id]+1e-16)
                         # an implementation based on logphi(t) = log(normcdf(t))
                         zp = (tmu+np.sqrt(2)*tvar)/np.sqrt(tvar)
                         zm = (tmu-np.sqrt(2)*tvar)/np.sqrt(tvar)
                         ap =  self._logphi(-zp)+np.sqrt(2)*tmu
                         am =  self._logphi( zm)-np.sqrt(2)*tmu
-                        lZ[id] = np.logaddexp2(ap,am) + tvar - np.log(sn[id]*np.sqrt(2.))
+                        apam = np.vstack((ap,am)).T
+                        lZ[id] = self._logsum2exp(apam) + tvar - np.log(sn[id]*np.sqrt(2.))
+
                     if nargout>1:
                         lqp = -0.5*zp**2 - 0.5*np.log(2*np.pi) - self._logphi(-zp);       # log( N(z)/Phi(z) )
                         lqm = -0.5*zm**2 - 0.5*np.log(2*np.pi) - self._logphi( zm);
                         dap = -np.exp(lqp-0.5*np.log(s2[id])) + np.sqrt(2)/sn[id]
                         dam =  np.exp(lqm-0.5*np.log(s2[id])) - np.sqrt(2)/sn[id]
-        
-                        _z1 = np.reshape(np.array([ap,am]),(1,2))
-                        _z2 = np.reshape(np.array([dap,dam]),(1,2))
-                        _x = np.reshape(np.array([1,1]),(2,1))
+                        _z1 = np.vstack((ap,am)).T
+                        _z2 = np.vstack((dap,dam)).T
+                        _x = np.array([[1],[1]])
                         dlZ[id] = self._expABz_expAx(_z1, _x, _z2, _x)
-
                         if nargout>2:
                             a = np.sqrt(8.)/sn[id]/np.sqrt(s2[id]);
-                            bp = 2/sn[id]**2 - (a - zp/s2[id])*np.exp(lqp)
-                            bm = 2/sn[id]**2 - (a + zm/s2[id])*np.exp(lqm)
+                            bp = 2./sn[id]**2 - (a - zp/s2[id])*np.exp(lqp)
+                            bm = 2./sn[id]**2 - (a + zm/s2[id])*np.exp(lqm)
                             _x = np.reshape(np.array([1,1]),(2,1))
                             _z1 = np.reshape(np.array([ap,am]),(1,2))
                             _z2 = np.reshape(np.array([bp,bm]),(1,2))
@@ -626,14 +640,14 @@ class Laplace(Likelihood):
                         # substitution to obtain unit variance, zero mean Laplacian
                         tmu = (mu[id]-y[id])/(sn[id]+1e-16);        tvar = s2[id]/(sn[id]**2+1e-16)
                         zp  = (tvar+tmu/np.sqrt(2))/np.sqrt(tvar);  vp = tvar+np.sqrt(2)*tmu
-                        zm  = (tvar-tmu/sqrt(2))/sqrt(tvar);  vm = tvar-np.sqrt(2)*tmu
+                        zm  = (tvar-tmu/np.sqrt(2))/np.sqrt(tvar);  vm = tvar-np.sqrt(2)*tmu
                         dzp = (-s2[id]/sn[id]+tmu*sn[id]/np.sqrt(2)) / np.sqrt(s2[id])
                         dvp = -2*tvar - np.sqrt(2)*tmu
                         dzm = (-s2[id]/sn[id]-tmu*sn[id]/np.sqrt(2)) / np.sqrt(s2[id])
                         dvm = -2*tvar + np.sqrt(2)*tmu
                         lezp = self._lerfc(zp); # ap = exp(vp).*ezp
                         lezm = self._lerfc(zm); # am = exp(vm).*ezm
-                        vmax = max(np.array([vp+lezp,vm+lezm]),axis=0); # subtract max to avoid numerical pb
+                        vmax = np.max(np.array([vp+lezp,vm+lezm]),axis=0); # subtract max to avoid numerical pb
                         ep  = np.exp(vp+lezp-vmax)
                         em  = np.exp(vm+lezm-vmax)
                         dap = ep*(dvp - 2/np.sqrt(np.pi)*np.exp(-zp**2-lezp)*dzp)
@@ -649,10 +663,11 @@ class Laplace(Likelihood):
         from scipy.special import erfc
         f  = np.zeros_like(t)
         tmin = 20; tmax = 25
-        ok = t < tmin                              # log(1-erf(t)) is safe to evaluate
-        bd = t > tmax                              # evaluate tight bound
-        interp = not ok and  not bd                # linearly interpolate between both of them
-        f[not ok] = np.log(2/np.sqrt(np.pi)) -t[not ok]**2 -np.log(t[ not ok]+np.sqrt( t[not ok]**2+4/np.pi ))
+        ok = t<tmin                              # log(1-erf(t)) is safe to evaluate
+        bd = t>tmax                              # evaluate tight bound
+        nok = np.logical_not(ok)
+        interp = np.logical_and(nok,np.logical_not(bd)) # interpolate between both of them
+        f[nok] = np.log(2/np.sqrt(np.pi)) -t[nok]**2 -np.log(t[nok]+np.sqrt( t[nok]**2+4/np.pi ))
         lam = 1/(1+np.exp( 12*(0.5-(t[interp]-tmin)/(tmax-tmin)) ))   # interp. weights
         f[interp] = lam*f[interp] + (1-lam)*np.log(erfc( t[interp] ))
         f[ok] += np.log(erfc( t[ok] ))             # safe eval
@@ -664,8 +679,10 @@ class Laplace(Likelihood):
         The function is not general in the sense that it yields correct values for
         all types of inputs. We assume that the values are close together.
         '''
-        N = A.shape[1];  maxA = np.max(A,axis=0)*np.ones((1,N)) # number of columns, max over columns
-        A = A - maxA                     # subtract maximum value
+        N = A.shape[1]
+        maxA = np.max(A,axis=1)                    # number of columns, max over columns
+        maxA = np.array([maxA]).T
+        A = A - np.dot(maxA, np.ones((1,N)))       # subtract maximum value
         y = ( np.dot((np.exp(A)*B),z) ) / ( np.dot(np.exp(A),x) )
         return y[0]
 
@@ -681,9 +698,22 @@ class Laplace(Likelihood):
         ip = np.logical_and(nok,np.logical_not(bd)) # interpolate between both of them
         lam = 1./(1.+np.exp( 25.*(0.5-(z[ip]-zmin)/(zmax-zmin)) ))  # interp. weights
         lp[ok] = np.log( 0.5*( 1.+erf(z[ok]/np.sqrt(2.)) ) )
-        lp[nok] = -0.5*(np.log(np.pi) - z[nok]**2) - np.log( np.sqrt(2.+0.5*(z[nok]**2)) ) 
+        lp[nok] = -0.5*(np.log(np.pi) + z[nok]**2) - np.log( np.sqrt(2.+0.5*(z[nok]**2)) - z[nok]/np.sqrt(2)) 
         lp[ip] = (1-lam)*lp[ip] + lam*np.log( 0.5*( 1.+erf(z[ip]/np.sqrt(2.)) ) )
         return lp
+
+    def _logsum2exp(self,logx):
+        '''computes y = log( sum(exp(x),2) ) in a numerically safe way 
+        by subtracting the row maximum to avoid cancelation after taking 
+        the exp the sum is done along the rows'''
+        N = logx.shape[1]
+        max_logx = logx.max(1)
+        max_logx = np.array([max_logx]).T
+        # we have all values in the log domain, and want to calculate a sum
+        x = np.exp(logx - np.dot(max_logx,np.ones((1,N))))
+        y = np.log(np.array([np.sum(x,1)]).T) + max_logx
+        return list(y.flatten())
+
 
  
 

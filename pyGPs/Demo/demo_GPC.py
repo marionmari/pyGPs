@@ -31,6 +31,7 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 # First example -> state default values
 #----------------------------------------------------------------------
 model = gp.GPC()             # binary classification (default inference method: EP)
+# model.useLikelihood("Logistic")
 model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
 model.train(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
 model.predict(z)             # predict test cases
