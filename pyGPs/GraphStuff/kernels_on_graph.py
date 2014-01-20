@@ -23,8 +23,7 @@ def normalizeKernel(K):
 
 
 def regLapKernel(A, sigma=1):
-    '''
-    Regularized Laplacian Kernel 
+    ''' Regularized Laplacian Kernel 
         
     :param A:  adjacency matrix
     :param sigma: (hyper)parameter(s)
@@ -43,8 +42,7 @@ def regLapKernel(A, sigma=1):
 
 
 def psInvLapKernel(A):
-    '''
-    Pseudo inverse of the normalized Laplacian.
+    ''' Pseudo inverse of the normalized Laplacian.
 
     :param A:  adjacency matrix
     '''
@@ -62,8 +60,7 @@ def psInvLapKernel(A):
 
 
 def diffKernel(A, beta=0.5):
-    '''
-    Diffusion Process Kernel 
+    ''' Diffusion Process Kernel 
         
     K = exp(beta * H), where H = -L = A-D
     
@@ -84,8 +81,7 @@ def diffKernel(A, beta=0.5):
 
 
 def VNDKernel(A, alpha=0.5):
-    ''' 
-    Von Neumann Diffusion Kernel on graph (Zhou et al., 2004)
+    '''  Von Neumann Diffusion Kernel on graph (Zhou et al., 2004)
     (also label spreading kernel)
         
     K = (I - alpha*S)^-1, where S = D^-1/2*A*D^-1/2
@@ -105,24 +101,39 @@ def VNDKernel(A, alpha=0.5):
 
 
 
-def rwKernel(A, param):
+def rwKernel(A, p=2, a=2):
     '''
-    p-step Random Walk Kernel 
-            
+    p-step Random Walk Kernel with a>1
+       
+    K = (aI-L)^p, p>1 and L is the normalized Laplacian 
+     
     :param A:  adjacency matrix
-    :param param: (hyper)parameter(s)
-            
-    NOT IMPLEMENTED IN THIS VERSION
+    :param p:  step parameter
+    :param a:  (hyper)parameter(s)
     '''
 
-    K = 'not implemented'
+    if p < 2:
+	raise Exception('Step parameter p needs to be larger than 1.') 	
+
+    if a <= 1:	
+	a=1.0001
+
+    I = np.identity(A.shape[0])
+    d = A.sum(axis=0)
+    
+    # normalized Laplacian
+    d = np.sqrt(1./d)    
+    D = np.diag(d)
+    L = I - np.dot( np.dot(D,A),D )
+
+    K = np.linalg.matrix_power( a*I - L, int(p) )	
+
     return K
 
 
 
 def cosKernel(A):
-    '''
-    Cosine Kernel (also Inverse Cosine Kernel)
+    ''' Cosine Kernel (also Inverse Cosine Kernel)
             
     :param A:  adjacency matrix
             
