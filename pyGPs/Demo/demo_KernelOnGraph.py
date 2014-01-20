@@ -61,16 +61,21 @@ if __name__ == "__main__":
 
     exampleDigit7_1 = x[124]   # sample digit 2
     exampleDigit7_1 = np.reshape(exampleDigit7_1,(16,16))
-    plotDigit(exampleDigit7_1, 'This is a 7.')
+    plotDigit(exampleDigit7_1, 'This is a 2.')
 
     exampleDigit7_2 = x[129]   # another sample digit 2
     exampleDigit7_2 = np.reshape(exampleDigit7_2,(16,16))
-    plotDigit(exampleDigit7_2, 'This is another 7.')
+    plotDigit(exampleDigit7_2, 'This is another 2.')
 
     # true class 1 	
     exampleDigitBad = x[70]    # digit that predicts wrong for rbf
     exampleDigitBad = np.reshape(exampleDigitBad,(16,16))
-    plotDigit(exampleDigitBad, 'This digit is an example where the rbf kernel predicts the wrong class (2). Diffusion kernel predicts correctly due to graph information!')
+    plotDigit(exampleDigitBad, 'This digit is an example where the rbf kernel predicts the wrong class (2). \nDiffusion kernel predicts correctly due to graph information!')
+    
+    # true class 2 	
+    exampleDigitBad = x[108]    # digit that predicts wrong for diff
+    exampleDigitBad = np.reshape(exampleDigitBad,(16,16))
+    plotDigit(exampleDigitBad, 'This digit is an example where the diff kernel predicts the wrong class (1). \nrbf kernel, however, predicts correctly!')
 
 
     # form a 2-nearest neighbour graph 
@@ -81,16 +86,16 @@ if __name__ == "__main__":
     N = Matrix.shape[0]
 
     # cross validation for RBF (no graph structure is used)
+    # using indices because we need training/test indices for the precomputed kernel matrix
     num_folds = 10
-    ACC = np.zeros(num_folds)
-    i = 0;
-    print '======= RBF =======' 
+    ACC_rbf = np.zeros(num_folds)
+    ACC_diff = np.zeros(num_folds)
+    i = -1;
     for indice_train, indice_test in valid.k_fold_indice(N, K=num_folds):
-	
-        # compute kernel matrix          
-        M1,M2 = form_kernel_matrix(Matrix, indice_train, indice_test)
-	 
-        # start Gaussian process
+ 	i+=1; 
+
+ 	## RBF kernel
+        # initialize Gaussian process
         model = gp.GPC()
         k = cov.RBF()
         model.setPrior(kernel=k)
@@ -106,30 +111,15 @@ if __name__ == "__main__":
         model.predict(x_test)
         
         # evaluation 
-        predictive_class = np.sign(model.ym)
-        ACC[i] = valid.ACC(predictive_class, y_test)	
-	#print np.hstack((np.array(indice_test, ndmin=2).T,y_test, predictive_class))
-	print 'fold', i+1, ' accuracy: ' , ACC[i]
-	i+=1;
-	
-    print 'mean accuracy: ', np.mean(ACC)
-    print 'std accuracy: ', np.std(ACC)
+        predictive_class_rbf = np.sign(model.ym)
+        ACC_rbf[i] = valid.ACC(predictive_class_rbf, y_test)	
 
-    # cross validation for Diffusion kernel 
-    # using indices because we need training/test indices for the precomputed kernel matrix
-    num_folds = 10
-    ACC = np.zeros(num_folds)
-    i = 0;
-    print '======= DIFF =======' 
-    for indice_train, indice_test in valid.k_fold_indice(N, K=num_folds):
-	
-        # compute kernel matrix          
-        M1,M2 = form_kernel_matrix(Matrix, indice_train, indice_test)
-	 
-        # start Gaussian process
-        model = gp.GPC()
-        k = cov.Pre(M1,M2)
-        #k = cov.Pre(M1,M2) + cov.RBF()
+
+	## DIFFUSION Kernel
+	# compute kernel matrix and initalize GP with precomputed kernel                  
+	model = gp.GPC()		
+	M1,M2 = form_kernel_matrix(Matrix, indice_train, indice_test)
+	k = cov.Pre(M1,M2)	#k = cov.Pre(M1,M2) + cov.RBF()
         model.setPrior(kernel=k)
 	
         # split training and test data
@@ -144,22 +134,25 @@ if __name__ == "__main__":
         x_train = np.zeros((n,1))
 
         # if you use combination of precomputed matrix and other kernel function,
-        # this problem does not exsit
-        # you can pass traning data in the normal way
+        # you can pass traning data in the normal way: x_train = x[indice_train,:]
 
         # gp
         model.train(x_train, y_train)
         model.predict(x_test)
         
         # evaluation 
-        predictive_class = np.sign(model.ym)
-        ACC[i] = valid.ACC(predictive_class, y_test)	
-	#print np.hstack((np.array(indice_test, ndmin=2).T,y_test, predictive_class))
-	print 'fold', i+1, ' accuracy: ' , ACC[i]
-	i+=1;
+        predictive_class_diff = np.sign(model.ym)
+        ACC_diff[i] = valid.ACC(predictive_class_diff, y_test)
 
-    print 'mean accuracy: ', np.mean(ACC)
-    print 'std accuracy: ', np.std(ACC)
+	print np.hstack((np.array(indice_test, ndmin=2).T,y_test, predictive_class_rbf, predictive_class_diff))
+	print 'fold', i+1, ' accuracy (RBF): ' , ACC_rbf[i]	
+	print 'fold', i+1, ' accuracy (DIFF): ' , ACC_diff[i]
+	
+	
+    print 'mean accuracy (RBF): ', np.mean(ACC_rbf)
+    print 'std accuracy: (RBF)', np.std(ACC_rbf)
+    print 'mean accuracy: (DIFF)', np.mean(ACC_diff)
+    print 'std accuracy: (DIFF)', np.std(ACC_diff)
 
-
+   
 
