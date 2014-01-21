@@ -48,6 +48,7 @@ class Kernel(object):
             return ProductOfKernel(self,other)
         else:
             print "only numbers and Kernels are supported operand types for *"
+    __rmul__ = __mul__
     # FITC approximation
     def fitc(self,inducingInput):
         return FITCOfKernel(self,inducingInput)

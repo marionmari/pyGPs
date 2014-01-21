@@ -40,7 +40,7 @@ def k_fold_validation(x, y, K=10, randomise=False):
         yield x_train, x_test, y_train, y_test
 
 
-def k_fold_indice(n, K=10):
+def k_fold_index(n, K=10):
     '''
     Similar to k_fold_validation,
     but only return the indice instead of data

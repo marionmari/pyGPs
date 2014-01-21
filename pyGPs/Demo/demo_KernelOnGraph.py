@@ -90,21 +90,21 @@ if __name__ == "__main__":
     num_folds = 10
     ACC_rbf = np.zeros(num_folds)
     ACC_diff = np.zeros(num_folds)
-    i = -1;
-    for indice_train, indice_test in valid.k_fold_indice(N, K=num_folds):
- 	i+=1; 
+    i = -1
+    for index_train, index_test in valid.k_fold_index(N, K=num_folds):
+        i+=1
 
- 	## RBF kernel
+        ## RBF kernel
         # initialize Gaussian process
         model = gp.GPC()
         k = cov.RBF()
         model.setPrior(kernel=k)
 
         # split training and test data
-        x_train = x[indice_train,:]
-        y_train = y[indice_train,:]
-        x_test = x[indice_test,:]
-        y_test = y[indice_test,:]
+        x_train = x[index_train,:]
+        y_train = y[index_train,:]
+        x_test = x[index_test,:]
+        y_test = y[index_test,:]
         
         # gp
         model.train(x_train, y_train)
@@ -114,27 +114,28 @@ if __name__ == "__main__":
         predictive_class_rbf = np.sign(model.ym)
         ACC_rbf[i] = valid.ACC(predictive_class_rbf, y_test)	
 
-
-	## DIFFUSION Kernel
-	# compute kernel matrix and initalize GP with precomputed kernel                  
-	model = gp.GPC()		
-	M1,M2 = form_kernel_matrix(Matrix, indice_train, indice_test)
-	k = cov.Pre(M1,M2)	#k = cov.Pre(M1,M2) + cov.RBF()
+        
+        ## DIFFUSION Kernel
+        # compute kernel matrix and initalize GP with precomputed kernel                  
+        model = gp.GPC()
+        M1,M2 = form_kernel_matrix(Matrix, index_train, index_test)
+        #k = cov.Pre(M1,M2)  
+        k = cov.Pre(M1,M2) + 0.5*cov.RBF()
         model.setPrior(kernel=k)
-	
+
         # split training and test data
-        y_train = y[indice_train,:]
-        x_test = x[indice_test,:]
-        y_test = y[indice_test,:] 
+        y_train = y[index_train,:]
+        x_test = x[index_test,:]
+        y_test = y[index_test,:] 
 
         # if you only use precomputed kernel matrix, there is no training data needed,
         # but you still need to specify x_train (due to general structure of pyGPs)
         # e.g. you can use the following:
-        n = len(indice_train)
-        x_train = np.zeros((n,1))
+        # n = len(index_train)
+        # x_train = np.zeros((n,1))
 
         # if you use combination of precomputed matrix and other kernel function,
-        # you can pass traning data in the normal way: x_train = x[indice_train,:]
+        # you can pass traning data in the normal way: x_train = x[index_train,:]
 
         # gp
         model.train(x_train, y_train)
@@ -144,11 +145,10 @@ if __name__ == "__main__":
         predictive_class_diff = np.sign(model.ym)
         ACC_diff[i] = valid.ACC(predictive_class_diff, y_test)
 
-	print np.hstack((np.array(indice_test, ndmin=2).T,y_test, predictive_class_rbf, predictive_class_diff))
-	print 'fold', i+1, ' accuracy (RBF): ' , ACC_rbf[i]	
-	print 'fold', i+1, ' accuracy (DIFF): ' , ACC_diff[i]
-	
-	
+        print np.hstack((np.array(index_test, ndmin=2).T, y_test, predictive_class_rbf, predictive_class_diff))
+        print 'fold', i+1, ' accuracy (RBF): ' , ACC_rbf[i]	
+        print 'fold', i+1, ' accuracy (DIFF): ' , ACC_diff[i]
+
     print 'mean accuracy (RBF): ', np.mean(ACC_rbf)
     print 'std accuracy: (RBF)', np.std(ACC_rbf)
     print 'mean accuracy: (DIFF)', np.mean(ACC_diff)

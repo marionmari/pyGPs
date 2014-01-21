@@ -81,6 +81,7 @@ class Mean(object):
             return ProductOfMean(self,other)
         else:
             print "only numbers and Means are allowed for *"
+    __rmul__ = __mul__
     def __pow__(self,number):
         if isinstance(number, int) and number > 0:
             return PowerOfMean(self,number)
