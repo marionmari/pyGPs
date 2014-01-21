@@ -381,39 +381,6 @@ class RBF(Kernel):
         return A
 
 
-
-class RBFtime(Kernel):
-    # currently NOT finished
-    def __init__(self, log_ell=-1., log_sigma=0., log_delay = 0):
-        self.hyp = [log_ell, log_sigma, log_delay]
-
-    def proceed(self, x=None, z=None, der=None):
-        ell = np.exp(self.hyp[0])         # characteristic length scale
-        sf2 = np.exp(2.*self.hyp[1])      # signal variance
-        delay = np.exp(self.hyp[2])       # time delay
-        n,D = x.shape
-        x = x - delay
-        if z == 'diag':
-            A = np.zeros((n,1))
-        elif z == None:
-            A = spdist.cdist(x/ell,x/ell,'sqeuclidean')
-        else:                              # compute covariance between data sets x and z
-            A = spdist.cdist(x/ell,z/ell,'sqeuclidean') # self covariances      
-        if der == None:                    # compute covariance matix for dataset x
-            A = sf2 * np.exp(-0.5*A)
-        else:
-            if der == 0:    # compute derivative matrix wrt 1st parameter
-                A = sf2 * np.exp(-0.5*A) * A
-            elif der == 1:  # compute derivative matrix wrt 2nd parameter
-                A = 2. * sf2 * np.exp(-0.5*A)
-            elif der == 2:  # compute derivative matrix wrt 3rd parameter
-                A = sf2 * np.exp(-0.5*A) * A
-            else:
-                raise Exception("Calling for a derivative in RBF that does not exist")
-        return A
-
-
-
 class RBFunit(Kernel):
     '''
     Squared Exponential kernel with isotropic distance measure with unit magnitude.
