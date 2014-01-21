@@ -142,21 +142,22 @@
 
 <dl class="function">
 <dt id="pyGPs.GraphStuff.kernels_on_graph.rwKernel">
-<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">rwKernel</tt><big>(</big><em>A</em>, <em>param</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphStuff/kernels_on_graph.html#rwKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.rwKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>p-step Random Walk Kernel</p>
+<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">rwKernel</tt><big>(</big><em>A</em>, <em>p=2</em>, <em>a=2</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphStuff/kernels_on_graph.html#rwKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.rwKernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>p-step Random Walk Kernel with a&gt;1</p>
+<p>K = (aI-L)^p, p&gt;1 and L is the normalized Laplacian</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>A</strong> &#8211; adjacency matrix</li>
-<li><strong>param</strong> &#8211; (hyper)parameter(s)</li>
+<li><strong>p</strong> &#8211; step parameter</li>
+<li><strong>a</strong> &#8211; (hyper)parameter(s)</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>NOT IMPLEMENTED IN THIS VERSION</p>
 </dd></dl>
 
 </div>

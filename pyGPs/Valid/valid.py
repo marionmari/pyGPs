@@ -75,8 +75,8 @@ def ACC(predict,target):
     for i in xrange(n):
         if predict[i,0] == target[i,0]:
             count += 1
-        else:
-            print i 
+        #else:
+        #    print i 
             
     return count/n
 

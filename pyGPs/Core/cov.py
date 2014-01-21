@@ -40,8 +40,8 @@ class Kernel(object):
     def __add__(self,cov):
         return SumOfKernel(self,cov)
     def __mul__(self,other):
-        # using * for both scalar and production
-        # depending on the types of two objects.
+        # using * for both multiplication with scalar and product of kernels
+        # depending on the type of the two objects.
         if isinstance(other, int) or isinstance(other, float):
             return ScaleOfKernel(self,other)
         elif isinstance(other, Kernel):
