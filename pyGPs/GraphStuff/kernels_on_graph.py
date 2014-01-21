@@ -22,6 +22,18 @@ def normalizeKernel(K):
     return K_norm
 
 
+def normLap(A):
+    ''' normalized Laplacian '''
+    I = np.identity(A.shape[0])
+    d = A.sum(axis=0)
+    
+    d = np.sqrt(1./d)    
+    D = np.diag(d)
+    L = I - np.dot( np.dot(D,A),D )
+    return L
+
+
+
 def regLapKernel(A, sigma=1):
     ''' Regularized Laplacian Kernel 
         
@@ -30,13 +42,7 @@ def regLapKernel(A, sigma=1):
     '''
 
     I = np.identity(A.shape[0])
-    d = A.sum(axis=0)
-    
-    # normalized Laplacian
-    d = np.sqrt(1./d)    
-    D = np.diag(d)
-    L = I - np.dot( np.dot(D,A),D )
-
+    L = normLap(A)
     K = np.linalg.inv( I+(sigma**2)*L )
     return K
 
@@ -47,14 +53,7 @@ def psInvLapKernel(A):
     :param A:  adjacency matrix
     '''
 
-    I = np.identity(A.shape[0])
-    d = A.sum(axis=0)
-    
-    # normalized Laplacian
-    d = np.sqrt(1./d)    
-    D = np.diag(d)
-    L = I - np.dot( np.dot(D,A),D )
-
+    L = normLap(A)
     K = np.linalg.pinv(L)
     return K
 
@@ -101,9 +100,8 @@ def VNDKernel(A, alpha=0.5):
 
 
 
-def rwKernel(A, p=2, a=2):
-    '''
-    p-step Random Walk Kernel with a>1
+def rwKernel(A, p=1, a=2):
+    ''' p-step Random Walk Kernel with a>1
        
     K = (aI-L)^p, p>1 and L is the normalized Laplacian 
      
@@ -111,36 +109,33 @@ def rwKernel(A, p=2, a=2):
     :param p:  step parameter
     :param a:  (hyper)parameter(s)
     '''
-
-    if p < 2:
-	raise Exception('Step parameter p needs to be larger than 1.') 	
+    if type(p) != int:
+	p = int(p)
+	
+    if p < 1:
+	raise Exception('Step parameter p needs to be larger than 0.') 	
 
     if a <= 1:	
 	a=1.0001
 
     I = np.identity(A.shape[0])
-    d = A.sum(axis=0)
-    
-    # normalized Laplacian
-    d = np.sqrt(1./d)    
-    D = np.diag(d)
-    L = I - np.dot( np.dot(D,A),D )
-
-    K = np.linalg.matrix_power( a*I - L, int(p) )	
-
+    L = normLap(A)
+    K = np.linalg.matrix_power( a*I - L, p)	
     return K
 
 
 
 def cosKernel(A):
     ''' Cosine Kernel (also Inverse Cosine Kernel)
-            
+    
+    K = cos (L*pi/4), where L is the normalized Laplacian
+                
     :param A:  adjacency matrix
-            
-    NOT IMPLEMENTED IN THIS VERSION
+
     '''
-        
-    K = 'not implemented'
+       
+    L = normLap(A)
+    K = np.cos(L*np.pi/4)   
     return K 
 
 
