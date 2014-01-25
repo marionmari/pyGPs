@@ -51,31 +51,31 @@ if __name__ == "__main__":
     x,y = load_binary(1,2,reduce=True)
   
     # plot example digit
-    exampleDigit1_1 = x[38]    # sample digit 1
-    exampleDigit1_1 = np.reshape(exampleDigit1_1,(16,16))
-    plotDigit(exampleDigit1_1, 'This is a 1.')
+    # exampleDigit1_1 = x[38]    # sample digit 1
+    # exampleDigit1_1 = np.reshape(exampleDigit1_1,(16,16))
+    # plotDigit(exampleDigit1_1, 'This is a 1.')
 
-    exampleDigit1_2 = x[81]    # another sample digit 1
-    exampleDigit1_2 = np.reshape(exampleDigit1_2,(16,16))
-    plotDigit(exampleDigit1_2, 'This is another 1.')
+    # exampleDigit1_2 = x[81]    # another sample digit 1
+    # exampleDigit1_2 = np.reshape(exampleDigit1_2,(16,16))
+    # plotDigit(exampleDigit1_2, 'This is another 1.')
 
-    exampleDigit7_1 = x[124]   # sample digit 2
-    exampleDigit7_1 = np.reshape(exampleDigit7_1,(16,16))
-    plotDigit(exampleDigit7_1, 'This is a 2.')
+    # exampleDigit7_1 = x[124]   # sample digit 2
+    # exampleDigit7_1 = np.reshape(exampleDigit7_1,(16,16))
+    # plotDigit(exampleDigit7_1, 'This is a 2.')
 
-    exampleDigit7_2 = x[129]   # another sample digit 2
-    exampleDigit7_2 = np.reshape(exampleDigit7_2,(16,16))
-    plotDigit(exampleDigit7_2, 'This is another 2.')
+    # exampleDigit7_2 = x[129]   # another sample digit 2
+    # exampleDigit7_2 = np.reshape(exampleDigit7_2,(16,16))
+    # plotDigit(exampleDigit7_2, 'This is another 2.')
 
-    # true class 1 	
-    exampleDigitBad = x[70]    # digit that predicts wrong for rbf
-    exampleDigitBad = np.reshape(exampleDigitBad,(16,16))
-    plotDigit(exampleDigitBad, 'This digit is an example where the rbf kernel predicts the wrong class (2). \nDiffusion kernel predicts correctly due to graph information!')
+    # # true class 1 	
+    # exampleDigitBad = x[70]    # digit that predicts wrong for rbf
+    # exampleDigitBad = np.reshape(exampleDigitBad,(16,16))
+    # plotDigit(exampleDigitBad, 'This digit is an example where the rbf kernel predicts the wrong class (2). \nDiffusion kernel predicts correctly due to graph information!')
     
-    # true class 2 	
-    exampleDigitBad = x[108]    # digit that predicts wrong for diff
-    exampleDigitBad = np.reshape(exampleDigitBad,(16,16))
-    plotDigit(exampleDigitBad, 'This digit is an example where the diff kernel predicts the wrong class (1). \nrbf kernel, however, predicts correctly!')
+    # # true class 2 	
+    # exampleDigitBad = x[108]    # digit that predicts wrong for diff
+    # exampleDigitBad = np.reshape(exampleDigitBad,(16,16))
+    # plotDigit(exampleDigitBad, 'This digit is an example where the diff kernel predicts the wrong class (1). \nrbf kernel, however, predicts correctly!')
 
 
     # form a 2-nearest neighbour graph 
@@ -85,84 +85,135 @@ if __name__ == "__main__":
     Matrix = diffKernel(A)
     N = Matrix.shape[0]
 
-    for i in range(N):
+    for i in xrange(N):
+        index_train = xrange(N)
+        index_test = [38, 81, 124, 129, 70, i]
+        index_train =  np.setdiff1d(index_train, index_test)
 
-    index_train = range(N)
-    #remove_train = range(8,200,10) 
-    index_test = [38, 81, 124, 129, 70, i]
-    index_train =  np.setdiff1d(index_train, index_test)
-    #index_train =  np.setdiff1d(index_train, remove_train)
+        # split training and test data
+        x_train = x[index_train,:]
+        y_train = y[index_train,:]
+        x_test = x[index_test,:]
+        y_test = y[index_test,:]
         
-    ## RBF kernel
-    # initialize Gaussian process
-    model = gp.GPC()
-    k = cov.RBF()
-    model.setPrior(kernel=k)
+        ## RBF kernel
+        # initialize Gaussian process
+        model = gp.GPC()
+        k = cov.RBF()
+        model.setPrior(kernel=k)
 
-    # split training and test data
-    x_train = x[index_train,:]
-    y_train = y[index_train,:]
-    x_test = x[index_test,:]
-    y_test = y[index_test,:]
-    
-    # gp
-    model.train(x_train, y_train)
-    model.predict(x_test)
-    
-    # evaluation 
-    predictive_class_rbf = np.sign(model.ym)
-    ACC_rbf = valid.ACC(predictive_class_rbf, y_test)	
+        # gp
+        model.train(x_train, y_train)
+        model.predict(x_test)
 
-    
-    ## DIFFUSION Kernel
-    # compute kernel matrix and initalize GP with precomputed kernel                  
-    model = gp.GPC()
-    M1,M2 = form_kernel_matrix(Matrix, index_train, index_test)
-    k = cov.Pre(M1,M2)          
-    model.setPrior(kernel=k)
+        # evaluation 
+        predictive_class_rbf = np.sign(model.ym)[-1,0]
 
 
-    # if you only use precomputed kernel matrix, there is no training data needed,
-    # but you still need to specify x_train (due to general structure of pyGPs)
-    # e.g. you can use the following:
-    n = len(index_train)
-    x_train = np.zeros((n,1))
+        ## DIFFUSION Kernel
+        # compute kernel matrix and initalize GP with precomputed kernel                  
+        model = gp.GPC()
+        M1,M2 = form_kernel_matrix(Matrix, index_train, index_test)
+        k = cov.Pre(M1,M2)          
+        model.setPrior(kernel=k)
 
-    # gp
-    model.train(x_train, y_train)
-    print np.exp(model.covfunc.hyp)
-    model.predict(x_test)
-    
-    # evaluation 
-    predictive_class_diff = np.sign(model.ym)
-    ACC_diff = valid.ACC(predictive_class_diff, y_test)
-    
-    ## SUM of DIFFUSION and RBF Kernel
-    # compute kernel matrix and initalize GP with precomputed kernel                  
-    model = gp.GPC()
-    M1,M2 = form_kernel_matrix(Matrix, index_train, index_test)
-    k = cov.Pre(M1,M2) + cov.RBFunit()
-    model.setPrior(kernel=k)
+        # if you only use precomputed kernel matrix, there is no training data needed,
+        # but you still need to specify x_train (due to general structure of pyGPs)
+        # e.g. you can use the following:
+        n = len(index_train)
+        x_train = np.zeros((n,1))
 
-    # if you use combination of precomputed matrix and other kernel function,
-    # you can pass traning data in the normal way: x_train = x[index_train,:]
-    x_train = x[index_train,:]
-    # gp
-    model.train(x_train, y_train)
-    print np.exp(model.covfunc.hyp)
-    model.predict(x_test)
+        # gp
+        model.train(x_train, y_train)
+        model.predict(x_test)
+
+        # evaluation 
+        predictive_class_diff = np.sign(model.ym)[-1,0]
+
+        print i
+        if predictive_class_diff != y_test[-1,0]:
+            if predictive_class_rbf == y_test[-1,0]:
+                print "Yes!"
+
+
+
+
+
+    # index_train = range(N)
+    # #remove_train = range(8,200,10) 
+    # index_test = [38, 81, 124, 129, 70, i]
+    # index_train =  np.setdiff1d(index_train, index_test)
+    # #index_train =  np.setdiff1d(index_train, remove_train)
+        
+    # ## RBF kernel
+    # # initialize Gaussian process
+    # model = gp.GPC()
+    # k = cov.RBF()
+    # model.setPrior(kernel=k)
+
+    # # split training and test data
+    # x_train = x[index_train,:]
+    # y_train = y[index_train,:]
+    # x_test = x[index_test,:]
+    # y_test = y[index_test,:]
     
-    # evaluation 
-    predictive_class_sum = np.sign(model.ym)
-    ACC_sum = valid.ACC(predictive_class_sum, y_test)
+    # # gp
+    # model.train(x_train, y_train)
+    # model.predict(x_test)
+    
+    # # evaluation 
+    # predictive_class_rbf = np.sign(model.ym)
+    # ACC_rbf = valid.ACC(predictive_class_rbf, y_test)	
+
+    
+    # ## DIFFUSION Kernel
+    # # compute kernel matrix and initalize GP with precomputed kernel                  
+    # model = gp.GPC()
+    # M1,M2 = form_kernel_matrix(Matrix, index_train, index_test)
+    # k = cov.Pre(M1,M2)          
+    # model.setPrior(kernel=k)
+
+
+    # # if you only use precomputed kernel matrix, there is no training data needed,
+    # # but you still need to specify x_train (due to general structure of pyGPs)
+    # # e.g. you can use the following:
+    # n = len(index_train)
+    # x_train = np.zeros((n,1))
+
+    # # gp
+    # model.train(x_train, y_train)
+    # model.predict(x_test)
+    
+    # # evaluation 
+    # predictive_class_diff = np.sign(model.ym)
+    # ACC_diff = valid.ACC(predictive_class_diff, y_test)
+    
+    # ## SUM of DIFFUSION and RBF Kernel
+    # # compute kernel matrix and initalize GP with precomputed kernel                  
+    # model = gp.GPC()
+    # M1,M2 = form_kernel_matrix(Matrix, index_train, index_test)
+    # k = cov.Pre(M1,M2) + cov.RBFunit()
+    # model.setPrior(kernel=k)
+
+    # # if you use combination of precomputed matrix and other kernel function,
+    # # you can pass traning data in the normal way: x_train = x[index_train,:]
+    # x_train = x[index_train,:]
+    # # gp
+    # model.train(x_train, y_train)
+    # print np.exp(model.covfunc.hyp)
+    # model.predict(x_test)
+    
+    # # evaluation 
+    # predictive_class_sum = np.sign(model.ym)
+    # ACC_sum = valid.ACC(predictive_class_sum, y_test)
     
     
     
 
-    print np.hstack((np.array(index_test, ndmin=2).T, y_test, predictive_class_rbf, predictive_class_diff, predictive_class_sum))
-    print 'accuracy (RBF): ' , ACC_rbf
-    print 'accuracy (DIFF): ' , ACC_diff
-    print 'accuracy (SUM): ' , ACC_sum
+    # print np.hstack((np.array(index_test, ndmin=2).T, y_test, predictive_class_rbf, predictive_class_diff, predictive_class_sum))
+    # print 'accuracy (RBF): ' , ACC_rbf
+    # print 'accuracy (DIFF): ' , ACC_diff
+    # print 'accuracy (SUM): ' , ACC_sum
 
 
    

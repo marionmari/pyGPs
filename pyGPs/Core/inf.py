@@ -679,7 +679,7 @@ class EP(Inference):
             # recompute since repeated rank-one updates can destroy numerical precision
             Sigma, mu, nlZ, L = self.epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
         if sweep == max_sweep:
-            raise Exception('maximum number of sweeps reached in function infEP')
+            print 'maximum number of sweeps reached in function infEP'
         self.last_ttau = ttau; self.last_tnu = tnu          # remember for next call
         sW = np.sqrt(ttau); alpha = tnu-sW*solve_chol(L,sW*np.dot(K,tnu))
         post = postStruct()
@@ -801,7 +801,7 @@ class FITC_EP(Inference):
             [d,P,R,nn,gg] = self.epfitcRefresh(d0,Ku,R0,V,ttau,tnu)
             [nlZ,nu_n,tau_n] = self.epfitcZ(d,P,R,nn,gg,ttau,tnu,d0,R0,Ku,y,likfunc,m,inffunc)
         if sweep == max_sweep:
-            raise Exception('maximum number of sweeps reached in function infEP')
+            print 'maximum number of sweeps reached in function infEP'
         
         self.last_ttau = ttau
         self.last_tnu = tnu       # remember for next call
