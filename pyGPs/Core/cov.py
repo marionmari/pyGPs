@@ -165,7 +165,7 @@ class ScaleOfKernel(Kernel):
     hyp = property(gethyp,sethyp)
 
     def proceed(self,x=None,z=None,der=None):
-        sf2 = np.exp(2.* self.hyp[0])                 # scale parameter   
+        sf2 = np.exp(self.hyp[0])                     # scale parameter   
         if der == None:                               # compute cov vector
             A = sf2 * self.cov.proceed(x,z)           # accumulate cov
         elif isinstance(der, int) and der == 0:       # compute derivative w.r.t. sf2
