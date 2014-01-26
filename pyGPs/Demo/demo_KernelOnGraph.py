@@ -77,6 +77,7 @@ if __name__ == "__main__":
     exampleDigitBad = np.reshape(exampleDigitBad,(16,16))
     plotDigit(exampleDigitBad, 'This digit is an example where the diff kernel predicts the wrong class (1). \nrbf kernel, however, predicts correctly!')
 
+
     # form a 2-nearest neighbour graph 
     A = form_knn_graph(x,2)
 

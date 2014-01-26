@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -328,6 +327,15 @@
 
     <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     	<span class="n">n</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        print &quot;Linear mean function is parameterized as:&quot;</span>
+<span class="sd">        print &quot;m(x) = sum_i (a_i * x_i) &quot;</span>
+<span class="sd">        print &quot;&quot;</span>
+<span class="sd">        print &quot;The number of hyperparameters is %d (dimension of inputs):&quot; % D</span>
+<span class="sd">        print &quot;hyp = [a_1, a_2, ... , a_D]&quot;</span>
+<span class="sd">        print &quot;------------------------------------------------------------------&quot;</span>
+<span class="sd">        raise Exception(&quot;Wrong number of hyperparameters.&quot;)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyp</span><span class="p">)</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">c</span><span class="p">,(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">),</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">der</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>                         <span class="c"># evaluate mean</span>
@@ -417,7 +425,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

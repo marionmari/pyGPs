@@ -67,6 +67,8 @@ This table lists the functionality implemented in pyGPs.
 |             |Regularized Laplace|            |                         |               |                  |
 |             +-------------------+            |                         |               |                  |
 |             |p-step Random Walk |            |                         |               |                  |
+|             +-------------------+            |                         |               |                  |
+|             |Inverse Cos        |            |                         |               |                  |
 +-------------+-------------------+------------+-------------------------+---------------+------------------+
 | Other       | Customized        | Customized |                         |               |                  |
 |             +-------------------+------------+                         |               |                  |

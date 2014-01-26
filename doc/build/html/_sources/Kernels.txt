@@ -71,6 +71,9 @@ Adding and muliplying Kernels(Means) is really simple: ::
 	k = cov.Periodic() * cov.RBF()
 	k = 0.5*cov.LIN() + cov.Periodic()
 
+Scalar will also be treated as a hyperparameter. For example, k = s1 * k1 + s2 * k2, 
+then the list of hyperparameters is hyp = [s1, k1.hyp, s2, k2.hyp]. Scalar is passed in logorithm domain such that it will always be positive during optimization.
+
 Except linear kernel, all kernel functions have a scalar (signal variance) as hyperparameter.
 Therefore, the only explict scalar might be added to cov.LIN()
 
