@@ -30,6 +30,7 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 #----------------------------------------------------------------------
 # First example -> state default values
 #----------------------------------------------------------------------
+print 'Basic Example'
 model = gp.GPC()             # binary classification (default inference method: EP)
 # model.useLikelihood("Logistic")
 model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
@@ -41,6 +42,7 @@ model.predict(z)             # predict test cases
 #----------------------------------------------------------------------
 # GP classification example
 #----------------------------------------------------------------------
+print 'More Advanced Example'
 # Start from a new model 
 model = gp.GPC()    
 
