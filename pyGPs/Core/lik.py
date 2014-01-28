@@ -105,14 +105,12 @@
 # to each likelihood function.
 #
 #
-# @author: Shan Huang (last update Sep.2013)
 # This is a object-oriented python implementation of gpml functionality 
 # (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
 # based on the functional-version of python implementation
 # (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)
 # 
-#
-# Copyright (c) by Marion Neumann and Shan Huang, Sep.2013
+# Copyright (c) by Marion Neumann and Shan Huang, 30/09/2013
 
 
 import numpy as np
