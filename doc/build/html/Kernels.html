@@ -268,7 +268,7 @@ hyp = log_ell_list</p>
 
 <dl class="class">
 <dt id="pyGPs.Core.cov.Matern">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Matern</tt><big>(</big><em>log_ell=-1.0</em>, <em>d=3</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Matern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Matern" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Matern</tt><big>(</big><em>log_ell=0.0</em>, <em>d=3</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Matern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Matern" title="Permalink to this definition">¶</a></dt>
 <dd><p>Matern covariance function with nu = d/2 and isotropic distance measure. 
 For d=1 the function is also known as the exponential covariance function 
 or the Ornstein-Uhlenbeck covariance in 1d.
@@ -307,7 +307,7 @@ hyp = [ log_sigma ]</p>
 
 <dl class="class">
 <dt id="pyGPs.Core.cov.Periodic">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Periodic</tt><big>(</big><em>log_ell=-1</em>, <em>log_p=0.0</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Periodic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Periodic" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Periodic</tt><big>(</big><em>log_ell=0.0</em>, <em>log_p=0.0</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Periodic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Periodic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stationary kernel for a smooth periodic function. 
 hyp = [ log_ell, log_p, log_sigma]</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -385,7 +385,7 @@ last row is self covariances (diagonal of test by test)</li>
 
 <dl class="class">
 <dt id="pyGPs.Core.cov.RBF">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RBF</tt><big>(</big><em>log_ell=-1.0</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#RBF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.RBF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RBF</tt><big>(</big><em>log_ell=0.0</em>, <em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#RBF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.RBF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Squared Exponential kernel with isotropic distance measure. hyp = [log_ell, log_sigma]</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -423,7 +423,7 @@ hyp = log_ell_list + [log_sigma]</p>
 
 <dl class="class">
 <dt id="pyGPs.Core.cov.RBFunit">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RBFunit</tt><big>(</big><em>log_ell=-1.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#RBFunit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.RBFunit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RBFunit</tt><big>(</big><em>log_ell=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#RBFunit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.RBFunit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Squared Exponential kernel with isotropic distance measure with unit magnitude.
 i.e signal variance is always 1. hyp = [ log_ell ]</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -438,7 +438,7 @@ i.e signal variance is always 1. hyp = [ log_ell ]</p>
 
 <dl class="class">
 <dt id="pyGPs.Core.cov.RQ">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RQ</tt><big>(</big><em>log_ell=-1</em>, <em>log_sigma=0.0</em>, <em>log_alpha=0.0</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.RQ" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RQ</tt><big>(</big><em>log_ell=0.0</em>, <em>log_sigma=0.0</em>, <em>log_alpha=0.0</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.RQ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rational Quadratic covariance function with isotropic distance measure.
 hyp = [ log_ell, log_sigma, log_alpha ]</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -448,7 +448,7 @@ hyp = [ log_ell, log_sigma, log_alpha ]</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>log_ell</strong> &#8211; characteristic length scale.</li>
 <li><strong>log_sigma</strong> &#8211; signal deviation.</li>
-<li><strong>log_alpha</strong> &#8211; hape parameter for the RQ covariance.</li>
+<li><strong>log_alpha</strong> &#8211; shape parameter for the RQ covariance.</li>
 </ul>
 </td>
 </tr>
@@ -459,11 +459,9 @@ hyp = [ log_ell, log_sigma, log_alpha ]</p>
 <dl class="class">
 <dt id="pyGPs.Core.cov.RQard">
 <em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">RQard</tt><big>(</big><em>D=None</em>, <em>log_ell_list=None</em>, <em>log_sigma=0.0</em>, <em>log_alpha=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#RQard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.RQard" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Rational Quadratic covariance function with Automatic Relevance Detemination</dt>
-<dd>(ARD) distance measure.</dd>
-</dl>
-<p>hyp = log_ell_list + [ log_sigma, log_alpha ]</p>
+<dd><p>Rational Quadratic covariance function with Automatic Relevance Detemination
+(ARD) distance measure.
+hyp = log_ell_list + [ log_sigma, log_alpha ]</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -472,7 +470,7 @@ hyp = [ log_ell, log_sigma, log_alpha ]</p>
 <li><strong>D</strong> &#8211; dimension of pattern. set if you want default ell, which is 0.5 for each dimension.</li>
 <li><strong>log_ell_list</strong> &#8211; characteristic length scale for each dimension.</li>
 <li><strong>log_sigma</strong> &#8211; signal deviation.</li>
-<li><strong>log_alpha</strong> &#8211; hape parameter for the RQ covariance.</li>
+<li><strong>log_alpha</strong> &#8211; shape parameter for the RQ covariance.</li>
 </ul>
 </td>
 </tr>
