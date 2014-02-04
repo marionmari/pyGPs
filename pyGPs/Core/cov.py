@@ -11,13 +11,12 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 30/09/2013
 #================================================================================
 
-# @author: Shan Huang (last update Sep.2013)
 # This is a object-oriented python implementation of gpml functionality 
 # (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
 # based on the functional-version of python implementation
 # (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)
 # 
-# Copyright (c) by Marion Neumann and Shan Huang, 30/092013
+# Copyright (c) by Marion Neumann and Shan Huang, 30/09/2013
 
 
 import numpy as np
@@ -355,7 +354,7 @@ class RBF(Kernel):
     :param log_ell: characteristic length scale. 
     :param log_sigma: signal deviation. 
     '''
-    def __init__(self, log_ell=-1., log_sigma=0.):
+    def __init__(self, log_ell=0., log_sigma=0.):
         self.hyp = [log_ell, log_sigma]
 
     def proceed(self, x=None, z=None, der=None):
@@ -388,7 +387,7 @@ class RBFunit(Kernel):
 
     :param log_ell: characteristic length scale. 
     '''
-    def __init__(self, log_ell=-1.):
+    def __init__(self, log_ell=0.):
         self.hyp = [log_ell]
 
     def proceed(self, x=None, z=None, der=None):
@@ -422,7 +421,7 @@ class RBFard(Kernel):
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0.):
         if log_ell_list == None:
-            self.hyp = [0.5 for i in xrange(D)] + [log_sigma]
+            self.hyp = [0. for i in xrange(D)] + [log_sigma]
         else:
             self.hyp = log_ell_list + [log_sigma]
 
@@ -511,7 +510,7 @@ class LINard(Kernel):
     '''
     def __init__(self, D=None, log_ell_list=None):
         if log_ell_list == None:
-            self.hyp = [0.5 for i in xrange(D)]
+            self.hyp = [0. for i in xrange(D)]
         else:
             self.hyp = log_ell_list
 
@@ -552,7 +551,7 @@ class Matern(Kernel):
     :param log_ell: characteristic length scale. 
     :param log_sigma: signal deviation. 
     '''
-    def __init__(self, log_ell=-1., d=3, log_sigma=0. ):
+    def __init__(self, log_ell=0., d=3, log_sigma=0. ):
         self.hyp = [ log_ell, log_sigma ]
         self.para = [d]
 
@@ -627,7 +626,7 @@ class Periodic(Kernel):
     :param log_ell: characteristic length scale. 
     :param log_sigma: signal deviation. 
     '''
-    def __init__(self, log_ell=-1, log_p=0., log_sigma=0. ): 
+    def __init__(self, log_ell=0., log_p=0., log_sigma=0. ): 
         self.hyp = [ log_ell, log_p, log_sigma]
 
     def proceed(self, x=None, z=None, der=None):
@@ -705,9 +704,9 @@ class RQ(Kernel):
     
     :param log_ell: characteristic length scale. 
     :param log_sigma: signal deviation.
-    :param log_alpha: hape parameter for the RQ covariance.
+    :param log_alpha: shape parameter for the RQ covariance.
     '''
-    def __init__(self, log_ell=-1, log_sigma=0., log_alpha=0.):
+    def __init__(self, log_ell=0., log_sigma=0., log_alpha=0.):
         self.hyp = [ log_ell, log_sigma, log_alpha ]
 
     def proceed(self, x=None, z=None, der=None):
@@ -734,7 +733,7 @@ class RQ(Kernel):
                 K = ( 1.0 + 0.5*D2/alpha )
                 A = sf2 * K**(-alpha) * (0.5*D2/K - alpha*np.log(K) )
             else:
-                raise Exception("Wrong derivative index in covRQiso")
+                raise Exception("Wrong derivative index in covRQ")
         return A
 
 
@@ -742,17 +741,17 @@ class RQ(Kernel):
 class RQard(Kernel):
     '''
     Rational Quadratic covariance function with Automatic Relevance Detemination
-     (ARD) distance measure.
+    (ARD) distance measure.
     hyp = log_ell_list + [ log_sigma, log_alpha ]
 
     :param D: dimension of pattern. set if you want default ell, which is 0.5 for each dimension.
     :param log_ell_list: characteristic length scale for each dimension.
     :param log_sigma: signal deviation. 
-    :param log_alpha: hape parameter for the RQ covariance.
+    :param log_alpha: shape parameter for the RQ covariance.
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0., log_alpha=0.):
         if log_ell_list == None:
-            self.hyp = [0.5 for i in xrange(D)] + [ log_sigma, log_alpha ]
+            self.hyp = [0. for i in xrange(D)] + [ log_sigma, log_alpha ]
         else:
             self.hyp = log_ell_list + [ log_sigma, log_alpha ]
 
