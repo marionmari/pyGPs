@@ -25,7 +25,6 @@ x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
 
-
 #----------------------------------------------------------------------
 # A five-line example
 #----------------------------------------------------------------------
@@ -47,9 +46,9 @@ model = gp.GPR()            # start from a new model
 
 # Specify non-default mean and covariance functions 
 # @SEE doc_kernel_mean for documentation of all kernels/means
-m = mean.Linear( D=x.shape[1] ) + mean.Const()   
-k = cov.RBF()
-model.setPrior(mean=m, kernel=k) 
+m = mean.Zero()   
+k = cov.RBF() 
+model.setPrior(kernel=k) 
 
 
 # Add traning data to model explictly,
