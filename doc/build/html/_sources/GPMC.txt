@@ -1,5 +1,5 @@
 Multi-class Classification
-=========================
+===========================
 
 GPMC is NOT based on multi-class Laplace Approximation.
 It works as a one vs. one classification wrapper. 

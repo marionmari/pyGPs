@@ -6,7 +6,7 @@ This demo is more or less a repetition of the demo of `FITC regression`_.
 .. _FITC regression: GPR_FITC.html 
 
 First example :math:`\rightarrow` default inducing points
--------------------
+-------------------------------------------------------------
 First load the same data as in the GPC demo.
 
 **[Theory]**
@@ -46,7 +46,7 @@ The equispaced default inducing points :math:`u` are shown as black circles in t
 
 
 Second example :math:`\rightarrow` user-defined inducing points
------------------------------
+--------------------------------------------------------------------
 
 Alternatively, a random subset of the training points can be used as inducing points. Note, that there are various different ways of how to set the inducing points.
 So, in the second example let us use a user-defined set of inducing points::

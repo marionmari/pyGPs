@@ -12,7 +12,14 @@ The mean function used was :func:`src.Core.means.meanZero` and the covariance (u
 :func:`src.Core.kernels.covSEiso` and :func:`src.Core.kernels.covNoise`.  The initial values of the hyperparameters were selected randomly from a zero-mean, 
 unit-variance normal distribtion.  The actual values were: :math:`[ -0.75212337  0.58970994 -0.44709133 ]`. The initial likelihood hyperparameter
 was :math:`-2.30258509`.  The regression started with initial negative log marginal likelihood of :math:` 752.458276632`.  Note the initial zero mean and the 
-variance that is uniform over the test set.
+variance that is uniform over the test set. ::
+
+    model = gp.GPR()
+    model.train(x,y)
+    ym, ys2, fm, fs2, lp = model.predict(xs)
+    xa  = np.concatenate((data[:,:4],data[:,5:-1]),axis=1)
+    xa = (xa - np.mean(xa,axis=0))/(np.std(xa,axis=0)+1.e-16)
+    ya, ys2a, fma, fs2a, lpa = model.predict(xa)
 
 .. figure:: _images/demoH1.png
    :align: center

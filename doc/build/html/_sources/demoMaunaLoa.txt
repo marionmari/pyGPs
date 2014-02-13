@@ -96,9 +96,24 @@ The final covariance function is:
 
    k(x,x') = k_1(x,x') + k_2(x,x') + k_3(x,x') + k_4(x,x')
 
-with hyperparameters :math:`\theta = (\theta_1,\ldots,\theta_{11})`
+with hyperparameters :math:`\theta = (\theta_1,\ldots,\theta_{11})` ::
 
-After running the minimization, the extrapolated data looks like:
+    # DEFINE parameterized covariance function
+    k1 = cov.RBF(np.log(67.), np.log(66.))
+    k2 = cov.Periodic(np.log(1.3), np.log(1.0), np.log(2.4)) * cov.RBF(np.log(90.), np.log(2.4))
+    k3 = cov.RQ(np.log(1.2), np.log(0.66), np.log(0.78))
+    k4 = cov.RBF(np.log(1.6/12.), np.log(0.18)) + cov.Noise(np.log(0.19))
+    k  = k1 + k2 + k3 + k4 
+
+
+After running the minimization, ::
+
+    t0 = clock()
+    model.train(x,y)
+    t1 = clock()
+    model.predict(xs) 
+
+The extrapolated data looks like:
 
 .. figure:: _images/demoML2.png
    :height: 600 px

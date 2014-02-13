@@ -444,7 +444,7 @@ class Logistic(Likelihood):
                     lam = np.sqrt(2)*np.array([[0.44, 0.41, 0.40, 0.39, 0.36]])      # approx coeffs lam_i and c_i
                     c = np.array([[1.146480988574439e+02, -1.508871030070582e+03, 2.676085036831241e+03, -1.356294962039222e+03, 7.543285642111850e+01]]).T
                     l = Erf()
-                    a = l.proceed(y=np.dot(y,np.ones((1,5))), mu=np.dot(mu,lam), s2=np.dot(s2,lam**2), inffunc, der=None, nargout=3)
+                    a = l.proceed(y=np.dot(y,np.ones((1,5))), mu=np.dot(mu,lam), s2=np.dot(s2,lam**2), inffunc=inffunc, der=None, nargout=3)
                     lZc = a[0]; dlZc = a[1]; d2lZc = a[2];
 
                     lZ   = self._log_expA_x(lZc,c)
@@ -494,7 +494,7 @@ class Logistic(Likelihood):
         maxA = np.max(A,axis=1)                    # number of columns, max over columns
         maxA = np.array([maxA]).T
         B = np.dot(maxA, np.dot(np.ones((1,N)),x))       # subtract maximum value
-        y = np.log(np.dot(np.exp(A-B),x) + maxA     # exp(A) = exp(A-max(A))*exp(max(A))
+        y = np.log(np.dot(np.exp(A-B),x)) + maxA     # exp(A) = exp(A-max(A))*exp(max(A))
         return y
   
     def _expABz_expAx(self,A,x,B,z):

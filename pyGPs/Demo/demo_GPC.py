@@ -66,6 +66,8 @@ model.setPrior(kernel=k)
 model.setData(x, y)
 model.plotData_2d(x1,x2,t1,t2,p1,p2)
 
+# model.useLikelihood("Logistic")
+
 model.fit()
 print "Negative log marginal liklihood before:", round(model.nlZ,3)
 model.train()
