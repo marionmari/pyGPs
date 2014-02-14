@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pyGPs 1.0.0 documentation" href="index.html" />
     <link rel="up" title="Demos" href="Examples.html" />
-    <link rel="next" title="Semi-supervised Learning with Graph" href="SemiSupervised.html" />
+    <link rel="next" title="Semi-supervised Learning with Graphs" href="SemiSupervised.html" />
     <link rel="prev" title="Regression on Mauna Loa data" href="demoMaunaLoa.html" /> 
   </head>
   <body>
@@ -37,7 +37,10 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="SemiSupervised.html" title="Semi-supervised Learning with Graph"
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="SemiSupervised.html" title="Semi-supervised Learning with Graphs"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="demoMaunaLoa.html" title="Regression on Mauna Loa data"
@@ -62,7 +65,7 @@ unit variance (The categorical variable was dropped).  The data was partitioned 
 <p>The mean function used was <tt class="xref py py-func docutils literal"><span class="pre">src.Core.means.meanZero()</span></tt> and the covariance (using the <tt class="xref py py-func docutils literal"><span class="pre">src.Core.kernels.covSum()</span></tt> function) was a composite of
 <tt class="xref py py-func docutils literal"><span class="pre">src.Core.kernels.covSEiso()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">src.Core.kernels.covNoise()</span></tt>.  The initial values of the hyperparameters were selected randomly from a zero-mean,
 unit-variance normal distribtion.  The actual values were: <img class="math" src="_images/math/4c77368f5f60bf912774082413617fddbada46fb.png" alt="[ -0.75, \; 0.59, \; -0.45 ]"/>. The initial likelihood hyperparameter
-was <img class="math" src="_images/math/805a1831466dffa28e7f6eb7a8827c18e9ecbb7a.png" alt="-2.30"/>.  The regression started with initial negative log marginal likelihood of <img class="math" src="_images/math/37afd34fb7b21fa65b7164d719482095b125a6e8.png" alt="752.46"/>.  Note the initial zero mean and the
+was <img class="math" src="_images/math/805a1831466dffa28e7f6eb7a8827c18e9ecbb7a.png" alt="-2.30"/>.  The regression started with initial negative log marginal likelihood of :math:` 752.46`.  Note the initial zero mean and the
 variance that is uniform over the test set.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPR</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
@@ -102,7 +105,7 @@ hyperparameter was <img class="math" src="_images/math/81af9819e88e47e1411802a5b
                         title="previous chapter">Regression on Mauna Loa data</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="SemiSupervised.html"
-                        title="next chapter">Semi-supervised Learning with Graph</a></p>
+                        title="next chapter">Semi-supervised Learning with Graphs</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/demoHousing.txt"
@@ -132,7 +135,10 @@ hyperparameter was <img class="math" src="_images/math/81af9819e88e47e1411802a5b
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="SemiSupervised.html" title="Semi-supervised Learning with Graph"
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="SemiSupervised.html" title="Semi-supervised Learning with Graphs"
              >next</a> |</li>
         <li class="right" >
           <a href="demoMaunaLoa.html" title="Regression on Mauna Loa data"

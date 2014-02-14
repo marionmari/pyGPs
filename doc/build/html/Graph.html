@@ -35,6 +35,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="Opts.html" title="Optimizers"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">pyGPs 1.0.0 documentation</a> &raquo;</li> 
@@ -48,8 +51,121 @@
             
   <div class="section" id="kernels-for-graph-data">
 <h1>Kernels for Graph Data<a class="headerlink" href="#kernels-for-graph-data" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="kernels-on-graph">
-<h2>Kernels on Graph<a class="headerlink" href="#kernels-on-graph" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyGPs.GraphStuff.kernels_on_graph">
+<span id="kernels-on-graph"></span><h2>Kernels on Graph<a class="headerlink" href="#module-pyGPs.GraphStuff.kernels_on_graph" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyGPs.GraphStuff.kernels_on_graph.VNDKernel">
+<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">VNDKernel</tt><big>(</big><em>A</em>, <em>alpha=0.5</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphStuff/kernels_on_graph.html#VNDKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.VNDKernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Von Neumann Diffusion Kernel on graph (Zhou et al., 2004)
+(also label spreading kernel)</p>
+<p>K = (I - alpha*S)^-1, where S = D^-1/2*A*D^-1/2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>A</strong> &#8211; adjacency matrix</li>
+<li><strong>alpha</strong> &#8211; (hyper)parameter(s)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.GraphStuff.kernels_on_graph.cosKernel">
+<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">cosKernel</tt><big>(</big><em>A</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphStuff/kernels_on_graph.html#cosKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.cosKernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cosine Kernel (also Inverse Cosine Kernel)</p>
+<p>K = cos (L*pi/4), where L is the normalized Laplacian</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>A</strong> &#8211; adjacency matrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.GraphStuff.kernels_on_graph.diffKernel">
+<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">diffKernel</tt><big>(</big><em>A</em>, <em>beta=0.5</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphStuff/kernels_on_graph.html#diffKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.diffKernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Diffusion Process Kernel</p>
+<p>K = exp(beta * H), where H = -L = A-D</p>
+<p>K = Q exp(beta * Lambda) Q.T</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>A</strong> &#8211; adjacency matrix</li>
+<li><strong>beta</strong> &#8211; (hyper)parameter(s)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.GraphStuff.kernels_on_graph.normLap">
+<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">normLap</tt><big>(</big><em>A</em><big>)</big><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.normLap" title="Permalink to this definition">¶</a></dt>
+<dd><p>normalized Laplacian</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.GraphStuff.kernels_on_graph.psInvLapKernel">
+<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">psInvLapKernel</tt><big>(</big><em>A</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphStuff/kernels_on_graph.html#psInvLapKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.psInvLapKernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pseudo inverse of the normalized Laplacian.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>A</strong> &#8211; adjacency matrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.GraphStuff.kernels_on_graph.regLapKernel">
+<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">regLapKernel</tt><big>(</big><em>A</em>, <em>sigma=1</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphStuff/kernels_on_graph.html#regLapKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.regLapKernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Regularized Laplacian Kernel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>A</strong> &#8211; adjacency matrix</li>
+<li><strong>sigma</strong> &#8211; (hyper)parameter(s)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.GraphStuff.kernels_on_graph.rwKernel">
+<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">rwKernel</tt><big>(</big><em>A</em>, <em>p=1</em>, <em>a=2</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphStuff/kernels_on_graph.html#rwKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.rwKernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>p-step Random Walk Kernel with a&gt;1</p>
+<p>K = (aI-L)^p, p&gt;1 and L is the normalized Laplacian</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>A</strong> &#8211; adjacency matrix</li>
+<li><strong>p</strong> &#8211; step parameter</li>
+<li><strong>a</strong> &#8211; (hyper)parameter(s)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="graph-kernels">
 <h2>Graph Kernels<a class="headerlink" href="#graph-kernels" title="Permalink to this headline">¶</a></h2>
@@ -66,7 +182,7 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Kernels for Graph Data</a><ul>
-<li><a class="reference internal" href="#kernels-on-graph">Kernels on Graph</a></li>
+<li><a class="reference internal" href="#module-pyGPs.GraphStuff.kernels_on_graph">Kernels on Graph</a></li>
 <li><a class="reference internal" href="#graph-kernels">Graph Kernels</a></li>
 </ul>
 </li>
@@ -103,6 +219,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="Opts.html" title="Optimizers"
              >previous</a> |</li>
