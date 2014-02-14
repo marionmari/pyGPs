@@ -151,6 +151,7 @@ All plotting methods have keyword axisvals. You can adjust plotting range if you
 
 
 Switch to other Inference and Likelihood functions. ::
+
     model.useInference("EP")
     model.useLikelihood("Laplace")
 

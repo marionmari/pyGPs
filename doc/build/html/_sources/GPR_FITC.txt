@@ -7,7 +7,7 @@ This demo is more or less similar to the demo of `FITC classification`_.
 .. _FITC classification: GPC_FITC.html 
 
 First example :math:`\rightarrow` default inducing points
--------------------
+--------------------------------------------------------------
 First load the same data as in the GPR demo.
 
 **[Theory]**
@@ -50,7 +50,7 @@ To change the number of inducing points per axis just specify a different value 
 
 
 Second example :math:`\rightarrow` user-defined inducing points
------------------------------
+------------------------------------------------------------------
 
 Alternatively, a random subset of the training points can be used as inducing points. Note, that there are plenty of methods to set these inducing points.
 So, in the second example let us use a user-defined set of inducing points: ::
@@ -89,5 +89,6 @@ also try to simply use a random subset of the training points.
 A bit more things you can do
 -----------------------------
 Switch to other Inference and Likelihood functions. ::
+
     model.useInference("EP")
     model.useLikelihood("Laplace")
