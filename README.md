@@ -15,10 +15,11 @@ pyGPs is a library containing code for Gaussian Process (GP) Regression and Clas
 
 pyGPs is an object-oriented implementation of GPs. Its functionalities follow roughly the gpml matlab implementaion by Carl Edward Rasmussen and Hannes Nickisch (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-01-21).
 
-Standard GP regression and (binary) classification as well as FITC (spares GPs) inference is implemented.  
-For a list of implemented covariance, mean, likelihood, and inference functions see list_of_functions.txt.  
-The current implementation is tested, but not optimized yet and is work in progress. We appreciate any feedback.
+Standard GP regression and (binary) classification as well as FITC (spares GPs) inference is implemented.
+For a list of implemented covariance, mean, likelihood, and inference functions see list_of_functions.txt. 
+The current implementation is optimized and tested, however, the work on this library is still in progress. We appreciate any feedback.
 
+For a comprehensive introduction to functionalities and demonstrations can be found in the *doc* folder; just open /doc/build/html/index.html in your browser to get to the html documentation of the whole package. 
 
 Further, it includes implementations of
 - minimize.py implemented in python by Roland Memisevic 2008, following minimize.m which is copyright (C) 1999 - 2006, Carl Edward Rasmussen
