@@ -21,24 +21,24 @@ The current implementation is optimized and tested, however, the work on this li
 
 For a comprehensive introduction to functionalities and demonstrations can be found in the *doc* folder; just open /doc/build/html/index.html in your browser to get to the html documentation of the whole package. 
 
-Further, it includes implementations of
+Further, pyGPs includes implementations of
 - minimize.py implemented in python by Roland Memisevic 2008, following minimize.m which is copyright (C) 1999 - 2006, Carl Edward Rasmussen
 - scg.py (Copyright (c) Ian T Nabney (1996-2001))
 - brentmin.py (Copyright (c) by Hannes Nickisch 2010-01-10.)
 
 
-installing pyGPs
+Installing pyGPs
 ------------------
 Download the archive and extract it to any local directory.
 Add the local directory to your PYTHONPATH:
 	export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/ (parent directory of pyGPs)
 
-requirements
+Requirements
 --------------
 - python 2.6 or 2.7
 - scipy, numpy, and matplotlib: open-source packages for scientific computing using the Python programming language. 
 
 
-acknowledgements
+Acknowledgements
 --------------
 The following persons helped to improve this software: Roman Garnett, Maciej Kurek, Hannes Nickisch, and Zhao Xu.
