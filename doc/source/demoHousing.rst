@@ -10,8 +10,8 @@ unit variance (The categorical variable was dropped).  The data was partitioned 
 
 The mean function used was :func:`src.Core.means.meanZero` and the covariance (using the :func:`src.Core.kernels.covSum` function) was a composite of
 :func:`src.Core.kernels.covSEiso` and :func:`src.Core.kernels.covNoise`.  The initial values of the hyperparameters were selected randomly from a zero-mean, 
-unit-variance normal distribtion.  The actual values were: :math:`[ -0.75212337  0.58970994 -0.44709133 ]`. The initial likelihood hyperparameter
-was :math:`-2.30258509`.  The regression started with initial negative log marginal likelihood of :math:` 752.458276632`.  Note the initial zero mean and the 
+unit-variance normal distribtion.  The actual values were: :math:`[ -0.75, \; 0.59, \; -0.45 ]`. The initial likelihood hyperparameter
+was :math:`-2.30`.  The regression started with initial negative log marginal likelihood of :math:`752.46`.  Note the initial zero mean and the 
 variance that is uniform over the test set.
 
 .. figure:: _images/demoH1.png
@@ -19,8 +19,8 @@ variance that is uniform over the test set.
    :width: 600pt
    :height: 300pt
 
-After hyperparameter optimization, the covariance hyperparameters were :math:`[ 1.16946749  0.44505623 -1.41432547 ]` and the likelihood 
-hyperparameter was :math:`-2.27189795`.  The final negative log marginal likelihood (optimized) was  :math:`214.460773955`.
+After hyperparameter optimization, the covariance hyperparameters were :math:`[ 1.17, \;  0.45, \; -1.41 ]` and the likelihood 
+hyperparameter was :math:`-2.27`.  The final negative log marginal likelihood (optimized) was  :math:`214.46`.
 
 .. figure:: _images/demoH2.png
    :align: center

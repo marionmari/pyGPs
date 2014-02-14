@@ -1,4 +1,4 @@
-Semi-supervised Learning with Graph
+Semi-supervised Learning with Graphs
 =======================================
 
 The code shown in this tutorial can be executed by running *pyGPs/Demo/demo_KernelOnGraph.py*

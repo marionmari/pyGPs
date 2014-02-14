@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -33,9 +34,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li><a href="../../../index.html">pyGPs 1.0.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
@@ -47,9 +45,8 @@
           <div class="body">
             
   <h1>Source code for pyGPs.GraphStuff.kernels_on_graph</h1><div class="highlight"><pre>
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">@author: Marion,Shan</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="c"># @author: Marion</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="kn">as</span> <span class="nn">spla</span>
@@ -135,7 +132,7 @@
 </div>
 <div class="viewcode-block" id="VNDKernel"><a class="viewcode-back" href="../../../Graph.html#pyGPs.GraphStuff.kernels_on_graph.VNDKernel">[docs]</a><span class="k">def</span> <span class="nf">VNDKernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; </span>
-<span class="sd">    VON NEUMANN DIFFUSION KERNEL on graph (Zhou et al., 2004)</span>
+<span class="sd">    Von Neumann Diffusion Kernel on graph (Zhou et al., 2004)</span>
 <span class="sd">    (also label spreading kernel)</span>
 <span class="sd">        </span>
 <span class="sd">    K = (I - alpha*S)^-1, where S = D^-1/2*A*D^-1/2</span>
@@ -211,16 +208,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li><a href="../../../index.html">pyGPs 1.0.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

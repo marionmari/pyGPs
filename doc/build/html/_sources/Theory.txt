@@ -58,7 +58,7 @@ This table lists the functionality implemented in pyGPs.
 |             |                   |            |                         +---------------+                  |
 |             |                   |            |                         | FITC Laplace  |                  |
 +-------------+-------------------+------------+-------------------------+---------------+------------------+
-| Structured  | Diffusion         |            |                         |               |                  |
+| Graphs      | Diffusion         |            |                         |               |                  |
 |             +-------------------+            |                         |               |                  |
 |             | VN Diffusion      |            |                         |               |                  |
 |             +-------------------+            |                         |               |                  |
@@ -68,7 +68,7 @@ This table lists the functionality implemented in pyGPs.
 |             +-------------------+            |                         |               |                  |
 |             |p-step Random Walk |            |                         |               |                  |
 |             +-------------------+            |                         |               |                  |
-|             |Inverse Cos        |            |                         |               |                  |
+|             |Inverse Cosine     |            |                         |               |                  |
 +-------------+-------------------+------------+-------------------------+---------------+------------------+
 | Other       | Customized        | Customized |                         |               |                  |
 |             +-------------------+------------+                         |               |                  |
