@@ -100,13 +100,6 @@ model.plot(x1,x2,t1,t2)
 
 
 
-#----------------------------------------------------------------------
-# A bit more things you can do
-#----------------------------------------------------------------------
-
-# Similar to GPC, GPC_FTIC uses EP FICT approximation by default,
-# you can change to FITC Laplace Approximation by:
-model.useLaplace_FITC()
 
 print '--------------------END OF DEMO-----------------------'
 

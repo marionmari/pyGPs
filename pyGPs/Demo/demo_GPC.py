@@ -45,7 +45,6 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 #----------------------------------------------------------------------
 print 'Basic Example'
 model = gp.GPC()             # binary classification (default inference method: EP)
-# model.useLikelihood("Logistic")
 model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
 model.train(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
 model.predict(z)             # predict test cases
@@ -82,12 +81,6 @@ ymu, ys2, fmu, fs2, lp = model.predict(z, ys=np.ones((n,1)))
 model.plot(x1,x2,t1,t2)
 
 
-#----------------------------------------------------------------------
-# A bit more things you can do
-#----------------------------------------------------------------------
-# GPC uses Expectation Propagation (EP) inference by default,
-# you can explictly change to Laplace Approximation by:
-model.useLaplace()
 
 print '--------------------END OF DEMO-----------------------'
 
