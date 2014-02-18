@@ -13,7 +13,7 @@ License
 -------
     The code is released under the BSD 2-Clause (FreeBSD) License.
 
-    Copyright (c) 2013 Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting
+    Copyright (c) 2014 Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

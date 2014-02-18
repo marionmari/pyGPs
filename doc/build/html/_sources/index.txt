@@ -15,7 +15,7 @@ functionalities as covariance and likelihood functions, as well as inference tec
 
 The software package is released under the BSD 2-Clause (FreeBSD) License.
 :doc:`Copyright <_static/copyright>` (c) by
-Marion Neumann, Shan Huang, Daniel Marthaler, & Kristian Kersting, Nov.2013
+Marion Neumann, Shan Huang, Daniel Marthaler, & Kristian Kersting, Feb.2014
 
 Further, it includes implementations of
 

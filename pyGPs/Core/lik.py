@@ -7,7 +7,7 @@
 #    The software package is released under the BSD 2-Clause (FreeBSD) License.
 #
 #    Copyright (c) by
-#    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 30/09/2013
+#    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
 # likelihood functions are provided to be used by the gp.py function:

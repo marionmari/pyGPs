@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='pyGPs',
-    version='1.0.0',
+    version='1.1',
     author=['Marion Neumann',  'Shan Huang','Daniel Marthaler', 'Kristian Kersting'],
     author_email=['marion.neumann@uni-bonn.de.com', 'shan.huang@iais.fraunhofer.de', 'marthaler@ge.com', 'kristian.kersting@cs.tu-dortmund.de'],
     packages=['pyGPs','pyGPs.Optimization','pyGPs.Valid','pyGPs.Core'],
