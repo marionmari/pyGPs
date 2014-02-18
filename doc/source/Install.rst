@@ -2,11 +2,11 @@ Installation
 ============================
 1. First, download_ the archive from github and extract it to any local directory.
 
-.. _download: https://github.com/marionmari/pyGPs
+.. _download: https://github.com/marionmari/pyGPs/releases/tag/v1.1
 
 2. You can either add the local directory to your PYTHONPATH ::
 
-       export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/../pyGPs
+       export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/../parent_folder_of_pyGPs
 
 
 3. Or install the package using setup.py::

@@ -176,7 +176,7 @@ class GP(object):
         if y != None:
             self.y = y
         # call inference method
-        if isinstance(self.likfunc, lik.Erf) or isinstance(self.likfunc, lik.Logistic):  
+        if isinstance(self.likfunc, lik.Erf): #or is instance(self.likfunc, lik.Logistic):  
             uy = unique(self.y)        
             ind = ( uy != 1 )
             if any( uy[ind] != -1):
@@ -476,7 +476,8 @@ class GPC(GP):
 
     def useLikelihood(self,newLik):
         if newLik == "Logistic":
-            self.likfunc = lik.Logistic()
+            pass
+            #self.likfunc = lik.Logistic()
         else:
             raise Exception('Possible lik values are "Logistic".')
 
@@ -771,7 +772,8 @@ class GPC_FITC(GP_FITC):
 
     def useLikelihood(self,newLik):
         if newLik == "Logistic":
-            self.likfunc = lik.Logistic()
+            pass
+            #self.likfunc = lik.Logistic()
         else:
             raise Exception('Possible lik values are "Logistic".')
 

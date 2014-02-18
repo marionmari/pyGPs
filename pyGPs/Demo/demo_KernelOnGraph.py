@@ -11,7 +11,6 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 30/09/2013
 #================================================================================
 
-import os,sys
 import numpy as np
 from scipy.io import loadmat
 import matplotlib.pyplot as plt
@@ -22,8 +21,6 @@ from pyGPs.Valid import valid
 
 
 def load_binary(D1,D2,reduce=False):
-    # path = os.path.realpath(__file__)
-    # file_path = os.path.abspath(os.path.join(path,'../usps_resampled.mat'))
     data = loadmat('data_for_demo/usps_resampled.mat')
     x = data['train_patterns'].T   # train patterns
     y = data['train_labels'].T     # train_labels

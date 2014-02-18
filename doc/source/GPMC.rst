@@ -49,7 +49,6 @@ you can use specific settings (other than default) for all binary classificiatio
 	k = cov.RBF()
 	model.setPrior(mean=m,kernel=k)
 	model.useInference("Laplace")
-	model.setOptimizer("SCG", num_restarts=20)
 
 For more information on how to use non-default settings see `demo_GPC`_ and `demo_GPR`_.  
 

@@ -94,7 +94,6 @@ m = mean.Zero()
 k = cov.RBF()
 model.setPrior(mean=m,kernel=k)
 model.useInference("Laplace")
-model.setOptimizer("SCG", num_restarts=20)
 
 # Beside trainAndPredict(xs),
 # there is also an option to predict without optimization
