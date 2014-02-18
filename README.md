@@ -41,4 +41,7 @@ Requirements
 
 Acknowledgements
 --------------
-The following persons helped to improve this software: Roman Garnett, Maciej Kurek, Hannes Nickisch, and Zhao Xu.
+The following persons helped to improve this software: Roman Garnett, Maciej Kurek, Hannes Nickisch, Zhao Xu, and Alejandro Molina.
+
+This work is partly supported by the Fraunhofer ATTRACT fellowship STREAM.
+
