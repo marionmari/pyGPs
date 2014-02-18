@@ -22,7 +22,7 @@ The USPS digits data were gathered at the Center of Excellence in Document Analy
 	xs = data['test_patterns'].T   # test patterns
 	ys = data['test_labels'].T     # test labels 
 
-To be used in GPMC, labels should start from 0 to k (k = number of classes). ::
+To be used in GPMC, labels should start from 0 to k (k = number of classes). 
 
 
 GPMC example
@@ -43,13 +43,12 @@ The return value *predictive_vote[i,j]* is the probability of being class *j* fo
 	predictive_class = np.argmax(predictive_vote, axis=1)
 
 Just like we did for GP classification, 
-you can use specific settings (other than default) for each binary classificiation problem for example: ::
+you can use specific settings (other than default) for all binary classificiation problem for example by: ::
 
 	m = mean.Zero()
 	k = cov.RBF()
 	model.setPrior(mean=m,kernel=k)
 	model.useInference("Laplace")
-	model.useLikelihood("Logistic")
 	model.setOptimizer("SCG", num_restarts=20)
 
 For more information on how to use non-default settings see `demo_GPC`_ and `demo_GPR`_.  

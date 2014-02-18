@@ -11,7 +11,7 @@ Then we need to do some data cleaning. Here we deal with label in ionosphere dat
 
 
 Cross Validation
---------------
+----------------------------
 Now, lets focus on the use of cross-validation. ::
 
 	K = 10             # number of folds
@@ -31,7 +31,7 @@ Now, lets focus on the use of cross-validation. ::
 
 
 Evaluation measures
----------------
+-----------------------------
 We implemented some classical evaluation measures. 
     - RMSE - root mean squared error
     - ACC - classification/regression accuracy

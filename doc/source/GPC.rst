@@ -28,7 +28,7 @@ given complete information about the generating mechanism.
 
 
 First example :math:`\rightarrow` state default values
-----------------------------------
+----------------------------------------------------------------
 Again, lets see the simplest use of gp classification at first ::
 
 	model = gp.GPC()             # binary classification (default inference method: EP)
@@ -40,7 +40,7 @@ Note, that inference is done via expectation propagation (EP) approximation by d
 
 
 Second example :math:`\rightarrow` GP classification 
-------------------------------
+------------------------------------------------------------
 So we first state the model to be :math:`GP` classification now::
 
     model = gp.GPC() 
@@ -85,8 +85,7 @@ that for this data set, both input dimensions are important.
 .. _more_on_GPC:
 
 A bit more things you can do
-----------------------
+----------------------------------------------------
 GPC uses expectation propagation (EP)  inference and Error function likelihood by default, you can explictly change to other methods: ::
     
     model.useInference("Laplace")
-    model.useLikelihood("Logistic") 

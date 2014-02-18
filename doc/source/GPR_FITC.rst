@@ -53,7 +53,7 @@ Second example :math:`\rightarrow` user-defined inducing points
 ------------------------------------------------------------------
 
 Alternatively, a random subset of the training points can be used as inducing points. Note, that there are plenty of methods to set these inducing points.
-So, in the second example let us use a user-defined set of inducing points: ::
+So, in the second example let us use a user-defined set of inducing points.
 
 You can pick a set of fixed inducing points by hand: ::
 

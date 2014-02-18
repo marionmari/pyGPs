@@ -89,11 +89,11 @@ print "Accuracy of recognizing hand-writen digits:", round(acc,2)
 # A bit more things you can do
 #----------------------------------------------------------------------
 # Just like we did for GP classification
-# You can use specify the setting for each binary classificiation problem by:
+# You can use specify the setting for all binary classificiation problem by:
 m = mean.Zero()
 k = cov.RBF()
 model.setPrior(mean=m,kernel=k)
-model.useLaplace()
+model.useInference("Laplace")
 model.setOptimizer("SCG", num_restarts=20)
 
 # Beside trainAndPredict(xs),

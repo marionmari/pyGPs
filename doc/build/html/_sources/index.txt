@@ -2,9 +2,9 @@
 
 
 pyGPs - A Package for Gaussian Processes
-=======================================
+===========================================
 About the package
--------
+---------------------
 pyGPs is a library hosting Python implementations of Gaussian processes (GPs) for
 machine learning.
 pyGPs bridges the gap between systems designed primarily for users, who mainly

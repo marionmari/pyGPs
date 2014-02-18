@@ -22,7 +22,6 @@ You can change to other likelihood or inference methods using: ::
 
     2. Classification model (including GPMC)
 
-       * newLik: **"Logistic"**
        * newInf: **"Laplace"**
 
 

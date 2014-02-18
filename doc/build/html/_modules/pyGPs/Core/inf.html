@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -113,14 +112,12 @@
 <span class="c"># implementations, see the respective inf* function below. See also gp.py</span>
 <span class="c">#</span>
 <span class="c">#</span>
-<span class="c"># @author: Shan Huang (last update Sep.2013)</span>
 <span class="c"># This is a object-oriented python implementation of gpml functionality </span>
 <span class="c"># (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).</span>
 <span class="c"># based on the functional-version of python implementation</span>
 <span class="c"># (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)</span>
 <span class="c"># </span>
-<span class="c">#</span>
-<span class="c"># Copyright (c) by Marion Neumann and Shan Huang, Sep.2013</span>
+<span class="c"># Copyright (c) by Marion Neumann and Shan Huang, 30/09/2013</span>
 
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -729,7 +726,7 @@
             <span class="c"># recompute since repeated rank-one updates can destroy numerical precision</span>
             <span class="n">Sigma</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">nlZ</span><span class="p">,</span> <span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epComputeParams</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ttau</span><span class="p">,</span> <span class="n">tnu</span><span class="p">,</span> <span class="n">likfunc</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">inffunc</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sweep</span> <span class="o">==</span> <span class="n">max_sweep</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;maximum number of sweeps reached in function infEP&#39;</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s">&#39;maximum number of sweeps reached in function infEP&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_ttau</span> <span class="o">=</span> <span class="n">ttau</span><span class="p">;</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_tnu</span> <span class="o">=</span> <span class="n">tnu</span>          <span class="c"># remember for next call</span>
         <span class="n">sW</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ttau</span><span class="p">);</span> <span class="n">alpha</span> <span class="o">=</span> <span class="n">tnu</span><span class="o">-</span><span class="n">sW</span><span class="o">*</span><span class="n">solve_chol</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">sW</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">K</span><span class="p">,</span><span class="n">tnu</span><span class="p">))</span>
         <span class="n">post</span> <span class="o">=</span> <span class="n">postStruct</span><span class="p">()</span>
@@ -851,7 +848,7 @@
             <span class="p">[</span><span class="n">d</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">nn</span><span class="p">,</span><span class="n">gg</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epfitcRefresh</span><span class="p">(</span><span class="n">d0</span><span class="p">,</span><span class="n">Ku</span><span class="p">,</span><span class="n">R0</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">ttau</span><span class="p">,</span><span class="n">tnu</span><span class="p">)</span>
             <span class="p">[</span><span class="n">nlZ</span><span class="p">,</span><span class="n">nu_n</span><span class="p">,</span><span class="n">tau_n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epfitcZ</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">nn</span><span class="p">,</span><span class="n">gg</span><span class="p">,</span><span class="n">ttau</span><span class="p">,</span><span class="n">tnu</span><span class="p">,</span><span class="n">d0</span><span class="p">,</span><span class="n">R0</span><span class="p">,</span><span class="n">Ku</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">likfunc</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">inffunc</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sweep</span> <span class="o">==</span> <span class="n">max_sweep</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;maximum number of sweeps reached in function infEP&#39;</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s">&#39;maximum number of sweeps reached in function infEP&#39;</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">last_ttau</span> <span class="o">=</span> <span class="n">ttau</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_tnu</span> <span class="o">=</span> <span class="n">tnu</span>       <span class="c"># remember for next call</span>
@@ -955,7 +952,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
     </div>
   </body>
 </html>

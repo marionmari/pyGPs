@@ -77,7 +77,7 @@ then the list of hyperparameters is hyp = [s1, k1.hyp, s2, k2.hyp]. Scalar is pa
 Except linear kernel, all kernel functions have a scalar (signal variance) as hyperparameter.
 Therefore, the only explict scalar might be added to cov.LIN()
 
-Beside + / *, there is also a power operator for mean functions: ::
+Beside + / * , there is also a power operator for mean functions: ::
 
     m = ( mean.One()+mean.Linear(alpha_list=[0.2]) )**2
 
