@@ -40,7 +40,10 @@ Authors:
     - Daniel Marthaler [marthaler at ge dot com]
     - Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 
-The following persons helped to improve this software: Roman Garnett, Maciej Kurek, Hannes Nickisch, and Zhao Xu.
+The following persons helped to improve this software: Roman Garnett, Maciej Kurek, Hannes Nickisch, Zhao Xu, and Alejandro Molina.
+
+This work is partly supported by the Fraunhofer ATTRACT fellowship STREAM.
+
 
 Getting started
 ------------------------------
