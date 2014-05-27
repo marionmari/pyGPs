@@ -805,7 +805,7 @@ class Pre(Kernel):
         self.hyp = []
     def proceed(self, x=None, z=None, der=None):
         if z == 'diag':             # diagonal covariance between test_test
-            A = self.M1[-1,:]            # self covariances for the test cases (last row) 
+            A = self.M1[-1,:]       # self covariances for the test cases (last row) 
             A = np.reshape(A, (A.shape[0],1))
         elif z == None:             # covariance between train_train
             A = self.M2
