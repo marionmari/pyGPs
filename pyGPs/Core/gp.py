@@ -77,6 +77,10 @@ class GP(object):
 
 
     def setData(self, x, y):
+        if x.ndim == 1:
+            x = np.atleast_2d(x) 
+        if y.ndim == 1:
+            y = np.atleast_2d(y) 
         self.x = x
         self.y = y
         if self.usingDefaultMean:
@@ -111,6 +115,8 @@ class GP(object):
             self.usingDefaultMean = False
         if kernel != None:
             self.covfunc = kernel
+            if type(kernel) is cov.Pre:
+                self.usingDefaultMean = False
     
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
         '''This method is used to sepecify optimization configuration. By default, gp uses a single run "minimize".
@@ -141,15 +147,25 @@ class GP(object):
         pass
 
 
-    def train(self, x=None, y=None):
+    def optimize(self, x=None, y=None):
         '''
         train optimal hyperparameters 
         adjust to all mean/cov/lik functions
         '''
         if x != None:
-            self.x = x  
+            if x.ndim == 1:
+                x = np.atleast_2d(x)  
+            self.x = x 
+
         if y != None:
+            if y.ndim == 1:
+                y = np.atleast_2d(y) 
             self.y = y
+
+        print self.y.shape
+        if self.usingDefaultMean and self.meanfunc == None:
+            c = np.mean(y)
+            self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
 
         # optimize 
         optimalHyp, optimalNlZ = self.optimizer.findMin(self.x, self.y)
@@ -172,9 +188,16 @@ class GP(object):
                   post consists of post.alpha, post.L, post.sW
         '''
         if x != None:
-            self.x = x  
+            if x.ndim == 1:
+                x = np.atleast_2d(x)  
+            self.x = x 
         if y != None:
+            if y.ndim == 1:
+                y = np.atleast_2d(y) 
             self.y = y
+        if self.usingDefaultMean and self.meanfunc == None:
+            c = np.mean(y)
+            self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
         # call inference method
         if isinstance(self.likfunc, lik.Erf): #or is instance(self.likfunc, lik.Logistic):  
             uy = unique(self.y)        
@@ -214,8 +237,13 @@ class GP(object):
         inffunc = self.inffunc
         x = self.x
         y = self.y
+        if xs.ndim == 1:
+            xs = np.atleast_2d(x)  
         self.xs = xs
-        self.ys = ys
+        if ys != None:
+            if ys.ndim == 1:
+                ys = np.atleast_2d(ys) 
+            self.ys = ys
         
         if self.posterior == None:   
             self.fit()        
@@ -292,7 +320,14 @@ class GP(object):
         inffunc = self.inffunc
         x = self.x
         y = self.y
-        
+        if xs.ndim == 1:
+            xs = np.atleast_2d(x)  
+        self.xs = xs
+        if ys != None:
+            if ys.ndim == 1:
+                ys = np.atleast_2d(ys) 
+            self.ys = ys
+
         self.posterior = deepcopy(post)
         alpha = post.alpha
         L     = post.L
@@ -404,7 +439,7 @@ class GPR(GP):
         plt.ylabel('target y')
         plt.show()
 
-    ### !!!TODO: debug starting from GPR and lik Laplace
+    ### TODO: debug starting from GPR and lik Laplace
     def useInference(self, newInf):
         if newInf == "Laplace":
             self.inffunc = inf.Laplace()
@@ -502,6 +537,8 @@ class GPMC(object):
             self.meanfunc = mean
         if kernel != None:
             self.covfunc = kernel
+            if type(kernel) is cov.Pre:
+                self.usingDefaultMean = False
         self.newPrior = True
 
     def useInference(self, newInf):
@@ -512,6 +549,10 @@ class GPMC(object):
     
     def setData(self,x,y):
         '''for multi-class, data is x_all and y_all'''
+        if x.ndim == 1:
+            x = np.atleast_2d(x) 
+        if y.ndim == 1:
+            y = np.atleast_2d(y) 
         self.x_all = x
         self.y_all = y
 
@@ -521,6 +562,8 @@ class GPMC(object):
         row i    -> each test point i
         column j -> probability for being eahc class j
         '''
+        if xs.ndim == 1:
+            xs = np.atleast_2d(xs) 
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
         for i in xrange(self.n_class):         # classifier for class i...
             for j in xrange(i+1,self.n_class): # ...and class j
@@ -545,12 +588,14 @@ class GPMC(object):
         return predictive_vote
 
 
-    def trainAndPredict(self, xs):
+    def optimizeAndPredict(self, xs):
         '''
         predictive_vote is a matrix where
         row i    -> each test point i
         column j -> probability for being eahc class j
         '''
+        if xs.ndim == 1:
+            xs = np.atleast_2d(xs) 
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
         for i in xrange(self.n_class):         # classifier for class i...
             for j in xrange(i+1,self.n_class): # ...and class j
@@ -562,7 +607,7 @@ class GPMC(object):
                     model.useInference(self.newInf)
                 if self.newLik:
                     model.useLikelihood(self.newLik)
-                model.train(x,y)               # training
+                model.optimize(x,y)               # training
                 ym = model.predict(xs)[0]
                 ym += 1     # now scale into 0 to 2,  ym=0 is class j, ym=2 is class i 
                 vote_i = np.zeros((xs.shape[0],self.n_class))
@@ -608,6 +653,10 @@ class GP_FITC(GP):
 
         value_per_axis is number of value in each dimension...
         ...when using a default inducing point grid'''
+        if x.ndim == 1:
+            x = np.atleast_2d(x) 
+        if y.ndim == 1:
+            y = np.atleast_2d(y) 
         self.x = x
         self.y = y
         if self.usingDefaultMean:
@@ -640,8 +689,11 @@ class GP_FITC(GP):
                     self.covfunc = kernel.fitc(self.u)
                 else:
                     raise error("To use default inducing points, please call setData() first!")
+            if type(kernel) is cov.Pre:
+                self.usingDefaultMean = False
         if mean != None:
             self.meanfunc = mean
+            self.usingDefaultMean = False
 
 
 

@@ -3,14 +3,12 @@
 
 import numpy as np
 from scipy.io import loadmat
-from pyGPs.Core import *
-from pyGPs.Valid import valid
-from pyGPs.GraphStuff.graph_util import *
-from pyGPs.GraphStuff.graph_kernels import *
+import pyGPs
+from pyGPs.Validation import valid
+from pyGPs.GraphExtension import graphUtil,graphKernels
 
-allSets = ['MUTAG.mat', 'DD.mat', 'ENZYMES.mat', 'NCI1.mat', 'NCI109.mat']
 location = 'data_for_demo/graphData/'
-data = loadmat(location+allSets[2])
+data = loadmat(location+'MUTAG.mat')
 
 # n = num of nodes
 # N = num of graphs
@@ -30,8 +28,8 @@ for i in xrange(N):
 #===========================================================================
 # COMPUTE PROPAGATION KERNELS
 #===========================================================================
-max_height = np.arange(1,11)
-K = propagationKernel(A, node_label, gr_id, 10, 'label_propagation', SUM=True, VIS=False, showEachStep=True) 
+num_Iteration = 10
+K = graphKernels.propagationKernel(A, node_label, gr_id, num_Iteration, 'label_propagation', SUM=True, VIS=False, showEachStep=True) 
 
 
 #----------------------------------------------------------------------
@@ -39,27 +37,28 @@ K = propagationKernel(A, node_label, gr_id, 10, 'label_propagation', SUM=True, V
 #----------------------------------------------------------------------
 ACC = []           # accuracy 
 
-for T in max_height:
-    print 'max height(T) is', T
-    Matrix = K[:,:,T]
+for t in xrange(num_Iteration+1):
+    print 'number of kernel iteration(T) is', t
+    Matrix = K[:,:,t]
             
     # start cross-validation for this T
     for index_train, index_test in valid.k_fold_index(N, K=10):
         
         y_train = graph_label[index_train,:]
         y_test  = graph_label[index_test,:]
+
         n1 = len(index_train)
         n2 = len(index_test)        
         
-        model = gp.GPC()
-        M1,M2 = form_kernel_matrix(Matrix, index_train, index_test)
-        k = cov.Pre(M1,M2)
+        model = pyGPs.GPC()
+        M1,M2 = graphUtil.formKernelMatrix(Matrix, index_train, index_test)
+        k = pyGPs.cov.Pre(M1,M2)
         model.setPrior(kernel=k)
         
         # gp
         x_train = np.zeros((n1,1)) 
         x_test = np.zeros((n2,1))       
-        model.train(np.zeros((n1,1)), y_train)
+        model.optimize(x_train, y_train)
         model.predict(x_test)
         
         # evaluation 
@@ -67,5 +66,5 @@ for T in max_height:
         acc = valid.ACC(predictive_class, y_test)   
         ACC.append(acc) 
     
-    print '\nAccuracy: ', np.round(np.mean(ACC),2), '('+str(np.round(np.std(ACC),2))+')'
+    print 'Accuracy: ', np.round(np.mean(ACC),2), '('+str(np.round(np.std(ACC),2))+')'
         

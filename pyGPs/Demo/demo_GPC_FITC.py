@@ -11,7 +11,7 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-from pyGPs.Core import *
+import pyGPs
 import numpy as np
 
 # To have a gerneral idea, 
@@ -49,7 +49,7 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 print "Example 1: default inducing points"
 
 # Start from a new model 
-model = gp.GPC_FITC()            
+model = pyGPs.GPC_FITC()            
 
 # Notice if you want to use default inducing points:
 # You MUST call setData(x,y) FIRST!
@@ -60,7 +60,7 @@ model.setData(x, y)
 # To set value per dimension use:
 # model.setData(x, y, value_per_axis=10)
 
-model.train()
+model.optimize()
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
 # Prediction
@@ -74,7 +74,7 @@ model.plot(x1,x2,t1,t2)
 print '------------------------------------------------------'
 print "Example 2: user-defined inducing points"
 
-model = gp.GPC_FITC() 
+model = pyGPs.GPC_FITC() 
 
 # You can define inducing points yourself.
 # u = np.array([])
@@ -82,15 +82,15 @@ u1,u2 = np.meshgrid(np.linspace(-2,2,5),np.linspace(-2,2,5))
 u = np.array(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),)))) 
 
 # and specify inducing point when seting prior
-m = mean.Zero()
-k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
+m = pyGPs.mean.Zero()
+k = pyGPs.cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
 model.setPrior(mean=m, kernel=k, inducing_points=u) 
 
 # The rest is analogous to what we have done before.
 model.setData(x, y)
 model.fit()
 print "Negative log marginal liklihood before optimization:", round(model.nlZ,3)
-model.train()
+model.optimize()
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
 # predict

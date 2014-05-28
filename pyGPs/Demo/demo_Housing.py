@@ -11,7 +11,7 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-from pyGPs.Core import *
+import pyGPs
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -35,14 +35,14 @@ if __name__ == '__main__':
     ys = (ys-np.mean(ys))/(np.std(ys)+1.e-16)
     N,D = x.shape
     
-    model = gp.GPR()
+    model = pyGPs.GPR()
     model.fit(x, y)
     print 'Initial negative log marginal likelihood = ', round(model.nlZ,3)
     
     # train and predict
     from time import clock
     t0 = clock()
-    model.train(x,y)
+    model.optimize(x,y)
     t1 = clock()
     ym, ys2, fm, fs2, lp = model.predict(xs)
     xa  = np.concatenate((data[:,:4],data[:,5:-1]),axis=1)

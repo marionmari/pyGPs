@@ -11,8 +11,8 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-from pyGPs.Core import *
-from pyGPs.Valid import valid
+import pyGPs
+from pyGPs.Validation import valid
 import numpy as np
 
 # To have a gerneral idea, 
@@ -67,9 +67,9 @@ cv_run = 0
 for x_train, x_test, y_train, y_test in valid.k_fold_validation(x, y, K):
     print 'Run:', cv_run
     # This is a binary classification problem
-    model = gp.GPC()
+    model = pyGPs.GPC()
     # Since no prior knowldege, leave everything default 
-    model.train(x_train, y_train)
+    model.optimize(x_train, y_train)
     # Predit 
     ymu, ys2, fmu, fs2, lp = model.predict(x_test, ys=y_test)
 

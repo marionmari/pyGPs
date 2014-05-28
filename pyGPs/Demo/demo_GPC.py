@@ -11,7 +11,7 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-from pyGPs.Core import *
+import pyGPs
 import numpy as np
 
 # To have a gerneral idea, 
@@ -44,9 +44,9 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 # First example -> state default values
 #----------------------------------------------------------------------
 print 'Basic Example'
-model = gp.GPC()             # binary classification (default inference method: EP)
+model = pyGPs.GPC()          # binary classification (default inference method: EP)
 model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
-model.train(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
+model.optimize(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
 model.predict(z)             # predict test cases
 
 
@@ -56,18 +56,17 @@ model.predict(z)             # predict test cases
 #----------------------------------------------------------------------
 print 'More Advanced Example'
 # Start from a new model 
-model = gp.GPC()    
+model = pyGPs.GPC()    
 
 # Analogously to GPR
-k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
+k = pyGPs.cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
 model.setPrior(kernel=k) 
 
-model.setData(x, y)
 model.plotData_2d(x1,x2,t1,t2,p1,p2)
 
-model.fit()
+model.fit(x, y)
 print "Negative log marginal liklihood before:", round(model.nlZ,3)
-model.train()
+model.optimize(x, y)
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
 # Prediction

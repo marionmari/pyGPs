@@ -591,7 +591,7 @@ class Matern(Kernel):
         try:
             assert(d in [1,3,5])         # check for valid values of d
         except AssertionError:
-            print "Warning: You specified d to be neither 1,3 nor 5. We set d=3. "
+            print "Warning: You specified d to be neither 1,3 nor 5. We set to d=3. "
             d = 3
         if z == 'diag':
             A = np.zeros((x.shape[0],1))

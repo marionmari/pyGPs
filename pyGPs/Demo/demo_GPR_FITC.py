@@ -11,7 +11,7 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-from pyGPs.Core import *
+import pyGPs
 import numpy as np
 
 # To have a gerneral idea, 
@@ -38,7 +38,7 @@ z = demoData['xstar']        # test data
 print "Example 1: default inducing points"
 
 # Start from a new model 
-model = gp.GPR_FITC()            
+model = pyGPs.GPR_FITC()            
 
 # Notice if you want to use default inducing points:
 # You MUST call setData(x,y) FIRST!
@@ -49,7 +49,7 @@ model.setData(x, y)
 # To set value per dimension use:
 # model.setData(x, y, value_per_axis=10)
 
-model.train()
+model.optimize()
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
 # Prediction             
@@ -63,7 +63,7 @@ print '------------------------------------------------------'
 print "Example 2: user-defined inducing points"
 
 # Start from a new model 
-model = gp.GPR_FITC()            
+model = pyGPs.GPR_FITC()            
 
 # You can define inducing points yourself. 
 # You can pick some points by hand
@@ -76,15 +76,15 @@ u = np.reshape(u,(num_u,1))
 
 
 # and specify inducing point when seting prior
-m = mean.Linear( D=x.shape[1] ) + mean.Const()  
-k = cov.RBF()
+m = pyGPs.mean.Linear( D=x.shape[1] ) + mean.Const()  
+k = pyGPs.cov.RBF()
 model.setPrior(mean=m, kernel=k, inducing_points=u) 
 
 # The rest is analogous to what we have done before
 model.setData(x, y)
 model.fit()
 print "Negative log marginal liklihood before optimization:", round(model.nlZ,3)
-model.train()
+model.optimize()
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
 # Prediction

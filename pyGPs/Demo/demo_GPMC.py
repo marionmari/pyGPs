@@ -11,8 +11,8 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-from pyGPs.Core import *
-from pyGPs.Valid import valid
+import pyGPs
+from pyGPs.Validation import valid
 import numpy as np
 from scipy.io import loadmat
 
@@ -67,15 +67,15 @@ ys = ys[:20,:]
 #----------------------------------------------------------------------
 
 # State model with 10 classes
-model = gp.GPMC(10)
+model = pyGPs.GPMC(10)
 
 # Set data to model
 model.setData(x,y)
 
-# Train default GPC model (see demo_GPC) for each binary classification problem, 
+# optimize default GPC model (see demo_GPC) for each binary classification problem, 
 # and decide label for test patterns of hand-writen digits
 # prdictive_vote[i,j] is the probability of being class j for test pattern i
-predictive_vote = model.trainAndPredict(xs)
+predictive_vote = model.optimizeAndPredict(xs)
 
 predictive_class = np.argmax(predictive_vote, axis=1)
 predictive_class = np.reshape(predictive_class, (predictive_class.shape[0],1))
@@ -90,12 +90,12 @@ print "Accuracy of recognizing hand-writen digits:", round(acc,2)
 #----------------------------------------------------------------------
 # Just like we did for GP classification
 # You can use specify the setting for all binary classificiation problem by:
-m = mean.Zero()
-k = cov.RBF()
+m = pyGPs.mean.Zero()
+k = pyGPs.cov.RBF()
 model.setPrior(mean=m,kernel=k)
 model.useInference("Laplace")
 
-# Beside trainAndPredict(xs),
+# Beside optimizeAndPredict(xs),
 # there is also an option to predict without optimization
 # model.fitAndPredict(xs)
 

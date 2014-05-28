@@ -11,7 +11,7 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-from pyGPs.Core import *
+import pyGPs
 import numpy as np
 
 # Example demo for pyGP prediction of carbon dioxide concentration using 
@@ -57,14 +57,14 @@ if __name__ == '__main__':
     xs = xs.reshape(len(xs),1)
 
     # DEFINE parameterized covariance function
-    k1 = cov.RBF(np.log(67.), np.log(66.))
-    k2 = cov.Periodic(np.log(1.3), np.log(1.0), np.log(2.4)) * cov.RBF(np.log(90.), np.log(2.4))
-    k3 = cov.RQ(np.log(1.2), np.log(0.66), np.log(0.78))
-    k4 = cov.RBF(np.log(1.6/12.), np.log(0.18)) + cov.Noise(np.log(0.19))
+    k1 = pyGPs.cov.RBF(np.log(67.), np.log(66.))
+    k2 = pyGPs.cov.Periodic(np.log(1.3), np.log(1.0), np.log(2.4)) * cov.RBF(np.log(90.), np.log(2.4))
+    k3 = pyGPs.cov.RQ(np.log(1.2), np.log(0.66), np.log(0.78))
+    k4 = pyGPs.cov.RBF(np.log(1.6/12.), np.log(0.18)) + cov.Noise(np.log(0.19))
     k  = k1 + k2 + k3 + k4 
     
     # STANDARD GP (prediction)  
-    model = gp.GPR()
+    model = pyGPs.GPR()
     model.setData(x,y)
     model.plotData_1d()
     model.setPrior(kernel=k)
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     # STANDARD GP (training)
     from time import clock
     t0 = clock()
-    model.train(x,y)
+    model.optimize(x,y)
     t1 = clock()
     model.predict(xs)
 

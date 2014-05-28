@@ -11,7 +11,7 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-from pyGPs.Core import *
+import pyGPs
 import numpy as np
 
 # This demo will not only introduce GP regression model,
@@ -19,11 +19,11 @@ import numpy as np
 
 # You may want to read it before reading other models.
 # current possible models are:
-#     gp.GPR          -> Regression 
-#     gp.GPC          -> Classification
-#     gp.GPR_FITC     -> Sparse GP Regression 
-#     gp.GPC_FITC     -> Sparse GP Classification
-#     gp.GPMC         -> Muli-class Classification
+#     pyGPs.GPR          -> Regression 
+#     pyGPs.GPC          -> Classification
+#     pyGPs.GPR_FITC     -> Sparse GP Regression 
+#     pyGPs.GPC_FITC     -> Sparse GP Classification
+#     pyGPs.GPMC         -> Muli-class Classification
 
 
 
@@ -37,14 +37,15 @@ demoData = np.load('data_for_demo/regression_data.npz')
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
-
+print y.shape
 #----------------------------------------------------------------------
 # A five-line example
 #----------------------------------------------------------------------
 print 'Basic Example'
-model = gp.GPR()             # model 
-model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
-model.train(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
+model = pyGPs.GPR()          # model 
+y = np.reshape(y,(y.shape[0],))
+print y.shape
+model.optimize(x, y)         # optimize hyperparamters (default optimizer: single run minimize)
 model.predict(z)             # predict test cases
 model.plot()                 # and plot result
 
@@ -55,22 +56,13 @@ model.plot()                 # and plot result
 # Now lets do another example to get more insight to the toolbox
 #----------------------------------------------------------------------
 print 'More Advanced Example'
-model = gp.GPR()            # start from a new model 
+model = pyGPs.GPR()           # start from a new model 
 
 # Specify non-default mean and covariance functions 
 # @SEE doc_kernel_mean for documentation of all kernels/means
-m = mean.Zero()   
-k = cov.RBF() 
+m = pyGPs.mean.Zero()   
+k = pyGPs.cov.RBF() 
 model.setPrior(kernel=k) 
-
-
-# Add traning data to model explictly,
-# saves passing them each time when using fit() or train().
-# More importantly, 
-# the deafult mean will be adapted to the average value of the trainging labels.. 
-# ..if you do not specify mean function by your own).
-model.setData(x, y)
-model.plotData_1d()
 
 
 # Specify optimization method (single run "Minimize" by default)
@@ -79,9 +71,11 @@ model.setOptimizer("Minimize", num_restarts=30)
 
 
 # Instead of fit(), which only fits data using given hyperparameters,
-# train() will optimize hyperparamters based on marginal likelihood
-model.train()
-
+# optimize() will optimize hyperparamters based on marginal likelihood
+# the deafult mean will be adapted to the average value of the training labels.. 
+# ..if you do not specify mean function by your own.
+model.optimize(x, y)
+model.plotData_1d()
 
 # There are several propertys you can get from the model
 # For example:
