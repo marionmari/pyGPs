@@ -43,12 +43,9 @@ print y.shape
 #----------------------------------------------------------------------
 print 'Basic Example'
 model = pyGPs.GPR()          # model 
-y = np.reshape(y,(y.shape[0],))
-print y.shape
 model.optimize(x, y)         # optimize hyperparamters (default optimizer: single run minimize)
 model.predict(z)             # predict test cases
 model.plot()                 # and plot result
-
 
 
 

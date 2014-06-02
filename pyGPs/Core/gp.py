@@ -78,9 +78,9 @@ class GP(object):
 
     def setData(self, x, y):
         if x.ndim == 1:
-            x = np.atleast_2d(x) 
+            x = np.reshape(x, (x.shape[0],1))
         if y.ndim == 1:
-            y = np.atleast_2d(y) 
+            y = np.reshape(y, (y.shape[0],1))  
         self.x = x
         self.y = y
         if self.usingDefaultMean:
@@ -154,15 +154,14 @@ class GP(object):
         '''
         if x != None:
             if x.ndim == 1:
-                x = np.atleast_2d(x)  
+                x = np.reshape(x, (x.shape[0],1))   
             self.x = x 
 
         if y != None:
             if y.ndim == 1:
-                y = np.atleast_2d(y) 
+                y = np.reshape(y, (y.shape[0],1))  
             self.y = y
 
-        print self.y.shape
         if self.usingDefaultMean and self.meanfunc == None:
             c = np.mean(y)
             self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
@@ -189,11 +188,11 @@ class GP(object):
         '''
         if x != None:
             if x.ndim == 1:
-                x = np.atleast_2d(x)  
+                x = np.reshape(x, (x.shape[0],1))   
             self.x = x 
         if y != None:
             if y.ndim == 1:
-                y = np.atleast_2d(y) 
+                y = np.reshape(y, (y.shape[0],1))  
             self.y = y
         if self.usingDefaultMean and self.meanfunc == None:
             c = np.mean(y)
@@ -238,11 +237,11 @@ class GP(object):
         x = self.x
         y = self.y
         if xs.ndim == 1:
-            xs = np.atleast_2d(x)  
+            xs = np.reshape(xs, (xs.shape[0],1))   
         self.xs = xs
         if ys != None:
             if ys.ndim == 1:
-                ys = np.atleast_2d(ys) 
+                ys = np.reshape(ys, (ys.shape[0],1)) 
             self.ys = ys
         
         if self.posterior == None:   
@@ -321,11 +320,11 @@ class GP(object):
         x = self.x
         y = self.y
         if xs.ndim == 1:
-            xs = np.atleast_2d(x)  
+            xs = np.reshape(xs, (xs.shape[0],1))   
         self.xs = xs
         if ys != None:
             if ys.ndim == 1:
-                ys = np.atleast_2d(ys) 
+                ys = np.reshape(ys, (ys.shape[0],1)) 
             self.ys = ys
 
         self.posterior = deepcopy(post)
@@ -550,9 +549,9 @@ class GPMC(object):
     def setData(self,x,y):
         '''for multi-class, data is x_all and y_all'''
         if x.ndim == 1:
-            x = np.atleast_2d(x) 
+            x = np.reshape(x, (x.shape[0],1))  
         if y.ndim == 1:
-            y = np.atleast_2d(y) 
+            y = np.reshape(y, (y.shape[0],1))  
         self.x_all = x
         self.y_all = y
 
@@ -563,7 +562,7 @@ class GPMC(object):
         column j -> probability for being eahc class j
         '''
         if xs.ndim == 1:
-            xs = np.atleast_2d(xs) 
+            xs = np.reshape(xs, (xs.shape[0],1)) 
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
         for i in xrange(self.n_class):         # classifier for class i...
             for j in xrange(i+1,self.n_class): # ...and class j
@@ -595,7 +594,7 @@ class GPMC(object):
         column j -> probability for being eahc class j
         '''
         if xs.ndim == 1:
-            xs = np.atleast_2d(xs) 
+            xs = np.reshape(xs, (xs.shape[0],1)) 
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
         for i in xrange(self.n_class):         # classifier for class i...
             for j in xrange(i+1,self.n_class): # ...and class j
@@ -654,9 +653,9 @@ class GP_FITC(GP):
         value_per_axis is number of value in each dimension...
         ...when using a default inducing point grid'''
         if x.ndim == 1:
-            x = np.atleast_2d(x) 
+            x = np.reshape(x, (x.shape[0],1))  
         if y.ndim == 1:
-            y = np.atleast_2d(y) 
+            y = np.reshape(y, (y.shape[0],1))  
         self.x = x
         self.y = y
         if self.usingDefaultMean:

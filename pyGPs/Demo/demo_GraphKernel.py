@@ -2,24 +2,24 @@
 #coding=utf-8
 
 import numpy as np
-from scipy.io import loadmat
+from scipy.sparse.csc import csc_matrix
 import pyGPs
 from pyGPs.Validation import valid
 from pyGPs.GraphExtension import graphUtil,graphKernels
 
 location = 'data_for_demo/graphData/'
-data = loadmat(location+'MUTAG.mat')
+data = np.load(location+'MUTAG.npz')
 
 # n = num of nodes
 # N = num of graphs
 # p = num of labels
-A = data['A']                    # n x n adjancy array (sparse matrix)  
-gr_id = data['graph_ind']        # n x 1 graph id array
-node_label = data['responses']   # n x 1 node label array
-graph_label = data['labels']     # N x 1 graph label array
-N = graph_label.shape[0]         # number of graphs)
+A = csc_matrix( (data['adj_data'], data['adj_indice'], \
+    data['adj_indptr']), shape=data['adj_shape'])     # n x n adjancy array (sparse matrix)  
+gr_id = data['graph_ind']                             # n x 1 graph id array
+node_label = data['responses']                        # n x 1 node label array
+graph_label = data['labels']                          # N x 1 graph label array
+N = graph_label.shape[0]                              # number of graphs)
 
-print graph_label
 graph_label = np.int8(graph_label)
 for i in xrange(N):
     if graph_label[i,0] == 0:
