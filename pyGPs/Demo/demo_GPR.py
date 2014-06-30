@@ -37,7 +37,7 @@ demoData = np.load('data_for_demo/regression_data.npz')
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
-print y.shape
+
 #----------------------------------------------------------------------
 # A five-line example
 #----------------------------------------------------------------------

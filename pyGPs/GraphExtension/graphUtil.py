@@ -60,6 +60,16 @@ def formKernelMatrix(M, indice_train, indice_test):
     return M1,M2
 
 
+def normalizeKernel(K):
+    ''' INPUT:     K        n by D kernel matrix
+            
+        OUTPUT:    K_norm   n by D normalized kernel matrix(correlation matrix)'''
+    Kdiag = np.atleast_2d(np.diag(K))
+    normalizers = np.sqrt(Kdiag*Kdiag.T)
+    K_norm = K/normalizers
+    return K_norm
+
+
 
 
 

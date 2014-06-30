@@ -76,7 +76,7 @@ u = np.reshape(u,(num_u,1))
 
 
 # and specify inducing point when seting prior
-m = pyGPs.mean.Linear( D=x.shape[1] ) + mean.Const()  
+m = pyGPs.mean.Linear( D=x.shape[1] ) + pyGPs.mean.Const()  
 k = pyGPs.cov.RBF()
 model.setPrior(mean=m, kernel=k, inducing_points=u) 
 

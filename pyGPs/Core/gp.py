@@ -252,7 +252,7 @@ class GP(object):
         
         nz = range(len(alpha[:,0]))         # non-sparse representation 
         if L == []:                         # in case L is not provided, we compute it
-            K = covfunc.proceed(x[nz,:])
+            K = covfunc.getCovMatrix(x=x[nz,:], mode='train')
             L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
         Ltril     = np.all( np.tril(L,-1) == 0 ) # is L an upper triangular matrix?
         ns        = xs.shape[0]                  # number of data points
@@ -265,9 +265,9 @@ class GP(object):
         lp  = np.zeros((ns,1))
         while nact<=ns-1:                              # process minibatches of test cases to save memory
             id  = range(nact,min(nact+nperbatch,ns))   # data points to process
-            kss = covfunc.proceed(xs[id,:], 'diag')    # self-variances
-            Ks  = covfunc.proceed(x[nz,:], xs[id,:])   # cross-covariances
-            ms  = meanfunc.proceed(xs[id,:])         
+            kss = covfunc.getCovMatrix(z=xs[id,:], mode='self_test')    # self-variances
+            Ks  = covfunc.getCovMatrix(x=x[nz,:], z=xs[id,:], mode='cross')   # cross-covariances
+            ms  = meanfunc.getMean(xs[id,:])         
             N   = (alpha.shape)[1]                     # number of alphas (usually 1; more in case of sampling)
             Fmu = np.tile(ms,(1,N)) + np.dot(Ks.T,alpha[nz])          # conditional mean fs|f
             fmu[id] = np.reshape(Fmu.sum(axis=1)/N,(len(id),1))       # predictive means
@@ -334,7 +334,7 @@ class GP(object):
 
         nz = range(len(alpha[:,0]))         # non-sparse representation 
         if L == []:                         # in case L is not provided, we compute it
-            K = covfunc.proceed(x[nz,:])
+            K = covfunc.getCovMatrix(x=x[nz,:], mode='train')
             L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
         Ltril     = np.all( np.tril(L,-1) == 0 ) # is L an upper triangular matrix?
         ns        = xs.shape[0]                  # number of data points
@@ -347,9 +347,9 @@ class GP(object):
         lp  = np.zeros((ns,1))
         while nact<=ns-1:                              # process minibatches of test cases to save memory
             id  = range(nact,min(nact+nperbatch,ns))   # data points to process
-            kss = covfunc.proceed(xs[id,:], 'diag')    # self-variances
-            Ks  = covfunc.proceed(x[nz,:], xs[id,:])   # cross-covariances
-            ms  = meanfunc.proceed(xs[id,:])         
+            kss = covfunc.getCovMatrix(z=xs[id,:], mode='self_test')    # self-variances
+            Ks  = covfunc.getCovMatrix(x=x[nz,:], z=xs[id,:], mode='cross')   # cross-covariances
+            ms  = meanfunc.getMean(xs[id,:])         
             N   = (alpha.shape)[1]                     # number of alphas (usually 1; more in case of sampling)
             Fmu = np.tile(ms,(1,N)) + np.dot(Ks.T,alpha[nz])          # conditional mean fs|f
             fmu[id] = np.reshape(Fmu.sum(axis=1)/N,(len(id),1))       # predictive means

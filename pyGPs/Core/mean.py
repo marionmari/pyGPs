@@ -66,8 +66,6 @@ class Mean(object):
         super(Mean, self).__init__()
         self.hyp = []
         self.para = []
-    def proceed(self):
-        pass
 
     # overloading operators
     def __add__(self,mean):
@@ -109,7 +107,22 @@ class ProductOfMean(Mean):
     def gethyp(self):
         return self._hyp
     hyp = property(gethyp,sethyp)
+    
+    def getMean(self, x=None):
+        A = self.mean1.getMean(x) * self.mean2.getMean(x)
+        return A
 
+    def getDerMatrix(self, x=None, der=None):
+        if der < len(self.mean1.hyp):
+            A = self.mean1.getDerMatrix(x, der) * self.mean2.getMean(x)
+        elif der < len(self.hyp):
+            der2 = der - len(self.mean1.hyp)
+            A = self.mean2.getDerMatrix(x, der2) * self.mean1.getMean(x) 
+        else:
+            raise Exception("Error: der out of range for meanProduct")
+        return A
+
+    '''
     def proceed(self,x=None, der=None):
         n, D = x.shape
         A = np.ones((n, 1))                      # allocate space for mean vector
@@ -127,6 +140,7 @@ class ProductOfMean(Mean):
             else:
                 raise Exception("Error: der out of range for meanProduct")            
         return A
+    '''
 
 
 class SumOfMean(Mean):
@@ -149,6 +163,21 @@ class SumOfMean(Mean):
         return self._hyp
     hyp = property(gethyp,sethyp)
 
+    def getMean(self, x=None):
+        A = self.mean1.getMean(x) + self.mean2.getMean(x)
+        return A
+
+    def getDerMatrix(self, x=None, der=None):
+        if der < len(self.mean1.hyp):
+            A = self.mean1.getDerMatrix(x, der)
+        elif der < len(self.hyp):
+            der2 = der - len(self.mean1.hyp)
+            A = self.mean2.getDerMatrix(x, der2) 
+        else:
+            raise Exception("Error: der out of range for meanSum")
+        return A
+
+    '''
     def proceed(self,x=None, der=None):
         n, D = x.shape
         A = np.zeros((n, 1))                     # allocate space for mean vector
@@ -164,6 +193,7 @@ class SumOfMean(Mean):
             else:
                 raise Exception("Error: der out of range for meanSum")            
         return A
+    '''
 
 
 class ScaleOfMean(Mean):
@@ -181,6 +211,21 @@ class ScaleOfMean(Mean):
         return self._hyp
     hyp = property(gethyp,sethyp)
 
+    def getMean(self, x=None):
+        c = self.hyp[0]                          # scale parameter
+        A = c * self.mean.getMean(x)             # accumulate means
+        return A
+
+    def getDerMatrix(self, x=None, der=None):
+        c = self.hyp[0]                          # scale parameter
+        if der == 0:                             # compute derivative w.r.t. c
+            A = self.mean.getMean(x)
+        else:
+            A = c * self.mean.getDerMatrix(x,der-1)
+        return A
+
+
+    '''
     def proceed(self,x=None,der=None):
         c = self.hyp[0]                              # scale parameter
         if der == None:                              # compute mean vector
@@ -190,6 +235,7 @@ class ScaleOfMean(Mean):
         else:                                 
             A = c * self.mean.proceed(x,der-1) 
         return A
+    '''
 
 
 class PowerOfMean(Mean):
@@ -207,6 +253,23 @@ class PowerOfMean(Mean):
         return self._hyp
     hyp = property(gethyp,sethyp)
 
+    def getMean(self, x=None):
+        d = np.abs(np.floor(self.hyp[0])) 
+        d = max(d,1)
+        A = self.mean.getMean(x) **d              # accumulate means
+        return A
+
+    def getDerMatrix(self, x=None, der=None):
+        d = np.abs(np.floor(self.hyp[0])) 
+        d = max(d,1)
+        if der == 0:                             # compute derivative w.r.t. c
+            a = self.mean.getMean(x)
+            A = a**d * np.log(a) 
+        else:
+            A = d * self.mean.getMean(x) ** (d-1) * self.mean.getDerMatrix(x, der-1)
+        return A
+
+    '''
     def proceed(self,x=None,der=None):
         d = np.abs(np.floor(self.hyp[0])) 
         d = max(d,1)
@@ -215,27 +278,53 @@ class PowerOfMean(Mean):
         else:                                         # compute derivative vector
             A = d * self.mean.proceed(x) ** (d-1) * self.mean.proceed(x, der-1)      
         return A
+    '''
 
 
 
 
-# simple mean functions 
+# mean functions 
 
 class Zero(Mean):
     '''Zero mean.'''
     def __init__(self):
         self.hyp = []
         self.name = '0'
+
+    def getMean(self, x=None):
+        n, D = x.shape
+        A = np.zeros((n,1))
+        return A
+
+    def getDerMatrix(self, x=None, der=None):
+        n, D = x.shape
+        A = np.zeros((n,1))
+        return A
+
+    '''
     def proceed(self, x=None, der=None):
         n, D = x.shape
         A = np.zeros((n,1)) 
         return A
+    '''
 
 class One(Mean):
     ''' One mean.'''
     def __init__(self):
         self.hyp = []
         self.name = '1'
+
+    def getMean(self, x=None):
+        n, D = x.shape
+        A = np.ones((n,1))
+        return A
+
+    def getDerMatrix(self, x=None, der=None):
+        n, D = x.shape
+        A = np.zeros((n,1))
+        return A
+
+    '''
     def proceed(self, x=None, der=None):
         n, D = x.shape
         if der == None:                           
@@ -243,6 +332,7 @@ class One(Mean):
         else:   
             A = np.zeros((n,1))
         return A
+    '''
 
 class Const(Mean):
     '''
@@ -253,6 +343,20 @@ class Const(Mean):
     def __init__(self, c=5.):
         self.hyp = [c]
 
+    def getMean(self, x=None):
+        n,D = x.shape
+        A = self.hyp[0] * np.ones((n,1))
+        return A
+
+    def getDerMatrix(self, x=None, der=None):
+        n,D = x.shape
+        if der == 0:                  # compute derivative vector wrt c
+            A = np.ones((n,1))
+        else:
+            A = np.zeros((n,1)) 
+        return A          
+
+    '''
     def proceed(self, x=None, der=None):
         n,D = x.shape
         if der == None:                            # evaluate mean
@@ -262,6 +366,7 @@ class Const(Mean):
         else:   
             A = np.zeros((n,1)) 
         return A
+    '''
 
 
 class Linear(Mean):
@@ -277,8 +382,26 @@ class Linear(Mean):
         else:
             self.hyp = alpha_list
 
+    def getMean(self, x=None):
+        n, D = x.shape
+        c = np.array(self.hyp)
+        c = np.reshape(c,(len(c),1))
+        A = np.dot(x,c)
+        return A
+
+    def getDerMatrix(self, x=None, der=None):
+        n, D = x.shape
+        c = np.array(self.hyp)
+        c = np.reshape(c,(len(c),1))
+        if isinstance(der, int) and der < D:     # compute derivative vector wrt meanparameters
+            A = np.reshape(x[:,der], (len(x[:,der]),1) ) 
+        else:   
+            A = np.zeros((n,1)) 
+        return A
+
+    '''
     def proceed(self, x=None, der=None):
-    	n, D = x.shape
+        n, D = x.shape
         c = np.array(self.hyp)
         c = np.reshape(c,(len(c),1))
         if der == None:                         # evaluate mean
@@ -288,6 +411,7 @@ class Linear(Mean):
         else:   
             A = np.zeros((n,1)) 
         return A
+    '''
 
 
 

@@ -271,8 +271,8 @@ class Exact(Inference):
         if not isinstance(likfunc, lik.Gauss):
             raise Exception ('Exact inference only possible with Gaussian likelihood')
         n, D = x.shape
-        K = covfunc.proceed(x)                                 # evaluate covariance matrix
-        m = meanfunc.proceed(x)                                # evaluate mean vector
+        K = covfunc.getCovMatrix(x=x, mode='train')            # evaluate covariance matrix
+        m = meanfunc.getMean(x)                                # evaluate mean vector
         
         sn2   = np.exp(2*likfunc.hyp[0])                       # noise variance of likGauss
         L     = np.linalg.cholesky(K/sn2+np.eye(n)).T          # Cholesky factor of covariance with noise
@@ -290,10 +290,10 @@ class Exact(Inference):
                 dnlZ.lik = [sn2*np.trace(Q)]
                 if covfunc.hyp:
                     for ii in range(len(covfunc.hyp)):
-                        dnlZ.cov[ii] = (Q*covfunc.proceed(x, None, ii)).sum()/2.
+                        dnlZ.cov[ii] = (Q*covfunc.getDerMatrix(x=x, mode='train', der=ii)).sum()/2.
                 if meanfunc.hyp:
                     for ii in range(len(meanfunc.hyp)): 
-                        dnlZ.mean[ii] = np.dot(-meanfunc.proceed(x, ii).T,alpha)
+                        dnlZ.mean[ii] = np.dot(-meanfunc.getDerMatrix(x, ii).T,alpha)
                         dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
                 return post, nlZ[0,0], dnlZ
             return post, nlZ[0,0]
@@ -316,8 +316,8 @@ class FITC_Exact(Inference):
         if not isinstance(covfunc, cov.FITCOfKernel):
             raise Exception('Only covFITC supported.')          # check cov
 
-        diagK,Kuu,Ku = covfunc.proceed(x)                       # evaluate covariance matrix
-        m  = meanfunc.proceed(x)                                # evaluate mean vector
+        diagK,Kuu,Ku = covfunc.getCovMatrix(x=x, mode='train')  # evaluate covariance matrix
+        m  = meanfunc.getMean(x)                                # evaluate mean vector
         n, D = x.shape
         nu = Kuu.shape[0]
 
@@ -345,7 +345,7 @@ class FITC_Exact(Inference):
                 w = np.dot(B,al)
                 W = np.linalg.solve(Lu.T,V/np.tile(g_sn2.T,(nu,1)))
                 for ii in range(len(covfunc.hyp)):
-                    [ddiagKi,dKuui,dKui] = covfunc.proceed(x, None, ii)    # eval cov deriv
+                    [ddiagKi,dKuui,dKui] = covfunc.getDerMatrix(x=x, mode='train', der=ii)    # eval cov deriv
                     R = 2.*dKui-np.dot(dKuui,B)
                     v = ddiagKi - np.array([(R*B).sum(axis=0)]).T          # diag part of cov deriv
                     dnlZ.cov[ii] = ( np.dot(ddiagKi.T,1./g_sn2) + np.dot(w.T,(np.dot(dKuui,w)-2.*np.dot(dKui,al))) \
@@ -359,7 +359,7 @@ class FITC_Exact(Inference):
                                  - np.dot(np.array([(W*W).sum(axis=0)]),v) - (np.dot(R,W.T)*np.dot(B,W.T)).sum() )/2. 
                 dnlZ.lik = list(dnlZ.lik[0])
                 for ii in range(len(meanfunc.hyp)):
-                    dnlZ.mean[ii] = np.dot(-meanfunc.proceed(x, ii).T, al) 
+                    dnlZ.mean[ii] = np.dot(-meanfunc.getDerMatrix(x, ii).T, al) 
                     dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
 
                 return post, nlZ[0,0], dnlZ
@@ -380,8 +380,8 @@ class Laplace(Inference):
         smax = 2; Nline = 20; thr = 1e-4     # line search parameters
         maxit = 20                           # max number of Newton steps in f
         inffunc = self
-        K = covfunc.proceed(x)               # evaluate the covariance matrix
-        m = meanfunc.proceed(x)              # evaluate the mean vector
+        K = covfunc.getCovMatrix(x=x, mode='train')    # evaluate the covariance matrix
+        m = meanfunc.getMean(x)              # evaluate the mean vector
         n, D = x.shape
         Psi_old = np.inf                     # make sure while loop starts by the largest old objective val
         if self.last_alpha == None:          # find a good starting point for alpha and f
@@ -453,7 +453,7 @@ class Laplace(Inference):
                 g = np.atleast_2d((np.diag(K)-(C**2).sum(axis=0).T)).T /2.   # g = diag(inv(inv(K)+W))/2
             dfhat = g* d3lp                 # deriv. of nlZ wrt. fhat: dfhat=diag(inv(inv(K)+W)).*d3lp/2
             for ii in range(len(covfunc.hyp)):                               # covariance hypers
-                dK = covfunc.proceed(x, None, ii)
+                dK = covfunc.getDerMatrix(x=x, mode='train', der=ii)
                 dnlZ.cov[ii] = (Z*dK).sum()/2. - np.dot(alpha.T,np.dot(dK,alpha))/2.   # explicit part
                 b = np.dot(dK,dlp)                                           # b-K*(Z*b) = inv(eye(n)+K*diag(W))*b
                 dnlZ.cov[ii] -= np.dot(dfhat.T,b-np.dot(K,np.dot(Z,b)))      # implicit part
@@ -465,7 +465,7 @@ class Laplace(Inference):
                 dnlZ.lik[ii] -= np.dot(dfhat.T,b-np.dot(K,np.dot(Z,b)))      # implicit part
                 dnlZ.lik[ii] = dnlZ.lik[ii][0,0]
             for ii in range(len(meanfunc.hyp)):                              # mean hypers
-                dm = meanfunc.proceed(x, ii)
+                dm = meanfunc.getDerMatrix(x, ii)
                 dnlZ.mean[ii] = -np.dot(alpha.T,dm)                          # explicit part
                 dnlZ.mean[ii] -= np.dot(dfhat.T,dm-np.dot(K,np.dot(Z,dm)))   # implicit part
                 dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
@@ -496,8 +496,8 @@ class FITC_Laplace(Inference):
         smax = 2; Nline = 100; thr = 1e-4      # line search parameters
         maxit = 20                             # max number of Newton steps in f
         inffunc = Laplace()
-        diagK,Kuu,Ku = covfunc.proceed(x)      # evaluate the covariance matrix
-        m = meanfunc.proceed(x)                # evaluate the mean vector
+        diagK,Kuu,Ku = covfunc.getCovMatrix(x=x, mode='train')      # evaluate the covariance matrix
+        m = meanfunc.getMean(x)                # evaluate the mean vector
         if likfunc.hyp:                        # hard coded inducing inputs noise
             sn2  = np.exp(2.*likfunc.hyp[-1]) 
             snu2 = 1.e-6*sn2                   # similar to infFITC
@@ -580,7 +580,7 @@ class FITC_Laplace(Inference):
             
             dfhat = g*d3lp  # deriv. of nlZ wrt. fhat: dfhat=diag(inv(inv(K)+W)).*d3lp/2
             for ii in range(len(covfunc.hyp)):                      # covariance hypers
-                ddiagK,dKuu,dKu = covfunc.proceed(x, None, ii)      # eval cov derivatives
+                ddiagK,dKuu,dKu = covfunc.getDerMatrix(x=x, mode='train', der=ii)      # eval cov derivatives
                 dA = 2.*dKu.T-np.dot(R0tV.T,dKuu)                   # dQ = dA*R0tV
                 w = np.atleast_2d((dA*R0tV.T).sum(axis=1)).T        # w = diag(dQ)
                 v = ddiagK-w                                        # v = diag(dK)-diag(dQ);
@@ -614,7 +614,7 @@ class FITC_Laplace(Inference):
                     dnlZ.lik[ii] = dnlZ.lik[ii][0,0]
 
             for ii in range(len(meanfunc.hyp)):                           # mean hypers
-                dm = meanfunc.proceed(x, ii)
+                dm = meanfunc.getDerMatrix(x, ii)
                 dnlZ.mean[ii] = -np.dot(alpha.T,dm)                       # explicit part
                 Zdm = self.mvmZ(dm,RVdd,t)
                 dnlZ.mean[ii] -= np.dot(dfhat.T,(dm-self.mvmK(Zdm,V,d0))) # implicit part
@@ -638,8 +638,8 @@ class EP(Inference):
         tol = 1e-4; max_sweep = 10; min_sweep = 2 # tolerance to stop EP iterations
         n = x.shape[0]
         inffunc = self
-        K = covfunc.proceed(x)                    # evaluate the covariance matrix
-        m = meanfunc.proceed(x)                   # evaluate the mean vector
+        K = covfunc.getCovMatrix(x=x, mode='train') # evaluate the covariance matrix
+        m = meanfunc.getMean(x)                   # evaluate the mean vector
         nlZ0 = -likfunc.proceed(y, m, np.reshape(np.diag(K),(np.diag(K).shape[0],1)), inffunc).sum()
         if self.last_ttau == None:                # find starting point for tilde parameters
             ttau  = np.zeros((n,1))               # initialize to zero if we have no better guess
@@ -696,14 +696,14 @@ class EP(Inference):
             F = np.dot(alpha,alpha.T) - np.tile(sW,(1,n))* \
                 solve_chol(L,np.diag(np.reshape(sW,(sW.shape[0],))))   # covariance hypers
             for jj in range(len(covfunc.hyp)):
-                dK = covfunc.proceed(x, None, jj)
+                dK = covfunc.getDerMatrix(x=x, mode='train', der=jj)
                 dnlZ.cov[jj] = -(F*dK).sum()/2.
             for ii in range(len(likfunc.hyp)):
                 dlik = likfunc.proceed(y, nu_n/tau_n, 1/tau_n, inffunc, ii)
                 dnlZ.lik[ii] = -dlik.sum()    
             junk,dlZ = likfunc.proceed(y, nu_n/tau_n, 1/tau_n, inffunc, None, 2) # mean hyps
             for ii in range(len(meanfunc.hyp)):
-                dm = meanfunc.proceed(x, ii)
+                dm = meanfunc.getDerMatrix(x, ii)
                 dnlZ.mean[ii] = -np.dot(dlZ.T,dm)
                 dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
             return post, nlZ[0], dnlZ
@@ -736,8 +736,8 @@ class FITC_EP(Inference):
         tol = 1e-4; max_sweep = 10; min_sweep = 2       # tolerance to stop EP iterations
         inffunc = EP()
 
-        diagK,Kuu,Ku = covfunc.proceed(x)               # evaluate the covariance matrix
-        m = meanfunc.proceed(x)                         # evaluate the mean vector
+        diagK,Kuu,Ku = covfunc.getCovMatrix(x=x, mode='train')  # evaluate the covariance matrix
+        m = meanfunc.getMean(x)                         # evaluate the mean vector
 
         if likfunc.hyp:                                 # hard coded inducing inputs noise
             sn2  = np.exp(2.*likfunc.hyp[-1]) 
@@ -818,7 +818,7 @@ class FITC_EP(Inference):
             dnlZ = dnlZStruct(meanfunc, covfunc, likfunc)     # allocate space for derivatives
             RVdd = RV*np.tile(dd.T,(nu,1))
             for ii in range(len(covfunc.hyp)):
-                ddiagK,dKuu,dKu = covfunc.proceed(x, None, ii)
+                ddiagK,dKuu,dKu = covfunc.getDerMatrix(x=x, mode='train', der=ii)
                 dA = 2*dKu.T - np.dot(R0tV.T,dKuu)            # dQ = dA*R0tV
                 w = np.atleast_2d((dA*R0tV.T).sum(axis=1)).T  # w = diag(dQ)
                 v = ddiagK - w                                # v = diag(dK)-diag(dQ)
@@ -839,7 +839,7 @@ class FITC_EP(Inference):
                     dnlZ.lik[ii] = dnlZ.lik[ii][0,0]
             [junk,dlZ] = likfunc.proceed(y, nu_n/tau_n, 1/tau_n, inffunc, None, 2) # mean hyps
             for ii in range(len(meanfunc.hyp)):
-                dm = meanfunc.proceed(x, ii)
+                dm = meanfunc.getDerMatrix(x, ii)
                 dnlZ.mean[ii] = -np.dot(dlZ.T,dm)
                 dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
         
