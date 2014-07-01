@@ -11,10 +11,5 @@ setup(
     license='COPYRIGHT.txt',
     description='Functional Gaussian Processes',
     long_description=open('README.md').read(),
-    install_requires=[
-        "Python >= 2.6",
-        "Numpy >= 1.7.1",
-        "Scipy >= 0.12.0",
-        "matplotlib >= 1.2.1",
-    ],
+    install_requires=[],
 )
