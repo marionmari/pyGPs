@@ -9,7 +9,7 @@ setup(
     packages=find_packages(),
     url='https://github.com/marionmari/pyGPs',
     license='COPYRIGHT.txt',
-    description='Functional Gaussian Processes',
+    description='Gaussian Processes for Regression and Classification',
     long_description=open('README.md').read(),
     install_requires=[],
 )
