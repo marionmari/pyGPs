@@ -11,7 +11,7 @@ Installation
 
 3. Or install the package using setup.py::
 
-        python setup.py install
+        sudo python setup.py install
 
 Requirements
 ------------
@@ -23,3 +23,15 @@ Requirements
 .. _numpy: http://www.numpy.org/
 .. _matplotlib: http://matplotlib.org/
 
+
+Example installation on Ubuntu & Debian::
+
+	sudo apt-get install python2.7 python-numpy python-scipy python-matplotlib 
+
+
+Example installation on Mac via Macports (requires XCode and MacPorts)::
+
+	sudo port install python27 py27-numpy py27-scipy py27-matplotlib
+
+
+For other systems please check the installation instructions on the respective package web sites. 

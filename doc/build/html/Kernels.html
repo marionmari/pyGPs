@@ -235,17 +235,21 @@ but its non-trivial to write down the exact formula of kernel functions. Then yo
 </dd></dl>
 
 <dl class="class">
+<dt id="pyGPs.Core.cov.FITCOfKernel">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">FITCOfKernel</tt><big>(</big><em>cov</em>, <em>inducingInput</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#FITCOfKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.FITCOfKernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Covariance function to be used together with the FITC approximation.
+The function allows for more than one output argument and does not respect the
+interface of a proper covariance function. 
+Instead of outputing the full covariance, it returns cross-covariances between
+the inputs x, z and the inducing inputs xu as needed by infFITC</p>
+</dd></dl>
+
+<dl class="class">
 <dt id="pyGPs.Core.cov.Kernel">
 <em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Kernel</tt><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is a base class of Kernel functions
 there is no computation in this class, it just defines rules about a kernel class should have
 each covariance function will inherit it and implement its own behaviour</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="pyGPs.Core.cov.LIN">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">LIN</tt><a class="reference internal" href="_modules/pyGPs/Core/cov.html#LIN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.LIN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Linear kernel. No hyperparameters.</p>
 </dd></dl>
 
 <dl class="class">
@@ -258,13 +262,19 @@ hyp = log_ell_list</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>D</strong> &#8211; dimension of training data. Set if you want default ell, which is 0.5 for each dimension.</li>
+<li><strong>D</strong> &#8211; dimension of training data. Set if you want default ell, which is 1 for each dimension.</li>
 <li><strong>log_ell_list</strong> &#8211; characteristic length scale for each dimension.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.cov.Linear">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Linear</tt><a class="headerlink" href="#pyGPs.Core.cov.Linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear kernel. No hyperparameters.</p>
 </dd></dl>
 
 <dl class="class">
@@ -412,7 +422,7 @@ hyp = log_ell_list + [log_sigma]</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>D</strong> &#8211; dimension of pattern. set if you want default ell, which is 0.5 for each dimension.</li>
+<li><strong>D</strong> &#8211; dimension of pattern. set if you want default ell, which is 1 for each dimension.</li>
 <li><strong>log_ell_list</strong> &#8211; characteristic length scale for each dimension.</li>
 <li><strong>log_sigma</strong> &#8211; signal deviation.</li>
 </ul>

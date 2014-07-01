@@ -225,7 +225,7 @@
      
 
 
-<span class="k">class</span> <span class="nc">FITCOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="FITCOfKernel"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.FITCOfKernel">[docs]</a><span class="k">class</span> <span class="nc">FITCOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">inducingInput</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inducingInput</span> <span class="o">=</span> <span class="n">inducingInput</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="n">cov</span>
@@ -274,7 +274,7 @@
         <span class="k">return</span> <span class="n">K</span><span class="p">,</span> <span class="n">Kuu</span><span class="p">,</span> <span class="n">Ku</span>
 
 
-
+</div>
 <div class="viewcode-block" id="Poly"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Poly">[docs]</a><span class="k">class</span> <span class="nc">Poly</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Polynomial covariance function. hyp = [ log_c, log_sigma ]</span>
