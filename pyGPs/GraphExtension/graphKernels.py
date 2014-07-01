@@ -94,7 +94,7 @@ def propagationKernel(A, l, gr_id, h_max, ktype=None, SUM=True, VIS=False, showE
     # ## PROPAGATION KERNEL ITERATIONS
     #===========================================================================
     for h in xrange(h_max+1):  
-        print 'HEIGHT: ', h
+        print 'ITERATION: ', h
         if h > 0:
             ## LABEL UPDATE 
             if showEachStep:
@@ -174,10 +174,8 @@ def propagationKernel(A, l, gr_id, h_max, ktype=None, SUM=True, VIS=False, showE
             imgplot.set_interpolation('nearest')
             plt.colorbar()
         plt.show()
-    if showEachStep:
-        return K
-    else:
-        return K[:,:,h]
+    
+    return K
     
  
     
