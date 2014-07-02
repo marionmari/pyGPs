@@ -20,14 +20,16 @@ import scipy.sparse as spsp
 import numpy as np
 import matplotlib.pyplot as plt
     
-def propagationKernel(A, l, gr_id, h_max, ktype=None, SUM=True, VIS=False, showEachStep=False):
+def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False, showEachStep=False):
     '''
     INPUT: 
-        A        adjacency matrix (num_nodes x num_nodes)
-        l        label array (num_nodes x 1); values [1,...,k] or -1 for unlabeled nodes 
-                 ...OR label array (num_nodes x num_labels); values [0,1], unlabeled nodes have only 0 entries
-        gr_id    graph indicator array (num_nodes x 1); values [0,..,n]
-        h_max    number of iterations 
+        A           adjacency matrix (num_nodes x num_nodes)
+        l           label array (num_nodes x 1); values [1,...,k] or -1 for unlabeled nodes 
+                    ...OR label array (num_nodes x num_labels); values [0,1], unlabeled nodes have only 0 entries
+        gr_id       graph indicator array (num_nodes x 1); values [0,..,n]
+        h_max       number of iterations
+        w           bin widths parameter
+        p           distance ('tv', 'hellinger', 'L1', 'L2')
         ktype    type of propagation kernel ['diffusion', 'label_propagation', 'label_spreading', 'belief_propagation']
     
     RETURN:
@@ -40,10 +42,6 @@ def propagationKernel(A, l, gr_id, h_max, ktype=None, SUM=True, VIS=False, showE
     #===========================================================================
     # ## Propagation Kernel COMPUTATION
     #===========================================================================
-
-    ## PARAMETERS of propagation kernel
-    w = 1e-4        # bin widths parameter
-    p = 'L1'          # distance (tv, hellinger, L1, L2)
     num_graphs = gr_id.max().astype(int)
     num_nodes = A.shape[0]
     if l.shape[1]==1:
@@ -85,7 +83,7 @@ def propagationKernel(A, l, gr_id, h_max, ktype=None, SUM=True, VIS=False, showE
     if idx_unif.shape[0] != 0:
         lab_prob[idx_unif,:] = 1./lab_prob.shape[1] 
     ## row normalize A -> transition matrix T
-    if (ktype=='label_propagation') or (ktype=='diffusion'):
+    if (ktype=='label_propagation') or (ktype=='label_diffusion'):
         row_sums = np.array(A.sum(axis=1))[:,0] 
         T = A.copy()
         T.data /= row_sums[A.nonzero()[0]]    # so A and T are sparse matrix
@@ -104,14 +102,12 @@ def propagationKernel(A, l, gr_id, h_max, ktype=None, SUM=True, VIS=False, showE
                 lab_prob[idx,:] = lab_orig[idx,:]   # PUSH BACK original LABELS
                 lab_prob = T*lab_prob
                 
-            elif ktype == 'diffusion': 
+            elif ktype == 'label_diffusion': 
                 lab_prob = T*lab_prob
             
             elif ktype == 'label_spreading':
-                '''
-                S = D^(-1/2)*W*D^(-1/2)
-                y(t+1) = alpha*S*y(t)+(1-alpha)*y(0)
-                '''
+                ''' S = D^(-1/2)*W*D^(-1/2)
+                    y(t+1) = alpha*S*y(t)+(1-alpha)*y(0)'''
                 alpha = 0.8
                 # compute S
                 diag = np.array(A.sum(axis=1)).T**(-1/2)
@@ -119,7 +115,8 @@ def propagationKernel(A, l, gr_id, h_max, ktype=None, SUM=True, VIS=False, showE
                 D.setdiag(diag[0,:])
                 D = D.tocsr()
                 S = D*A*D   
-                lab_prob = np.dot((alpha*S.todense()),lab_prob) + (1-alpha)*lab_orig             
+                lab_prob = np.dot((alpha*S.todense()),lab_prob) + (1-alpha)*lab_orig
+        
         ## COMPUTE hashvalues 
         if showEachStep:
             print '...computing hashvalues'
@@ -134,7 +131,7 @@ def propagationKernel(A, l, gr_id, h_max, ktype=None, SUM=True, VIS=False, showE
             # if X, Y are N(0, 1), then X / Y has a standard Cauchy distribution
             v /= np.random.normal(size=(lab_prob.shape[1], 1))           
         # random offset
-        b = w * np.random.normal()         
+        b = w * np.random.rand()         
         # compute hashes
         # hashLabels is a Vector with length: number of nodes (hashvalue for respective node)
         hashLabels = (np.dot(lab_prob,v) + b) / w
@@ -149,9 +146,11 @@ def propagationKernel(A, l, gr_id, h_max, ktype=None, SUM=True, VIS=False, showE
         counts = np.zeros((num_graphs, num_bins))      # init counts matrix 
         # accumulate counts of hash labels                              
         for i in xrange(num_nodes):
-            counts[ (gr_id[i,0]-1), hashLabels[i] ] +=1     
+            counts[ (gr_id[i,0]-1), hashLabels[i] ] +=1
+            
         # compute base kernel (here: LINEAR kernel)
         K_h = np.dot(counts,counts.T)      
+        
         ## SUM kernel contributions
         if SUM:
             if h == 0:
