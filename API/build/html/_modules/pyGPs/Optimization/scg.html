@@ -1,0 +1,266 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyGPs.Optimization.scg &mdash; pyGPs v1.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'v1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pyGPs v1.2 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pyGPs v1.2 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyGPs.Optimization.scg</h1><div class="highlight"><pre>
+<span class="c">#===============================================================================</span>
+<span class="c">#   SCG  Scaled conjugate gradient optimization. </span>
+<span class="c">#   </span>
+<span class="c">#   Copyright (c) Ian T Nabney (1996-2001)</span>
+<span class="c">#   updates by Shan Huang 2013</span>
+<span class="c">#</span>
+<span class="c">#   Permission is granted for anyone to copy, use, or modify these</span>
+<span class="c">#   programs and accompanying documents for purposes of research or</span>
+<span class="c">#   education, provided this copyright notice is retained, and note is</span>
+<span class="c">#   made of any changes that have been made.</span>
+<span class="c">#</span>
+<span class="c">#   These programs and documents are distributed without any warranty,</span>
+<span class="c">#   express or implied.  As the programs were written for research</span>
+<span class="c">#   purposes only, they have not been tested to the degree that would be</span>
+<span class="c">#   advisable in any important application.  All use of these programs is</span>
+<span class="c">#   entirely at the user&#39;s own risk.&quot;</span>
+<span class="c">#=============================================================================== </span>
+
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../pyGPs.Optimization.html#pyGPs.Optimization.scg.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">niters</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">gradcheck</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">display</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">flog</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">pointlog</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">scalelog</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">tolX</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span> <span class="n">tolO</span> <span class="o">=</span> <span class="mf">1.0e-8</span><span class="p">,</span> <span class="nb">eval</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="n">display</span><span class="p">:</span> <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">***** starting optimization (SCG) *****</span><span class="se">\n</span><span class="s">&#39;</span>
+    <span class="n">nparams</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+    <span class="c">#  Check gradients</span>
+    <span class="k">if</span> <span class="n">gradcheck</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="mf">1.0e-4</span>
+    <span class="n">sigma0</span> <span class="o">=</span> <span class="mf">1.0e-4</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">fold</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>             <span class="c"># Initial function value.</span>
+    <span class="n">fnow</span> <span class="o">=</span> <span class="n">fold</span>
+    <span class="n">funcCount</span> <span class="o">=</span> <span class="mi">1</span>                <span class="c"># Increment function evaluation counter.</span>
+    <span class="n">gradnew</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>          <span class="c"># Initial gradient.</span>
+    <span class="n">gradold</span> <span class="o">=</span> <span class="n">gradnew</span>
+    <span class="n">gradCount</span> <span class="o">=</span> <span class="mi">1</span>                <span class="c"># Increment gradient evaluation counter.</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="o">-</span><span class="n">gradnew</span>                 <span class="c"># Initial search direction.</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="mi">1</span>                  <span class="c"># Force calculation of directional derivs.</span>
+    <span class="n">nsuccess</span> <span class="o">=</span> <span class="mi">0</span>                 <span class="c"># nsuccess counts number of successes.</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="mf">1.0</span>                   <span class="c"># Initial scale parameter.</span>
+    <span class="n">betamin</span> <span class="o">=</span> <span class="mf">1.0e-15</span>            <span class="c"># Lower bound on scale.</span>
+    <span class="n">betamax</span> <span class="o">=</span> <span class="mf">1.0e50</span>             <span class="c"># Upper bound on scale.</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span>                        <span class="c"># j counts number of iterations.</span>
+    <span class="k">if</span> <span class="n">flog</span><span class="p">:</span>
+        <span class="k">pass</span>
+        <span class="c">#flog(j, :) = fold;</span>
+    <span class="k">if</span> <span class="n">pointlog</span><span class="p">:</span>
+        <span class="k">pass</span>
+        <span class="c">#pointlog(j, :) = x;</span>
+
+    <span class="c"># Main optimization loop.</span>
+    <span class="n">listF</span> <span class="o">=</span> <span class="p">[</span><span class="n">fold</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">eval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">evalue</span><span class="p">,</span> <span class="n">timevalue</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">evalList</span> <span class="o">=</span> <span class="p">[</span><span class="n">evalue</span><span class="p">]</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="p">[</span><span class="n">timevalue</span><span class="p">]</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&lt;=</span> <span class="n">niters</span><span class="p">):</span>   
+        <span class="c"># Calculate first and second directional derivatives.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">success</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">gradnew</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">mu</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="o">-</span> <span class="n">gradnew</span>
+                <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">gradnew</span><span class="p">)</span>
+            <span class="n">kappa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">kappa</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">):</span>
+                <span class="c">#print &quot;FNEW: &quot; , fnow</span>
+                <span class="c">#options(8) = fnow</span>
+                <span class="k">if</span> <span class="nb">eval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">listF</span><span class="p">,</span> <span class="n">evalList</span><span class="p">,</span> <span class="n">time</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">listF</span>
+
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma0</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span>
+            <span class="n">xplus</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">sigma</span><span class="o">*</span><span class="n">d</span>
+            <span class="n">gplus</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">xplus</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">gradCount</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="p">(</span><span class="n">gplus</span> <span class="o">-</span> <span class="n">gradnew</span><span class="p">)))</span><span class="o">/</span><span class="n">sigma</span><span class="p">;</span>
+     
+        <span class="c"># Increase effective curvature and evaluate step size alpha.</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">+</span> <span class="n">beta</span><span class="o">*</span><span class="n">kappa</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">delta</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">beta</span><span class="o">*</span><span class="n">kappa</span>
+            <span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">-</span> <span class="n">theta</span><span class="o">/</span><span class="n">kappa</span>
+
+        <span class="n">alpha</span> <span class="o">=</span> <span class="o">-</span> <span class="n">mu</span><span class="o">/</span><span class="n">delta</span>
+         
+        <span class="c"># Calculate the comparison ratio.</span>
+        <span class="n">xnew</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">alpha</span><span class="o">*</span><span class="n">d</span>
+        <span class="n">fnew</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">xnew</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">funcCount</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="n">Delta</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">fnew</span> <span class="o">-</span> <span class="n">fold</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">alpha</span><span class="o">*</span><span class="n">mu</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">Delta</span>  <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="n">nsuccess</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">xnew</span><span class="p">;</span>
+            <span class="n">fnow</span> <span class="o">=</span> <span class="n">fnew</span><span class="p">;</span>
+            <span class="n">listF</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fnow</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">eval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">evalue</span><span class="p">,</span> <span class="n">timevalue</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+                <span class="n">evalList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">evalue</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timevalue</span><span class="p">)</span>
+                
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">fnow</span> <span class="o">=</span> <span class="n">fold</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="n">flog</span><span class="p">:</span>
+            <span class="c"># Store relevant variables</span>
+            <span class="c">#flog(j) = fnow;          # Current function value</span>
+            <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">pointlog</span><span class="p">:</span>
+            <span class="c">#pointlog(j,:) = x;     # Current position</span>
+            <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">scalelog</span><span class="p">:</span>
+            <span class="c">#scalelog(j) = beta;     # Current scale parameter</span>
+            <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">display</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;***** Cycle </span><span class="si">%4d</span><span class="s">  Error </span><span class="si">%11.6f</span><span class="s">  Scale </span><span class="si">%e</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span> <span class="n">j</span><span class="p">,</span> <span class="n">fnow</span><span class="p">,</span> <span class="n">beta</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">success</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c"># Test for termination</span>
+        <span class="c"># print type (alpha), type(d), type(tolX), type(fnew), type(fold)</span>
+            <span class="k">if</span> <span class="p">((</span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">alpha</span><span class="o">*</span><span class="n">d</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">tolX</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">fnew</span><span class="o">-</span><span class="n">fold</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tolO</span><span class="p">)):</span>
+                <span class="c"># options(8) = fnew;</span>
+                <span class="c"># print &quot;FNEW: &quot; , fnew</span>
+                <span class="k">if</span> <span class="nb">eval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">listF</span><span class="p">,</span> <span class="n">evalList</span><span class="p">,</span> <span class="n">time</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">listF</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># Update variables for new position</span>
+                <span class="n">fold</span> <span class="o">=</span> <span class="n">fnew</span>
+                <span class="n">gradold</span> <span class="o">=</span> <span class="n">gradnew</span>
+                <span class="n">gradnew</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">gradCount</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c"># If the gradient is zero then we are done.</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">gradnew</span><span class="p">,</span> <span class="n">gradnew</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="c"># print &quot;FNEW: &quot; , fnew</span>
+                    <span class="c"># options(8) = fnew;</span>
+                    <span class="k">if</span> <span class="nb">eval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">listF</span><span class="p">,</span> <span class="n">evalList</span><span class="p">,</span> <span class="n">time</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">listF</span>
+     
+        <span class="c"># Adjust beta according to comparison ratio.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">Delta</span> <span class="o">&lt;</span> <span class="mf">0.25</span><span class="p">):</span>
+            <span class="n">beta</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">4.0</span><span class="o">*</span><span class="n">beta</span><span class="p">,</span> <span class="n">betamax</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">Delta</span> <span class="o">&gt;</span> <span class="mf">0.75</span><span class="p">):</span>
+            <span class="n">beta</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">beta</span><span class="p">,</span> <span class="n">betamin</span><span class="p">);</span>
+     
+        <span class="c"># Update search direction using Polak-Ribiere formula, or re-start</span>
+        <span class="c"># in direction of negative gradient after nparams steps.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">nsuccess</span> <span class="o">==</span> <span class="n">nparams</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="o">-</span><span class="n">gradnew</span><span class="p">;</span>
+            <span class="n">nsuccess</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">success</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="n">gradold</span> <span class="o">-</span> <span class="n">gradnew</span><span class="p">),</span> <span class="n">gradnew</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">gamma</span><span class="o">*</span><span class="n">d</span> <span class="o">-</span> <span class="n">gradnew</span><span class="p">;</span>
+
+        <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+     
+    <span class="c"># If we get here, then we haven&#39;t terminated in the given number of</span>
+    <span class="c"># iterations.</span>
+    <span class="c"># options(8) = fold;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">display</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;maximum number of iterations reached&quot;</span>
+    <span class="k">if</span> <span class="nb">eval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">listF</span><span class="p">,</span> <span class="n">evalList</span><span class="p">,</span> <span class="n">time</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">listF</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pyGPs v1.2 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

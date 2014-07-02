@@ -1,0 +1,211 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Regression on Mauna Loa data &mdash; pyGPs v1.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'v1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pyGPs v1.2 documentation" href="index.html" />
+    <link rel="up" title="Demos" href="Examples.html" />
+    <link rel="next" title="Regression on UCI Housing data" href="demoHousing.html" />
+    <link rel="prev" title="K-fold Cross-Validation" href="CV.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="demoHousing.html" title="Regression on UCI Housing data"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="CV.html" title="K-fold Cross-Validation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
+          <li><a href="Examples.html" accesskey="U">Demos</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="regression-on-mauna-loa-data">
+<h1>Regression on Mauna Loa data<a class="headerlink" href="#regression-on-mauna-loa-data" title="Permalink to this headline">¶</a></h1>
+<p>This example does regression on the Hawaiian Mauna Loa data (example taken from chapter 5 of the <a class="reference external" href="http://www.gaussianprocess.org/gpml/chapters/RW5.pdf">GPML</a> book by Rasmussen and Williams, 2006)</p>
+<p>We will use a modelling problem concerning the concentration of CO_2
+in the atmosphere to illustrate how the marginal likelihood can be used to set multiple
+hyperparameters in hierarchical Gaussian process models. A complex covariance function
+is derived by combining several different kinds of simple covariance
+functions, and the resulting model provides an excellent fit to the data as well
+as insight into its properties by interpretation of the adapted hyperparameters. Although the data is
+one-dimensional, and therefore easy to visualize, a
+total of 11 hyperparameters are used, which in practice rules out the use of
+cross-validation for setting parameters, except for the gradient-based LOO-CV procedure.</p>
+<p>The data <a class="footnote-reference" href="#id2" id="id1">[1]</a> consists of monthly average atmospheric CO_2
+concentrations (in parts per million by volume (ppmv)) derived from <em>in-situ</em>
+air samples collected at the Mauna Loa Observatory, Hawaii, between 1958 and
+2003 (with some missing values) <a class="reference external" href="http://cdiac.esd.ornl.gov/ftp/trends/co2/maunaloa.co2">[2]</a>.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/demoML1.png"><img alt="_images/demoML1.png" src="_images/demoML1.png" style="width: 560.0px; height: 420.0px;" /></a>
+</div>
+<p>The data is shown in the above plot. Our goal is to model the CO_2
+concentration as a function of time t. Several features are
+immediately apparent: a long term rising trend, a pronounced seasonal variation
+and some smaller irregularities. In the following, contributions to a
+combined covariance function which takes care of these individual properties are suggessted.
+This is meant primarily to illustrate the power and flexibility of the Gaussian
+process framework—it is possible that other choices would be more appropriate
+for this data set.</p>
+<p>To model the long term smooth rising trend, a squared exponential
+(SE) covariance term with two hyperparameters controlling the amplitude \theta_1
+and characteristic length-scale \theta_2 is used:</p>
+k_1(x,x') = \theta_1^2 \exp \left(-\frac{(x-x')^2}{2\theta_2^2}\right).
+
+<p>Note that we just use a smooth trend; actually enforcing the trend <em>a priori</em> to be increasing
+is probably not so simple and (hopefully) not desirable. We can use the periodic covariance function with a period of one year to
+model the seasonal variation. However, it is not clear that the seasonal trend is
+exactly periodic, so we modify it by taking the product with a squared
+exponential component to allow a decay away from exact periodicity:</p>
+k_2(x,x') = \theta_3^2 \exp\left(-\frac{(x-x')^2}{2\theta_4^2}  \frac{2\sin^2(\pi(x-x'))}{\theta_5^2}\right).<p>where \theta_3 gives the magnitude, \theta_4 the decay-time for the periodic component, and
+\theta_5 the smoothness of the periodic component; the period has been fixed
+to one (year). The seasonal component in the data is caused primarily by
+different rates of CO_2 uptake for plants depending on the season, and it is
+probably reasonable to assume that this pattern may itself change slowly over
+time, partially due to the elevation of the CO_2
+level itself; if this effect turns out not to be relevant, then it can be effectively removed at the fitting stage by
+allowing \theta_4 to become very large.</p>
+<p>To model the (small) medium term irregularities, a rational quadratic term is used:</p>
+k_3(x,x') = \theta_6^2\left(1+\frac{(x-x')^2}{2\theta_8\theta_7^2}\right)^{\theta_8}.<p>where \theta_6 is the magnitude, \theta_7
+is the typical length-scale and \theta_8 is the shape parameter determining diffuseness of the length-scales.</p>
+<p>One could also have used a squared exponential form for this component,
+but it turns out that the rational quadratic works better (gives higher marginal
+likelihood), probably because it can accommodate several length-scales simultaneously.</p>
+<p>Finally we specify a noise model as the sum of a squared exponential contrubition and an independent component:</p>
+k_4(x_p,x_q) = \theta_9^2\exp\left(-\frac{(x_p - x_q)^2}{2\theta_{10}^2}\right) + \theta_{11}^2\delta_{pq}.<p>where \theta_9 is the magnitude of the correlated noise component, \theta_{10}
+is its length scale and \theta_{11} is the magnitude of the independent noise component. Noise in
+the series could be caused by measurement inaccuracies, and by local short-term
+weather phenomena, so it is probably reasonable to assume at least a modest
+amount of correlation in time. Notice that the correlated noise component, the
+first term has an identical expression to the long term component
+in the trend covariance. When optimizing the hyperparameters, we will see that one of
+these components becomes large with a long length-scale (the long term trend),
+while the other remains small with a short length-scale (noise). The fact that
+we have chosen to call one of these components ‘signal’ and the other one ‘noise’
+is only a question of interpretation. Presumably, we are less interested in very
+short-term effect, and thus call it noise; if on the other hand we were interested
+in this effect, we would call it signal.</p>
+<p>The final covariance function is:</p>
+k(x,x') = k_1(x,x') + k_2(x,x') + k_3(x,x') + k_4(x,x')<p>with hyperparameters \theta = (\theta_1,\ldots,\theta_{11})</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># DEFINE parameterized covariance function</span>
+<span class="n">k1</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">67.</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">66.</span><span class="p">))</span>
+<span class="n">k2</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">Periodic</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.4</span><span class="p">))</span> <span class="o">*</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">90.</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.4</span><span class="p">))</span>
+<span class="n">k3</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RQ</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.66</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.78</span><span class="p">))</span>
+<span class="n">k4</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.6</span><span class="o">/</span><span class="mf">12.</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.18</span><span class="p">))</span> <span class="o">+</span> <span class="n">cov</span><span class="o">.</span><span class="n">Noise</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.19</span><span class="p">))</span>
+<span class="n">k</span>  <span class="o">=</span> <span class="n">k1</span> <span class="o">+</span> <span class="n">k2</span> <span class="o">+</span> <span class="n">k3</span> <span class="o">+</span> <span class="n">k4</span>
+</pre></div>
+</div>
+<p>After running the minimization,</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">t0</span> <span class="o">=</span> <span class="n">clock</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">clock</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The extrapolated data looks like:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/demoML2.png"><img alt="_images/demoML2.png" src="_images/demoML2.png" style="width: 560.0px; height: 420.0px;" /></a>
+</div>
+<p>and the optimized values of the hyperparameters allow for a principled analysis of different components driving the model.</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Keeling, C. D. and Whorf, T. P. (2004). Atmospheric CO_2 Records from Sites in the SIO Air Sampling Network. In Trends: A Compendium of Data on Global Change. Carbon Dioxide Information Analysis Center, Oak Ridge National Laboratory, Oak Ridge, Tenn., U.S.A.</td></tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="CV.html"
+                        title="previous chapter">K-fold Cross-Validation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="demoHousing.html"
+                        title="next chapter">Regression on UCI Housing data</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/demoMaunaLoa.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="demoHousing.html" title="Regression on UCI Housing data"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="CV.html" title="K-fold Cross-Validation"
+             >previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
+          <li><a href="Examples.html" >Demos</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

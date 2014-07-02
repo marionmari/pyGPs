@@ -1,0 +1,155 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Regression on UCI Housing data &mdash; pyGPs v1.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'v1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pyGPs v1.2 documentation" href="index.html" />
+    <link rel="up" title="Demos" href="Examples.html" />
+    <link rel="next" title="Semi-supervised Learning with Graphs" href="SemiSupervised.html" />
+    <link rel="prev" title="Regression on Mauna Loa data" href="demoMaunaLoa.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="SemiSupervised.html" title="Semi-supervised Learning with Graphs"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="demoMaunaLoa.html" title="Regression on Mauna Loa data"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
+          <li><a href="Examples.html" accesskey="U">Demos</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="regression-on-uci-housing-data">
+<h1>Regression on UCI Housing data<a class="headerlink" href="#regression-on-uci-housing-data" title="Permalink to this headline">¶</a></h1>
+<p>Boston Housing is a fairly standard dataset used for testing regression problems. It contains 506 data points with 12 numeric attributes, and one binary
+categorical attribute.  The goal is to determine median home values, based on various census attributes. This dataset is available at the <a class="reference external" href="http://archive.ics.uci.edu/ml/datasets/Housing">UCI
+Repository</a>.</p>
+<p>The demo follows that in <a class="footnote-reference" href="#id2" id="id1">[1]</a>.  The data set was preprocessed as follows: each continuous feature was transformed to zero mean and
+unit variance (The categorical variable was dropped).  The data was partitioned into 481 points for training and 25 points for testing.</p>
+<p>The mean function used was <tt class="xref py py-func docutils literal"><span class="pre">src.Core.means.meanZero()</span></tt> and the covariance (using the <tt class="xref py py-func docutils literal"><span class="pre">src.Core.kernels.covSum()</span></tt> function) was a composite of
+<tt class="xref py py-func docutils literal"><span class="pre">src.Core.kernels.covSEiso()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">src.Core.kernels.covNoise()</span></tt>.  The initial values of the hyperparameters were selected randomly from a zero-mean,
+unit-variance normal distribtion.  The actual values were: [ -0.75, \; 0.59, \; -0.45 ]. The initial likelihood hyperparameter
+was -2.30.  The regression started with initial negative log marginal likelihood of :math:` 752.46`.  Note the initial zero mean and the
+variance that is uniform over the test set.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPR</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="n">ym</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fm</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+<span class="n">xa</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">data</span><span class="p">[:,:</span><span class="mi">4</span><span class="p">],</span><span class="n">data</span><span class="p">[:,</span><span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">xa</span> <span class="o">=</span> <span class="p">(</span><span class="n">xa</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xa</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">xa</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="mf">1.e-16</span><span class="p">)</span>
+<span class="n">ya</span><span class="p">,</span> <span class="n">ys2a</span><span class="p">,</span> <span class="n">fma</span><span class="p">,</span> <span class="n">fs2a</span><span class="p">,</span> <span class="n">lpa</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xa</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="figure align-center">
+<img alt="_images/demoH1.png" src="_images/demoH1.png" style="width: 600pt; height: 300pt;" />
+</div>
+<p>After hyperparameter optimization, the covariance hyperparameters were [ 1.17, \;  0.45, \; -1.41 ] and the likelihood
+hyperparameter was -2.27.  The final negative log marginal likelihood (optimized) was  214.46.</p>
+<div class="figure align-center">
+<img alt="_images/demoH2.png" src="_images/demoH2.png" style="width: 600pt; height: 300pt;" />
+</div>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><ol class="first last upperalpha simple" start="20">
+<li>Suttorp and C. Igel, Approximation of Gaussian process regression models after training. In M. Verleysen (Hrsg.), Proceedings of the 16th European Symposium on Artificial Neural Networks (ESANN 2008) , pp. 427–432 (2008).</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="demoMaunaLoa.html"
+                        title="previous chapter">Regression on Mauna Loa data</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="SemiSupervised.html"
+                        title="next chapter">Semi-supervised Learning with Graphs</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/demoHousing.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="SemiSupervised.html" title="Semi-supervised Learning with Graphs"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="demoMaunaLoa.html" title="Regression on Mauna Loa data"
+             >previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
+          <li><a href="Examples.html" >Demos</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

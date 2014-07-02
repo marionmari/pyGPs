@@ -1,0 +1,167 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Validation Package &mdash; pyGPs v1.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     'v1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pyGPs v1.2 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="validation-package">
+<h1>Validation Package<a class="headerlink" href="#validation-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">Validation</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-pyGPs.Validation"></span></div>
+<div class="section" id="module-pyGPs.Validation.valid">
+<span id="valid-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">valid</span></tt> Module<a class="headerlink" href="#module-pyGPs.Validation.valid" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pyGPs.Validation.valid.ACC">
+<tt class="descclassname">pyGPs.Validation.valid.</tt><tt class="descname">ACC</tt><big>(</big><em>predict</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Validation/valid.html#ACC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Validation.valid.ACC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classification accuracy</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.Validation.valid.NLPD">
+<tt class="descclassname">pyGPs.Validation.valid.</tt><tt class="descname">NLPD</tt><big>(</big><em>y</em>, <em>MU</em>, <em>S2</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Validation/valid.html#NLPD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Validation.valid.NLPD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate evaluation measure NLPD in transformed observation space.</p>
+<dl class="docutils">
+<dt>INPUT   y     observed targets</dt>
+<dd>MU    vector of predictions/predicted means
+S2    vector of &#8216;self&#8217; variances</dd>
+</dl>
+<p>OUTPUT  nlpd  Negative Log Predictive Density.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.Validation.valid.Prec">
+<tt class="descclassname">pyGPs.Validation.valid.</tt><tt class="descname">Prec</tt><big>(</big><em>predict</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Validation/valid.html#Prec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Validation.valid.Prec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Precision for class +1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.Validation.valid.RMSE">
+<tt class="descclassname">pyGPs.Validation.valid.</tt><tt class="descname">RMSE</tt><big>(</big><em>predict</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Validation/valid.html#RMSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Validation.valid.RMSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Root mean squared error</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.Validation.valid.Recall">
+<tt class="descclassname">pyGPs.Validation.valid.</tt><tt class="descname">Recall</tt><big>(</big><em>predict</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Validation/valid.html#Recall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Validation.valid.Recall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recall for class +1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.Validation.valid.k_fold_index">
+<tt class="descclassname">pyGPs.Validation.valid.</tt><tt class="descname">k_fold_index</tt><big>(</big><em>n</em>, <em>K=10</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Validation/valid.html#k_fold_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Validation.valid.k_fold_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to k_fold_validation,
+but only return the indice instead of data</p>
+<p>n is number of instances of data
+K is number of folder</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyGPs.Validation.valid.k_fold_validation">
+<tt class="descclassname">pyGPs.Validation.valid.</tt><tt class="descname">k_fold_validation</tt><big>(</big><em>x</em>, <em>y</em>, <em>K=10</em>, <em>randomise=False</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Validation/valid.html#k_fold_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Validation.valid.k_fold_validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates K (training, validation) pairs from the items in X.</p>
+<p>The validation iterables are a partition of X, and each validation
+iterable is of length len(X)/K. Each training iterable is the
+complement (within X) of the validation iterable, and so each training
+iterable is of length (K-1)*len(X)/K.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Validation Package</a><ul>
+<li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">Validation</span></tt> Package</a></li>
+<li><a class="reference internal" href="#module-pyGPs.Validation.valid"><tt class="docutils literal"><span class="pre">valid</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/pyGPs.Validation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
