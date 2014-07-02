@@ -29,19 +29,25 @@ for i in xrange(N):
 # COMPUTE PROPAGATION KERNELS
 #===========================================================================
 num_Iteration = 10
-K = graphKernels.propagationKernel(A, node_label, gr_id, num_Iteration, 'label_propagation', SUM=True, VIS=False, showEachStep=True) 
-
+w = 1e-4
+dist = 'tv' 		# possible values: 'tv', 'hellinger'
+np.random.seed(1)	# set random seed to get reproducible kernel matrices (to account for randomness in kernel average resutls over several reruns of the experiment)	
+K = graphKernels.propagationKernel(A, node_label, gr_id, num_Iteration, w, dist, 'label_diffusion', SUM=True, VIS=False, showEachStep=False) 
 
 #----------------------------------------------------------------------
 # Cross Validation
 #----------------------------------------------------------------------
-ACC = []           # accuracy 
+print '...GP prediction (10-fold CV)'
 
 for t in xrange(num_Iteration+1):
-    print 'number of kernel iteration(T) is', t
+    ACC = []           # accuracy
+    
+    print 'number of kernel iterations =', t
     Matrix = K[:,:,t]
+    # normalize kernel matrix (not useful for MUTAG)
+    #Matrix = graphUtil.normalizeKernel(Matrix)
             
-    # start cross-validation for this T
+    # start cross-validation for this t
     for index_train, index_test in valid.k_fold_index(N, K=10):
         
         y_train = graph_label[index_train,:]
@@ -54,17 +60,19 @@ for t in xrange(num_Iteration+1):
         M1,M2 = graphUtil.formKernelMatrix(Matrix, index_train, index_test)
         k = pyGPs.cov.Pre(M1,M2)
         model.setPrior(kernel=k)
-        
+
         # gp
         x_train = np.zeros((n1,1)) 
         x_test = np.zeros((n2,1))       
-        model.optimize(x_train, y_train)
+        model.fit(x_train, y_train)
         model.predict(x_test)
-        
+	predictive_class = np.sign(model.ym)
+
         # evaluation 
-        predictive_class = np.sign(model.ym)
         acc = valid.ACC(predictive_class, y_test)   
-        ACC.append(acc) 
+        ACC.append(acc)
+    
     
     print 'Accuracy: ', np.round(np.mean(ACC),2), '('+str(np.round(np.std(ACC),2))+')'
-        
+     
+  
