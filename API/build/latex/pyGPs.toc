@@ -42,51 +42,55 @@
 \contentsline {paragraph}{GP classification}{21}{paragraph*.36}
 \contentsline {paragraph}{Result}{21}{paragraph*.37}
 \contentsline {section}{\numberline {1.4}GP functionality}{22}{section.1.4}
-\contentsline {subsection}{\numberline {1.4.1}Kernels \& Means}{22}{subsection.1.4.1}
-\contentsline {subsubsection}{Simple Kernel \& Mean}{22}{subsubsection*.38}
-\contentsline {subsubsection}{Some Special Cases}{23}{subsubsection*.39}
-\contentsline {subsubsection}{Composite Kernels \& Meams}{23}{subsubsection*.40}
-\contentsline {subsubsection}{Precomputed Kernel Matrix}{24}{subsubsection*.41}
-\contentsline {subsubsection}{Customizing Kernel \& Mean}{24}{subsubsection*.42}
-\contentsline {subsection}{\numberline {1.4.2}Likelihoods \& Inference}{25}{subsection.1.4.2}
-\contentsline {subsubsection}{Changing Likelihood \& Inference}{25}{subsubsection*.43}
-\contentsline {subsubsection}{List of Likelihoods}{25}{subsubsection*.44}
-\contentsline {subsubsection}{List of Inference}{26}{subsubsection*.49}
-\contentsline {subsection}{\numberline {1.4.3}Optimizers}{26}{subsection.1.4.3}
-\contentsline {subsubsection}{Optimization Methods}{26}{subsubsection*.57}
-\contentsline {section}{\numberline {1.5}Extensions}{27}{section.1.5}
-\contentsline {subsection}{\numberline {1.5.1}Kernels for Graph Data}{27}{subsection.1.5.1}
-\contentsline {subsubsection}{Kernels on Graph}{27}{subsubsection*.59}
-\contentsline {subsubsection}{Graph Kernels}{28}{subsubsection*.67}
-\contentsline {chapter}{\numberline {2}API}{29}{chapter.2}
-\contentsline {section}{\numberline {2.1}pyGPs}{29}{section.2.1}
-\contentsline {subsection}{\numberline {2.1.1}pyGPs Package}{29}{subsection.2.1.1}
-\contentsline {subsubsection}{\texttt {pyGPs} Package}{29}{subsubsection*.68}
-\contentsline {subsubsection}{Subpackages}{29}{subsubsection*.70}
-\contentsline {paragraph}{Core Package}{29}{paragraph*.71}
-\contentsline {subparagraph}{\texttt {Core} Package}{29}{subparagraph*.72}
-\contentsline {subparagraph}{\texttt {cov} Module}{29}{subparagraph*.74}
-\contentsline {subparagraph}{\texttt {gp} Module}{34}{subparagraph*.153}
-\contentsline {subparagraph}{\texttt {inf} Module}{36}{subparagraph*.198}
-\contentsline {subparagraph}{\texttt {lik} Module}{38}{subparagraph*.225}
-\contentsline {subparagraph}{\texttt {mean} Module}{38}{subparagraph*.237}
-\contentsline {subparagraph}{\texttt {opt} Module}{40}{subparagraph*.275}
-\contentsline {subparagraph}{\texttt {tools} Module}{40}{subparagraph*.290}
-\contentsline {paragraph}{GraphExtension Package}{40}{paragraph*.295}
-\contentsline {subparagraph}{\texttt {GraphExtension} Package}{40}{subparagraph*.296}
-\contentsline {subparagraph}{\texttt {graphKernels} Module}{41}{subparagraph*.298}
-\contentsline {subparagraph}{\texttt {graphUtil} Module}{41}{subparagraph*.300}
-\contentsline {subparagraph}{\texttt {nodeKernels} Module}{41}{subparagraph*.304}
-\contentsline {paragraph}{Optimization Package}{42}{paragraph*.313}
-\contentsline {subparagraph}{\texttt {Optimization} Package}{42}{subparagraph*.314}
-\contentsline {subparagraph}{\texttt {conf} Module}{42}{subparagraph*.316}
-\contentsline {subparagraph}{\texttt {minimize} Module}{43}{subparagraph*.327}
-\contentsline {subparagraph}{\texttt {scg} Module}{43}{subparagraph*.329}
-\contentsline {paragraph}{Valid Package}{43}{paragraph*.331}
-\contentsline {subparagraph}{\texttt {Valid} Package}{43}{subparagraph*.332}
-\contentsline {subparagraph}{\texttt {valid} Module}{43}{subparagraph*.334}
-\contentsline {paragraph}{Validation Package}{44}{paragraph*.342}
-\contentsline {subparagraph}{\texttt {Validation} Package}{44}{subparagraph*.343}
-\contentsline {subparagraph}{\texttt {valid} Module}{44}{subparagraph*.345}
-\contentsline {chapter}{Python Module Index}{45}{section*.353}
-\contentsline {chapter}{Index}{47}{section*.354}
+\contentsline {subsection}{\numberline {1.4.1}A brief overview of pyGPs functionality}{22}{subsection.1.4.1}
+\contentsline {subsubsection}{kernel functions:}{22}{subsubsection*.38}
+\contentsline {subsubsection}{mean functions:}{23}{subsubsection*.39}
+\contentsline {subsubsection}{lik functions:}{23}{subsubsection*.40}
+\contentsline {subsubsection}{inf functions:}{23}{subsubsection*.41}
+\contentsline {subsubsection}{optimization methods:}{24}{subsubsection*.42}
+\contentsline {subsubsection}{evaluation measures:}{24}{subsubsection*.43}
+\contentsline {subsection}{\numberline {1.4.2}Kernels \& Means}{24}{subsection.1.4.2}
+\contentsline {subsubsection}{Simple Kernel \& Mean}{24}{subsubsection*.44}
+\contentsline {subsubsection}{Some Special Cases}{24}{subsubsection*.45}
+\contentsline {subsubsection}{Composite Kernels \& Meams}{25}{subsubsection*.46}
+\contentsline {subsubsection}{Precomputed Kernel Matrix}{25}{subsubsection*.47}
+\contentsline {subsubsection}{Customizing Kernel \& Mean}{26}{subsubsection*.48}
+\contentsline {subsection}{\numberline {1.4.3}Likelihoods \& Inference}{26}{subsection.1.4.3}
+\contentsline {subsubsection}{Changing Likelihood \& Inference}{26}{subsubsection*.49}
+\contentsline {subsubsection}{List of Likelihoods}{27}{subsubsection*.50}
+\contentsline {subsubsection}{List of Inference}{27}{subsubsection*.56}
+\contentsline {subsection}{\numberline {1.4.4}Optimizers}{29}{subsection.1.4.4}
+\contentsline {subsubsection}{Optimization Methods}{29}{subsubsection*.75}
+\contentsline {section}{\numberline {1.5}Extensions}{30}{section.1.5}
+\contentsline {subsection}{\numberline {1.5.1}Kernels for Graph Data}{30}{subsection.1.5.1}
+\contentsline {subsubsection}{Kernels on Graph}{30}{subsubsection*.77}
+\contentsline {subsubsection}{Graph Kernels}{31}{subsubsection*.85}
+\contentsline {chapter}{\numberline {2}API}{33}{chapter.2}
+\contentsline {section}{\numberline {2.1}pyGPs}{33}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}pyGPs Package}{33}{subsection.2.1.1}
+\contentsline {subsubsection}{\texttt {pyGPs} Package}{33}{subsubsection*.86}
+\contentsline {subsubsection}{Subpackages}{33}{subsubsection*.88}
+\contentsline {paragraph}{Core Package}{33}{paragraph*.89}
+\contentsline {subparagraph}{\texttt {Core} Package}{33}{subparagraph*.90}
+\contentsline {subparagraph}{\texttt {cov} Module}{33}{subparagraph*.92}
+\contentsline {subparagraph}{\texttt {gp} Module}{38}{subparagraph*.173}
+\contentsline {subparagraph}{\texttt {inf} Module}{42}{subparagraph*.217}
+\contentsline {subparagraph}{\texttt {lik} Module}{44}{subparagraph*.244}
+\contentsline {subparagraph}{\texttt {mean} Module}{44}{subparagraph*.256}
+\contentsline {subparagraph}{\texttt {opt} Module}{46}{subparagraph*.294}
+\contentsline {subparagraph}{\texttt {tools} Module}{47}{subparagraph*.309}
+\contentsline {paragraph}{GraphExtensions Package}{47}{paragraph*.314}
+\contentsline {subparagraph}{\texttt {GraphExtensions} Package}{47}{subparagraph*.315}
+\contentsline {subparagraph}{\texttt {graphKernels} Module}{47}{subparagraph*.317}
+\contentsline {subparagraph}{\texttt {graphUtil} Module}{48}{subparagraph*.319}
+\contentsline {subparagraph}{\texttt {nodeKernels} Module}{48}{subparagraph*.323}
+\contentsline {paragraph}{Optimization Package}{49}{paragraph*.331}
+\contentsline {subparagraph}{\texttt {Optimization} Package}{49}{subparagraph*.332}
+\contentsline {subparagraph}{\texttt {conf} Module}{49}{subparagraph*.334}
+\contentsline {subparagraph}{\texttt {minimize} Module}{50}{subparagraph*.345}
+\contentsline {subparagraph}{\texttt {scg} Module}{50}{subparagraph*.347}
+\contentsline {paragraph}{Validation Package}{50}{paragraph*.349}
+\contentsline {subparagraph}{\texttt {Validation} Package}{50}{subparagraph*.350}
+\contentsline {subparagraph}{\texttt {valid} Module}{50}{subparagraph*.352}
+\contentsline {chapter}{Python Module Index}{53}{section*.360}
+\contentsline {chapter}{Index}{55}{section*.361}

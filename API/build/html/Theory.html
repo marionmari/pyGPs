@@ -61,77 +61,6 @@ get a little more complicated: you might want to use expressive covariance and m
 for hyperparameters, use non-Gaussian likelihood functions (rendering exact inference intractable), use approximate inference
 algorithms, or combinations of many or all of the above.</p>
 <p>A comprehensive introduction to Gaussian Processes for Machine Learning is provided in the <a class="reference external" href="http://www.gaussianprocess.org/gpml">GPML</a> book by Rasmussen and Williams, 2006.</p>
-<div class="section" id="list-of-functionality">
-<h2>List of Functionality<a class="headerlink" href="#list-of-functionality" title="Permalink to this headline">¶</a></h2>
-<p>This table lists the functionality implemented in pyGPs.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="13%" />
-<col width="19%" />
-<col width="12%" />
-<col width="25%" />
-<col width="15%" />
-<col width="18%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Functionality</th>
-<th class="head">Kernel</th>
-<th class="head">Mean</th>
-<th class="head">Likelihood</th>
-<th class="head">Inference</th>
-<th class="head">Optimizer</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td rowspan="13">Simple</td>
-<td>Constant</td>
-<td>Constant</td>
-<td>Gaussian</td>
-<td>Exact</td>
-<td>Minimize</td>
-</tr>
-<tr class="row-odd"><td>Linear</td>
-<td>Linear</td>
-<td>Cumulative Gaussian (Erf)</td>
-<td>EP</td>
-<td>CG</td>
-</tr>
-<tr class="row-even"><td>Linear ard</td>
-<td>One</td>
-<td>Laplace</td>
-<td>Laplace</td>
-<td>SCG</td>
-</tr>
-<tr class="row-odd"><td>Matérn (1,3,5)</td>
-<td>Zero</td>
-<td rowspan="10">&nbsp;</td>
-<td rowspan="10">&nbsp;</td>
-<td>BFGS</td>
-</tr>
-<tr class="row-even"><td>Periodic</td>
-<td rowspan="9">&nbsp;</td>
-<td rowspan="9">&nbsp;</td>
-</tr>
-<tr class="row-odd"><td>Polynomial</td>
-</tr>
-<tr class="row-even"><td>Piecewise Poly</td>
-</tr>
-<tr class="row-odd"><td>RBF iso</td>
-</tr>
-<tr class="row-even"><td>RBF ard</td>
-</tr>
-<tr class="row-odd"><td>RBF unit</td>
-</tr>
-<tr class="row-even"><td>RQ  iso</td>
-</tr>
-<tr class="row-odd"><td>RQ  ard</td>
-</tr>
-<tr class="row-even"><td>Noise</td>
-</tr>
-</tbody>
-</table>
-<p>pyGPs also provide cross-validation and some built-in evalation methods.</p>
-</div>
 </div>
 
 
@@ -140,14 +69,6 @@ algorithms, or combinations of many or all of the above.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">GPs &amp; Functionality</a><ul>
-<li><a class="reference internal" href="#list-of-functionality">List of Functionality</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
   <p class="topless"><a href="Install.html"
                         title="previous chapter">Installation</a></p>

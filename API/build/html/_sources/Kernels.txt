@@ -146,16 +146,3 @@ where the returning matrix A depends on the input:
   - else *der != None*, return the derivative of mean wrt. to :math:`k_{th}` hyperparameter.
 
 
-
-List of Kernels and Default Parameters
----------------------------------------
-
-.. automodule:: pyGPs.Core.cov
-   :members:
-
-
-List of Means and Default Parameters
------------------------------------------
- 
-.. automodule:: pyGPs.Core.mean
-   :members:

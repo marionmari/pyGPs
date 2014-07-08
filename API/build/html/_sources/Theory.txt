@@ -8,43 +8,4 @@ algorithms, or combinations of many or all of the above.
 
 A comprehensive introduction to Gaussian Processes for Machine Learning is provided in the `GPML`_ book by Rasmussen and Williams, 2006.
 
-
-
-List of Functionality
-------------------------
-
-This table lists the functionality implemented in pyGPs. 
-
-+-------------+-------------------+------------+-------------------------+---------------+------------------+
-|Functionality| Kernel            | Mean       | Likelihood              | Inference     | Optimizer        |
-+=============+===================+============+=========================+===============+==================+
-| Simple      | Constant          |  Constant  | Gaussian                | Exact         | Minimize         |
-+             +-------------------+------------+-------------------------+---------------+------------------+
-|             | Linear            |  Linear    |Cumulative Gaussian (Erf)| EP            | CG               |
-+             +-------------------+------------+-------------------------+---------------+------------------+
-|             | Linear ard        |  One       | Laplace                 | Laplace       | SCG              |
-+             +-------------------+------------+-------------------------+---------------+------------------+
-|             | Matérn (1,3,5)    |  Zero      | 	                 |               | BFGS             |
-+             +-------------------+------------+                         |               +------------------+
-|             | Periodic          |            |                         |               |                  |
-+             +-------------------+            |                         |               |                  |  
-|             | Polynomial        |            |                         |               |                  |
-+             +-------------------+            |                         |               |                  |
-|             | Piecewise Poly    |            |                         |               |                  |
-+             +-------------------+            |                         |               |                  |
-|             | RBF iso           |            |                         |               |                  |
-+             +-------------------+            |                         |               |                  |
-|             | RBF ard           |            |                         |               |                  |
-+             +-------------------+            |                         |               |                  |
-|             | RBF unit          |            |                         |               |                  |
-+             +-------------------+            |                         |               |                  |
-|             | RQ  iso           |            |                         |               |                  |
-+             +-------------------+            |                         |               |                  |
-|             | RQ  ard           |            |                         |               |                  |
-+             +-------------------+            |                         |               |                  |
-|             | Noise             |            |                         |               |                  |
-+-------------+-------------------+------------+-------------------------+---------------+------------------+
-
-pyGPs also provide cross-validation and some built-in evalation methods.
-
 .. _GPML: http://www.gaussianprocess.org/gpml

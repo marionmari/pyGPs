@@ -24,7 +24,10 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyGPs v1.2 documentation" href="index.html" /> 
+    <link rel="top" title="pyGPs v1.2 documentation" href="index.html" />
+    <link rel="up" title="pyGPs Package" href="pyGPs.html" />
+    <link rel="next" title="Validation Package" href="pyGPs.Validation.html" />
+    <link rel="prev" title="Optimization Package" href="pyGPs.Optimization.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,7 +39,15 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="pyGPs.Validation.html" title="Validation Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyGPs.Optimization.html" title="Optimization Package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >pyGPs</a> &raquo;</li>
+          <li><a href="pyGPs.html" accesskey="U">pyGPs Package</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -49,64 +60,9 @@
 <h1>Valid Package<a class="headerlink" href="#valid-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
 <h2><tt class="xref py py-mod docutils literal"><span class="pre">Valid</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-pyGPs.Valid"></span></div>
-<div class="section" id="module-pyGPs.Valid.valid">
-<span id="valid-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">valid</span></tt> Module<a class="headerlink" href="#module-pyGPs.Valid.valid" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="pyGPs.Valid.valid.ACC">
-<tt class="descclassname">pyGPs.Valid.valid.</tt><tt class="descname">ACC</tt><big>(</big><em>predict</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Valid/valid.html#ACC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Valid.valid.ACC" title="Permalink to this definition">¶</a></dt>
-<dd><p>Classification accuracy</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.Valid.valid.NLPD">
-<tt class="descclassname">pyGPs.Valid.valid.</tt><tt class="descname">NLPD</tt><big>(</big><em>y</em>, <em>MU</em>, <em>S2</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Valid/valid.html#NLPD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Valid.valid.NLPD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate evaluation measure NLPD in transformed observation space.</p>
-<dl class="docutils">
-<dt>INPUT   y     observed targets</dt>
-<dd>MU    vector of predictions/predicted means
-S2    vector of &#8216;self&#8217; variances</dd>
-</dl>
-<p>OUTPUT  nlpd  Negative Log Predictive Density.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.Valid.valid.Prec">
-<tt class="descclassname">pyGPs.Valid.valid.</tt><tt class="descname">Prec</tt><big>(</big><em>predict</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Valid/valid.html#Prec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Valid.valid.Prec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Precision for class +1</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.Valid.valid.RMSE">
-<tt class="descclassname">pyGPs.Valid.valid.</tt><tt class="descname">RMSE</tt><big>(</big><em>predict</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Valid/valid.html#RMSE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Valid.valid.RMSE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Root mean squared error</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.Valid.valid.Recall">
-<tt class="descclassname">pyGPs.Valid.valid.</tt><tt class="descname">Recall</tt><big>(</big><em>predict</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Valid/valid.html#Recall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Valid.valid.Recall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recall for class +1</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.Valid.valid.k_fold_index">
-<tt class="descclassname">pyGPs.Valid.valid.</tt><tt class="descname">k_fold_index</tt><big>(</big><em>n</em>, <em>K=10</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Valid/valid.html#k_fold_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Valid.valid.k_fold_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Similar to k_fold_validation,
-but only return the indice instead of data</p>
-<p>n is number of instances of data
-K is number of folder</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.Valid.valid.k_fold_validation">
-<tt class="descclassname">pyGPs.Valid.valid.</tt><tt class="descname">k_fold_validation</tt><big>(</big><em>x</em>, <em>y</em>, <em>K=10</em>, <em>randomise=False</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Valid/valid.html#k_fold_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Valid.valid.k_fold_validation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates K (training, validation) pairs from the items in X.</p>
-<p>The validation iterables are a partition of X, and each validation
-iterable is of length len(X)/K. Each training iterable is the
-complement (within X) of the validation iterable, and so each training
-iterable is of length (K-1)*len(X)/K.</p>
-</dd></dl>
-
+</div>
+<div class="section" id="valid-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">valid</span></tt> Module<a class="headerlink" href="#valid-module" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -120,11 +76,17 @@ iterable is of length (K-1)*len(X)/K.</p>
   <ul>
 <li><a class="reference internal" href="#">Valid Package</a><ul>
 <li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">Valid</span></tt> Package</a></li>
-<li><a class="reference internal" href="#module-pyGPs.Valid.valid"><tt class="docutils literal"><span class="pre">valid</span></tt> Module</a></li>
+<li><a class="reference internal" href="#valid-module"><tt class="docutils literal"><span class="pre">valid</span></tt> Module</a></li>
 </ul>
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyGPs.Optimization.html"
+                        title="previous chapter">Optimization Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyGPs.Validation.html"
+                        title="next chapter">Validation Package</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/pyGPs.Valid.txt"
@@ -156,7 +118,15 @@ iterable is of length (K-1)*len(X)/K.</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="pyGPs.Validation.html" title="Validation Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyGPs.Optimization.html" title="Optimization Package"
+             >previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >pyGPs</a> &raquo;</li>
+          <li><a href="pyGPs.html" >pyGPs Package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

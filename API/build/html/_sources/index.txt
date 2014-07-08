@@ -58,10 +58,29 @@ Getting started
 
    Install 
    Theory 
+
+
+Tutorials
+------------------------------
+.. toctree::
+   :maxdepth: 1
+
    Examples
+
+GP functionality
+------------------------------
+.. toctree::
+   :maxdepth: 1
+
    Kernels
    Likelihoods
    Opts
+
+Extensions
+------------------------------
+.. toctree::
+   :maxdepth: 1
+
    Graph
 
 

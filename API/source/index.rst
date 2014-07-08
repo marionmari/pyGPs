@@ -72,6 +72,7 @@ GP functionality
 .. toctree::
    :maxdepth: 1
 
+   functionality
    Kernels
    Likelihoods
    Opts

@@ -15,8 +15,7 @@ Subpackages
 .. toctree::
 
     pyGPs.Core
-    pyGPs.GraphExtension
+    pyGPs.GraphExtensions
     pyGPs.Optimization
-    pyGPs.Valid
     pyGPs.Validation
 

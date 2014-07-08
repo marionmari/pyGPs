@@ -13,7 +13,7 @@
 
 
 \title{pyGPs API}
-\date{July 02, 2014}
+\date{July 08, 2014}
 \release{v1.2}
 \author{M. Neumann, S. Huang, D. Marthaler, K. Kersting}
 \newcommand{\sphinxlogo}{}
@@ -123,8 +123,8 @@
 pyGPs is a library hosting Python implementations of Gaussian processes (GPs) for
 machine learning.
 pyGPs bridges the gap between systems designed primarily for users, who mainly
-want to apply gps and need basic machine learning routines for model training, evaluation, and visualiza-
-gp functiontion, and expressive systems for developers, who focus on extending the core
+want to apply GPs and need basic machine learning routines for model training, evaluation, and
+visualiztion, and expressive systems for developers, who focus on extending the core
 functionalities as covariance and likelihood functions, as well as inference techniques.
 
 The software package is released under the BSD 2-Clause (FreeBSD) License.
@@ -147,7 +147,7 @@ FITC functionality (following matlab implementations under Copyright (c) by Ed S
 
 \end{itemize}
 
-This is a stable release. If you observe problems or bugs, please let us know.
+The most recent stable release is pyGPs v1.2. If you observe problems or bugs, please let us know.
 You can also download a \href{https://github.com/marionmari/pyGP\_PR/}{procedual implementation} of GP functionality from Github. However, the procedual version will not be supported in future.
 \begin{description}
 \item[{Authors:}] \leavevmode\begin{itemize}
@@ -1151,6 +1151,309 @@ Interestingly, using a composite kernel with diffusion kernel on graph and an rb
 \section{GP functionality}
 \label{index:gp-functionality}
 
+\subsection{A brief overview of pyGPs functionality}
+\label{functionality:a-brief-overview-of-pygps-functionality}\label{functionality::doc}
+For detailed documentations see the API, tutorials, and respective modules/functions.
+
+
+\subsubsection{kernel functions:}
+\label{functionality:kernel-functions}\begin{itemize}
+\item {} 
+simple kernel functions:
+
+\end{itemize}
+
+\begin{tabulary}{\linewidth}{|L|L|}
+\hline
+
+Poly
+ & 
+Polynomial kernel
+\\\hline
+
+PiecePoly
+ & 
+Piecewise polynomial kernel with compact support
+\\\hline
+
+RBF
+ & 
+Squared Exponential kernel
+\\\hline
+
+RBFunit
+ & 
+Squared Exponential kernel with unit magnitude
+\\\hline
+
+RBFard
+ & 
+Squared Exponential kernel with Automatic Relevance Determination
+\\\hline
+
+Const
+ & 
+Constant kernel
+\\\hline
+
+Linear
+ & 
+Linear kernel
+\\\hline
+
+LINard
+ & 
+Linear covariance function with Automatic Relevance Detemination
+\\\hline
+
+Matern
+ & 
+Matern covariance function
+\\\hline
+
+Periodic
+ & 
+Stationary kernel for a smooth periodic function
+\\\hline
+
+Noise
+ & 
+Independent covariance function, i.e ``white noise''
+\\\hline
+
+RQ
+ & 
+Rational Quadratic covariance function with isotropic distance measure
+\\\hline
+
+RQard
+ & 
+Rational Quadratic covariance function with ARD distance measure
+\\\hline
+
+Pre
+ & 
+Precomputed kernel matrix
+\\\hline
+\end{tabulary}
+
+\begin{itemize}
+\item {} 
+composite kernel functions:
+
+\end{itemize}
+
+\begin{tabulary}{\linewidth}{|L|L|}
+\hline
+
+ProductOfKernel or ``*''
+ & 
+product of covariance functions
+\\\hline
+
+ScaleOfKernel or ``*''
+ & 
+scale covariance function (by scalar)
+\\\hline
+
+SumOfKernel or ``+''
+ & 
+sum of (parameterized) covariance functions
+\\\hline
+
+FITCOfKernel
+ & 
+covariance function to be used together with the FITC approximation
+\\\hline
+\end{tabulary}
+
+
+
+\subsubsection{mean functions:}
+\label{functionality:mean-functions}\begin{itemize}
+\item {} 
+simple mean functions:
+
+\end{itemize}
+
+\begin{tabulary}{\linewidth}{|L|L|}
+\hline
+
+Zero
+ & 
+zero mean function
+\\\hline
+
+One
+ & 
+one mean function
+\\\hline
+
+Const
+ & 
+constant mean function
+\\\hline
+
+Linear
+ & 
+linear mean function
+\\\hline
+\end{tabulary}
+
+\begin{itemize}
+\item {} 
+composite covariance functions:
+
+\end{itemize}
+
+\begin{tabulary}{\linewidth}{|L|L|}
+\hline
+
+ProductOfMean or ``*''
+ & 
+products of mean functions
+\\\hline
+
+SumOfMean or ``+''
+ & 
+sums of mean functions
+\\\hline
+
+ScaleOfMean ``*''
+ & 
+scaled version of a mean function
+\\\hline
+
+PowerOfMean ``**''
+ & 
+power of a mean function
+\\\hline
+\end{tabulary}
+
+
+
+\subsubsection{lik functions:}
+\label{functionality:lik-functions}
+\begin{tabulary}{\linewidth}{|L|L|}
+\hline
+
+Erf
+ & 
+Error function, classification, probit regression
+\\\hline
+
+Gauss
+ & 
+Gaussian likelihood function for regression
+\\\hline
+
+Laplace
+ & 
+Laplacian likelihood function for regression
+\\\hline
+\end{tabulary}
+
+
+
+\subsubsection{inf functions:}
+\label{functionality:inf-functions}
+\begin{tabulary}{\linewidth}{|L|L|}
+\hline
+
+Exact
+ & 
+Exact inference (only possible with Gaussian likelihood)
+\\\hline
+
+EP
+ & 
+Expectation Propagation
+\\\hline
+
+Laplace
+ & 
+Laplace's Approximation
+\\\hline
+
+FITC\_Exact
+ & 
+Large scale regression with approximate covariance matrix
+\\\hline
+
+FITC\_EP
+ & 
+Large scale inference  with approximate covariance matrix
+\\\hline
+
+FITC\_Laplace
+ & 
+Large scale inference  with approximate covariance matrix
+\\\hline
+\end{tabulary}
+
+
+
+\subsubsection{optimization methods:}
+\label{functionality:optimization-methods}
+\begin{tabulary}{\linewidth}{|L|L|}
+\hline
+
+Minimize
+ & 
+Minimize by Carl Rasmussen
+\\\hline
+
+CG
+ & 
+Conjugent gradient
+\\\hline
+
+BFGS
+ & 
+Quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)
+\\\hline
+
+SCG
+ & 
+Scaled conjugent gradient (faster than CG)
+\\\hline
+\end{tabulary}
+
+
+
+\subsubsection{evaluation measures:}
+\label{functionality:evaluation-measures}
+\begin{tabulary}{\linewidth}{|L|L|}
+\hline
+
+RMSE
+ & 
+Root mean squared error
+\\\hline
+
+ACC
+ & 
+Classification accuracy
+\\\hline
+
+Prec
+ & 
+Precision for class +1
+\\\hline
+
+Recall
+ & 
+Recall for class +1
+\\\hline
+
+NLPD
+ & 
+Negative log predictive density in transformed observation space
+\\\hline
+\end{tabulary}
+
+
+
 \subsection{Kernels \& Means}
 \label{Kernels:kernels-means}\label{Kernels::doc}
 
@@ -1478,6 +1781,15 @@ hyp = {[} log\_sigma {]}
 \begin{fulllineitems}
 \phantomsection\label{Likelihoods:pyGPs.Core.lik.Likelihood}\pysigline{\strong{class }\code{pyGPs.Core.lik.}\bfcode{Likelihood}}
 Base function for Likelihood function
+\index{proceed() (pyGPs.Core.lik.Likelihood method)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.lik.Likelihood.proceed}\pysiglinewithargsret{\bfcode{proceed}}{}{}
+The likelihood functions have two possible modes based on inputs. 
+See lik.py for detail documentation.
+
+\end{fulllineitems}
+
 
 \end{fulllineitems}
 
@@ -1551,6 +1863,116 @@ parameter sn2, we simply use snu2 = 1e-6.
 \begin{fulllineitems}
 \phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{Inference}}
 Base class for inference. Defined several tool methods in it.
+\index{Psi\_line() (pyGPs.Core.inf.Inference method)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.Psi_line}\pysiglinewithargsret{\bfcode{Psi\_line}}{\emph{s}, \emph{dalpha}, \emph{alpha}, \emph{K}, \emph{m}, \emph{likfunc}, \emph{y}, \emph{inffunc}}{}
+Criterion Psi at alpha + s*dalpha for line search
+{[}Psi,alpha,f,dlp,W{]} = Psi\_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)
+
+\end{fulllineitems}
+
+\index{Psi\_lineFITC() (pyGPs.Core.inf.Inference method)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.Psi_lineFITC}\pysiglinewithargsret{\bfcode{Psi\_lineFITC}}{\emph{s}, \emph{dalpha}, \emph{alpha}, \emph{V}, \emph{d0}, \emph{m}, \emph{likfunc}, \emph{y}, \emph{inffunc}}{}
+Criterion Psi at alpha + s*dalpha for line search
+
+\end{fulllineitems}
+
+\index{epfitcRefresh() (pyGPs.Core.inf.Inference method)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.epfitcRefresh}\pysiglinewithargsret{\bfcode{epfitcRefresh}}{\emph{d0}, \emph{P0}, \emph{R0}, \emph{R0P0}, \emph{w}, \emph{b}}{}
+Refresh the representation of the posterior from initial and site parameters
+to prevent possible loss of numerical precision after many epfitcUpdates
+effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
+Sigma = inv(inv(K)+diag(W)) = diag(d) + P'{\color{red}\bfseries{}*}R0'{\color{red}\bfseries{}*}R'{\color{red}\bfseries{}*}R*R0*P.
+
+\end{fulllineitems}
+
+\index{epfitcZ() (pyGPs.Core.inf.Inference method)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.epfitcZ}\pysiglinewithargsret{\bfcode{epfitcZ}}{\emph{d}, \emph{P}, \emph{R}, \emph{nn}, \emph{gg}, \emph{ttau}, \emph{tnu}, \emph{d0}, \emph{R0}, \emph{P0}, \emph{y}, \emph{likfunc}, \emph{m}, \emph{inffunc}}{}
+Compute the marginal likelihood approximation
+effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
+
+\end{fulllineitems}
+
+\index{fitcRefresh() (pyGPs.Core.inf.Inference method)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.fitcRefresh}\pysiglinewithargsret{\bfcode{fitcRefresh}}{\emph{d0}, \emph{P0}, \emph{R0}, \emph{R0P0}, \emph{w}}{}
+Refresh the representation of the posterior from initial and site parameters
+to prevent possible loss of numerical precision after many epfitcUpdates
+effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
+Sigma = inv(inv(K)+diag(W)) = diag(d) + P'{\color{red}\bfseries{}*}R0'{\color{red}\bfseries{}*}R'{\color{red}\bfseries{}*}R*R0*P.
+
+\end{fulllineitems}
+
+\index{logdetA() (pyGPs.Core.inf.Inference method)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.logdetA}\pysiglinewithargsret{\bfcode{logdetA}}{\emph{K}, \emph{w}, \emph{nargout}}{}
+Compute the log determinant ldA and the inverse iA of a square nxn matrix
+A = eye(n) + K*diag(w) from its LU decomposition; for negative definite A, we 
+return ldA = Inf. We also return mwiA = -diag(w)*inv(A).
+{[}ldA,iA,mwiA{]} = logdetA(K,w)
+
+\end{fulllineitems}
+
+\index{mvmK() (pyGPs.Core.inf.Inference method)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.mvmK}\pysiglinewithargsret{\bfcode{mvmK}}{\emph{al}, \emph{V}, \emph{d0}}{}
+Matrix vector multiplication with approximate covariance matrix
+
+\end{fulllineitems}
+
+\index{mvmZ() (pyGPs.Core.inf.Inference method)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.mvmZ}\pysiglinewithargsret{\bfcode{mvmZ}}{\emph{x}, \emph{RVdd}, \emph{t}}{}
+Matrix vector multiplication with Z=inv(K+inv(W))
+
+\end{fulllineitems}
+
+\index{proceed() (pyGPs.Core.inf.Inference method)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.proceed}\pysiglinewithargsret{\bfcode{proceed}}{\emph{meanfunc}, \emph{covfunc}, \emph{likfunc}, \emph{x}, \emph{y}, \emph{nargout=1}}{}
+Inference computation based on inputs.
+post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{meanfunc} -- mean function
+
+\item {} 
+\textbf{covfunc} -- covariance function
+
+\item {} 
+\textbf{likfunc} -- likelihood function
+
+\item {} 
+\textbf{x} -- training data
+
+\item {} 
+\textbf{y} -- training labels
+
+\item {} 
+\textbf{nargout} -- specify the number of output(1,2 or 3)
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+posterior, negative-log-marginal-likelihood, derivative for negative-log-marginal-likelihood-likelihood
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
 
 \end{fulllineitems}
 
@@ -1559,6 +1981,22 @@ Base class for inference. Defined several tool methods in it.
 \begin{fulllineitems}
 \phantomsection\label{Likelihoods:pyGPs.Core.inf.Laplace}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{Laplace}}
 Laplace's Approximation to the posterior Gaussian process.
+
+\end{fulllineitems}
+
+\index{dnlZStruct (class in pyGPs.Core.inf)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.inf.dnlZStruct}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.inf.}\bfcode{dnlZStruct}}{\emph{m}, \emph{c}, \emph{l}}{}
+Data structure for the derivatives of mean, cov and lik functions
+
+\end{fulllineitems}
+
+\index{postStruct (class in pyGPs.Core.inf)}
+
+\begin{fulllineitems}
+\phantomsection\label{Likelihoods:pyGPs.Core.inf.postStruct}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{postStruct}}
+Data structure for posterior
 
 \end{fulllineitems}
 
@@ -1788,7 +2226,7 @@ tbd.
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Const}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{Const}}{\emph{log\_sigma=0.0}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Constant kernel. hyp = {[} log\_sigma {]}
 \begin{quote}\begin{description}
@@ -1815,7 +2253,7 @@ Constant kernel. hyp = {[} log\_sigma {]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.FITCOfKernel}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{FITCOfKernel}}{\emph{cov}, \emph{inducingInput}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Covariance function to be used together with the FITC approximation.
 The function allows for more than one output argument and does not respect the
@@ -1868,12 +2306,85 @@ each covariance function will inherit it and implement its own behaviour
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Kernel.fitc}\pysiglinewithargsret{\bfcode{fitc}}{\emph{inducingInput}}{}
+Covariance function to be used together with the FITC approximation.
+Setting FITC gp model will implicitly call this method.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+an instance of FITCOfKernel
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{getCovMatrix() (pyGPs.Core.cov.Kernel method)}
+
+\begin{fulllineitems}
+\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Kernel.getCovMatrix}\pysiglinewithargsret{\bfcode{getCovMatrix}}{\emph{x=None}, \emph{z=None}, \emph{mode=None}}{}
+Return the specific covariance matrix according to input mode
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{x} -- training data
+
+\item {} 
+\textbf{z} -- test data
+
+\item {} 
+\textbf{mode} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `self\_test' return self covariance matrix of test data(test by 1).
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+`train' return training covariance matrix(train by train).
+`cross' return cross covariance matrix between x and z(train by test)
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+the corresponding covariance matrix
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{getDerMatrix() (pyGPs.Core.cov.Kernel method)}
+
+\begin{fulllineitems}
+\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Kernel.getDerMatrix}\pysiglinewithargsret{\bfcode{getDerMatrix}}{\emph{x=None}, \emph{z=None}, \emph{mode=None}, \emph{der=None}}{}
+Compute derivatives wrt. hyperparameters according to input mode
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{x} -- training data
+
+\item {} 
+\textbf{z} -- test data
+
+\item {} 
+\textbf{mode} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `self\_test' return self derivative matrix of test data(test by 1).
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+`train' return training derivative matrix(train by train).
+`cross' return cross derivative matrix between x and z(train by test)
+:param int der: index of hyperparameter whose derivative to be computed
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+the corresponding derivative matrix
+
+\end{description}\end{quote}
+
 \end{fulllineitems}
 
 \index{sq\_dist() (pyGPs.Core.cov.Kernel method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Kernel.sq_dist}\pysiglinewithargsret{\bfcode{sq\_dist}}{\emph{a}, \emph{b=None}}{}
+Compute a matrix of all pairwise squared distances
+between two sets of vectors, stored in the row of the two matrices:
+a (of size n by D) and b (of size m by D).
+
 \end{fulllineitems}
 
 
@@ -1883,7 +2394,7 @@ each covariance function will inherit it and implement its own behaviour
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.LINard}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{LINard}}{\emph{D=None}, \emph{log\_ell\_list=None}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Linear covariance function with Automatic Relevance Detemination.
 hyp = log\_ell\_list
@@ -1916,10 +2427,10 @@ hyp = log\_ell\_list
 \index{Linear (class in pyGPs.Core.cov)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Linear}\pysigline{\strong{class }\code{pyGPs.Core.cov.}\bfcode{Linear}}
-Bases: \code{pyGPs.Core.cov.Kernel}
+\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Linear}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{Linear}}{\emph{log\_sigma=0.0}}{}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
-Linear kernel. No hyperparameters.
+Linear kernel. hyp = {[} log\_sigma {]}.
 \index{getCovMatrix() (pyGPs.Core.cov.Linear method)}
 
 \begin{fulllineitems}
@@ -1939,7 +2450,7 @@ Linear kernel. No hyperparameters.
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Matern}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{Matern}}{\emph{log\_ell=0.0}, \emph{d=3}, \emph{log\_sigma=0.0}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Matern covariance function with nu = d/2 and isotropic distance measure. 
 For d=1 the function is also known as the exponential covariance function 
@@ -2003,7 +2514,7 @@ hyp = {[} log\_ell, log\_sigma{]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Noise}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{Noise}}{\emph{log\_sigma=0.0}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Independent covariance function, i.e ``white noise'', with specified variance.
 Normally NOT used anymore since noise is now added in liklihood.
@@ -2032,7 +2543,7 @@ hyp = {[} log\_sigma {]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Periodic}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{Periodic}}{\emph{log\_ell=0.0}, \emph{log\_p=0.0}, \emph{log\_sigma=0.0}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Stationary kernel for a smooth periodic function. 
 hyp = {[} log\_ell, log\_p, log\_sigma{]}
@@ -2069,7 +2580,7 @@ hyp = {[} log\_ell, log\_p, log\_sigma{]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.PiecePoly}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{PiecePoly}}{\emph{log\_ell=0.0}, \emph{v=2}, \emph{log\_sigma=0.0}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Piecewise polynomial kernel with compact support. 
 hyp = {[}log\_ell, log\_sigma{]}
@@ -2136,7 +2647,7 @@ hyp = {[}log\_ell, log\_sigma{]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Poly}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{Poly}}{\emph{log\_c=0.0}, \emph{d=2}, \emph{log\_sigma=0.0}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Polynomial covariance function. hyp = {[} log\_c, log\_sigma {]}
 \begin{quote}\begin{description}
@@ -2172,7 +2683,7 @@ Polynomial covariance function. hyp = {[} log\_c, log\_sigma {]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Pre}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{Pre}}{\emph{M1}, \emph{M2}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Precomputed kernel matrix. No hyperparameters and thus nothing will be optimised.
 \begin{quote}\begin{description}
@@ -2206,7 +2717,9 @@ last row is self covariances (diagonal of test by test)
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.ProductOfKernel}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{ProductOfKernel}}{\emph{cov1}, \emph{cov2}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
+
+Product of two kernel function.
 \index{getCovMatrix() (pyGPs.Core.cov.ProductOfKernel method)}
 
 \begin{fulllineitems}
@@ -2244,7 +2757,7 @@ Bases: \code{pyGPs.Core.cov.Kernel}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.RBF}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{RBF}}{\emph{log\_ell=0.0}, \emph{log\_sigma=0.0}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Squared Exponential kernel with isotropic distance measure. hyp = {[}log\_ell, log\_sigma{]}
 \begin{quote}\begin{description}
@@ -2277,7 +2790,7 @@ Squared Exponential kernel with isotropic distance measure. hyp = {[}log\_ell, l
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.RBFard}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{RBFard}}{\emph{D=None}, \emph{log\_ell\_list=None}, \emph{log\_sigma=0.0}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Squared Exponential kernel with Automatic Relevance Determination.
 hyp = log\_ell\_list + {[}log\_sigma{]}
@@ -2314,7 +2827,7 @@ hyp = log\_ell\_list + {[}log\_sigma{]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.RBFunit}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{RBFunit}}{\emph{log\_ell=0.0}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Squared Exponential kernel with isotropic distance measure with unit magnitude.
 i.e signal variance is always 1. hyp = {[} log\_ell {]}
@@ -2342,7 +2855,7 @@ i.e signal variance is always 1. hyp = {[} log\_ell {]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.RQ}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{RQ}}{\emph{log\_ell=0.0}, \emph{log\_sigma=0.0}, \emph{log\_alpha=0.0}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Rational Quadratic covariance function with isotropic distance measure.
 hyp = {[} log\_ell, log\_sigma, log\_alpha {]}
@@ -2379,7 +2892,7 @@ hyp = {[} log\_ell, log\_sigma, log\_alpha {]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.RQard}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{RQard}}{\emph{D=None}, \emph{log\_ell\_list=None}, \emph{log\_sigma=0.0}, \emph{log\_alpha=0.0}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Rational Quadratic covariance function with Automatic Relevance Detemination
 (ARD) distance measure.
@@ -2420,7 +2933,9 @@ hyp = log\_ell\_list + {[} log\_sigma, log\_alpha {]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.ScaleOfKernel}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{ScaleOfKernel}}{\emph{cov}, \emph{scalar}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
+
+Scale of a kernel function.
 \index{getCovMatrix() (pyGPs.Core.cov.ScaleOfKernel method)}
 
 \begin{fulllineitems}
@@ -2458,7 +2973,9 @@ Bases: \code{pyGPs.Core.cov.Kernel}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.SumOfKernel}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.cov.}\bfcode{SumOfKernel}}{\emph{cov1}, \emph{cov2}}{}
-Bases: \code{pyGPs.Core.cov.Kernel}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
+
+Sum of two kernel function.
 \index{getCovMatrix() (pyGPs.Core.cov.SumOfKernel method)}
 
 \begin{fulllineitems}
@@ -2506,18 +3023,10 @@ Base class for GP model
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GP.fit}\pysiglinewithargsret{\bfcode{fit}}{\emph{x=None}, \emph{y=None}, \emph{der=True}}{}
-fit the training data
-@return  {[}nlZ, post{]}        if der = False
-@return  {[}nlZ, dnlZ, post{]}  if der = True (default)
-\begin{quote}
-\begin{description}
-\item[{where nlZ  is the negative log marginal likelihood}] \leavevmode
-dnlZ is partial derivatives of nlZ w.r.t. each hyperparameter
-post is struct representation of the (approximate) posterior
-post consists of post.alpha, post.L, post.sW
-
-\end{description}
-\end{quote}
+Fit the training data. Update negative log marginal likelihood(nlZ), 
+partial derivatives of nlZ w.r.t. each hyperparameter(dnlZ),
+and struct representation of the (approximate) posterior(post), 
+which consists of post.alpha, post.L, post.sW.
 
 \end{fulllineitems}
 
@@ -2525,8 +3034,8 @@ post consists of post.alpha, post.L, post.sW
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GP.optimize}\pysiglinewithargsret{\bfcode{optimize}}{\emph{x=None}, \emph{y=None}}{}
-train optimal hyperparameters 
-adjust to all mean/cov/lik functions
+Train optimal hyperparameters based on training data,
+adjust new hyperparameters to all mean/cov/lik functions
 
 \end{fulllineitems}
 
@@ -2534,33 +3043,42 @@ adjust to all mean/cov/lik functions
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GP.plotData_1d}\pysiglinewithargsret{\bfcode{plotData\_1d}}{\emph{axisvals=None}}{}
+Plot 1d (toy) data.
+
 \end{fulllineitems}
 
 \index{plotData\_2d() (pyGPs.Core.gp.GP method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GP.plotData_2d}\pysiglinewithargsret{\bfcode{plotData\_2d}}{\emph{x1}, \emph{x2}, \emph{t1}, \emph{t2}, \emph{p1}, \emph{p2}, \emph{axisvals=None}}{}
+Plot 2d (toy) data.
+
 \end{fulllineitems}
 
 \index{predict() (pyGPs.Core.gp.GP method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GP.predict}\pysiglinewithargsret{\bfcode{predict}}{\emph{xs}, \emph{ys=None}}{}
-prediction according to given inputs
+Prediction according to given inputs.
+Get predictive output means(ym), 
+predictive output variances(ys2),
+predictive latent means(fm),
+predictive latent variances(fs2),
+log predictive probabilities(lp).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{xs} -- test input
 
-@param xs           test input
-@param ys           test target(optional)
-\begin{description}
-\item[{@return ymu, ys2, fmu, fs2, lp}] \leavevmode\begin{description}
-\item[{where ymu is predictive output means}] \leavevmode
-ys2 is predictive output variances
-fm2 is predictive latent means
-fs2 is predictive latent variances
-lp  is log predictive probabilities(if ys is given, otherwise is None)
+\item {} 
+\textbf{ys} -- test target(optional)
 
-\end{description}
+\end{itemize}
 
-\end{description}
+\item[{Returns}] \leavevmode
+ym, ys2, fm, fs2, lp
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -2568,23 +3086,30 @@ lp  is log predictive probabilities(if ys is given, otherwise is None)
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GP.predict_with_posterior}\pysiglinewithargsret{\bfcode{predict\_with\_posterior}}{\emph{post}, \emph{xs}, \emph{ys=None}}{}
-prediction with provided posterior
+Prediction with provided posterior
 (i.e. you already have the posterior and thus don't need fitting/training phases)
+Get predictive output means(ym), 
+predictive output variances(ys2),
+predictive latent means(fm),
+predictive latent variances(fs2),
+log predictive probabilities(lp).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{post} -- struct representation of posterior
 
-@param post         posterior structcture
-@param xs           test input
-@param ys           test target(optional)
-\begin{description}
-\item[{@return ymu, ys2, fmu, fs2, lp}] \leavevmode\begin{description}
-\item[{where ymu is predictive output means}] \leavevmode
-ys2 is predictive output variances
-fm2 is predictive latent means
-fs2 is predictive latent variances
-lp  is log predictive probabilities(if ys is given, otherwise is None)
+\item {} 
+\textbf{xs} -- test input
 
-\end{description}
+\item {} 
+\textbf{ys} -- test target(optional)
 
-\end{description}
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+ym, ys2, fm, fs2, lp
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -2592,6 +3117,8 @@ lp  is log predictive probabilities(if ys is given, otherwise is None)
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GP.setData}\pysiglinewithargsret{\bfcode{setData}}{\emph{x}, \emph{y}}{}
+Pass training data and traning labels to model.
+
 \end{fulllineitems}
 
 \index{setOptimizer() (pyGPs.Core.gp.GP method)}
@@ -2648,7 +3175,7 @@ This is only the range of initial guess, during optimization process, optimal hy
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GP.setPrior}\pysiglinewithargsret{\bfcode{setPrior}}{\emph{mean=None}, \emph{kernel=None}}{}
-set prior mean and cov
+Set prior mean and cov
 
 \end{fulllineitems}
 
@@ -2666,24 +3193,43 @@ Gaussian Process Classification
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPC.plot}\pysiglinewithargsret{\bfcode{plot}}{\emph{x1}, \emph{x2}, \emph{t1}, \emph{t2}, \emph{axisvals=None}}{}
+Plot 2d gp classification.
+
 \end{fulllineitems}
 
 \index{setOptimizer() (pyGPs.Core.gp.GPC method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPC.setOptimizer}\pysiglinewithargsret{\bfcode{setOptimizer}}{\emph{method}, \emph{num\_restarts=None}, \emph{min\_threshold=None}, \emph{meanRange=None}, \emph{covRange=None}, \emph{likRange=None}}{}
+Set Optimizer. See base class.
+
 \end{fulllineitems}
 
 \index{useInference() (pyGPs.Core.gp.GPC method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPC.useInference}\pysiglinewithargsret{\bfcode{useInference}}{\emph{newInf}}{}
+Use another inference techinique other than default EP inference.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{newInf} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `Laplace'
+
+\end{description}\end{quote}
+
 \end{fulllineitems}
 
 \index{useLikelihood() (pyGPs.Core.gp.GPC method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPC.useLikelihood}\pysiglinewithargsret{\bfcode{useLikelihood}}{\emph{newLik}}{}
+Use another likelihood function other than default Erf inference.
+(Not used in this version)
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{newLik} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `Logistic'
+
+\end{description}\end{quote}
+
 \end{fulllineitems}
 
 
@@ -2700,25 +3246,28 @@ Gaussian Process Classification FITC
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPC_FITC.plot}\pysiglinewithargsret{\bfcode{plot}}{\emph{x1}, \emph{x2}, \emph{t1}, \emph{t2}, \emph{axisvals=None}}{}
+Plot 2d GP FITC classification.
+
 \end{fulllineitems}
 
 \index{setOptimizer() (pyGPs.Core.gp.GPC\_FITC method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPC_FITC.setOptimizer}\pysiglinewithargsret{\bfcode{setOptimizer}}{\emph{method}, \emph{num\_restarts=None}, \emph{min\_threshold=None}, \emph{meanRange=None}, \emph{covRange=None}, \emph{likRange=None}}{}
+Set optimizer. See base class.
+
 \end{fulllineitems}
 
 \index{useInference() (pyGPs.Core.gp.GPC\_FITC method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPC_FITC.useInference}\pysiglinewithargsret{\bfcode{useInference}}{\emph{newInf}}{}
-\end{fulllineitems}
+Use another inference techinique other than default exact inference.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{newInf} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `Laplace' or `EP'
 
-\index{useLaplace\_FITC() (pyGPs.Core.gp.GPC\_FITC method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPC_FITC.useLaplace_FITC}\pysiglinewithargsret{\bfcode{useLaplace\_FITC}}{}{}
-use Laplace approxiamation other than EP
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -2726,6 +3275,14 @@ use Laplace approxiamation other than EP
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPC_FITC.useLikelihood}\pysiglinewithargsret{\bfcode{useLikelihood}}{\emph{newLik}}{}
+Use another inference techinique other than default Erf likelihood.
+(Not used in this version)
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{newLik} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `Logistic'
+
+\end{description}\end{quote}
+
 \end{fulllineitems}
 
 
@@ -2742,8 +3299,8 @@ This is a one vs. one classification wrapper for GPC
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPMC.createBinaryClass}\pysiglinewithargsret{\bfcode{createBinaryClass}}{\emph{i}, \emph{j}}{}
-create data points x,y which only contains class i and j
-class\_i is +1 and class\_j is -1
+Create dataset x(data) and y(label) which only contains class i and j.
+Relabel class i to +1 and class j to -1
 
 \end{fulllineitems}
 
@@ -2751,9 +3308,15 @@ class\_i is +1 and class\_j is -1
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPMC.fitAndPredict}\pysiglinewithargsret{\bfcode{fitAndPredict}}{\emph{xs}}{}
+Fitting model and prediction.
 predictive\_vote is a matrix where
-row i    -\textgreater{} each test point i
-column j -\textgreater{} probability for being eahc class j
+row i is each test point i
+column j is the probability for being class j
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+predictive\_vote
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -2761,9 +3324,15 @@ column j -\textgreater{} probability for being eahc class j
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPMC.optimizeAndPredict}\pysiglinewithargsret{\bfcode{optimizeAndPredict}}{\emph{xs}}{}
+Optimizing model and prediction.
 predictive\_vote is a matrix where
-row i    -\textgreater{} each test point i
-column j -\textgreater{} probability for being eahc class j
+row i is each test point i
+column j is the probability for being class j
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+predictive\_vote
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -2771,7 +3340,7 @@ column j -\textgreater{} probability for being eahc class j
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPMC.setData}\pysiglinewithargsret{\bfcode{setData}}{\emph{x}, \emph{y}}{}
-for multi-class, data is x\_all and y\_all
+Set data for multi-class model
 
 \end{fulllineitems}
 
@@ -2779,7 +3348,7 @@ for multi-class, data is x\_all and y\_all
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPMC.setPrior}\pysiglinewithargsret{\bfcode{setPrior}}{\emph{mean=None}, \emph{kernel=None}}{}
-set prior mean and cov
+set prior mean function and covariance function
 
 \end{fulllineitems}
 
@@ -2787,12 +3356,16 @@ set prior mean and cov
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPMC.useInference}\pysiglinewithargsret{\bfcode{useInference}}{\emph{newInf}}{}
+Use another inference techinique other than default EP inference.
+
 \end{fulllineitems}
 
 \index{useLikelihood() (pyGPs.Core.gp.GPMC method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPMC.useLikelihood}\pysiglinewithargsret{\bfcode{useLikelihood}}{\emph{newLik}}{}
+Use another likelihood function other than default Erf inference.
+
 \end{fulllineitems}
 
 
@@ -2809,13 +3382,15 @@ Gaussian Process Regression
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPR.plot}\pysiglinewithargsret{\bfcode{plot}}{\emph{axisvals=None}}{}
+Plot 1d GP regression.
+
 \end{fulllineitems}
 
 \index{setNoise() (pyGPs.Core.gp.GPR method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPR.setNoise}\pysiglinewithargsret{\bfcode{setNoise}}{\emph{log\_sigma}}{}
-explicitly set noise variance other than default
+Set noise variance other than default
 
 \end{fulllineitems}
 
@@ -2823,12 +3398,21 @@ explicitly set noise variance other than default
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPR.setOptimizer}\pysiglinewithargsret{\bfcode{setOptimizer}}{\emph{method}, \emph{num\_restarts=None}, \emph{min\_threshold=None}, \emph{meanRange=None}, \emph{covRange=None}, \emph{likRange=None}}{}
+Set Optimizer. See base class.
+
 \end{fulllineitems}
 
 \index{useInference() (pyGPs.Core.gp.GPR method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPR.useInference}\pysiglinewithargsret{\bfcode{useInference}}{\emph{newInf}}{}
+Use another inference techinique other than default exact inference.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{newInf} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `Laplace' or `EP'
+
+\end{description}\end{quote}
+
 \end{fulllineitems}
 
 \index{useLikelihood() (pyGPs.Core.gp.GPR method)}
@@ -2851,13 +3435,15 @@ Gaussian Process Regression FITC
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPR_FITC.plot}\pysiglinewithargsret{\bfcode{plot}}{\emph{axisvals=None}}{}
+Plot 1d GP FITC regression.
+
 \end{fulllineitems}
 
 \index{setNoise() (pyGPs.Core.gp.GPR\_FITC method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPR_FITC.setNoise}\pysiglinewithargsret{\bfcode{setNoise}}{\emph{log\_sigma}}{}
-explicitly set noise variance other than default
+Set noise variance other than default value
 
 \end{fulllineitems}
 
@@ -2865,18 +3451,34 @@ explicitly set noise variance other than default
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPR_FITC.setOptimizer}\pysiglinewithargsret{\bfcode{setOptimizer}}{\emph{method}, \emph{num\_restarts=None}, \emph{min\_threshold=None}, \emph{meanRange=None}, \emph{covRange=None}, \emph{likRange=None}}{}
+Set Optimizer. See base class.
+
 \end{fulllineitems}
 
 \index{useInference() (pyGPs.Core.gp.GPR\_FITC method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPR_FITC.useInference}\pysiglinewithargsret{\bfcode{useInference}}{\emph{newInf}}{}
+Use another inference techinique other than default exact inference.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{newInf} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `Laplace' or `EP'
+
+\end{description}\end{quote}
+
 \end{fulllineitems}
 
 \index{useLikelihood() (pyGPs.Core.gp.GPR\_FITC method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GPR_FITC.useLikelihood}\pysiglinewithargsret{\bfcode{useLikelihood}}{\emph{newLik}}{}
+Use another inference techinique other than default Gaussian likelihood.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{newLik} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `Laplace'
+
+\end{description}\end{quote}
+
 \end{fulllineitems}
 
 
@@ -2888,15 +3490,28 @@ explicitly set noise variance other than default
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GP_FITC}\pysigline{\strong{class }\code{pyGPs.Core.gp.}\bfcode{GP\_FITC}}
 Bases: {\hyperref[pyGPs.Core:pyGPs.Core.gp.GP]{\code{pyGPs.Core.gp.GP}}}
 
-GP\_FITC base class
+FITC GP base class
 \index{setData() (pyGPs.Core.gp.GP\_FITC method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GP_FITC.setData}\pysiglinewithargsret{\bfcode{setData}}{\emph{x}, \emph{y}, \emph{value\_per\_axis=5}}{}
-set Data and derive deault inducing\_points
+Set training data and derive deault inducing\_points.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{x} -- training data
 
-value\_per\_axis is number of value in each dimension...
-...when using a default inducing point grid
+\item {} 
+\textbf{y} -- training target
+
+\item {} 
+\textbf{value\_per\_axis} (\href{http://docs.python.org/library/functions.html\#int}{\emph{int}}) -- number of value in each dimension
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+when using a uni-distant default inducing points
 
 \end{fulllineitems}
 
@@ -2904,7 +3519,7 @@ value\_per\_axis is number of value in each dimension...
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.gp.GP_FITC.setPrior}\pysiglinewithargsret{\bfcode{setPrior}}{\emph{mean=None}, \emph{kernel=None}, \emph{inducing\_points=None}}{}
-set prior and inducing\_points
+Set GP prior and inducing points
 
 \end{fulllineitems}
 
@@ -2918,7 +3533,7 @@ set prior and inducing\_points
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.EP}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{EP}}
-Bases: {\hyperref[Likelihoods:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
 
 Expectation Propagation approximation to the posterior Gaussian Process.
 \index{proceed() (pyGPs.Core.inf.EP method)}
@@ -2934,7 +3549,7 @@ Expectation Propagation approximation to the posterior Gaussian Process.
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Exact}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{Exact}}
-Bases: {\hyperref[Likelihoods:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
 
 Exact inference for a GP with Gaussian likelihood. Compute a parametrization
 of the posterior, the negative log marginal likelihood and its derivatives
@@ -2952,7 +3567,7 @@ w.r.t. the hyperparameters.
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.FITC_EP}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{FITC\_EP}}
-Bases: {\hyperref[Likelihoods:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
 
 FITC-EP approximation to the posterior Gaussian process. The function is
 equivalent to infEP with the covariance function:
@@ -2977,7 +3592,7 @@ Sean Holden, NIPS, 2007.
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.FITC_Exact}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{FITC\_Exact}}
-Bases: {\hyperref[Likelihoods:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
 
 FITC approximation to the posterior Gaussian process. The function is
 equivalent to infExact with the covariance function:
@@ -2997,7 +3612,7 @@ is the noise of the inducing inputs and Quu = Kuu + snu2*eye(nu).
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.FITC_Laplace}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{FITC\_Laplace}}
-Bases: {\hyperref[Likelihoods:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
 
 FITC-Laplace approximation to the posterior Gaussian process. The function is
 equivalent to infLaplace with the covariance function:
@@ -3027,12 +3642,17 @@ Base class for inference. Defined several tool methods in it.
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.Psi_line}\pysiglinewithargsret{\bfcode{Psi\_line}}{\emph{s}, \emph{dalpha}, \emph{alpha}, \emph{K}, \emph{m}, \emph{likfunc}, \emph{y}, \emph{inffunc}}{}
+Criterion Psi at alpha + s*dalpha for line search
+{[}Psi,alpha,f,dlp,W{]} = Psi\_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)
+
 \end{fulllineitems}
 
 \index{Psi\_lineFITC() (pyGPs.Core.inf.Inference method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.Psi_lineFITC}\pysiglinewithargsret{\bfcode{Psi\_lineFITC}}{\emph{s}, \emph{dalpha}, \emph{alpha}, \emph{V}, \emph{d0}, \emph{m}, \emph{likfunc}, \emph{y}, \emph{inffunc}}{}
+Criterion Psi at alpha + s*dalpha for line search
+
 \end{fulllineitems}
 
 \index{epComputeParams() (pyGPs.Core.inf.Inference method)}
@@ -3045,6 +3665,11 @@ Base class for inference. Defined several tool methods in it.
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.epfitcRefresh}\pysiglinewithargsret{\bfcode{epfitcRefresh}}{\emph{d0}, \emph{P0}, \emph{R0}, \emph{R0P0}, \emph{w}, \emph{b}}{}
+Refresh the representation of the posterior from initial and site parameters
+to prevent possible loss of numerical precision after many epfitcUpdates
+effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
+Sigma = inv(inv(K)+diag(W)) = diag(d) + P'{\color{red}\bfseries{}*}R0'{\color{red}\bfseries{}*}R'{\color{red}\bfseries{}*}R*R0*P.
+
 \end{fulllineitems}
 
 \index{epfitcUpdate() (pyGPs.Core.inf.Inference method)}
@@ -3057,36 +3682,82 @@ Base class for inference. Defined several tool methods in it.
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.epfitcZ}\pysiglinewithargsret{\bfcode{epfitcZ}}{\emph{d}, \emph{P}, \emph{R}, \emph{nn}, \emph{gg}, \emph{ttau}, \emph{tnu}, \emph{d0}, \emph{R0}, \emph{P0}, \emph{y}, \emph{likfunc}, \emph{m}, \emph{inffunc}}{}
+Compute the marginal likelihood approximation
+effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
+
 \end{fulllineitems}
 
 \index{fitcRefresh() (pyGPs.Core.inf.Inference method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.fitcRefresh}\pysiglinewithargsret{\bfcode{fitcRefresh}}{\emph{d0}, \emph{P0}, \emph{R0}, \emph{R0P0}, \emph{w}}{}
+Refresh the representation of the posterior from initial and site parameters
+to prevent possible loss of numerical precision after many epfitcUpdates
+effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
+Sigma = inv(inv(K)+diag(W)) = diag(d) + P'{\color{red}\bfseries{}*}R0'{\color{red}\bfseries{}*}R'{\color{red}\bfseries{}*}R*R0*P.
+
 \end{fulllineitems}
 
 \index{logdetA() (pyGPs.Core.inf.Inference method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.logdetA}\pysiglinewithargsret{\bfcode{logdetA}}{\emph{K}, \emph{w}, \emph{nargout}}{}
+Compute the log determinant ldA and the inverse iA of a square nxn matrix
+A = eye(n) + K*diag(w) from its LU decomposition; for negative definite A, we 
+return ldA = Inf. We also return mwiA = -diag(w)*inv(A).
+{[}ldA,iA,mwiA{]} = logdetA(K,w)
+
 \end{fulllineitems}
 
 \index{mvmK() (pyGPs.Core.inf.Inference method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.mvmK}\pysiglinewithargsret{\bfcode{mvmK}}{\emph{al}, \emph{V}, \emph{d0}}{}
+Matrix vector multiplication with approximate covariance matrix
+
 \end{fulllineitems}
 
 \index{mvmZ() (pyGPs.Core.inf.Inference method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.mvmZ}\pysiglinewithargsret{\bfcode{mvmZ}}{\emph{x}, \emph{RVdd}, \emph{t}}{}
+Matrix vector multiplication with Z=inv(K+inv(W))
+
 \end{fulllineitems}
 
 \index{proceed() (pyGPs.Core.inf.Inference method)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.proceed}\pysiglinewithargsret{\bfcode{proceed}}{}{}
+\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.proceed}\pysiglinewithargsret{\bfcode{proceed}}{\emph{meanfunc}, \emph{covfunc}, \emph{likfunc}, \emph{x}, \emph{y}, \emph{nargout=1}}{}
+Inference computation based on inputs.
+post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{meanfunc} -- mean function
+
+\item {} 
+\textbf{covfunc} -- covariance function
+
+\item {} 
+\textbf{likfunc} -- likelihood function
+
+\item {} 
+\textbf{x} -- training data
+
+\item {} 
+\textbf{y} -- training labels
+
+\item {} 
+\textbf{nargout} -- specify the number of output(1,2 or 3)
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+posterior, negative-log-marginal-likelihood, derivative for negative-log-marginal-likelihood-likelihood
+
+\end{description}\end{quote}
+
 \end{fulllineitems}
 
 
@@ -3096,7 +3767,7 @@ Base class for inference. Defined several tool methods in it.
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Laplace}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{Laplace}}
-Bases: {\hyperref[Likelihoods:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.inf.Inference]{\code{pyGPs.Core.inf.Inference}}}
 
 Laplace's Approximation to the posterior Gaussian process.
 \index{proceed() (pyGPs.Core.inf.Laplace method)}
@@ -3114,6 +3785,8 @@ Laplace's Approximation to the posterior Gaussian process.
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.dnlZStruct}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.inf.}\bfcode{dnlZStruct}}{\emph{m}, \emph{c}, \emph{l}}{}
 Bases: \code{object}
 
+Data structure for the derivatives of mean, cov and lik functions
+
 \end{fulllineitems}
 
 \index{postStruct (class in pyGPs.Core.inf)}
@@ -3121,6 +3794,8 @@ Bases: \code{object}
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.postStruct}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{postStruct}}
 Bases: \code{object}
+
+Data structure for posterior
 
 \end{fulllineitems}
 
@@ -3131,7 +3806,7 @@ Bases: \code{object}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.lik.Erf}\pysigline{\strong{class }\code{pyGPs.Core.lik.}\bfcode{Erf}}
-Bases: {\hyperref[Likelihoods:pyGPs.Core.lik.Likelihood]{\code{pyGPs.Core.lik.Likelihood}}}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.lik.Likelihood]{\code{pyGPs.Core.lik.Likelihood}}}
 
 Error function or cumulative Gaussian likelihood function for binary
 classification or probit regression.
@@ -3168,7 +3843,7 @@ $Erf(t)=\frac{1}{2}(1+erf(\frac{t}{\sqrt{2}}))=normcdf(t)$
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.lik.Gauss}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.lik.}\bfcode{Gauss}}{\emph{log\_sigma=-2.3025850929940455}}{}
-Bases: {\hyperref[Likelihoods:pyGPs.Core.lik.Likelihood]{\code{pyGPs.Core.lik.Likelihood}}}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.lik.Likelihood]{\code{pyGPs.Core.lik.Likelihood}}}
 
 Gaussian likelihood function for regression.
 
@@ -3189,7 +3864,7 @@ hyp = {[} log\_sigma {]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.lik.Laplace}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.lik.}\bfcode{Laplace}}{\emph{log\_sigma=-2.3025850929940455}}{}
-Bases: {\hyperref[Likelihoods:pyGPs.Core.lik.Likelihood]{\code{pyGPs.Core.lik.Likelihood}}}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.lik.Likelihood]{\code{pyGPs.Core.lik.Likelihood}}}
 
 Laplacian likelihood function for regression. ONLY works with EP inference!
 
@@ -3217,6 +3892,9 @@ Base function for Likelihood function
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.lik.Likelihood.proceed}\pysiglinewithargsret{\bfcode{proceed}}{}{}
+The likelihood functions have two possible modes based on inputs. 
+See lik.py for detail documentation.
+
 \end{fulllineitems}
 
 
@@ -3229,7 +3907,7 @@ Base function for Likelihood function
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.Const}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.mean.}\bfcode{Const}}{\emph{c=5.0}}{}
-Bases: \code{pyGPs.Core.mean.Mean}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.mean.Mean]{\code{pyGPs.Core.mean.Mean}}}
 
 Constant mean function. hyp = {[}c{]}
 \begin{quote}\begin{description}
@@ -3256,7 +3934,7 @@ Constant mean function. hyp = {[}c{]}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.Linear}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.mean.}\bfcode{Linear}}{\emph{D=None}, \emph{alpha\_list=None}}{}
-Bases: \code{pyGPs.Core.mean.Mean}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.mean.Mean]{\code{pyGPs.Core.mean.Mean}}}
 
 Linear mean function. self.hyp = alpha\_list
 \begin{quote}\begin{description}
@@ -3296,7 +3974,7 @@ The base function for mean function
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.One}\pysigline{\strong{class }\code{pyGPs.Core.mean.}\bfcode{One}}
-Bases: \code{pyGPs.Core.mean.Mean}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.mean.Mean]{\code{pyGPs.Core.mean.Mean}}}
 
 One mean.
 \index{getDerMatrix() (pyGPs.Core.mean.One method)}
@@ -3318,7 +3996,9 @@ One mean.
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.PowerOfMean}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.mean.}\bfcode{PowerOfMean}}{\emph{mean}, \emph{d}}{}
-Bases: \code{pyGPs.Core.mean.Mean}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.mean.Mean]{\code{pyGPs.Core.mean.Mean}}}
+
+Power of a mean fucntion.
 \index{getDerMatrix() (pyGPs.Core.mean.PowerOfMean method)}
 
 \begin{fulllineitems}
@@ -3356,7 +4036,9 @@ Bases: \code{pyGPs.Core.mean.Mean}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.ProductOfMean}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.mean.}\bfcode{ProductOfMean}}{\emph{mean1}, \emph{mean2}}{}
-Bases: \code{pyGPs.Core.mean.Mean}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.mean.Mean]{\code{pyGPs.Core.mean.Mean}}}
+
+Product of two mean fucntions.
 \index{getDerMatrix() (pyGPs.Core.mean.ProductOfMean method)}
 
 \begin{fulllineitems}
@@ -3394,7 +4076,9 @@ Bases: \code{pyGPs.Core.mean.Mean}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.ScaleOfMean}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.mean.}\bfcode{ScaleOfMean}}{\emph{mean}, \emph{scalar}}{}
-Bases: \code{pyGPs.Core.mean.Mean}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.mean.Mean]{\code{pyGPs.Core.mean.Mean}}}
+
+Scale of a mean function.
 \index{getDerMatrix() (pyGPs.Core.mean.ScaleOfMean method)}
 
 \begin{fulllineitems}
@@ -3432,7 +4116,9 @@ Bases: \code{pyGPs.Core.mean.Mean}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.SumOfMean}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.mean.}\bfcode{SumOfMean}}{\emph{mean1}, \emph{mean2}}{}
-Bases: \code{pyGPs.Core.mean.Mean}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.mean.Mean]{\code{pyGPs.Core.mean.Mean}}}
+
+Sum of two mean functions.
 \index{getDerMatrix() (pyGPs.Core.mean.SumOfMean method)}
 
 \begin{fulllineitems}
@@ -3470,7 +4156,7 @@ Bases: \code{pyGPs.Core.mean.Mean}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.Zero}\pysigline{\strong{class }\code{pyGPs.Core.mean.}\bfcode{Zero}}
-Bases: \code{pyGPs.Core.mean.Mean}
+Bases: {\hyperref[pyGPs.Core:pyGPs.Core.mean.Mean]{\code{pyGPs.Core.mean.Mean}}}
 
 Zero mean.
 \index{getDerMatrix() (pyGPs.Core.mean.Zero method)}
@@ -3496,6 +4182,8 @@ Zero mean.
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.opt.BFGS}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.opt.}\bfcode{BFGS}}{\emph{model}, \emph{searchConfig=None}}{}
 Bases: {\hyperref[pyGPs.Core:pyGPs.Core.opt.Optimizer]{\code{pyGPs.Core.opt.Optimizer}}}
+
+quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)
 \index{findMin() (pyGPs.Core.opt.BFGS method)}
 
 \begin{fulllineitems}
@@ -3510,6 +4198,8 @@ Bases: {\hyperref[pyGPs.Core:pyGPs.Core.opt.Optimizer]{\code{pyGPs.Core.opt.Opti
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.opt.CG}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.opt.}\bfcode{CG}}{\emph{model}, \emph{searchConfig=None}}{}
 Bases: {\hyperref[pyGPs.Core:pyGPs.Core.opt.Optimizer]{\code{pyGPs.Core.opt.Optimizer}}}
+
+Conjugent gradient
 \index{findMin() (pyGPs.Core.opt.CG method)}
 
 \begin{fulllineitems}
@@ -3524,6 +4214,8 @@ Bases: {\hyperref[pyGPs.Core:pyGPs.Core.opt.Optimizer]{\code{pyGPs.Core.opt.Opti
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Minimize}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.opt.}\bfcode{Minimize}}{\emph{model}, \emph{searchConfig=None}}{}
 Bases: {\hyperref[pyGPs.Core:pyGPs.Core.opt.Optimizer]{\code{pyGPs.Core.opt.Optimizer}}}
+
+minimize by Carl Rasmussen (python implementation of ``minimize'' in GPML)
 \index{findMin() (pyGPs.Core.opt.Minimize method)}
 
 \begin{fulllineitems}
@@ -3542,30 +4234,40 @@ Bases: \code{object}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer.apply_in_objects}\pysiglinewithargsret{\bfcode{apply\_in\_objects}}{\emph{hypInArray}}{}
+Apply the values in the input array to hyparameters of model.
+
 \end{fulllineitems}
 
 \index{convert\_to\_array() (pyGPs.Core.opt.Optimizer method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer.convert_to_array}\pysiglinewithargsret{\bfcode{convert\_to\_array}}{}{}
+Convert all hyparameters in the model to an array
+
 \end{fulllineitems}
 
 \index{dnlml() (pyGPs.Core.opt.Optimizer method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer.dnlml}\pysiglinewithargsret{\bfcode{dnlml}}{\emph{hypInArray}}{}
+Find derivatives wrt. negative-log-marginal-likelihood
+
 \end{fulllineitems}
 
 \index{nlml() (pyGPs.Core.opt.Optimizer method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer.nlml}\pysiglinewithargsret{\bfcode{nlml}}{\emph{hypInArray}}{}
+Find negative-log-marginal-likelihood
+
 \end{fulllineitems}
 
 \index{nlzAnddnlz() (pyGPs.Core.opt.Optimizer method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer.nlzAnddnlz}\pysiglinewithargsret{\bfcode{nlzAnddnlz}}{\emph{hypInArray}}{}
+Find negative-log-marginal-likelihood and derivatives in one pass(faster)
+
 \end{fulllineitems}
 
 
@@ -3576,6 +4278,8 @@ Bases: \code{object}
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.opt.SCG}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.opt.}\bfcode{SCG}}{\emph{model}, \emph{searchConfig=None}}{}
 Bases: {\hyperref[pyGPs.Core:pyGPs.Core.opt.Optimizer]{\code{pyGPs.Core.opt.Optimizer}}}
+
+Scaled conjugent gradient (faster than CG)
 \index{findMin() (pyGPs.Core.opt.SCG method)}
 
 \begin{fulllineitems}
@@ -3592,125 +4296,196 @@ Bases: {\hyperref[pyGPs.Core:pyGPs.Core.opt.Optimizer]{\code{pyGPs.Core.opt.Opti
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.tools.brentmin}\pysiglinewithargsret{\code{pyGPs.Core.tools.}\bfcode{brentmin}}{\emph{xlow}, \emph{xupp}, \emph{Nitmax}, \emph{tol}, \emph{f}, \emph{nout=None}, \emph{*args}}{}
+Brent's minimization method in one dimension. 
+Given a function f, and given a search interval this routine isolates 
+the minimum of fractional precision of about tol using Brent's method.
+Reference: Section 10.2 Parabolic Interpolation and Brent's Method in One Dimension
+Press, Teukolsky, Vetterling \& Flannery
+Numerical Recipes in C, Cambridge University Press, 2002
+This is a python implementation of gpml functionality (Copyright (c) by
+Hannes Nickisch 2010-01-10). 
+xmin,fmin,funccout,varargout = BRENTMIN(xlow,xupp,Nit,tol,f,nout,varargin)
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{xlow} -- lower bound. i.e. search interval such that xlow\textless{}=xmin\textless{}=xupp
+
+\item {} 
+\textbf{xupp} -- uppper bound. i.e. search interval such that xlow\textless{}=xmin\textless{}=xupp
+
+\item {} 
+\textbf{Nitmax} -- maximum number of function evaluations made by the routine
+
+\item {} 
+\textbf{tol} -- fractional precision
+
+\item {} 
+\textbf{f} -- {[}y,varargout\{:\}{]} = f(x,varargin\{:\}) is the function
+
+\item {} 
+\textbf{nout} -- no. of outputs of f (in varargout) in addition to the y value
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+fmin is minimal function value. xmin is corresponding abscissa-value
+
+\end{description}\end{quote}
+
+funccount is the number of function evaluations made. varargout is additional outputs of f at optimum.
+
 \end{fulllineitems}
 
 \index{cholupdate() (in module pyGPs.Core.tools)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.tools.cholupdate}\pysiglinewithargsret{\code{pyGPs.Core.tools.}\bfcode{cholupdate}}{\emph{R}, \emph{x}, \emph{sgn='+'}}{}
+Placeholder for a python version of MATLAB's cholupdate.  Now it is O(n\textasciicircum{}3)
+
 \end{fulllineitems}
 
 \index{solve\_chol() (in module pyGPs.Core.tools)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.tools.solve_chol}\pysiglinewithargsret{\code{pyGPs.Core.tools.}\bfcode{solve\_chol}}{\emph{L}, \emph{B}}{}
+Solve linear equations from the Cholesky factorization.
+Solve A*X = B for X, where A is square, symmetric, positive definite. The
+input to the function is R the Cholesky decomposition of A and the matrix B.
+Example: X = solve\_chol(chol(A),B);
+
 \end{fulllineitems}
 
 \index{unique() (in module pyGPs.Core.tools)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.tools.unique}\pysiglinewithargsret{\code{pyGPs.Core.tools.}\bfcode{unique}}{\emph{x}}{}
+Return a list with unique elements.
+
 \end{fulllineitems}
 
 
 
-\paragraph{GraphExtension Package}
-\label{pyGPs.GraphExtension:graphextension-package}\label{pyGPs.GraphExtension::doc}
+\paragraph{GraphExtensions Package}
+\label{pyGPs.GraphExtensions:graphextensions-package}\label{pyGPs.GraphExtensions::doc}
 
-\subparagraph{\texttt{GraphExtension} Package}
-\label{pyGPs.GraphExtension:id1}\phantomsection\label{pyGPs.GraphExtension:module-pyGPs.GraphExtension}\index{pyGPs.GraphExtension (module)}
+\subparagraph{\texttt{GraphExtensions} Package}
+\label{pyGPs.GraphExtensions:id1}\phantomsection\label{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions}\index{pyGPs.GraphExtensions (module)}
 
 \subparagraph{\texttt{graphKernels} Module}
-\label{pyGPs.GraphExtension:graphkernels-module}\label{pyGPs.GraphExtension:module-pyGPs.GraphExtension.graphKernels}\index{pyGPs.GraphExtension.graphKernels (module)}
+\label{pyGPs.GraphExtensions:graphkernels-module}\label{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions.graphKernels}\index{pyGPs.GraphExtensions.graphKernels (module)}
 Created on April, 2014
 
 @author: marion, shan
-\index{propagationKernel() (in module pyGPs.GraphExtension.graphKernels)}
+\index{propagationKernel() (in module pyGPs.GraphExtensions.graphKernels)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.graphKernels.propagationKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtension.graphKernels.}\bfcode{propagationKernel}}{\emph{A}, \emph{l}, \emph{gr\_id}, \emph{h\_max}, \emph{w}, \emph{p}, \emph{ktype=None}, \emph{SUM=True}, \emph{VIS=False}, \emph{showEachStep=False}}{}~\begin{description}
-\item[{INPUT: }] \leavevmode
-A           adjacency matrix (num\_nodes x num\_nodes)
-l           label array (num\_nodes x 1); values {[}1,...,k{]} or -1 for unlabeled nodes
-\begin{quote}
+\phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.graphKernels.propagationKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.graphKernels.}\bfcode{propagationKernel}}{\emph{A}, \emph{l}, \emph{gr\_id}, \emph{h\_max}, \emph{w}, \emph{p}, \emph{ktype=None}, \emph{SUM=True}, \emph{VIS=False}, \emph{showEachStep=False}}{}
+Propagation kernel for graphs.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{A} -- adjacency matrix (num\_nodes x num\_nodes)
 
-...OR label array (num\_nodes x num\_labels); values {[}0,1{]}, unlabeled nodes have only 0 entries
-\end{quote}
+\item {} 
+\textbf{l} -- label array (num\_nodes x 1); values {[}1,...,k{]} or -1 for unlabeled nodes
 
-gr\_id       graph indicator array (num\_nodes x 1); values {[}0,..,n{]}
-h\_max       number of iterations
-w           bin widths parameter
-p           distance (`tv', `hellinger', `L1', `L2')
-ktype    type of propagation kernel {[}'diffusion', `label\_propagation', `label\_spreading', `belief\_propagation'{]}
+\end{itemize}
 
-\item[{RETURN:}] \leavevmode
-K        kernel matrix
+\end{description}\end{quote}
 
-\end{description}
+OR label array (num\_nodes x num\_labels); values {[}0,1{]}, unlabeled nodes have only 0 entries
+:param gr\_id: graph indicator array (num\_nodes x 1); values {[}0,..,n{]}
+:param h\_max: number of iterations
+:param w: bin widths parameter
+:param p: distance (`tv', `hellinger', `L1', `L2')
+:param ktype: type of propagation kernel {[}'diffusion', `label\_propagation', `label\_spreading', `belief\_propagation'{]}
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+kernel matrix
 
-ToDO: SPLIT Varible label array and label probability
-
-CAUTION: number of labels (k) \textgreater{} 1 !!!
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
 
 
 \subparagraph{\texttt{graphUtil} Module}
-\label{pyGPs.GraphExtension:graphutil-module}\label{pyGPs.GraphExtension:module-pyGPs.GraphExtension.graphUtil}\index{pyGPs.GraphExtension.graphUtil (module)}\index{formKernelMatrix() (in module pyGPs.GraphExtension.graphUtil)}
+\label{pyGPs.GraphExtensions:graphutil-module}\label{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions.graphUtil}\index{pyGPs.GraphExtensions.graphUtil (module)}\index{formKernelMatrix() (in module pyGPs.GraphExtensions.graphUtil)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.graphUtil.formKernelMatrix}\pysiglinewithargsret{\code{pyGPs.GraphExtension.graphUtil.}\bfcode{formKernelMatrix}}{\emph{M}, \emph{indice\_train}, \emph{indice\_test}}{}
-format precomputed kernel matrix into two matrix,
-which fit the parameters of method in pyGP
-\begin{description}
-\item[{INPUT:    M             n by n precomputed kernel matrix}] \leavevmode
-indice\_train  list of indice of training examples
-indice\_test   list of indice of test examples
+\phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.graphUtil.formKernelMatrix}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.graphUtil.}\bfcode{formKernelMatrix}}{\emph{M}, \emph{indice\_train}, \emph{indice\_test}}{}
+Format precomputed kernel matrix into two matrix,
+which fit the structure to be used in cov.Pre() in pyGP
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{M} -- n by n precomputed kernel matrix
 
-\item[{OUTPUT:   M1            train+1 by test matrix}] \leavevmode\begin{quote}
+\item {} 
+\textbf{indice\_train} -- list of indice of training examples
 
-where the last row is the diagonal of test-test covariance
-\end{quote}
+\item {} 
+\textbf{indice\_test} -- list of indice of test examples
 
-M2            train by train matrix
+\end{itemize}
 
-\end{description}
+\item[{Returns}] \leavevmode
+M1 is a train+1 by test matrix,
+
+\end{description}\end{quote}
+
+where the last row is the diagonal of test-test covariance.
+and M2 is a train by train matrix.
 
 \end{fulllineitems}
 
-\index{formKnnGraph() (in module pyGPs.GraphExtension.graphUtil)}
+\index{formKnnGraph() (in module pyGPs.GraphExtensions.graphUtil)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.graphUtil.formKnnGraph}\pysiglinewithargsret{\code{pyGPs.GraphExtension.graphUtil.}\bfcode{formKnnGraph}}{\emph{pc}, \emph{k}}{}
-INPUT:     pc    n by D data matrix
-where n is num\_points
-\begin{quote}
+\phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.graphUtil.formKnnGraph}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.graphUtil.}\bfcode{formKnnGraph}}{\emph{pc}, \emph{k}}{}
+Form a k-nearest-neighbour graph from data points
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{pc} -- n by D data matrix
 
-D is num\_dimensions
-\end{quote}
+\item {} 
+\textbf{k} -- number of neighbours for each node
 
-OUTPUT:    A     adjacency matrix
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+adjacency matrix
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
-\index{normalizeKernel() (in module pyGPs.GraphExtension.graphUtil)}
+\index{normalizeKernel() (in module pyGPs.GraphExtensions.graphUtil)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.graphUtil.normalizeKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtension.graphUtil.}\bfcode{normalizeKernel}}{\emph{K}}{}
-INPUT:     K        n by D kernel matrix
+\phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.graphUtil.normalizeKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.graphUtil.}\bfcode{normalizeKernel}}{\emph{K}}{}
+Normalize the given kernel matrix. 
+Each entry{[}i,j{]} is normalized by square root of entry{[}i,i{]} * entry{[}j,j{]}.
+(i.e. compute the correlation matrix from covariance matrix).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{K} -- n by D kernel matrix(covariance matrix)
 
-OUTPUT:    K\_norm   n by D normalized kernel matrix(correlation matrix)
+\item[{Returns}] \leavevmode
+n by D normalized kernel matrix(correlation matrix)
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
 
 
 \subparagraph{\texttt{nodeKernels} Module}
-\label{pyGPs.GraphExtension:nodekernels-module}\label{pyGPs.GraphExtension:module-pyGPs.GraphExtension.nodeKernels}\index{pyGPs.GraphExtension.nodeKernels (module)}\index{VNDKernel() (in module pyGPs.GraphExtension.nodeKernels)}
+\label{pyGPs.GraphExtensions:nodekernels-module}\label{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions.nodeKernels}\index{pyGPs.GraphExtensions.nodeKernels (module)}\index{VNDKernel() (in module pyGPs.GraphExtensions.nodeKernels)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.nodeKernels.VNDKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtension.nodeKernels.}\bfcode{VNDKernel}}{\emph{A}, \emph{alpha=0.5}}{}
+\phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.nodeKernels.VNDKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.nodeKernels.}\bfcode{VNDKernel}}{\emph{A}, \emph{alpha=0.5}}{}
 Von Neumann Diffusion Kernel on graph (Zhou et al., 2004)
 (also label spreading kernel)
 
@@ -3721,18 +4496,21 @@ K = (I - alpha*S)\textasciicircum{}-1, where S = D\textasciicircum{}-1/2*A*D\tex
 \textbf{A} -- adjacency matrix
 
 \item {} 
-\textbf{alpha} -- (hyper)parameter(s)
+\textbf{alpha} -- hyperparameter alpha
 
 \end{itemize}
+
+\item[{Returns}] \leavevmode
+kernel matrix
 
 \end{description}\end{quote}
 
 \end{fulllineitems}
 
-\index{cosKernel() (in module pyGPs.GraphExtension.nodeKernels)}
+\index{cosKernel() (in module pyGPs.GraphExtensions.nodeKernels)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.nodeKernels.cosKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtension.nodeKernels.}\bfcode{cosKernel}}{\emph{A}}{}
+\phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.nodeKernels.cosKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.nodeKernels.}\bfcode{cosKernel}}{\emph{A}}{}
 Cosine Kernel (also Inverse Cosine Kernel)
 
 K = cos (L*pi/4), where L is the normalized Laplacian
@@ -3740,14 +4518,17 @@ K = cos (L*pi/4), where L is the normalized Laplacian
 \item[{Parameters}] \leavevmode
 \textbf{A} -- adjacency matrix
 
+\item[{Returns}] \leavevmode
+kernel matrix
+
 \end{description}\end{quote}
 
 \end{fulllineitems}
 
-\index{diffKernel() (in module pyGPs.GraphExtension.nodeKernels)}
+\index{diffKernel() (in module pyGPs.GraphExtensions.nodeKernels)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.nodeKernels.diffKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtension.nodeKernels.}\bfcode{diffKernel}}{\emph{A}, \emph{beta=0.5}}{}
+\phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.nodeKernels.diffKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.nodeKernels.}\bfcode{diffKernel}}{\emph{A}, \emph{beta=0.5}}{}
 Diffusion Process Kernel
 
 K = exp(beta * H), where H = -L = A-D
@@ -3759,45 +4540,53 @@ K = Q exp(beta * Lambda) Q.T
 \textbf{A} -- adjacency matrix
 
 \item {} 
-\textbf{beta} -- (hyper)parameter(s)
+\textbf{beta} -- hyperparameter beta
 
 \end{itemize}
+
+\item[{Returns}] \leavevmode
+kernel matrix
 
 \end{description}\end{quote}
 
 \end{fulllineitems}
 
-\index{normLap() (in module pyGPs.GraphExtension.nodeKernels)}
+\index{normLap() (in module pyGPs.GraphExtensions.nodeKernels)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.nodeKernels.normLap}\pysiglinewithargsret{\code{pyGPs.GraphExtension.nodeKernels.}\bfcode{normLap}}{\emph{A}}{}
-normalized Laplacian
+\phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.nodeKernels.normLap}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.nodeKernels.}\bfcode{normLap}}{\emph{A}}{}
+Normalized Laplacian
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{A} -- adjacency matrix
+
+\item[{Returns}] \leavevmode
+kernel matrix
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
-\index{normalizeKernel() (in module pyGPs.GraphExtension.nodeKernels)}
+\index{psInvLapKernel() (in module pyGPs.GraphExtensions.nodeKernels)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.nodeKernels.normalizeKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtension.nodeKernels.}\bfcode{normalizeKernel}}{\emph{K}}{}
-\end{fulllineitems}
-
-\index{psInvLapKernel() (in module pyGPs.GraphExtension.nodeKernels)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.nodeKernels.psInvLapKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtension.nodeKernels.}\bfcode{psInvLapKernel}}{\emph{A}}{}
+\phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.nodeKernels.psInvLapKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.nodeKernels.}\bfcode{psInvLapKernel}}{\emph{A}}{}
 Pseudo inverse of the normalized Laplacian.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{A} -- adjacency matrix
 
+\item[{Returns}] \leavevmode
+kernel matrix
+
 \end{description}\end{quote}
 
 \end{fulllineitems}
 
-\index{regLapKernel() (in module pyGPs.GraphExtension.nodeKernels)}
+\index{regLapKernel() (in module pyGPs.GraphExtensions.nodeKernels)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.nodeKernels.regLapKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtension.nodeKernels.}\bfcode{regLapKernel}}{\emph{A}, \emph{sigma=1}}{}
+\phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.nodeKernels.regLapKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.nodeKernels.}\bfcode{regLapKernel}}{\emph{A}, \emph{sigma=1}}{}
 Regularized Laplacian Kernel
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -3805,18 +4594,21 @@ Regularized Laplacian Kernel
 \textbf{A} -- adjacency matrix
 
 \item {} 
-\textbf{sigma} -- (hyper)parameter(s)
+\textbf{sigma} -- hyperparameter sigma
 
 \end{itemize}
+
+\item[{Returns}] \leavevmode
+kernel matrix
 
 \end{description}\end{quote}
 
 \end{fulllineitems}
 
-\index{rwKernel() (in module pyGPs.GraphExtension.nodeKernels)}
+\index{rwKernel() (in module pyGPs.GraphExtensions.nodeKernels)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.GraphExtension:pyGPs.GraphExtension.nodeKernels.rwKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtension.nodeKernels.}\bfcode{rwKernel}}{\emph{A}, \emph{p=1}, \emph{a=2}}{}
+\phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.nodeKernels.rwKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.nodeKernels.}\bfcode{rwKernel}}{\emph{A}, \emph{p=1}, \emph{a=2}}{}
 p-step Random Walk Kernel with a\textgreater{}1
 
 K = (aI-L)\textasciicircum{}p, p\textgreater{}1 and L is the normalized Laplacian
@@ -3829,9 +4621,12 @@ K = (aI-L)\textasciicircum{}p, p\textgreater{}1 and L is the normalized Laplacia
 \textbf{p} -- step parameter
 
 \item {} 
-\textbf{a} -- (hyper)parameter(s)
+\textbf{a} -- hyperparameter a
 
 \end{itemize}
+
+\item[{Returns}] \leavevmode
+kernel matrix
 
 \end{description}\end{quote}
 
@@ -3911,16 +4706,16 @@ Bases: \code{object}
 
 
 \subparagraph{\texttt{minimize} Module}
-\label{pyGPs.Optimization:module-pyGPs.Optimization.minimize}\label{pyGPs.Optimization:minimize-module}\index{pyGPs.Optimization.minimize (module)}
-This module contains a function  that performs unconstrained
+\label{pyGPs.Optimization:module-pyGPs.Optimization.minimize}\label{pyGPs.Optimization:minimize-module}\index{pyGPs.Optimization.minimize (module)}\index{run() (in module pyGPs.Optimization.minimize)}
+
+\begin{fulllineitems}
+\phantomsection\label{pyGPs.Optimization:pyGPs.Optimization.minimize.run}\pysiglinewithargsret{\code{pyGPs.Optimization.minimize.}\bfcode{run}}{\emph{f}, \emph{X}, \emph{args=()}, \emph{length=None}, \emph{red=1.0}, \emph{verbose=False}}{}
+This is a function that performs unconstrained
 gradient based optimization using nonlinear conjugate gradients.
 
 The function is a straightforward Python-translation of Carl Rasmussen's
 Matlab-function minimize.m
-\index{run() (in module pyGPs.Optimization.minimize)}
 
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Optimization:pyGPs.Optimization.minimize.run}\pysiglinewithargsret{\code{pyGPs.Optimization.minimize.}\bfcode{run}}{\emph{f}, \emph{X}, \emph{args=()}, \emph{length=None}, \emph{red=1.0}, \emph{verbose=False}}{}
 \end{fulllineitems}
 
 
@@ -3930,87 +4725,7 @@ Matlab-function minimize.m
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Optimization:pyGPs.Optimization.scg.run}\pysiglinewithargsret{\code{pyGPs.Optimization.scg.}\bfcode{run}}{\emph{f}, \emph{x}, \emph{args=()}, \emph{niters=100}, \emph{gradcheck=False}, \emph{display=0}, \emph{flog=False}, \emph{pointlog=False}, \emph{scalelog=False}, \emph{tolX=1e-08}, \emph{tolO=1e-08}, \emph{eval=None}}{}
-\end{fulllineitems}
-
-
-
-\paragraph{Valid Package}
-\label{pyGPs.Valid:valid-package}\label{pyGPs.Valid::doc}
-
-\subparagraph{\texttt{Valid} Package}
-\label{pyGPs.Valid:id1}\phantomsection\label{pyGPs.Valid:module-pyGPs.Valid}\index{pyGPs.Valid (module)}
-
-\subparagraph{\texttt{valid} Module}
-\label{pyGPs.Valid:module-pyGPs.Valid.valid}\label{pyGPs.Valid:valid-module}\index{pyGPs.Valid.valid (module)}\index{ACC() (in module pyGPs.Valid.valid)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Valid:pyGPs.Valid.valid.ACC}\pysiglinewithargsret{\code{pyGPs.Valid.valid.}\bfcode{ACC}}{\emph{predict}, \emph{target}}{}
-Classification accuracy
-
-\end{fulllineitems}
-
-\index{NLPD() (in module pyGPs.Valid.valid)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Valid:pyGPs.Valid.valid.NLPD}\pysiglinewithargsret{\code{pyGPs.Valid.valid.}\bfcode{NLPD}}{\emph{y}, \emph{MU}, \emph{S2}}{}
-Calculate evaluation measure NLPD in transformed observation space.
-\begin{description}
-\item[{INPUT   y     observed targets}] \leavevmode
-MU    vector of predictions/predicted means
-S2    vector of `self' variances
-
-\end{description}
-
-OUTPUT  nlpd  Negative Log Predictive Density.
-
-\end{fulllineitems}
-
-\index{Prec() (in module pyGPs.Valid.valid)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Valid:pyGPs.Valid.valid.Prec}\pysiglinewithargsret{\code{pyGPs.Valid.valid.}\bfcode{Prec}}{\emph{predict}, \emph{target}}{}
-Precision for class +1
-
-\end{fulllineitems}
-
-\index{RMSE() (in module pyGPs.Valid.valid)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Valid:pyGPs.Valid.valid.RMSE}\pysiglinewithargsret{\code{pyGPs.Valid.valid.}\bfcode{RMSE}}{\emph{predict}, \emph{target}}{}
-Root mean squared error
-
-\end{fulllineitems}
-
-\index{Recall() (in module pyGPs.Valid.valid)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Valid:pyGPs.Valid.valid.Recall}\pysiglinewithargsret{\code{pyGPs.Valid.valid.}\bfcode{Recall}}{\emph{predict}, \emph{target}}{}
-Recall for class +1
-
-\end{fulllineitems}
-
-\index{k\_fold\_index() (in module pyGPs.Valid.valid)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Valid:pyGPs.Valid.valid.k_fold_index}\pysiglinewithargsret{\code{pyGPs.Valid.valid.}\bfcode{k\_fold\_index}}{\emph{n}, \emph{K=10}}{}
-Similar to k\_fold\_validation,
-but only return the indice instead of data
-
-n is number of instances of data
-K is number of folder
-
-\end{fulllineitems}
-
-\index{k\_fold\_validation() (in module pyGPs.Valid.valid)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Valid:pyGPs.Valid.valid.k_fold_validation}\pysiglinewithargsret{\code{pyGPs.Valid.valid.}\bfcode{k\_fold\_validation}}{\emph{x}, \emph{y}, \emph{K=10}, \emph{randomise=False}}{}
-Generates K (training, validation) pairs from the items in X.
-
-The validation iterables are a partition of X, and each validation
-iterable is of length len(X)/K. Each training iterable is the
-complement (within X) of the validation iterable, and so each training
-iterable is of length (K-1)*len(X)/K.
+Scaled conjugate gradient optimization.
 
 \end{fulllineitems}
 
@@ -4028,6 +4743,20 @@ iterable is of length (K-1)*len(X)/K.
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Validation:pyGPs.Validation.valid.ACC}\pysiglinewithargsret{\code{pyGPs.Validation.valid.}\bfcode{ACC}}{\emph{predict}, \emph{target}}{}
 Classification accuracy
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{predict} -- vector of predicted labels(+/- 1)
+
+\item {} 
+\textbf{target} -- vector of true labels
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+accuracy
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -4036,14 +4765,23 @@ Classification accuracy
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Validation:pyGPs.Validation.valid.NLPD}\pysiglinewithargsret{\code{pyGPs.Validation.valid.}\bfcode{NLPD}}{\emph{y}, \emph{MU}, \emph{S2}}{}
 Calculate evaluation measure NLPD in transformed observation space.
-\begin{description}
-\item[{INPUT   y     observed targets}] \leavevmode
-MU    vector of predictions/predicted means
-S2    vector of `self' variances
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{y} -- observed targets
 
-\end{description}
+\item {} 
+\textbf{MU} -- vector of predictions/predicted means
 
-OUTPUT  nlpd  Negative Log Predictive Density.
+\item {} 
+\textbf{S2} -- vector of `self' variances
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+Negative Log Predictive Density.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -4052,6 +4790,20 @@ OUTPUT  nlpd  Negative Log Predictive Density.
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Validation:pyGPs.Validation.valid.Prec}\pysiglinewithargsret{\code{pyGPs.Validation.valid.}\bfcode{Prec}}{\emph{predict}, \emph{target}}{}
 Precision for class +1
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{predict} -- vector of predicted labels(+/- 1)
+
+\item {} 
+\textbf{target} -- vector of true labels
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+precision
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -4060,6 +4812,20 @@ Precision for class +1
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Validation:pyGPs.Validation.valid.RMSE}\pysiglinewithargsret{\code{pyGPs.Validation.valid.}\bfcode{RMSE}}{\emph{predict}, \emph{target}}{}
 Root mean squared error
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{predict} -- vector of predicted means
+
+\item {} 
+\textbf{target} -- vector of true means
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+root mean squared error
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -4068,6 +4834,20 @@ Root mean squared error
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Validation:pyGPs.Validation.valid.Recall}\pysiglinewithargsret{\code{pyGPs.Validation.valid.}\bfcode{Recall}}{\emph{predict}, \emph{target}}{}
 Recall for class +1
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{predict} -- vector of predicted labels(+/- 1)
+
+\item {} 
+\textbf{target} -- vector of true labels
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+recall
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -4076,10 +4856,18 @@ Recall for class +1
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Validation:pyGPs.Validation.valid.k_fold_index}\pysiglinewithargsret{\code{pyGPs.Validation.valid.}\bfcode{k\_fold\_index}}{\emph{n}, \emph{K=10}}{}
 Similar to k\_fold\_validation,
-but only return the indice instead of data
+but only yields indice of folds instead of data in each iteration
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{n} -- size of data (number of instances)
 
-n is number of instances of data
-K is number of folder
+\item {} 
+\textbf{K} -- number of folds
+
+\end{itemize}
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -4088,11 +4876,27 @@ K is number of folder
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Validation:pyGPs.Validation.valid.k_fold_validation}\pysiglinewithargsret{\code{pyGPs.Validation.valid.}\bfcode{k\_fold\_validation}}{\emph{x}, \emph{y}, \emph{K=10}, \emph{randomise=False}}{}
 Generates K (training, validation) pairs from the items in X.
-
 The validation iterables are a partition of X, and each validation
 iterable is of length len(X)/K. Each training iterable is the
 complement (within X) of the validation iterable, and so each training
 iterable is of length (K-1)*len(X)/K.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{x} -- training data
+
+\item {} 
+\textbf{y} -- training targets
+
+\item {} 
+\textbf{K} -- number of folds
+
+\item {} 
+\textbf{randomise} -- boolean flag. Shuffle data first if it is true.s
+
+\end{itemize}
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -4104,22 +4908,22 @@ iterable is of length (K-1)*len(X)/K.
 \bigletter{p}
 \item {\texttt{pyGPs.\_\_init\_\_}}, \pageref{pyGPs:module-pyGPs.__init__}
 \item {\texttt{pyGPs.Core}}, \pageref{pyGPs.Core:module-pyGPs.Core}
+\item {\texttt{pyGPs.Core.cov}}, \pageref{pyGPs.Core:module-pyGPs.Core.cov}
 \item {\texttt{pyGPs.Core.gp}}, \pageref{pyGPs.Core:module-pyGPs.Core.gp}
-\item {\texttt{pyGPs.Core.inf}}, \pageref{Likelihoods:module-pyGPs.Core.inf}
-\item {\texttt{pyGPs.Core.lik}}, \pageref{Likelihoods:module-pyGPs.Core.lik}
+\item {\texttt{pyGPs.Core.inf}}, \pageref{pyGPs.Core:module-pyGPs.Core.inf}
+\item {\texttt{pyGPs.Core.lik}}, \pageref{pyGPs.Core:module-pyGPs.Core.lik}
+\item {\texttt{pyGPs.Core.mean}}, \pageref{pyGPs.Core:module-pyGPs.Core.mean}
 \item {\texttt{pyGPs.Core.opt}}, \pageref{pyGPs.Core:module-pyGPs.Core.opt}
 \item {\texttt{pyGPs.Core.tools}}, \pageref{pyGPs.Core:module-pyGPs.Core.tools}
-\item {\texttt{pyGPs.GraphExtension}}, \pageref{pyGPs.GraphExtension:module-pyGPs.GraphExtension}
-\item {\texttt{pyGPs.GraphExtension.graphKernels}}, \pageref{pyGPs.GraphExtension:module-pyGPs.GraphExtension.graphKernels}
-\item {\texttt{pyGPs.GraphExtension.graphUtil}}, \pageref{pyGPs.GraphExtension:module-pyGPs.GraphExtension.graphUtil}
-\item {\texttt{pyGPs.GraphExtension.nodeKernels}}, \pageref{pyGPs.GraphExtension:module-pyGPs.GraphExtension.nodeKernels}
+\item {\texttt{pyGPs.GraphExtensions}}, \pageref{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions}
+\item {\texttt{pyGPs.GraphExtensions.graphKernels}}, \pageref{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions.graphKernels}
+\item {\texttt{pyGPs.GraphExtensions.graphUtil}}, \pageref{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions.graphUtil}
+\item {\texttt{pyGPs.GraphExtensions.nodeKernels}}, \pageref{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions.nodeKernels}
 \item {\texttt{pyGPs.GraphStuff.kernels\_on\_graph}}, \pageref{Graph:module-pyGPs.GraphStuff.kernels_on_graph}
 \item {\texttt{pyGPs.Optimization}}, \pageref{pyGPs.Optimization:module-pyGPs.Optimization}
 \item {\texttt{pyGPs.Optimization.conf}}, \pageref{pyGPs.Optimization:module-pyGPs.Optimization.conf}
 \item {\texttt{pyGPs.Optimization.minimize}}, \pageref{pyGPs.Optimization:module-pyGPs.Optimization.minimize}
 \item {\texttt{pyGPs.Optimization.scg}}, \pageref{pyGPs.Optimization:module-pyGPs.Optimization.scg}
-\item {\texttt{pyGPs.Valid}}, \pageref{pyGPs.Valid:module-pyGPs.Valid}
-\item {\texttt{pyGPs.Valid.valid}}, \pageref{pyGPs.Valid:module-pyGPs.Valid.valid}
 \item {\texttt{pyGPs.Validation}}, \pageref{pyGPs.Validation:module-pyGPs.Validation}
 \item {\texttt{pyGPs.Validation.valid}}, \pageref{pyGPs.Validation:module-pyGPs.Validation.valid}
 \end{theindex}

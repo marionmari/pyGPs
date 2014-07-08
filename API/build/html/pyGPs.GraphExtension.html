@@ -49,191 +49,15 @@
 <h1>GraphExtension Package<a class="headerlink" href="#graphextension-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
 <h2><tt class="xref py py-mod docutils literal"><span class="pre">GraphExtension</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-pyGPs.GraphExtension"></span></div>
-<div class="section" id="module-pyGPs.GraphExtension.graphKernels">
-<span id="graphkernels-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">graphKernels</span></tt> Module<a class="headerlink" href="#module-pyGPs.GraphExtension.graphKernels" title="Permalink to this headline">¶</a></h2>
-<p>Created on April, 2014</p>
-<p>&#64;author: marion, shan</p>
-<dl class="function">
-<dt id="pyGPs.GraphExtension.graphKernels.propagationKernel">
-<tt class="descclassname">pyGPs.GraphExtension.graphKernels.</tt><tt class="descname">propagationKernel</tt><big>(</big><em>A</em>, <em>l</em>, <em>gr_id</em>, <em>h_max</em>, <em>w</em>, <em>p</em>, <em>ktype=None</em>, <em>SUM=True</em>, <em>VIS=False</em>, <em>showEachStep=False</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/graphKernels.html#propagationKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.graphKernels.propagationKernel" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>INPUT: </dt>
-<dd><p class="first">A           adjacency matrix (num_nodes x num_nodes)
-l           label array (num_nodes x 1); values [1,...,k] or -1 for unlabeled nodes</p>
-<blockquote>
-<div>...OR label array (num_nodes x num_labels); values [0,1], unlabeled nodes have only 0 entries</div></blockquote>
-<p class="last">gr_id       graph indicator array (num_nodes x 1); values [0,..,n]
-h_max       number of iterations
-w           bin widths parameter
-p           distance (&#8216;tv&#8217;, &#8216;hellinger&#8217;, &#8216;L1&#8217;, &#8216;L2&#8217;)
-ktype    type of propagation kernel [&#8216;diffusion&#8217;, &#8216;label_propagation&#8217;, &#8216;label_spreading&#8217;, &#8216;belief_propagation&#8217;]</p>
-</dd>
-<dt>RETURN:</dt>
-<dd>K        kernel matrix</dd>
-</dl>
-<p>ToDO: SPLIT Varible label array and label probability</p>
-<p>CAUTION: number of labels (k) &gt; 1 !!!</p>
-</dd></dl>
-
 </div>
-<div class="section" id="module-pyGPs.GraphExtension.graphUtil">
-<span id="graphutil-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">graphUtil</span></tt> Module<a class="headerlink" href="#module-pyGPs.GraphExtension.graphUtil" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="pyGPs.GraphExtension.graphUtil.formKernelMatrix">
-<tt class="descclassname">pyGPs.GraphExtension.graphUtil.</tt><tt class="descname">formKernelMatrix</tt><big>(</big><em>M</em>, <em>indice_train</em>, <em>indice_test</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/graphUtil.html#formKernelMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.graphUtil.formKernelMatrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>format precomputed kernel matrix into two matrix,
-which fit the parameters of method in pyGP</p>
-<dl class="docutils">
-<dt>INPUT:    M             n by n precomputed kernel matrix</dt>
-<dd>indice_train  list of indice of training examples
-indice_test   list of indice of test examples</dd>
-<dt>OUTPUT:   M1            train+1 by test matrix</dt>
-<dd><blockquote class="first">
-<div>where the last row is the diagonal of test-test covariance</div></blockquote>
-<p class="last">M2            train by train matrix</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphExtension.graphUtil.formKnnGraph">
-<tt class="descclassname">pyGPs.GraphExtension.graphUtil.</tt><tt class="descname">formKnnGraph</tt><big>(</big><em>pc</em>, <em>k</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/graphUtil.html#formKnnGraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.graphUtil.formKnnGraph" title="Permalink to this definition">¶</a></dt>
-<dd><p>INPUT:     pc    n by D data matrix
-where n is num_points</p>
-<blockquote>
-<div>D is num_dimensions</div></blockquote>
-<p>OUTPUT:    A     adjacency matrix</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphExtension.graphUtil.normalizeKernel">
-<tt class="descclassname">pyGPs.GraphExtension.graphUtil.</tt><tt class="descname">normalizeKernel</tt><big>(</big><em>K</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/graphUtil.html#normalizeKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.graphUtil.normalizeKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>INPUT:     K        n by D kernel matrix</p>
-<p>OUTPUT:    K_norm   n by D normalized kernel matrix(correlation matrix)</p>
-</dd></dl>
-
+<div class="section" id="graphkernels-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">graphKernels</span></tt> Module<a class="headerlink" href="#graphkernels-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-pyGPs.GraphExtension.nodeKernels">
-<span id="nodekernels-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">nodeKernels</span></tt> Module<a class="headerlink" href="#module-pyGPs.GraphExtension.nodeKernels" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="pyGPs.GraphExtension.nodeKernels.VNDKernel">
-<tt class="descclassname">pyGPs.GraphExtension.nodeKernels.</tt><tt class="descname">VNDKernel</tt><big>(</big><em>A</em>, <em>alpha=0.5</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/nodeKernels.html#VNDKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.nodeKernels.VNDKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Von Neumann Diffusion Kernel on graph (Zhou et al., 2004)
-(also label spreading kernel)</p>
-<p>K = (I - alpha*S)^-1, where S = D^-1/2*A*D^-1/2</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>A</strong> &#8211; adjacency matrix</li>
-<li><strong>alpha</strong> &#8211; (hyper)parameter(s)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphExtension.nodeKernels.cosKernel">
-<tt class="descclassname">pyGPs.GraphExtension.nodeKernels.</tt><tt class="descname">cosKernel</tt><big>(</big><em>A</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/nodeKernels.html#cosKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.nodeKernels.cosKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cosine Kernel (also Inverse Cosine Kernel)</p>
-<p>K = cos (L*pi/4), where L is the normalized Laplacian</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>A</strong> &#8211; adjacency matrix</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphExtension.nodeKernels.diffKernel">
-<tt class="descclassname">pyGPs.GraphExtension.nodeKernels.</tt><tt class="descname">diffKernel</tt><big>(</big><em>A</em>, <em>beta=0.5</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/nodeKernels.html#diffKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.nodeKernels.diffKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Diffusion Process Kernel</p>
-<p>K = exp(beta * H), where H = -L = A-D</p>
-<p>K = Q exp(beta * Lambda) Q.T</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>A</strong> &#8211; adjacency matrix</li>
-<li><strong>beta</strong> &#8211; (hyper)parameter(s)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphExtension.nodeKernels.normLap">
-<tt class="descclassname">pyGPs.GraphExtension.nodeKernels.</tt><tt class="descname">normLap</tt><big>(</big><em>A</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/nodeKernels.html#normLap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.nodeKernels.normLap" title="Permalink to this definition">¶</a></dt>
-<dd><p>normalized Laplacian</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphExtension.nodeKernels.normalizeKernel">
-<tt class="descclassname">pyGPs.GraphExtension.nodeKernels.</tt><tt class="descname">normalizeKernel</tt><big>(</big><em>K</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/nodeKernels.html#normalizeKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.nodeKernels.normalizeKernel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphExtension.nodeKernels.psInvLapKernel">
-<tt class="descclassname">pyGPs.GraphExtension.nodeKernels.</tt><tt class="descname">psInvLapKernel</tt><big>(</big><em>A</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/nodeKernels.html#psInvLapKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.nodeKernels.psInvLapKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pseudo inverse of the normalized Laplacian.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>A</strong> &#8211; adjacency matrix</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphExtension.nodeKernels.regLapKernel">
-<tt class="descclassname">pyGPs.GraphExtension.nodeKernels.</tt><tt class="descname">regLapKernel</tt><big>(</big><em>A</em>, <em>sigma=1</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/nodeKernels.html#regLapKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.nodeKernels.regLapKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Regularized Laplacian Kernel</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>A</strong> &#8211; adjacency matrix</li>
-<li><strong>sigma</strong> &#8211; (hyper)parameter(s)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphExtension.nodeKernels.rwKernel">
-<tt class="descclassname">pyGPs.GraphExtension.nodeKernels.</tt><tt class="descname">rwKernel</tt><big>(</big><em>A</em>, <em>p=1</em>, <em>a=2</em><big>)</big><a class="reference internal" href="_modules/pyGPs/GraphExtension/nodeKernels.html#rwKernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.GraphExtension.nodeKernels.rwKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>p-step Random Walk Kernel with a&gt;1</p>
-<p>K = (aI-L)^p, p&gt;1 and L is the normalized Laplacian</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>A</strong> &#8211; adjacency matrix</li>
-<li><strong>p</strong> &#8211; step parameter</li>
-<li><strong>a</strong> &#8211; (hyper)parameter(s)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+<div class="section" id="graphutil-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">graphUtil</span></tt> Module<a class="headerlink" href="#graphutil-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="nodekernels-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">nodeKernels</span></tt> Module<a class="headerlink" href="#nodekernels-module" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -247,9 +71,9 @@ where n is num_points</p>
   <ul>
 <li><a class="reference internal" href="#">GraphExtension Package</a><ul>
 <li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">GraphExtension</span></tt> Package</a></li>
-<li><a class="reference internal" href="#module-pyGPs.GraphExtension.graphKernels"><tt class="docutils literal"><span class="pre">graphKernels</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-pyGPs.GraphExtension.graphUtil"><tt class="docutils literal"><span class="pre">graphUtil</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-pyGPs.GraphExtension.nodeKernels"><tt class="docutils literal"><span class="pre">nodeKernels</span></tt> Module</a></li>
+<li><a class="reference internal" href="#graphkernels-module"><tt class="docutils literal"><span class="pre">graphKernels</span></tt> Module</a></li>
+<li><a class="reference internal" href="#graphutil-module"><tt class="docutils literal"><span class="pre">graphUtil</span></tt> Module</a></li>
+<li><a class="reference internal" href="#nodekernels-module"><tt class="docutils literal"><span class="pre">nodeKernels</span></tt> Module</a></li>
 </ul>
 </li>
 </ul>
