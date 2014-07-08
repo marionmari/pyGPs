@@ -35,7 +35,7 @@
 #
 # The interface to the approximation methods is the following:
 #
-# post nlZ dnlZ = inf.proceed(cov, lik, x, y)
+# post nlZ dnlZ = inf.proceed(mean, cov, lik, x, y)
 #
 # where:
 #   INPUT:
@@ -79,12 +79,18 @@ from tools import solve_chol,brentmin,cholupdate
 np.seterr(all='ignore')
 
 class postStruct(object):
+    '''
+    Data structure for posterior
+    '''
     def __init__(self):
         self.alpha = np.array([])
         self.L     = np.array([])
         self.sW    = np.array([])
 
 class dnlZStruct(object):
+    '''
+    Data structure for the derivatives of mean, cov and lik functions
+    '''
     def __init__(self, m, c, l):
         self.mean = []
         self.cov = []
@@ -98,13 +104,24 @@ class dnlZStruct(object):
 
 class Inference(object):
     '''
-    Base class for inference. Defined several tool methods in it.
+    Base class for inference. Defined several tool methods in it. 
     '''
     def __init__(self):
         pass
 
-    def proceed(self):
-        # return [post nlZ dnlZ]
+    def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
+        '''
+        Inference computation based on inputs.
+        post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)
+
+        :param meanfunc: mean function
+        :param covfunc: covariance function
+        :param likfunc: likelihood function
+        :param x: training data
+        :param y: training labels
+        :param nargout: specify the number of output(1,2 or 3)
+        :return: posterior, negative-log-marginal-likelihood, derivative for negative-log-marginal-likelihood-likelihood
+        '''
         pass
 
     def epComputeParams(self, K, y, ttau, tnu, likfunc, m, inffunc):
@@ -124,10 +141,11 @@ class Inference(object):
         return Sigma, mu, nlZ[0], L
     
     def logdetA(self,K,w,nargout):
-        # Compute the log determinant ldA and the inverse iA of a square nxn matrix
-        # A = eye(n) + K*diag(w) from its LU decomposition; for negative definite A, we 
-        # return ldA = Inf. We also return mwiA = -diag(w)*inv(A).
-        # [ldA,iA,mwiA] = logdetA(K,w)
+        '''
+        Compute the log determinant ldA and the inverse iA of a square nxn matrix
+        A = eye(n) + K*diag(w) from its LU decomposition; for negative definite A, we 
+        return ldA = Inf. We also return mwiA = -diag(w)*inv(A).
+        [ldA,iA,mwiA] = logdetA(K,w)'''
         n = K.shape[0]
         assert(K.shape[0] == K.shape[1])
         A = np.eye(n) + K*np.tile(w.T,(n,1))
@@ -156,8 +174,8 @@ class Inference(object):
             return ldA  
     
     def Psi_line(self,s,dalpha,alpha,K,m,likfunc,y,inffunc):
-        # criterion Psi at alpha + s*dalpha for line search
-        # [Psi,alpha,f,dlp,W] = Psi_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)
+        '''Criterion Psi at alpha + s*dalpha for line search
+        [Psi,alpha,f,dlp,W] = Psi_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)'''
         alpha = alpha + s*dalpha
         f = np.dot(K,alpha) + m
         [lp,dlp,d2lp] = likfunc.proceed(y,f,None,inffunc,None,3) 
@@ -166,8 +184,8 @@ class Inference(object):
         return Psi[0],alpha,f,dlp,W  
     
     def epfitcZ(self,d,P,R,nn,gg,ttau,tnu,d0,R0,P0,y,likfunc,m,inffunc):
-        # compute the marginal likelihood approximation
-        # effort is O(n*nu^2) provided that nu<n
+        '''Compute the marginal likelihood approximation
+        effort is O(n*nu^2) provided that nu<n'''
         T = np.dot(np.dot(R,R0),P)              # temporary variable
         diag_sigma = d + np.array([(T*T).sum(axis=0)]).T 
         mu = nn + np.dot(P.T,gg)                # post moments O(n*nu^2)
@@ -185,10 +203,10 @@ class Inference(object):
         return nlZ,nu_n,tau_n
     
     def epfitcRefresh(self,d0,P0,R0,R0P0,w,b):
-        # refresh the representation of the posterior from initial and site parameters
-        # to prevent possible loss of numerical precision after many epfitcUpdates
-        # effort is O(n*nu^2) provided that nu<n
-        # Sigma = inv(inv(K)+diag(W)) = diag(d) + P'*R0'*R'*R*R0*P.
+        '''Refresh the representation of the posterior from initial and site parameters
+        to prevent possible loss of numerical precision after many epfitcUpdates
+        effort is O(n*nu^2) provided that nu<n
+        Sigma = inv(inv(K)+diag(W)) = diag(d) + P'*R0'*R'*R*R0*P.'''
         nu = R0.shape[0]                                 # number of inducing points
         rot180   = lambda A: np.rot90(np.rot90(A))       # little helper functions
         chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
@@ -224,17 +242,17 @@ class Inference(object):
         return d,P_i,R,nn,gg,w,b
     
     def mvmZ(self,x,RVdd,t):
-        # matrix vector multiplication with Z=inv(K+inv(W))
+        '''Matrix vector multiplication with Z=inv(K+inv(W))'''
         Zx = t*x - np.dot(RVdd.T,np.dot(RVdd,x))
         return Zx
 
     def mvmK(self,al,V,d0):
-        # matrix vector multiplication with approximate covariance matrix
+        '''Matrix vector multiplication with approximate covariance matrix'''
         Kal = np.dot(V.T,np.dot(V,al)) + d0*al
         return Kal
 
     def Psi_lineFITC(self,s,dalpha,alpha,V,d0,m,likfunc,y,inffunc):
-        # criterion Psi at alpha + s*dalpha for line search
+        '''Criterion Psi at alpha + s*dalpha for line search'''
         alpha = alpha + s*dalpha
         f = self.mvmK(alpha,V,d0) + m
         vargout = likfunc.proceed(y,f,None,inffunc,None,3) 
@@ -244,10 +262,10 @@ class Inference(object):
         return Psi[0],alpha,f,dlp,W
 
     def fitcRefresh(self,d0,P0,R0,R0P0, w):
-        # refresh the representation of the posterior from initial and site parameters
-        # to prevent possible loss of numerical precision after many epfitcUpdates
-        # effort is O(n*nu^2) provided that nu<n
-        # Sigma = inv(inv(K)+diag(W)) = diag(d) + P'*R0'*R'*R*R0*P.
+        '''Refresh the representation of the posterior from initial and site parameters
+        to prevent possible loss of numerical precision after many epfitcUpdates
+        effort is O(n*nu^2) provided that nu<n
+        Sigma = inv(inv(K)+diag(W)) = diag(d) + P'*R0'*R'*R*R0*P.'''
         nu = R0.shape[0]                                  # number of inducing points
         rot180   = lambda A: np.rot90(np.rot90(A))        # little helper functions
         chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
@@ -310,8 +328,9 @@ class FITC_Exact(Inference):
     '''
     def __init__(self):
         self.name = 'FICT exact inference'
+
     def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
-        if not isinstance(likfunc, lik.Gauss):               # NOTE: no explicit call to likGauss
+        if not isinstance(likfunc, lik.Gauss):                  # NOTE: no explicit call to likGauss
             raise Exception ('Exact inference only possible with Gaussian likelihood')
         if not isinstance(covfunc, cov.FITCOfKernel):
             raise Exception('Only covFITC supported.')          # check cov
@@ -677,7 +696,8 @@ class EP(Inference):
             # recompute since repeated rank-one updates can destroy numerical precision
             Sigma, mu, nlZ, L = self.epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
         if sweep == max_sweep:
-            print 'maximum number of sweeps reached in function infEP'
+            pass
+            # print '[warning] maximum number of sweeps reached in function infEP'
         self.last_ttau = ttau; self.last_tnu = tnu          # remember for next call
         sW = np.sqrt(ttau); alpha = tnu-sW*solve_chol(L,sW*np.dot(K,tnu))
         post = postStruct()
@@ -799,7 +819,8 @@ class FITC_EP(Inference):
             [d,P,R,nn,gg] = self.epfitcRefresh(d0,Ku,R0,V,ttau,tnu)
             [nlZ,nu_n,tau_n] = self.epfitcZ(d,P,R,nn,gg,ttau,tnu,d0,R0,Ku,y,likfunc,m,inffunc)
         if sweep == max_sweep:
-            print 'maximum number of sweeps reached in function infEP'
+            pass
+            # print '[warning] maximum number of sweeps reached in function infEP'
         
         self.last_ttau = ttau
         self.last_tnu = tnu       # remember for next call
@@ -850,9 +871,6 @@ class FITC_EP(Inference):
 
 
 
-
-
-# test
 if __name__ == '__main__':
     pass
 

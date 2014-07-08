@@ -30,27 +30,32 @@ class Optimizer(object):
         self.model = None
 
     def nlml(self, hypInArray):
+        '''Find negative-log-marginal-likelihood'''
         self.apply_in_objects(hypInArray)
         nlZ, dnlZ = self.model.fit(der=False)
         return nlZ
 
     def dnlml(self, hypInArray):
+        '''Find derivatives wrt. negative-log-marginal-likelihood'''
         self.apply_in_objects(hypInArray)
         nlZ, dnlZ, post = self.model.fit()
         dnlml_List = dnlZ.mean + dnlZ.cov + dnlZ.lik
         return np.array(dnlml_List)
 
     def nlzAnddnlz(self, hypInArray):
+        '''Find negative-log-marginal-likelihood and derivatives in one pass(faster)'''
         self.apply_in_objects(hypInArray)
         nlZ, dnlZ, post = self.model.fit()
         dnlml_List = dnlZ.mean + dnlZ.cov + dnlZ.lik
         return nlZ, np.array(dnlml_List)
 
     def convert_to_array(self):
+        '''Convert all hyparameters in the model to an array'''
         hyplist = self.model.meanfunc.hyp + self.model.covfunc.hyp + self.model.likfunc.hyp
         return np.array(hyplist)
 
     def apply_in_objects(self, hypInArray):
+        '''Apply the values in the input array to hyparameters of model.'''
         Lm = len(self.model.meanfunc.hyp)
         Lc = len(self.model.covfunc.hyp)
         hypInList = hypInArray.tolist()
@@ -58,8 +63,10 @@ class Optimizer(object):
         self.model.covfunc.hyp   = hypInList[Lm:(Lm+Lc)]
         self.model.likfunc.hyp   = hypInList[(Lm+Lc):]
 
-        
+       
+
 class CG(Optimizer):
+    '''Conjugent gradient'''
     def __init__(self, model, searchConfig = None):
         super(CG, self).__init__()
         self.model = model
@@ -116,7 +123,9 @@ class CG(Optimizer):
         return optimalHyp, funcValue
 
 
+
 class BFGS(Optimizer):
+    '''quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)'''
     def __init__(self, model, searchConfig = None):
         super(BFGS, self).__init__()
         self.model = model
@@ -176,7 +185,9 @@ class BFGS(Optimizer):
         return optimalHyp, funcValue
 
 
+
 class Minimize(Optimizer):
+    '''minimize by Carl Rasmussen (python implementation of “minimize” in GPML)'''
     def __init__(self, model, searchConfig = None):
         super(Minimize, self).__init__()
         self.model = model
@@ -191,11 +202,6 @@ class Minimize(Optimizer):
         inffunc = self.model.inffunc
         hypInArray = self.convert_to_array()
 
-        #Test code(to get rid of try-except)
-        opt = minimize.run(self.nlzAnddnlz, hypInArray, length=-40)
-        optimalHyp = deepcopy(opt[0])
-        funcValue  = opt[1][-1]
-        '''
         try: 
             opt = minimize.run(self.nlzAnddnlz, hypInArray, length=-40)
             optimalHyp = deepcopy(opt[0])
@@ -205,7 +211,7 @@ class Minimize(Optimizer):
             if not self.searchConfig:         
                 raise Exception("Can not use minimize. Try other hyparameters")
         self.trailsCounter += 1
-        '''
+
         if self.searchConfig:
             searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
             if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
@@ -234,7 +240,9 @@ class Minimize(Optimizer):
         return optimalHyp, funcValue
 
 
+
 class SCG(Optimizer):
+    '''Scaled conjugent gradient (faster than CG)'''
     def __init__(self, model, searchConfig = None):
         super(SCG, self).__init__()
         self.model = model

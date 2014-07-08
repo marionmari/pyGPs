@@ -24,7 +24,12 @@ import sys
 from math import sqrt
 
 def solve_chol(L, B):
-    #print L.shape[0], L.shape[1], B.shape[0]
+    '''
+    Solve linear equations from the Cholesky factorization.
+    Solve A*X = B for X, where A is square, symmetric, positive definite. The
+    input to the function is R the Cholesky decomposition of A and the matrix B.
+    Example: X = solve_chol(chol(A),B);
+    '''
     try:
         assert(L.shape[0] == L.shape[1] and L.shape[0] == B.shape[0])
     except AssertionError:
@@ -33,6 +38,9 @@ def solve_chol(L, B):
     return X
 
 def unique(x):
+    '''
+    Return a list with unique elements.
+    '''
     # First flatten x
     y = [item for sublist in x for item in sublist]
     if isinstance(x,np.ndarray):
@@ -45,7 +53,27 @@ def unique(x):
     return y
 
 def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
-    ## BRENTMIN: Brent's minimization method in one dimension
+    '''
+    Brent's minimization method in one dimension. 
+    Given a function f, and given a search interval this routine isolates 
+    the minimum of fractional precision of about tol using Brent's method.
+    Reference: Section 10.2 Parabolic Interpolation and Brent's Method in One Dimension
+    Press, Teukolsky, Vetterling & Flannery
+    Numerical Recipes in C, Cambridge University Press, 2002
+    This is a python implementation of gpml functionality (Copyright (c) by
+    Hannes Nickisch 2010-01-10). 
+    xmin,fmin,funccout,varargout = BRENTMIN(xlow,xupp,Nit,tol,f,nout,varargin)
+
+    :param xlow: lower bound. i.e. search interval such that xlow<=xmin<=xupp
+    :param xupp: uppper bound. i.e. search interval such that xlow<=xmin<=xupp
+    :param Nitmax: maximum number of function evaluations made by the routine
+    :param tol: fractional precision 
+    :param f:  [y,varargout{:}] = f(x,varargin{:}) is the function
+    :param nout: no. of outputs of f (in varargout) in addition to the y value
+
+    :return:  fmin is minimal function value. xmin is corresponding abscissa-value
+    funccount is the number of function evaluations made. varargout is additional outputs of f at optimum.
+    '''
     # code taken from
     #    Section 10.2 Parabolic Interpolation and Brent's Method in One Dimension
     #    Press, Teukolsky, Vetterling & Flannery
@@ -178,7 +206,7 @@ def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
     return vargout
 
 def cholupdate(R,x,sgn='+'):
-    # Placeholder for a python version of MATLAB's cholupdate.  Now it is O(n^3)
+    '''Placeholder for a python version of MATLAB's cholupdate.  Now it is O(n^3)'''
     if len(x.shape) == 1:
         # Reshape x so that the dot product below is correct
         x = np.reshape(x,(x.shape[0],1))

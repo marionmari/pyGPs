@@ -77,6 +77,7 @@ class GP(object):
 
 
     def setData(self, x, y):
+    '''Pass training data and traning labels to model.''' 
         if x.ndim == 1:
             x = np.reshape(x, (x.shape[0],1))
         if y.ndim == 1:
@@ -88,6 +89,7 @@ class GP(object):
             self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
 
     def plotData_1d(self, axisvals=None):
+        '''Plot 1d (toy) data.'''
         plt.figure()
         plt.plot(self.x, self.y, ls='None', marker='+', color=DATACOLOR, ms=12, mew=2)
         if axisvals:
@@ -98,6 +100,7 @@ class GP(object):
         plt.show()
     
     def plotData_2d(self,x1,x2,t1,t2,p1,p2,axisvals=None):
+        '''Plot 2d (toy) data.'''
         fig = plt.figure()
         plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
         plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
@@ -109,7 +112,7 @@ class GP(object):
         plt.show()
 
     def setPrior(self, mean=None, kernel=None):
-        """set prior mean and cov"""
+        """Set prior mean and cov"""
         if mean != None:
             self.meanfunc = mean
             self.usingDefaultMean = False
@@ -149,8 +152,8 @@ class GP(object):
 
     def optimize(self, x=None, y=None):
         '''
-        train optimal hyperparameters 
-        adjust to all mean/cov/lik functions
+        Train optimal hyperparameters based on training data,
+        adjust new hyperparameters to all mean/cov/lik functions
         '''
         if x != None:
             if x.ndim == 1:
@@ -175,16 +178,12 @@ class GP(object):
         self.fit()
 
 
-    def fit(self,x=None, y=None,der=True):
+    def fit(self, x=None, y=None, der=True):
         '''
-        fit the training data
-        @return  [nlZ, post]        if der = False
-        @return  [nlZ, dnlZ, post]  if der = True (default)
-            
-            where nlZ  is the negative log marginal likelihood
-                  dnlZ is partial derivatives of nlZ w.r.t. each hyperparameter
-                  post is struct representation of the (approximate) posterior
-                  post consists of post.alpha, post.L, post.sW
+        Fit the training data. Update negative log marginal likelihood(nlZ), 
+        partial derivatives of nlZ w.r.t. each hyperparameter(dnlZ),
+        and struct representation of the (approximate) posterior(post), 
+        which consists of post.alpha, post.L, post.sW.
         '''
         if x != None:
             if x.ndim == 1:
@@ -218,17 +217,17 @@ class GP(object):
 
     def predict(self, xs, ys=None):
         '''
-        prediction according to given inputs 
+        Prediction according to given inputs.
+        Get predictive output means(ym), 
+        predictive output variances(ys2),
+        predictive latent means(fm),
+        predictive latent variances(fs2),
+        log predictive probabilities(lp).
 
-        @param xs           test input
-        @param ys           test target(optional)
+        :param xs: test input
+        :param ys: test target(optional)
 
-        @return ymu, ys2, fmu, fs2, lp
-                where ymu is predictive output means
-                      ys2 is predictive output variances
-                      fm2 is predictive latent means
-                      fs2 is predictive latent variances
-                      lp  is log predictive probabilities(if ys is given, otherwise is None)
+        :return: ym, ys2, fm, fs2, lp
         '''
         meanfunc = self.meanfunc
         covfunc = self.covfunc
@@ -299,19 +298,19 @@ class GP(object):
 
     def predict_with_posterior(self, post, xs, ys=None):
         '''
-        prediction with provided posterior
+        Prediction with provided posterior
         (i.e. you already have the posterior and thus don't need fitting/training phases)
-        
-        @param post         posterior structcture
-        @param xs           test input
-        @param ys           test target(optional)
+        Get predictive output means(ym), 
+        predictive output variances(ys2),
+        predictive latent means(fm),
+        predictive latent variances(fs2),
+        log predictive probabilities(lp).
 
-        @return ymu, ys2, fmu, fs2, lp
-                where ymu is predictive output means
-                      ys2 is predictive output variances
-                      fm2 is predictive latent means
-                      fs2 is predictive latent variances
-                      lp  is log predictive probabilities(if ys is given, otherwise is None)
+        :param post: struct representation of posterior
+        :param xs: test input
+        :param ys: test target(optional)
+
+        :return: ym, ys2, fm, fs2, lp
         '''
         meanfunc = self.meanfunc
         covfunc = self.covfunc
@@ -394,10 +393,11 @@ class GPR(GP):
         self.optimizer = opt.Minimize(self)                # default optimizer       
 
     def setNoise(self,log_sigma):
-        """explicitly set noise variance other than default"""
+        """Set noise variance other than default"""
         self.likfunc = lik.Gauss(log_sigma)
 
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
+        """Set Optimizer. See base class."""
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
@@ -419,6 +419,7 @@ class GPR(GP):
             self.optimizer = opt.BFGS(self,conf)  
                        
     def plot(self,axisvals=None):
+        '''Plot prediction to 1d data.'''
         xs = self.xs
         x = self.x
         y = self.y
@@ -438,8 +439,13 @@ class GPR(GP):
         plt.ylabel('target y')
         plt.show()
 
-    ### TODO: debug starting from GPR and lik Laplace
     def useInference(self, newInf):
+        '''
+        Use another inference techinique other than default exact inference.
+        
+        :param str newInf: 'Laplace' or 'EP'
+        '''
+
         if newInf == "Laplace":
             self.inffunc = inf.Laplace()
         elif newInf == "EP":
@@ -456,10 +462,6 @@ class GPR(GP):
 
 
 
-
-
-
-
 class GPC(GP):
     """Gaussian Process Classification"""
     def __init__(self):
@@ -471,6 +473,7 @@ class GPC(GP):
         self.optimizer = opt.Minimize(self)                # default optimizer       
 
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
+        """Set Optimizer. See base class."""
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
@@ -492,6 +495,7 @@ class GPC(GP):
             self.optimizer = opt.BFGS(self,conf)  
                        
     def plot(self,x1,x2,t1,t2,axisvals=None): 
+        """Plot prediction for 2d data."""
         fig = plt.figure()
         plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
         plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
@@ -503,12 +507,23 @@ class GPC(GP):
         plt.show()
 
     def useInference(self, newInf):
+        """
+        Use another inference techinique other than default EP inference.
+
+        :param str newInf: 'Laplace'
+        """
         if newInf == "Laplace":
             self.inffunc = inf.Laplace()
         else:
             raise Exception('Possible inf values are "Laplace".')
 
     def useLikelihood(self,newLik):
+        """
+        Use another likelihood function other than default Erf inference.
+        (Not used in this version)
+
+        :param str newInf: 'Logistic'
+        """
         if newLik == "Logistic":
             pass
             #self.likfunc = lik.Logistic()

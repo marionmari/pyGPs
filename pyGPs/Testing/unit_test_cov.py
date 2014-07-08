@@ -179,7 +179,7 @@ class CovarianceTests(unittest.TestCase):
 
     def test_covRQ(self):
         print "testing covRQ..."
-        k = pyGPs.cov.RQ() 
+        k = pyGPs.cov.RQ()
         k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
         k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
         k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
@@ -327,6 +327,6 @@ class CovarianceTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print "Running unit tests, please be (very) patient..."
+    print "Running unit tests..."
     unittest.main()
 

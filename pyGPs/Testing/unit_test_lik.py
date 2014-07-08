@@ -18,14 +18,111 @@ import pyGPs
 class LikTests(unittest.TestCase):
 
     def setUp(self):
-        # random 2d data for testing
-        self.x = np.random.normal(loc=0.0, scale=1.0, size=(20,2))
+        # random data for testing
+        self.y = np.random.normal(loc=0.0, scale=1.0, size=(1,1))    # tiled target
+        self.mu = np.random.normal(loc=0.0, scale=1.0, size=(1,1))   # tiled conditional mean 
+        self.s2 = np.random.normal(loc=0.0, scale=1.0, size=(1,1))   # tiled conditional variance
+
+
+    def checkPrediction(self, lp, ymu, ys2):
+        n,D = self.y.shape
+        self.assertTrue(lp.shape == (n,D))
+        self.assertTrue(ymu.shape == (n,D))
+        self.assertTrue(ys2.shape == (n,D))
+
+
+    def checkInferenceLaplace(self, lp, dlp, d2lp, d3lp):
+        n,D = self.y.shape
+        self.assertTrue(lp.shape == (n,D))
+        self.assertTrue(dlp.shape == (n,D))
+        self.assertTrue(d2lp.shape == (n,D))
+        self.assertTrue(d3lp.shape == (n,D))
+
+    def checkDerivativeLaplace(self, lp, dlp, d2lp):
+        n,D = self.y.shape
+        self.assertTrue(lp.shape == (n,D))
+        self.assertTrue(dlp.shape == (n,D))
+        self.assertTrue(d2lp.shape == (n,D))
+
+
+    def checkInferenceEP(self, lp, dlp, d2lp):
+        n,D = self.y.shape
+        self.assertTrue(lp.shape == (n,D))
+        self.assertTrue(dlp.shape == (n,D))
+        self.assertTrue(d2lp.shape == (n,D))
+
+
+    def checkDerivativeEP(self, dlZhyp):
+        n,D = self.y.shape
+        self.assertTrue(dlZhyp.shape == (n,D))
+
+
+    def test_likGauss(self):
+        print "testing Gaussian likelihood..."
+        likelihood = pyGPs.lik.Gauss() 
+        print "predictive mode"
+        lp, ymu, ys2 = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, nargout=3)
+        self.checkPrediction(lp, ymu, ys2)
+
+        print "inference mode(Laplace inference)"
+        lp,dlp,d2lp,d3lp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.Laplace(), nargout=4)
+        self.checkInferenceLaplace(lp,dlp,d2lp,d3lp)
+        for der in xrange(len(likelihood.hyp)):
+            lp_dhyp,dlp_dhyp,d2lp_dhyp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.Laplace(), der=der, nargout=4)
+            self.checkDerivativeLaplace(lp_dhyp,dlp_dhyp,d2lp_dhyp)
+
+        print "inference mode(EP inference)"
+        lp,dlp,d2lp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.EP(), nargout=3)
+        self.checkInferenceEP(lp,dlp,d2lp)
+        for der in xrange(len(likelihood.hyp)):
+            dlZhyp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.EP(), der=der, nargout=3)
+            self.checkDerivativeEP(dlZhyp)
+
+
+    def test_likErf(self):
+        print "testing error function(cumulative Gaussian) likelihood..."
+        likelihood = pyGPs.lik.Erf() 
+        print "predictive mode"
+        lp, ymu, ys2 = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, nargout=3)
+        self.checkPrediction(lp, ymu, ys2)
+
+        print "inference mode(Laplace inference)"
+        lp,dlp,d2lp,d3lp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.Laplace(), nargout=4)
+        self.checkInferenceLaplace(lp,dlp,d2lp,d3lp)
+        for der in xrange(len(likelihood.hyp)):
+            lp_dhyp,dlp_dhyp,d2lp_dhyp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.Laplace(), der=der, nargout=4)
+            self.checkDerivativeLaplace(lp_dhyp,dlp_dhyp,d2lp_dhyp)
+
+        print "inference mode(EP inference)"
+        lp,dlp,d2lp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.EP(), nargout=3)
+        self.checkInferenceEP(lp,dlp,d2lp)
+        for der in xrange(len(likelihood.hyp)):
+            dlZhyp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.EP(), der=der, nargout=3)
+            self.checkDerivativeEP(dlZhyp)
+
+
+    def test_likLaplace(self):
+        print "testing Laplacian likelihood..."
+        likelihood = pyGPs.lik.Laplace() 
+        print "predictive mode"
+        lp, ymu, ys2 = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, nargout=3)
+        self.checkPrediction(lp, ymu, ys2)
+
+        print "inference mode(Laplace inference)"
+        lp,dlp,d2lp,d3lp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.Laplace(), nargout=4)
+        self.checkInferenceLaplace(lp,dlp,d2lp,d3lp)
+        # no derivatibes in Laplacian likelihood
+
+        print "inference mode(EP inference)"
+        lp,dlp,d2lp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.EP(), nargout=3)
+        self.checkInferenceEP(lp,dlp,d2lp)
+
 
 
 
 
 
 if __name__ == "__main__":
-    print "Running unit tests, please be (very) patient..."
+    print "Running unit tests..."
     unittest.main()
 

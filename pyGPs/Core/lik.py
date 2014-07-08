@@ -13,7 +13,7 @@
 # likelihood functions are provided to be used by the gp.py function:
 #
 #   Erf         (Error function, classification, probit regression)
-#   Logistic    (Logistic, classification, logit regression)
+#   Logistic    [NOT IMPLEMENTED!] (Logistic, classification, logit regression)
 #   Uni         [NOT IMPLEMENTED!] (Uniform likelihood, classification)
 #
 #   Gauss       (Gaussian, regression)
@@ -80,18 +80,6 @@
 #           dlZhyp = d log(Z) / dhyp_i
 #
 #
-# c1)   h,b,dh,db,d2h,d2b = lik(y, [], ga, 'infVB')
-#       ga is the variance of a Gaussian lower bound to the likelihood p(y|f).
-#       p(y|f) \ge exp( b*f - f.^2/(2*ga) - h(ga)/2 ) \propto N(f|b*ga,ga)
-#       The function returns the linear part b and the "scaling function" h(ga) and derivatives
-#           dh = d h/dga
-#           db = d b/dga
-#           d2h = d^2 h/dga
-#           d2b = d^2 b/dga
-#
-# c2)   dhhyp = lik(y, [], ga, 'infVB', i)
-#           dhhyp = dh / dhyp_i, the derivative w.r.t. the ith hyperparameter
-#
 # Cumulative likelihoods are designed for binary classification. Therefore, they
 # only look at the sign of the targets y; zero values are treated as +1.
 #
@@ -121,6 +109,10 @@ class Likelihood(object):
     def __init__(self):
         self.hyp = []
     def proceed(self):
+        '''
+        The likelihood functions have two possible modes based on inputs. 
+        See lik.py for detail documentation.
+        '''
         pass
 
 
@@ -327,7 +319,6 @@ class Erf(Likelihood):
                 varargout = []                           # deriv. wrt hyp.lik
         '''
 
-
     def cumGauss(self, y=None, f=None, nargout=1):
         # return [p,lp] = cumGauss(y,f)
         if not y == None: 
@@ -414,7 +405,7 @@ class Laplace(Likelihood):
                     ymmu = y-mu
                     lp = np.abs(ymmu)/b - np.log(2*b)
                     if nargout>1:                        # derivative of log likelihood
-                        dip = np.sign(ymmu)/b
+                        dlp = np.sign(ymmu)/b
                         if nargout>2:                    # 2nd derivative of log likelihood
                             d2lp = np.zeros_like(ymmu)
                             if nargout>3:                # 3rd derivative of log likelihood
@@ -576,7 +567,6 @@ class Laplace(Likelihood):
 
  
 
-# test
 if __name__ == '__main__':
     pass
 

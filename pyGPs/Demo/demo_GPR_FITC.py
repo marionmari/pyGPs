@@ -38,7 +38,7 @@ z = demoData['xstar']        # test data
 print "Example 1: default inducing points"
 
 # Start from a new model 
-model = pyGPs.GPR_FITC()            
+model = pyGPs.GPR_FITC()
 
 # Notice if you want to use default inducing points:
 # You MUST call setData(x,y) FIRST!

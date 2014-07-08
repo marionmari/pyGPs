@@ -116,6 +116,6 @@ class MeanTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print "Running unit tests, please be (very) patient..."
+    print "Running unit tests..."
     unittest.main()
 
