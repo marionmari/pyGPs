@@ -42,259 +42,118 @@ class CovarianceTests(unittest.TestCase):
         self.assertTrue(self_test.shape == (nn,1))
 
 
-    def test_covRBF(self):
-        print "testing covRBF..."
-        k = pyGPs.cov.RBF() 
+    def checkCovariance(self, k):
         k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
         k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
         k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
         self.checkCovOutput(k1,k2,k3)
-
         for der in xrange(len(k.hyp)):
             kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
             kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
             kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
             self.checkDerOutput(kd1, kd2, kd3)
+
+
+    def test_covRBF(self):
+        print "testing covRBF..."
+        k = pyGPs.cov.RBF()
+        self.checkCovariance(k)
 
 
     def test_covRBFunit(self):
         print "testing covRBFunit..."
         k = pyGPs.cov.RBFunit() 
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covRBFard(self):
         print "testing covRBFard..."
         k = pyGPs.cov.RBFard(D=self.x.shape[1]) 
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
         
 
     def test_covConst(self):
         print "testing covConst..."
         k = pyGPs.cov.Const() 
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
  
 
     def test_covLinear(self):
         print "testing covLinear..."
         k = pyGPs.cov.Linear() 
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covLINard(self):
         print "testing covLINard..."
         k = pyGPs.cov.LINard(D=self.x.shape[1]) 
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covMatern(self):
         print "testing covMatern..."
         k = pyGPs.cov.Matern() 
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covPeriodic(self):
         print "testing covPeriodic..."
         k = pyGPs.cov.Periodic() 
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covNoise(self):
         print "testing covNoise..."
         k = pyGPs.cov.Noise() 
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covRQ(self):
         print "testing covRQ..."
         k = pyGPs.cov.RQ()
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covRQard(self):
         print "testing covRQard..."
         k = pyGPs.cov.RQard(D=self.x.shape[1]) 
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covPre(self):
         print "testing covPre..."
         k = pyGPs.cov.Pre(self.M1, self.M2)                   # load precomputed kernel matrix
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covPiecePoly(self):
         print "testing covPiecePoly..."
         k = pyGPs.cov.PiecePoly()
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covPoly(self):
         print "testing covPoly..."
         k = pyGPs.cov.Poly()
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covScale(self):
         print "testing (compositing kernel) muliply by a scalar..."
         k = pyGPs.cov.RBF()*5
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covSum(self):
         print "testing (compositing kernel) sum of two kernels..."
         k = pyGPs.cov.RBF() + pyGPs.cov.PiecePoly()
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covProduct(self):
         print "testing (compositing kernel) product of two kernels..."
         k = pyGPs.cov.RBF() * pyGPs.cov.PiecePoly()
-        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
-        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
-        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
-        self.checkCovOutput(k1,k2,k3)
-
-        for der in xrange(len(k.hyp)):
-            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative 
-            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative 
-            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
-            self.checkDerOutput(kd1, kd2, kd3)
+        self.checkCovariance(k)
 
 
     def test_covFITC(self):

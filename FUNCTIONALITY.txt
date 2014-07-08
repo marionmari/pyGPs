@@ -8,20 +8,20 @@
 
 	* simple covariance functions:
 
-	Poly            - polynomial covariance function
-	RBF             - radial basis function kernel (squared exponential)
-	RBFunit         - RBF with unit magnitude
-	RBFard          - RBF with automatic relevance detemination
-	[todo] PPiso    - piecewise polynomial covariance function with compact support
-	Const           - constant covariance function
-	LIN             - linear covariance function
-	LINard          - linear covariance function with ard
-	Matern          - Matern covariance function
-	Periodic        - periodic covariance function
-	Noise           - independent covariance function (ie white noise)
-	[todo] RQiso    -
-	[todo] RQard    -
-	Pre             - precomputed kernel matrix
+       Poly          - Polynomial covariance function
+       PiecePoly     - Piecewise polynomial kernel with compact support.
+       RBF           - Squared Exponential kernel.
+       RBFunit       - Squared Exponential kernel with unit magnitude.
+       RBFard        - Squared Exponential kernel with Automatic Relevance Determination.
+       Const         - Constant kernel.
+       Linear        - Linear kernel.
+       LINard        - Linear covariance function with Automatic Relevance Detemination.
+       Matern        - Matern covariance function.
+       Periodic      - Stationary kernel for a smooth periodic function.
+       Noise         - Independent covariance function, i.e "white noise".
+       RQ            - Rational Quadratic covariance function with isotropic distance measure.
+       RQard         - Rational Quadratic covariance function with ARD distance measure.
+       Pre           - Precomputed kernel matrix.
 
 	* composite covariance functions:
 	
@@ -56,7 +56,6 @@
 	Erf             - Error function, classification, probit regression
 	Gauss           - Gaussian likelihood function for regression
 	Laplace         - Laplacian likelihood function for regression
-	Logistic        - Logistic function for binary classification or logit regression
 
 
 	----------------------------

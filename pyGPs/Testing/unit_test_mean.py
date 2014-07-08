@@ -32,84 +32,61 @@ class MeanTests(unittest.TestCase):
         self.assertTrue(derivative.shape == (n,1))
 
 
-    def test_meanZero(self):
-        print "testing meanZero..."
-        m = pyGPs.mean.Zero() 
+    def checkMean(self, m):
         mean = m.getMean(x=self.x)             # get mean
         self.checkMeanOutput(mean)
         for der in xrange(len(m.hyp)):         # get derivatives
             derivative = m.getDerMatrix(x=self.x, der=der)
             self.checkDerOutput(derivative)
+
+
+    def test_meanZero(self):
+        print "testing meanZero..."
+        m = pyGPs.mean.Zero()
+        self.checkMean(m)
+
 
 
     def test_meanLinear(self):
         print "testing meanLinear..."
         m = pyGPs.mean.Linear(D=self.x.shape[1]) 
-        mean = m.getMean(x=self.x)             # get mean
-        self.checkMeanOutput(mean)
-        for der in xrange(len(m.hyp)):         # get derivatives
-            derivative = m.getDerMatrix(x=self.x, der=der)
-            self.checkDerOutput(derivative)
+        self.checkMean(m)
 
 
     def test_meanOne(self):
         print "testing meanOne..."
         m = pyGPs.mean.One() 
-        mean = m.getMean(x=self.x)             # get mean
-        self.checkMeanOutput(mean)
-        for der in xrange(len(m.hyp)):         # get derivatives
-            derivative = m.getDerMatrix(x=self.x, der=der)
-            self.checkDerOutput(derivative)
+        self.checkMean(m)
 
 
     def test_meanConst(self):
         print "testing meanConst..."
         m = pyGPs.mean.Const() 
-        mean = m.getMean(x=self.x)             # get mean
-        self.checkMeanOutput(mean)
-        for der in xrange(len(m.hyp)):         # get derivatives
-            derivative = m.getDerMatrix(x=self.x, der=der)
-            self.checkDerOutput(derivative)
+        self.checkMean(m)
 
 
     def test_meanScale(self):
         print "testing (compositing mean) muliply by a scalar..."
         m = pyGPs.mean.One() * 6
-        mean = m.getMean(x=self.x)             # get mean
-        self.checkMeanOutput(mean)
-        for der in xrange(len(m.hyp)):         # get derivatives
-            derivative = m.getDerMatrix(x=self.x, der=der)
-            self.checkDerOutput(derivative)      
+        self.checkMean(m)   
 
 
     def test_meanSum(self):
         print "testing (compositing mean) sum of two means..."
         m = pyGPs.mean.One() + pyGPs.mean.Const() 
-        mean = m.getMean(x=self.x)             # get mean
-        self.checkMeanOutput(mean)
-        for der in xrange(len(m.hyp)):         # get derivatives
-            derivative = m.getDerMatrix(x=self.x, der=der)
-            self.checkDerOutput(derivative)
+        self.checkMean(m)
 
 
     def test_meanProduct(self):
         print "testing (compositing mean) product of two means..."
         m = pyGPs.mean.One() * pyGPs.mean.Const() 
-        mean = m.getMean(x=self.x)             # get mean
-        self.checkMeanOutput(mean)
-        for der in xrange(len(m.hyp)):         # get derivatives
-            derivative = m.getDerMatrix(x=self.x, der=der)
-            self.checkDerOutput(derivative)
+        self.checkMean(m)
 
 
     def test_meanPower(self):
         print "testing (compositing mean) power of a mean..."
         m = pyGPs.mean.Const() ** 2
-        mean = m.getMean(x=self.x)             # get mean
-        self.checkMeanOutput(mean)
-        for der in xrange(len(m.hyp)):         # get derivatives
-            derivative = m.getDerMatrix(x=self.x, der=der)
-            self.checkDerOutput(derivative)
+        self.checkMean(m)
 
 
 

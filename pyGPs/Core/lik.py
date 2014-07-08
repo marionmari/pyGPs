@@ -417,8 +417,11 @@ class Laplace(Likelihood):
                             return lp,dlp
                     else:
                         return lp
-                else:                                    # derivative mode
-                    return []                            # derivative w.r.t. hypers
+                else:                                    # derivative w.r.t. hypers
+                    lp_dhyp = np.abs(y-mu)/b - 1           # derivative of log likelihood w.r.t. hypers
+                    dlp_dhyp = np.sign(mu-y)/b              # first derivative,
+                    d2lp_dhyp = np.zeros(mu.shape)         # and also of the second mu derivative
+                    return lp_dhyp, dlp_dhyp, d2lp_dhyp     
             elif isinstance(inffunc, inf.EP):
                 n = np.max([len(y.flatten()),len(mu.flatten()),len(s2.flatten()),len(sn.flatten())])
                 on = np.ones((n,1))

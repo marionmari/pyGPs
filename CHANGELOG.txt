@@ -46,4 +46,5 @@ structural updates:
 bug fixes:
 
 - typos in lik.Laplace
+- derivative in lik.Laplace
 
