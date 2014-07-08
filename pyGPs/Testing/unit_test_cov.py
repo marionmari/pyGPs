@@ -184,6 +184,12 @@ class CovarianceTests(unittest.TestCase):
             self.assertTrue(kd3.shape == (nn,1))
 
 
+    # Test your customized covariance function
+    '''
+    def test_cov_new(self):
+        # specify your covariance function
+        self.checkCovariance(k)
+    '''
 
 if __name__ == "__main__":
     print "Running unit tests..."

@@ -113,6 +113,16 @@ class InfTests(unittest.TestCase):
         likfunc = pyGPs.lik.Gauss()
         post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
         self.checkFITCOutput(post, nlZ, dnlZ)
+    
+    # Test your customized inference function
+    '''
+    def test_inf_new(self):
+        # specify your inf function
+        # set mean/cov/lik functions
+        post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
+        self.checkFITCOutput(post, nlZ, dnlZ)
+    '''
+
 
 
 if __name__ == "__main__":

@@ -96,6 +96,13 @@ class LikTests(unittest.TestCase):
         self.checkLikelihood(likelihood)
 
 
+    # Test your customized likelihood function
+    '''
+    def test_cov_new(self):
+        # specify your likelihood function
+        self.checkLikelihood(likelihood)
+
+
 
 
 

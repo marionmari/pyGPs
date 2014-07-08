@@ -88,6 +88,13 @@ class MeanTests(unittest.TestCase):
         m = pyGPs.mean.Const() ** 2
         self.checkMean(m)
 
+    # Test your customized mean function
+    '''
+    def test_mean_new(self):
+        # specify your mean function
+        self.checkMean(m)
+    '''
+
 
 
 
