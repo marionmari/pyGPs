@@ -21,6 +21,7 @@ from math import sqrt
 import numpy as np
 
 def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = False, pointlog = False, scalelog = False, tolX = 1.0e-8, tolO = 1.0e-8, eval = None): 
+    '''Scaled conjugate gradient optimization. '''
     if display: print '\n***** starting optimization (SCG) *****\n'
     nparams = len(x);
     #  Check gradients

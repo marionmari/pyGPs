@@ -52,7 +52,7 @@ MEANCOLOR = [ 0.2109375, 0.63385, 0.1796875, 1.0]
 DATACOLOR = [0.12109375, 0.46875, 1., 1.0]
 
 class GP(object):
-    """Base class for GP model"""
+    '''Base class for GP model'''
     def __init__(self):
         super(GP, self).__init__()
         self.usingDefaultMean = True  # was using default mean function now?
@@ -112,7 +112,7 @@ class GP(object):
         plt.show()
 
     def setPrior(self, mean=None, kernel=None):
-        """Set prior mean and cov"""
+        '''Set prior mean and cov'''
         if mean != None:
             self.meanfunc = mean
             self.usingDefaultMean = False
@@ -383,7 +383,7 @@ class GP(object):
 
 
 class GPR(GP):
-    """Gaussian Process Regression"""
+    '''Gaussian Process Regression'''
     def __init__(self):
         super(GPR, self).__init__()
         self.meanfunc = mean.Zero()                        # default prior mean 
@@ -393,11 +393,11 @@ class GPR(GP):
         self.optimizer = opt.Minimize(self)                # default optimizer       
 
     def setNoise(self,log_sigma):
-        """Set noise variance other than default"""
+        '''Set noise variance other than default'''
         self.likfunc = lik.Gauss(log_sigma)
 
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
-        """Set Optimizer. See base class."""
+        '''Set Optimizer. See base class.'''
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
@@ -419,7 +419,7 @@ class GPR(GP):
             self.optimizer = opt.BFGS(self,conf)  
                        
     def plot(self,axisvals=None):
-        '''Plot prediction to 1d data.'''
+        '''Plot 1d GP regression.'''
         xs = self.xs
         x = self.x
         y = self.y
@@ -463,7 +463,7 @@ class GPR(GP):
 
 
 class GPC(GP):
-    """Gaussian Process Classification"""
+    '''Gaussian Process Classification'''
     def __init__(self):
         super(GPC, self).__init__()
         self.meanfunc = mean.Zero()                        # default prior mean 
@@ -473,7 +473,7 @@ class GPC(GP):
         self.optimizer = opt.Minimize(self)                # default optimizer       
 
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
-        """Set Optimizer. See base class."""
+        '''Set Optimizer. See base class.'''
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
@@ -495,7 +495,7 @@ class GPC(GP):
             self.optimizer = opt.BFGS(self,conf)  
                        
     def plot(self,x1,x2,t1,t2,axisvals=None): 
-        """Plot prediction for 2d data."""
+        '''Plot 2d gp classification.'''
         fig = plt.figure()
         plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
         plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
@@ -507,23 +507,23 @@ class GPC(GP):
         plt.show()
 
     def useInference(self, newInf):
-        """
+        '''
         Use another inference techinique other than default EP inference.
 
         :param str newInf: 'Laplace'
-        """
+        '''
         if newInf == "Laplace":
             self.inffunc = inf.Laplace()
         else:
             raise Exception('Possible inf values are "Laplace".')
 
     def useLikelihood(self,newLik):
-        """
+        '''
         Use another likelihood function other than default Erf inference.
         (Not used in this version)
 
-        :param str newInf: 'Logistic'
-        """
+        :param str newLik: 'Logistic'
+        '''
         if newLik == "Logistic":
             pass
             #self.likfunc = lik.Logistic()
@@ -534,7 +534,7 @@ class GPC(GP):
 
 
 class GPMC(object):
-    """This is a one vs. one classification wrapper for GPC"""
+    '''This is a one vs. one classification wrapper for GPC'''
     def __init__(self, n_class):
         self.meanfunc = mean.Zero()                # default prior mean 
         self.covfunc = cov.RBF()                   # default prior covariance
@@ -546,7 +546,7 @@ class GPMC(object):
         self.newPrior = False
 
     def setPrior(self, mean=None, kernel=None):
-        """set prior mean and cov"""
+        '''set prior mean function and covariance function'''
         if mean != None:
             self.meanfunc = mean
         if kernel != None:
@@ -556,13 +556,15 @@ class GPMC(object):
         self.newPrior = True
 
     def useInference(self, newInf):
+        '''Use another inference techinique other than default EP inference.'''
         self.newInf = newInf
 
     def useLikelihood(self,newLik):
+        '''Use another likelihood function other than default Erf inference.'''
         self.newLik = newLik    
     
     def setData(self,x,y):
-        '''for multi-class, data is x_all and y_all'''
+        '''Set data for multi-class model'''
         if x.ndim == 1:
             x = np.reshape(x, (x.shape[0],1))  
         if y.ndim == 1:
@@ -572,9 +574,12 @@ class GPMC(object):
 
     def fitAndPredict(self, xs):
         '''
+        Fitting model and prediction.
         predictive_vote is a matrix where
-        row i    -> each test point i
-        column j -> probability for being eahc class j
+        row i is each test point i
+        column j is the probability for being class j
+
+        :return: predictive_vote
         '''
         if xs.ndim == 1:
             xs = np.reshape(xs, (xs.shape[0],1)) 
@@ -604,9 +609,12 @@ class GPMC(object):
 
     def optimizeAndPredict(self, xs):
         '''
+        Optimizing model and prediction.
         predictive_vote is a matrix where
-        row i    -> each test point i
-        column j -> probability for being eahc class j
+        row i is each test point i
+        column j is the probability for being class j
+
+        :return: predictive_vote
         '''
         if xs.ndim == 1:
             xs = np.reshape(xs, (xs.shape[0],1)) 
@@ -634,8 +642,8 @@ class GPMC(object):
         return predictive_vote
 
     def createBinaryClass(self, i,j):
-        ''' create data points x,y which only contains class i and j
-        class_i is +1 and class_j is -1'''
+        ''' Create dataset x(data) and y(label) which only contains class i and j.
+        Relabel class i to +1 and class j to -1'''
         class_i = []
         class_j = []
         for index in xrange(len(self.y_all)):       # check all classes
@@ -656,17 +664,19 @@ class GPMC(object):
 
 
 class GP_FITC(GP):
-    """GP_FITC base class"""
+    '''FITC GP base class'''
     def __init__(self):
         super(GP_FITC, self).__init__()
         self.u = None
 
-    # override
+    # overriding
     def setData(self, x, y, value_per_axis=5):
-        '''set Data and derive deault inducing_points
+        '''Set training data and derive deault inducing_points.
 
-        value_per_axis is number of value in each dimension...
-        ...when using a default inducing point grid'''
+        :param x: training data
+        :param y: training target
+        :param int value_per_axis: number of value in each dimension 
+        when using a uni-distant default inducing points'''
         if x.ndim == 1:
             x = np.reshape(x, (x.shape[0],1))  
         if y.ndim == 1:
@@ -691,9 +701,9 @@ class GP_FITC(GP):
             self.u = np.array(list(itertools.product(*gridAxis)))
             self.covfunc = self.covfunc.fitc(self.u)
 
-    # override
+    # overriding
     def setPrior(self, mean=None, kernel=None, inducing_points=None):
-        """set prior and inducing_points"""
+        '''Set GP prior and inducing points'''
         if kernel != None:
             if inducing_points != None:
                 self.covfunc = kernel.fitc(inducing_points)
@@ -713,7 +723,7 @@ class GP_FITC(GP):
 
 
 class GPR_FITC(GP_FITC):
-    """Gaussian Process Regression FITC"""
+    '''Gaussian Process Regression FITC'''
     def __init__(self):
         super(GPR_FITC, self).__init__()
         self.meanfunc = mean.Zero()                        # default prior mean 
@@ -724,10 +734,11 @@ class GPR_FITC(GP_FITC):
         self.u = None                                      # no default inducing points
 
     def setNoise(self,log_sigma):
-        """explicitly set noise variance other than default"""
+        '''Set noise variance other than default value'''
         self.likfunc = lik.Gauss(log_sigma)
 
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
+        '''Set Optimizer. See base class.'''
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
@@ -749,6 +760,7 @@ class GPR_FITC(GP_FITC):
             self.optimizer = opt.BFGS(self,conf)  
                        
     def plot(self,axisvals=None):
+        '''Plot 1d GP FITC regression.'''
         plt.figure()
         xss  = np.reshape(self.xs,(self.xs.shape[0],))
         ymm  = np.reshape(self.ym,(self.ym.shape[0],))
@@ -765,6 +777,11 @@ class GPR_FITC(GP_FITC):
         plt.show()
 
     def useInference(self, newInf):
+        '''
+        Use another inference techinique other than default exact inference.
+
+        :param str newInf: 'Laplace' or 'EP'
+        '''
         if newInf == "Laplace":
             self.inffunc = inf.FITC_Laplace()
         elif newInf == "EP":
@@ -773,6 +790,11 @@ class GPR_FITC(GP_FITC):
             raise Exception('Possible inf values are "Laplace", "EP".')
 
     def useLikelihood(self,newLik):
+        '''
+        Use another inference techinique other than default Gaussian likelihood.
+
+        :param str newLik: 'Laplace'
+        '''
         if newLik == "Laplace":
             self.likfunc = lik.Laplace()
             self.inffunc = inf.FITC_EP()
@@ -783,7 +805,7 @@ class GPR_FITC(GP_FITC):
 
    
 class GPC_FITC(GP_FITC):
-    """Gaussian Process Classification FITC"""
+    '''Gaussian Process Classification FITC'''
     def __init__(self):
         super(GPC_FITC, self).__init__()
         self.meanfunc = mean.Zero()                        # default prior mean 
@@ -793,11 +815,8 @@ class GPC_FITC(GP_FITC):
         self.optimizer = opt.Minimize(self)                # default optimizer 
         self.u = None                                      # no default inducing points
 
-    def useLaplace_FITC(self):
-        """use Laplace approxiamation other than EP"""
-        self.inffunc = inf.FITC_Laplace() 
-
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
+        '''Set optimizer. See base class.'''
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
@@ -819,6 +838,7 @@ class GPC_FITC(GP_FITC):
             self.optimizer = opt.BFGS(self,conf)  
                        
     def plot(self,x1,x2,t1,t2,axisvals=None): 
+        '''Plot 2d GP FITC classification.'''
         fig = plt.figure()
         plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
         plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
@@ -831,12 +851,23 @@ class GPC_FITC(GP_FITC):
         plt.show()  
 
     def useInference(self, newInf):
+        '''
+        Use another inference techinique other than default exact inference.
+
+        :param str newInf: 'Laplace' or 'EP'
+        '''
         if newInf == "Laplace":
             self.inffunc = inf.FITC_Laplace()
         else:
             raise Exception('Possible inf values are "Laplace".')
 
     def useLikelihood(self,newLik):
+        '''
+        Use another inference techinique other than default Erf likelihood.
+        (Not used in this version)
+
+        :param str newLik: 'Logistic'
+        '''
         if newLik == "Logistic":
             pass
             #self.likfunc = lik.Logistic()

@@ -51,7 +51,7 @@
 #
 #  lik(y, mu, s2, inf) OR lik(y, mu, s2, inf, i)
 #
-# There are three cases for inf, namely a) infLaplace, b) infEP and c) infVB. 
+# There are two cases for inf, namely a) infLaplace, b) infEP 
 # The last input i, refers to derivatives w.r.t. the ith hyperparameter. 
 #
 # a1)   lp,dlp,d2lp,d3lp = lik(y, f, [], 'infLaplace')

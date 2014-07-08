@@ -16,11 +16,13 @@ import scipy.sparse as spsp
 import numpy as np
 
 def formKnnGraph(pc,k):
-    ''' INPUT:     pc    n by D data matrix
-                         where n is num_points
-                               D is num_dimensions
-            
-        OUTPUT:    A     adjacency matrix '''
+    '''
+    Form a k-nearest-neighbour graph from data points
+
+    :param pc: n by D data matrix
+    :param k: number of neighbours for each node
+    :return: adjacency matrix
+    '''
 
     num_points = pc.shape[0]
    
@@ -38,19 +40,20 @@ def formKnnGraph(pc,k):
     return A
 
 
+
 def formKernelMatrix(M, indice_train, indice_test):
-    ''' format precomputed kernel matrix into two matrix,
-        which fit the parameters of method in pyGP
+    '''
+    Format precomputed kernel matrix into two matrix,
+    which fit the structure to be used in cov.Pre() in pyGP
 
-        INPUT:    M             n by n precomputed kernel matrix
-                  indice_train  list of indice of training examples
-                  indice_test   list of indice of test examples
+    :param M: n by n precomputed kernel matrix
+    :param indice_train: list of indice of training examples
+    :param indice_test: list of indice of test examples
         
-        OUTPUT:   M1            train+1 by test matrix
-                                     where the last row is the diagonal of test-test covariance
-                  M2            train by train matrix
-
-            '''
+    :return: M1 is a train+1 by test matrix, 
+    where the last row is the diagonal of test-test covariance.
+    and M2 is a train by train matrix.
+    '''
     train_test = M[indice_train,:][:,indice_test]
     test_test = M[indice_test,:][:,indice_test]
     dia = np.diag(test_test)
@@ -61,9 +64,14 @@ def formKernelMatrix(M, indice_train, indice_test):
 
 
 def normalizeKernel(K):
-    ''' INPUT:     K        n by D kernel matrix
-            
-        OUTPUT:    K_norm   n by D normalized kernel matrix(correlation matrix)'''
+    '''
+    Normalize the given kernel matrix. 
+    Each entry[i,j] is normalized by square root of entry[i,i] * entry[j,j].
+    (i.e. compute the correlation matrix from covariance matrix).
+
+    :param K: n by D kernel matrix(covariance matrix)
+    :return: n by D normalized kernel matrix(correlation matrix)
+    '''
     Kdiag = np.atleast_2d(np.diag(K))
     normalizers = np.sqrt(Kdiag*Kdiag.T)
     K_norm = K/normalizers
