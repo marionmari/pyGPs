@@ -77,7 +77,7 @@ class GP(object):
 
 
     def setData(self, x, y):
-    '''Pass training data and traning labels to model.''' 
+        '''Pass training data and traning labels to model.''' 
         if x.ndim == 1:
             x = np.reshape(x, (x.shape[0],1))
         if y.ndim == 1:

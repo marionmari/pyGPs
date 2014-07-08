@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Likelihoods &amp; Inference &mdash; pyGPs v1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pyGPs v1.1 documentation" href="index.html" />
+    <link rel="next" title="Optimizers" href="Opts.html" />
+    <link rel="prev" title="Kernels &amp; Means" href="Kernels.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Opts.html" title="Optimizers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Kernels.html" title="Kernels &amp; Means"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="likelihoods-inference">
+<h1>Likelihoods &amp; Inference<a class="headerlink" href="#likelihoods-inference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="changing-likelihood-inference">
+<h2>Changing Likelihood &amp; Inference<a class="headerlink" href="#changing-likelihood-inference" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>By default,</dt>
+<dd><ul class="first last simple">
+<li>GPR uses Gaussian likelihood and exact inference.</li>
+<li>GPC uses Error functionlikelihood and EP inference.</li>
+<li>FITC model uses same default with corresponding FITC inference.</li>
+<li>GPMC calls GPC and thus uses the default setting of GPC</li>
+</ul>
+</dd>
+</dl>
+<p>You can change to other likelihood or inference methods using:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">useLikelihood</span><span class="p">(</span><span class="n">newLik</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">useInference</span><span class="p">(</span><span class="n">newInf</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><em>newLik</em> and <em>newInf</em> are <strong>Strings</strong>. Currently the options are:</dt>
+<dd><ol class="first last arabic simple">
+<li>Regression model<ul>
+<li>newLik: <strong>&#8220;Laplace&#8221;</strong>. Note this will force inference method to be EP.</li>
+<li>newInf: <strong>&#8220;EP&#8221;</strong>, <strong>&#8220;Laplace&#8221;</strong>.</li>
+</ul>
+</li>
+<li>Classification model (including GPMC)<ul>
+<li>newInf: <strong>&#8220;Laplace&#8221;</strong></li>
+</ul>
+</li>
+</ol>
+</dd>
+</dl>
+</div>
+<div class="section" id="module-pyGPs.Core.lik">
+<span id="list-of-likelihoods"></span><h2>List of Likelihoods<a class="headerlink" href="#module-pyGPs.Core.lik" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyGPs.Core.lik.Erf">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Erf</tt><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Erf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Erf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error function or cumulative Gaussian likelihood function for binary
+classification or probit regression.</p>
+<p><img class="math" src="_images/math/7bf22e34ad48c1790522e60e9f37809d7a1ed009.png" alt="Erf(t)=\frac{1}{2}(1+erf(\frac{t}{\sqrt{2}}))=normcdf(t)"/></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.lik.Gauss">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Gauss</tt><big>(</big><em>log_sigma=-2.3025850929940455</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Gauss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Gauss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gaussian likelihood function for regression.</p>
+<p><img class="math" src="_images/math/ff97ea0691ff78ade77ebe3fd425f924a94e2fc6.png" alt="Gauss(t)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(t-y)^2}{2\sigma^2}}"/>,
+where <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> is the mean and <img class="math" src="_images/math/fa35d9fc104207e09a712110ac81612c5b279a6c.png" alt="\sigma"/> is the standard deviation.</p>
+<p>hyp = [ log_sigma ]</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.lik.Laplace">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Laplace</tt><big>(</big><em>log_sigma=-2.3025850929940455</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Laplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Laplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Laplacian likelihood function for regression. ONLY works with EP inference!</p>
+<p><img class="math" src="_images/math/22af8a3a9d3c790d24b4f31a7e3d8270ac105a7b.png" alt="Laplace(t) = \frac{1}{2b}e^{-\frac{|t-y|}{b}}"/> where <img class="math" src="_images/math/cc23cfcc01f3ea0f1af4f5fe7160f178a5570f2a.png" alt="b=\frac{\sigma}{\sqrt{2}}"/>,
+<img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> is the mean and <img class="math" src="_images/math/fa35d9fc104207e09a712110ac81612c5b279a6c.png" alt="\sigma"/> is the standard deviation.</p>
+<p>hyp = [ log_sigma ]</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.lik.Likelihood">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Likelihood</tt><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base function for Likelihood function</p>
+<dl class="method">
+<dt id="pyGPs.Core.lik.Likelihood.proceed">
+<tt class="descname">proceed</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Likelihood.proceed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Likelihood.proceed" title="Permalink to this definition">¶</a></dt>
+<dd><p>The likelihood functions have two possible modes based on inputs. 
+See lik.py for detail documentation.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyGPs.Core.inf">
+<span id="list-of-inference"></span><h2>List of Inference<a class="headerlink" href="#module-pyGPs.Core.inf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyGPs.Core.inf.EP">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">EP</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#EP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.EP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expectation Propagation approximation to the posterior Gaussian Process.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.Exact">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">Exact</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Exact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Exact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exact inference for a GP with Gaussian likelihood. Compute a parametrization
+of the posterior, the negative log marginal likelihood and its derivatives
+w.r.t. the hyperparameters.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.FITC_EP">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">FITC_EP</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#FITC_EP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.FITC_EP" title="Permalink to this definition">¶</a></dt>
+<dd><p>FITC-EP approximation to the posterior Gaussian process. The function is
+equivalent to infEP with the covariance function:
+Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku&#8217; * inv(Kuu + snu2 * eye(nu)) * Ku;
+where Ku and Kuu are covariances w.r.t. to inducing inputs xu and
+snu2 = sn2/1e6 is the noise of the inducing inputs. We fixed the standard
+deviation of the inducing inputs snu to be a one per mil of the measurement 
+noise&#8217;s standard deviation sn. In case of a likelihood without noise
+parameter sn2, we simply use snu2 = 1e-6.
+For details, see The Generalized FITC Approximation, Andrew Naish-Guzman and
+Sean Holden, NIPS, 2007.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.FITC_Exact">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">FITC_Exact</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#FITC_Exact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.FITC_Exact" title="Permalink to this definition">¶</a></dt>
+<dd><p>FITC approximation to the posterior Gaussian process. The function is
+equivalent to infExact with the covariance function:
+Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku&#8217; * inv(Quu) * Ku; 
+where Ku and Kuu are covariances w.r.t. to inducing inputs xu, snu2 = sn2/1e6
+is the noise of the inducing inputs and Quu = Kuu + snu2*eye(nu).</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.FITC_Laplace">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">FITC_Laplace</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#FITC_Laplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.FITC_Laplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>FITC-Laplace approximation to the posterior Gaussian process. The function is
+equivalent to infLaplace with the covariance function:
+Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku&#8217; * inv(Kuu + snu2 * eye(nu)) * Ku;
+where Ku and Kuu are covariances w.r.t. to inducing inputs xu and
+snu2 = sn2/1e6 is the noise of the inducing inputs. We fixed the standard
+deviation of the inducing inputs snu to be a one per mil of the measurement 
+noise&#8217;s standard deviation sn. In case of a likelihood without noise
+parameter sn2, we simply use snu2 = 1e-6.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.Inference">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">Inference</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Inference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Inference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for inference. Defined several tool methods in it.</p>
+<dl class="method">
+<dt id="pyGPs.Core.inf.Inference.Psi_line">
+<tt class="descname">Psi_line</tt><big>(</big><em>s</em>, <em>dalpha</em>, <em>alpha</em>, <em>K</em>, <em>m</em>, <em>likfunc</em>, <em>y</em>, <em>inffunc</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Inference.Psi_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Inference.Psi_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Criterion Psi at alpha + s*dalpha for line search
+[Psi,alpha,f,dlp,W] = Psi_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyGPs.Core.inf.Inference.Psi_lineFITC">
+<tt class="descname">Psi_lineFITC</tt><big>(</big><em>s</em>, <em>dalpha</em>, <em>alpha</em>, <em>V</em>, <em>d0</em>, <em>m</em>, <em>likfunc</em>, <em>y</em>, <em>inffunc</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Inference.Psi_lineFITC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Inference.Psi_lineFITC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Criterion Psi at alpha + s*dalpha for line search</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyGPs.Core.inf.Inference.epfitcRefresh">
+<tt class="descname">epfitcRefresh</tt><big>(</big><em>d0</em>, <em>P0</em>, <em>R0</em>, <em>R0P0</em>, <em>w</em>, <em>b</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Inference.epfitcRefresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Inference.epfitcRefresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh the representation of the posterior from initial and site parameters
+to prevent possible loss of numerical precision after many epfitcUpdates
+effort is O(n*nu^2) provided that nu&lt;n
+Sigma = inv(inv(K)+diag(W)) = diag(d) + P&#8217;<a href="#id1"><span class="problematic" id="id2">*</span></a>R0&#8217;<a href="#id3"><span class="problematic" id="id4">*</span></a>R&#8217;<a href="#id5"><span class="problematic" id="id6">*</span></a>R*R0*P.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyGPs.Core.inf.Inference.epfitcZ">
+<tt class="descname">epfitcZ</tt><big>(</big><em>d</em>, <em>P</em>, <em>R</em>, <em>nn</em>, <em>gg</em>, <em>ttau</em>, <em>tnu</em>, <em>d0</em>, <em>R0</em>, <em>P0</em>, <em>y</em>, <em>likfunc</em>, <em>m</em>, <em>inffunc</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Inference.epfitcZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Inference.epfitcZ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the marginal likelihood approximation
+effort is O(n*nu^2) provided that nu&lt;n</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyGPs.Core.inf.Inference.fitcRefresh">
+<tt class="descname">fitcRefresh</tt><big>(</big><em>d0</em>, <em>P0</em>, <em>R0</em>, <em>R0P0</em>, <em>w</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Inference.fitcRefresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Inference.fitcRefresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh the representation of the posterior from initial and site parameters
+to prevent possible loss of numerical precision after many epfitcUpdates
+effort is O(n*nu^2) provided that nu&lt;n
+Sigma = inv(inv(K)+diag(W)) = diag(d) + P&#8217;<a href="#id7"><span class="problematic" id="id8">*</span></a>R0&#8217;<a href="#id9"><span class="problematic" id="id10">*</span></a>R&#8217;<a href="#id11"><span class="problematic" id="id12">*</span></a>R*R0*P.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyGPs.Core.inf.Inference.logdetA">
+<tt class="descname">logdetA</tt><big>(</big><em>K</em>, <em>w</em>, <em>nargout</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Inference.logdetA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Inference.logdetA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the log determinant ldA and the inverse iA of a square nxn matrix
+A = eye(n) + K*diag(w) from its LU decomposition; for negative definite A, we 
+return ldA = Inf. We also return mwiA = -diag(w)*inv(A).
+[ldA,iA,mwiA] = logdetA(K,w)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyGPs.Core.inf.Inference.mvmK">
+<tt class="descname">mvmK</tt><big>(</big><em>al</em>, <em>V</em>, <em>d0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Inference.mvmK"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Inference.mvmK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matrix vector multiplication with approximate covariance matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyGPs.Core.inf.Inference.mvmZ">
+<tt class="descname">mvmZ</tt><big>(</big><em>x</em>, <em>RVdd</em>, <em>t</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Inference.mvmZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Inference.mvmZ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matrix vector multiplication with Z=inv(K+inv(W))</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyGPs.Core.inf.Inference.proceed">
+<tt class="descname">proceed</tt><big>(</big><em>meanfunc</em>, <em>covfunc</em>, <em>likfunc</em>, <em>x</em>, <em>y</em>, <em>nargout=1</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Inference.proceed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Inference.proceed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inference computation based on inputs.
+post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>meanfunc</strong> &#8211; mean function</li>
+<li><strong>covfunc</strong> &#8211; covariance function</li>
+<li><strong>likfunc</strong> &#8211; likelihood function</li>
+<li><strong>x</strong> &#8211; training data</li>
+<li><strong>y</strong> &#8211; training labels</li>
+<li><strong>nargout</strong> &#8211; specify the number of output(1,2 or 3)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">posterior, negative-log-marginal-likelihood, derivative for negative-log-marginal-likelihood-likelihood</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.Laplace">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">Laplace</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Laplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Laplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Laplace&#8217;s Approximation to the posterior Gaussian process.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.dnlZStruct">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">dnlZStruct</tt><big>(</big><em>m</em>, <em>c</em>, <em>l</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/inf.html#dnlZStruct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.dnlZStruct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data structure for the derivatives of mean, cov and lik functions</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.postStruct">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">postStruct</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#postStruct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.postStruct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data structure for posterior</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Likelihoods &amp; Inference</a><ul>
+<li><a class="reference internal" href="#changing-likelihood-inference">Changing Likelihood &amp; Inference</a></li>
+<li><a class="reference internal" href="#module-pyGPs.Core.lik">List of Likelihoods</a></li>
+<li><a class="reference internal" href="#module-pyGPs.Core.inf">List of Inference</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Kernels.html"
+                        title="previous chapter">Kernels &amp; Means</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Opts.html"
+                        title="next chapter">Optimizers</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/Likelihoods.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Opts.html" title="Optimizers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Kernels.html" title="Kernels &amp; Means"
+             >previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

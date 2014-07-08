@@ -187,7 +187,7 @@ class BFGS(Optimizer):
 
 
 class Minimize(Optimizer):
-    '''minimize by Carl Rasmussen (python implementation of “minimize” in GPML)'''
+    '''minimize by Carl Rasmussen (python implementation of "minimize" in GPML)'''
     def __init__(self, model, searchConfig = None):
         super(Minimize, self).__init__()
         self.model = model

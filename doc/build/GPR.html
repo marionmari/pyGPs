@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Basic Regression &mdash; pyGPs v1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pyGPs v1.1 documentation" href="index.html" />
+    <link rel="up" title="Demos" href="Examples.html" />
+    <link rel="next" title="Sparse Regression" href="GPR_FITC.html" />
+    <link rel="prev" title="Demos" href="Examples.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="GPR_FITC.html" title="Sparse Regression"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Examples.html" title="Demos"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+          <li><a href="Examples.html" accesskey="U">Demos</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="basic-regression">
+<h1>Basic Regression<a class="headerlink" href="#basic-regression" title="Permalink to this headline">¶</a></h1>
+<p>The code shown in this tutorial can be executed by running <em>pyGPs/Demo/demo_GPR.py</em></p>
+<p>This demo will not only introduce the regression model, it also provides the general insight of how to use the package. This general information will not be repeated in the other demos.</p>
+<div class="section" id="import-packages">
+<h2>Import packages<a class="headerlink" href="#import-packages" title="Permalink to this headline">¶</a></h2>
+<p>Once you installed pyGPs, the typical way to import it is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyGPs.Core</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="load-data">
+<h2>Load data<a class="headerlink" href="#load-data" title="Permalink to this headline">¶</a></h2>
+<p>First, load the data for this demo. The data consists of <img class="math" src="_images/math/731fff2fc30062dd7135caff108b191df21ea8bf.png" alt="n=20"/> 1-d data points drawn from a unit Gaussian. This is the same data used in the GPML example (it is hardcoded in <em>data/regression_data.npz</em>).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">demoData</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;data_for_demo/regression_data.npz&#39;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>      <span class="c"># training data</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span>      <span class="c"># training target</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;xstar&#39;</span><span class="p">]</span>  <span class="c"># test data</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="a-five-line-toy-example">
+<h2>A five-line toy example<a class="headerlink" href="#a-five-line-toy-example" title="Permalink to this headline">¶</a></h2>
+<p>Now lets do regression with Gaussian processes.
+Using pyGPs for regression is really simple; here is the most basic example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPR</span><span class="p">()</span>    <span class="c"># specify model (GP regression)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>     <span class="c"># fit default model (mean zero &amp; rbf kernel) with data</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>   <span class="c"># optimize hyperparamters (default optimizer: single run minimize)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>    <span class="c"># predict test cases</span>
+<span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>        <span class="c"># and plot result</span>
+</pre></div>
+</div>
+<p>By default, GPR uses a zero mean, the rbf kernel and a Gaussian likelihood. Default optimizer is a single run of Rasmussen&#8217;s minimize. You will see below how to set non-default values in another example.</p>
+<p><em>GPR.plot()</em> will plot the result, where the dark line is the posterior mean and the green-shaded area is the posterior variance.
+Note, that <em>plot()</em> is not a general method as it is not trivial to visualize high dimensional data.
+Here, <em>GPR.plot()</em> works for 1-d data only, while <em>GPC.plot()</em> is a toy method visualising 2-d input data in a classification scenario.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/d1_1.png"><img alt="_images/d1_1.png" src="_images/d1_1.png" style="width: 560.0px; height: 420.0px;" /></a>
+</div>
+</div>
+<div class="section" id="a-more-complicated-example">
+<h2>A more complicated example<a class="headerlink" href="#a-more-complicated-example" title="Permalink to this headline">¶</a></h2>
+<p>Now lets do another example to get insight into more advanced features of the toolbox.</p>
+<p>You can specify non-default mean and covariance functions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span> <span class="n">D</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span> <span class="o">+</span> <span class="n">mean</span><span class="o">.</span><span class="n">Const</span><span class="p">()</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">setPrior</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, we use a composite mean as the sum of a linear and a constant function, and an rbf kernel. The initial hyperparameters are left to their default values. See <a class="reference external" href="Kernels.html">Kernels &amp; Means</a> for a complete documentation of kernel/mean specification and custom kernel/mean construction. Once kernel and mean are specified, they are passed to the prior using <em>setPrior()</em>.</p>
+<p>You can add the traning data to the model explicitly by using <em>setData()</em>. So, you avoid passing them into <em>fit()</em> or <em>train()</em> each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> (if you do not specify mean function by your own).</p>
+<p>Further, you can plot the data in the 1-d case:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">plotData_1d</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/d1_2.png"><img alt="_images/d1_2.png" src="_images/d1_2.png" style="width: 560.0px; height: 420.0px;" /></a>
+</div>
+<p>You can specify a optimization method different from the default, which is a single run of Rasmussen&#8217;s minimize. For example, you can choose to rerun the optimization method
+several times with different random initializations:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">setOptimizer</span><span class="p">(</span><span class="s">&quot;Minimize&quot;</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The optimized hyperparameters returned by <em>train()</em> are then set to be the ones obtained from the run with the best result.
+The whole functionality for optimization is introduced in detail in the documentation <a class="reference external" href="Opts.html">Optimizers</a>.</p>
+<p>Instead of <em>fit()</em>, which only fits data using given hyperparameters, <em>train()</em> will optimize hyperparamters based on marginal likelihood:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>There are several properties you can get from the model:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">nlZ</span>                   <span class="c"># negative log marginal likelihood</span>
+<span class="n">model</span><span class="o">.</span><span class="n">dnlZ</span><span class="o">.</span><span class="n">cov</span>              <span class="c"># direvatives of negative log marginal likelihood</span>
+<span class="n">model</span><span class="o">.</span><span class="n">dnlZ</span><span class="o">.</span><span class="n">lik</span>
+<span class="n">model</span><span class="o">.</span><span class="n">dnlZ</span><span class="o">.</span><span class="n">mean</span>
+<span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="o">.</span><span class="n">sW</span>          <span class="c"># posterior structure</span>
+<span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="o">.</span><span class="n">alpha</span>
+<span class="n">model</span><span class="o">.</span><span class="n">posterior</span><span class="o">.</span><span class="n">L</span>
+<span class="n">model</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="n">hyp</span>
+<span class="n">model</span><span class="o">.</span><span class="n">meanfunc</span><span class="o">.</span><span class="n">hyp</span>
+<span class="n">model</span><span class="o">.</span><span class="n">likfunc</span><span class="o">.</span><span class="n">hyp</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fm</span>                    <span class="c"># latent mean</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fs2</span>                   <span class="c"># latent variance</span>
+<span class="n">model</span><span class="o">.</span><span class="n">ym</span>                    <span class="c"># predictive mean</span>
+<span class="n">model</span><span class="o">.</span><span class="n">ys2</span>                   <span class="c"># predictive variance</span>
+<span class="n">model</span><span class="o">.</span><span class="n">lp</span>                    <span class="c"># log predictive probability</span>
+</pre></div>
+</div>
+<p>For example, to get the log marginal likelihood use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="s">&#39;Optimized negative log marginal likelihood:&#39;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">nlZ</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Prediction on the test data will return five values, which are
+output mean (ymu) resp. variance (ys2), latent mean (fmu) resp. variance (fs2), and log predictive probabilities (lp)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ym</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fm</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot data. Note that <em>GPR.plot()</em> is a toy method only for visualising 1-d data. Here we got a different posterior by using a different prior other than in the default example.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/d1_3.png"><img alt="_images/d1_3.png" src="_images/d1_3.png" style="width: 560.0px; height: 420.0px;" /></a>
+</div>
+</div>
+<div class="section" id="a-bit-more-things-you-can-do">
+<h2>A bit more things you can do<a class="headerlink" href="#a-bit-more-things-you-can-do" title="Permalink to this headline">¶</a></h2>
+<p><strong>[For all Models]</strong> Speed up computation time for prediction if you know posterior in advance. Posterior is passed as an object with three fields (attributes) post.alpha, post.sW and post.L. How to use these vectors to represent the posterior can be best seen from Algorithm 2.1 (page 19) in Chapeter 2 of the <a class="reference external" href="http://www.gaussianprocess.org/gpml/chapters/RW2.pdf">GPML</a> book by Rasmussen and Williams, 2006.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">post</span> <span class="o">=</span> <span class="n">myPosterior</span><span class="p">()</span>        <span class="c"># known in advance</span>
+<span class="n">ym</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fm</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_with_posterior</span><span class="p">(</span> <span class="n">post</span><span class="p">,</span><span class="n">z</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>[Only for Regression]</strong> Specify noise of data (with <img class="math" src="_images/math/2072174f4575230fae760c1122545fbe6ef35eb7.png" alt="\sigma=0.1"/> by default):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">setNoise</span><span class="p">(</span> <span class="n">log_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>You do not need to specify the noise parameter if you are optimizing the hyperparamters later anyhow.</p>
+<p>All plotting methods have keyword axisvals. You can adjust plotting range if you want. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axisvals</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">3.9</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Switch to other Inference and Likelihood functions.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">useInference</span><span class="p">(</span><span class="s">&quot;EP&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">useLikelihood</span><span class="p">(</span><span class="s">&quot;Laplace&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Basic Regression</a><ul>
+<li><a class="reference internal" href="#import-packages">Import packages</a></li>
+<li><a class="reference internal" href="#load-data">Load data</a></li>
+<li><a class="reference internal" href="#a-five-line-toy-example">A five-line toy example</a></li>
+<li><a class="reference internal" href="#a-more-complicated-example">A more complicated example</a></li>
+<li><a class="reference internal" href="#a-bit-more-things-you-can-do">A bit more things you can do</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Examples.html"
+                        title="previous chapter">Demos</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="GPR_FITC.html"
+                        title="next chapter">Sparse Regression</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/GPR.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="GPR_FITC.html" title="Sparse Regression"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Examples.html" title="Demos"
+             >previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+          <li><a href="Examples.html" >Demos</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>
