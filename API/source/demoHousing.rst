@@ -23,7 +23,7 @@ variance that is uniform over the test set. ::
 
 .. figure:: _images/demoH1.png
    :align: center
-   :width: 600pt
+   :width: 400pt
    :height: 300pt
 
 After hyperparameter optimization, the covariance hyperparameters were :math:`[ 1.17, \;  0.45, \; -1.41 ]` and the likelihood 
@@ -31,7 +31,7 @@ hyperparameter was :math:`-2.27`.  The final negative log marginal likelihood (o
 
 .. figure:: _images/demoH2.png
    :align: center
-   :width: 600pt
+   :width: 400pt
    :height: 300pt
 
 .. _UCI Repository: http://archive.ics.uci.edu/ml/datasets/Housing
