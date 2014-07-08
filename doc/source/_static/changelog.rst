@@ -4,6 +4,9 @@ Changelog pyGPs v1.2
 
 June 30th 2014
 ----------------
+
+structural updates:
+
 - input target now can either be in 2-d array with size (n,1) or in 1-d array with size (n,)
 - setup.py updated
 - "import pyGPs" instead of "from pyGPs.Core import gp"
@@ -22,7 +25,8 @@ June 30th 2014
 
 
 
-bug fixed:
+bug fixes:
+
 - derivatives for cov.LINard
 - derivative of the scalar for cov.covScale
 - demo_GPR_FITC.py missing pyGPs.mean
@@ -31,11 +35,15 @@ bug fixed:
 
 July 8th 2014
 ----------------
+
+structural updates:
+
 - add hyperparameter(signal variance s2) for linear covariance
 - add unit testing for inference,likelihood functions as well as models
 - NOT show(print) "maximum number of sweep warning in inference EP" any more
 - documentation updated
 
-bug fixed:
+bug fixes:
+
 - typos in lik.Laplace
 
