@@ -22,22 +22,22 @@ import matplotlib.pyplot as plt
     
 def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False, showEachStep=False):
     '''
-    INPUT: 
-        A           adjacency matrix (num_nodes x num_nodes)
-        l           label array (num_nodes x 1); values [1,...,k] or -1 for unlabeled nodes 
-                    ...OR label array (num_nodes x num_labels); values [0,1], unlabeled nodes have only 0 entries
-        gr_id       graph indicator array (num_nodes x 1); values [0,..,n]
-        h_max       number of iterations
-        w           bin widths parameter
-        p           distance ('tv', 'hellinger', 'L1', 'L2')
-        ktype    type of propagation kernel ['diffusion', 'label_propagation', 'label_spreading', 'belief_propagation']
-    
-    RETURN:
-        K        kernel matrix 
+    Propagation kernel for graphs.
 
-    ToDO: SPLIT Varible label array and label probability
+    :param A: adjacency matrix (num_nodes x num_nodes)
+    :param l: label array (num_nodes x 1); values [1,...,k] or -1 for unlabeled nodes 
+    OR label array (num_nodes x num_labels); values [0,1], unlabeled nodes have only 0 entries
+    :param gr_id: graph indicator array (num_nodes x 1); values [0,..,n]
+    :param h_max: number of iterations
+    :param w: bin widths parameter
+    :param p: distance ('tv', 'hellinger', 'L1', 'L2')
+    :param ktype: type of propagation kernel ['diffusion', 'label_propagation', 'label_spreading', 'belief_propagation']
+    
+    :return: kernel matrix 
+    '''
+    # ToDO: SPLIT Varible label array and label probability
         
-    CAUTION: number of labels (k) > 1 !!! '''
+    # CAUTION: number of labels (k) > 1 !!! 
     
     #===========================================================================
     # ## Propagation Kernel COMPUTATION
@@ -106,8 +106,8 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
                 lab_prob = T*lab_prob
             
             elif ktype == 'label_spreading':
-                ''' S = D^(-1/2)*W*D^(-1/2)
-                    y(t+1) = alpha*S*y(t)+(1-alpha)*y(0)'''
+                # S = D^(-1/2)*W*D^(-1/2)
+                # y(t+1) = alpha*S*y(t)+(1-alpha)*y(0)
                 alpha = 0.8
                 # compute S
                 diag = np.array(A.sum(axis=1)).T**(-1/2)
