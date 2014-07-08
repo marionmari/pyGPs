@@ -1,0 +1,101 @@
+A brief overview of pyGPs functionality 
+===================================
+
+For detailed documentations see the API, tutorials, and respective modules/functions. 
+
+----------------------------
+kernel functions:			
+----------------------------
+
+* simple kernel functions:
+
+==========    =============================================
+Poly          Polynomial kernel
+PiecePoly     Piecewise polynomial kernel with compact support
+RBF           Squared Exponential kernel
+RBFunit       Squared Exponential kernel with unit magnitude
+RBFard        Squared Exponential kernel with Automatic Relevance Determination
+Const         Constant kernel
+Linear        Linear kernel
+LINard        Linear covariance function with Automatic Relevance Detemination
+Matern        Matern covariance function
+Periodic      Stationary kernel for a smooth periodic function
+Noise         Independent covariance function, i.e "white noise"
+RQ            Rational Quadratic covariance function with isotropic distance measure
+RQard         Rational Quadratic covariance function with ARD distance measure
+Pre           Precomputed kernel matrix
+==========    =============================================
+
+* composite kernel functions:
+
+====================== 	============================================
+ProductOfKernel or "*"  product of covariance functions
+ScaleOfKernel or "*"    scale covariance function (by scalar)
+SumOfKernel or "+"      sum of (parameterized) covariance functions
+FITCOfKernel            covariance function to be used together with the FITC approximation
+====================== 	============================================
+
+----------------------------
+mean functions:
+----------------------------
+
+* simple mean functions:
+
+==========    =============================================
+Zero            zero mean function
+One             one mean function
+Const           constant mean function
+Linear          linear mean function
+==========    =============================================
+
+* composite covariance functions:
+
+=====================   =============================================
+ProductOfMean or "*"    products of mean functions
+SumOfMean or "+"        sums of mean functions
+ScaleOfMean "*"         scaled version of a mean function
+PowerOfMean "**"        power of a mean function
+=====================   =============================================
+
+----------------------------
+lik functions:
+----------------------------
+==========    =============================================
+Erf             Error function, classification, probit regression
+Gauss           Gaussian likelihood function for regression
+Laplace         Laplacian likelihood function for regression
+==========    =============================================
+
+----------------------------
+inf functions:
+----------------------------
+=============  =============================================
+Exact           Exact inference (only possible with Gaussian likelihood)
+EP              Expectation Propagation
+Laplace         Laplace's Approximation
+FITC_Exact      Large scale regression with approximate covariance matrix
+FITC_EP         Large scale inference  with approximate covariance matrix
+FITC_Laplace    Large scale inference  with approximate covariance matrix
+=============  =============================================
+
+----------------------------
+optimization methods:
+----------------------------
+==========    =============================================
+Minimize        Minimize by Carl Rasmussen
+CG              Conjugent gradient
+BFGS            Quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)
+SCG             Scaled conjugent gradient (faster than CG) 
+==========    =============================================
+
+----------------------------
+evaluation measures:
+----------------------------
+==========    =============================================
+RMSE            Root mean squared error
+ACC             Classification accuracy
+Prec            Precision for class +1
+Recall          Recall for class +1
+NLPD            Negative log predictive density in transformed observation space
+==========    =============================================
+
