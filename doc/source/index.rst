@@ -27,7 +27,8 @@ Further, it includes implementations of
 
 * FITC functionality (following matlab implementations under Copyright (c) by Ed Snelson, Carl Edward Rasmussen and Hannes Nickisch, 2011-11-02)
 
-This is a stable release. If you observe problems or bugs, please let us know.
+The most recent stable release is pyGPs v1.2. See :doc:`changelog <_static/changelog>` for a list of changes to the previous release.
+If you observe problems or bugs, please let us know.
 You can also download a `procedual implementation`_ of GP functionality from Github. However, the procedual version will not be supported in future.
 
 .. _procedual implementation: https://github.com/marionmari/pyGP_PR/  
