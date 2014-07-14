@@ -18,3 +18,19 @@ Graph Kernels
 
 .. automodule:: pyGPs.GraphExtensions.graphKernels
    :members:
+
+
+Test
+---------------------------------------
+
+.. automodule:: pyGPs.Core.lik
+   :members:
+
+.. automodule:: pyGPs.Core.inf
+   :members:
+
+.. automodule:: pyGPs.Core.gp
+   :members:
+
+.. automodule:: pyGPs.Core.opt
+   :members:

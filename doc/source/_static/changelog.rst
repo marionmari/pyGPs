@@ -59,4 +59,4 @@ documentation updates:
 
 structural updates:
 
-- method graphUtil.normalize() added
+- made private for methods that users don't need to call

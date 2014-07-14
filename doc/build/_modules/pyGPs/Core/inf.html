@@ -128,7 +128,7 @@
 
 <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="postStruct"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.postStruct">[docs]</a><span class="k">class</span> <span class="nc">postStruct</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="postStruct"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.postStruct">[docs]</a><span class="k">class</span> <span class="nc">postStruct</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Data structure for posterior</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -137,7 +137,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">L</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sW</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
 </div>
-<div class="viewcode-block" id="dnlZStruct"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.dnlZStruct">[docs]</a><span class="k">class</span> <span class="nc">dnlZStruct</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="dnlZStruct"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.dnlZStruct">[docs]</a><span class="k">class</span> <span class="nc">dnlZStruct</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Data structure for the derivatives of mean, cov and lik functions</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -152,14 +152,14 @@
         <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lik</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">hyp</span><span class="p">))]</span>        
 </div>
-<div class="viewcode-block" id="Inference"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Inference">[docs]</a><span class="k">class</span> <span class="nc">Inference</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Inference"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Inference">[docs]</a><span class="k">class</span> <span class="nc">Inference</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Base class for inference. Defined several tool methods in it. </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="Inference.proceed"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Inference.proceed">[docs]</a>    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meanfunc</span><span class="p">,</span> <span class="n">covfunc</span><span class="p">,</span> <span class="n">likfunc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="Inference.proceed"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Inference.proceed">[docs]</a>    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meanfunc</span><span class="p">,</span> <span class="n">covfunc</span><span class="p">,</span> <span class="n">likfunc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Inference computation based on inputs.</span>
 <span class="sd">        post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)</span>
@@ -190,7 +190,7 @@
                 <span class="o">+</span> <span class="p">(</span><span class="n">tnu</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">tau_n</span><span class="o">+</span><span class="n">ttau</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="mf">2.</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">ttau</span><span class="o">/</span><span class="n">tau_n</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="mf">2.</span>
         <span class="k">return</span> <span class="n">Sigma</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">nlZ</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">L</span>
     
-<div class="viewcode-block" id="Inference.logdetA"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Inference.logdetA">[docs]</a>    <span class="k">def</span> <span class="nf">logdetA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">nargout</span><span class="p">):</span>
+<div class="viewcode-block" id="Inference.logdetA"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Inference.logdetA">[docs]</a>    <span class="k">def</span> <span class="nf">logdetA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">nargout</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Compute the log determinant ldA and the inverse iA of a square nxn matrix</span>
 <span class="sd">        A = eye(n) + K*diag(w) from its LU decomposition; for negative definite A, we </span>
@@ -223,7 +223,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ldA</span>  
     </div>
-<div class="viewcode-block" id="Inference.Psi_line"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Inference.Psi_line">[docs]</a>    <span class="k">def</span> <span class="nf">Psi_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">dalpha</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">likfunc</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">inffunc</span><span class="p">):</span>
+<div class="viewcode-block" id="Inference.Psi_line"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Inference.Psi_line">[docs]</a>    <span class="k">def</span> <span class="nf">Psi_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">dalpha</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">likfunc</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">inffunc</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Criterion Psi at alpha + s*dalpha for line search</span>
 <span class="sd">        [Psi,alpha,f,dlp,W] = Psi_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)&#39;&#39;&#39;</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">+</span> <span class="n">s</span><span class="o">*</span><span class="n">dalpha</span>
@@ -233,7 +233,7 @@
         <span class="n">Psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">alpha</span><span class="o">.</span><span class="n">T</span><span class="p">,(</span><span class="n">f</span><span class="o">-</span><span class="n">m</span><span class="p">))</span><span class="o">/</span><span class="mf">2.</span> <span class="o">-</span> <span class="n">lp</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">Psi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">alpha</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">dlp</span><span class="p">,</span><span class="n">W</span>  
     </div>
-<div class="viewcode-block" id="Inference.epfitcZ"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Inference.epfitcZ">[docs]</a>    <span class="k">def</span> <span class="nf">epfitcZ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">nn</span><span class="p">,</span><span class="n">gg</span><span class="p">,</span><span class="n">ttau</span><span class="p">,</span><span class="n">tnu</span><span class="p">,</span><span class="n">d0</span><span class="p">,</span><span class="n">R0</span><span class="p">,</span><span class="n">P0</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">likfunc</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">inffunc</span><span class="p">):</span>
+<div class="viewcode-block" id="Inference.epfitcZ"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Inference.epfitcZ">[docs]</a>    <span class="k">def</span> <span class="nf">epfitcZ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">nn</span><span class="p">,</span><span class="n">gg</span><span class="p">,</span><span class="n">ttau</span><span class="p">,</span><span class="n">tnu</span><span class="p">,</span><span class="n">d0</span><span class="p">,</span><span class="n">R0</span><span class="p">,</span><span class="n">P0</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">likfunc</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">inffunc</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Compute the marginal likelihood approximation</span>
 <span class="sd">        effort is O(n*nu^2) provided that nu&lt;n&#39;&#39;&#39;</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">R0</span><span class="p">),</span><span class="n">P</span><span class="p">)</span>              <span class="c"># temporary variable</span>
@@ -252,7 +252,7 @@
             <span class="o">+</span> <span class="p">(</span><span class="n">tnu</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">tau_n</span><span class="o">+</span><span class="n">ttau</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="mf">2.</span> <span class="o">-</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">ttau</span><span class="o">/</span><span class="n">tau_n</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="mf">2.</span>
         <span class="k">return</span> <span class="n">nlZ</span><span class="p">,</span><span class="n">nu_n</span><span class="p">,</span><span class="n">tau_n</span>
     </div>
-<div class="viewcode-block" id="Inference.epfitcRefresh"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Inference.epfitcRefresh">[docs]</a>    <span class="k">def</span> <span class="nf">epfitcRefresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d0</span><span class="p">,</span><span class="n">P0</span><span class="p">,</span><span class="n">R0</span><span class="p">,</span><span class="n">R0P0</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+<div class="viewcode-block" id="Inference.epfitcRefresh"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Inference.epfitcRefresh">[docs]</a>    <span class="k">def</span> <span class="nf">epfitcRefresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d0</span><span class="p">,</span><span class="n">P0</span><span class="p">,</span><span class="n">R0</span><span class="p">,</span><span class="n">R0P0</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Refresh the representation of the posterior from initial and site parameters</span>
 <span class="sd">        to prevent possible loss of numerical precision after many epfitcUpdates</span>
 <span class="sd">        effort is O(n*nu^2) provided that nu&lt;n</span>
@@ -291,17 +291,17 @@
         <span class="n">P_i</span> <span class="o">=</span> <span class="n">P_i</span><span class="o">/</span><span class="n">t</span>                                        <span class="c"># O(nu)</span>
         <span class="k">return</span> <span class="n">d</span><span class="p">,</span><span class="n">P_i</span><span class="p">,</span><span class="n">R</span><span class="p">,</span><span class="n">nn</span><span class="p">,</span><span class="n">gg</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">b</span>
     
-<div class="viewcode-block" id="Inference.mvmZ"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Inference.mvmZ">[docs]</a>    <span class="k">def</span> <span class="nf">mvmZ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">RVdd</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+<div class="viewcode-block" id="Inference.mvmZ"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Inference.mvmZ">[docs]</a>    <span class="k">def</span> <span class="nf">mvmZ</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">RVdd</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Matrix vector multiplication with Z=inv(K+inv(W))&#39;&#39;&#39;</span>
         <span class="n">Zx</span> <span class="o">=</span> <span class="n">t</span><span class="o">*</span><span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">RVdd</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">RVdd</span><span class="p">,</span><span class="n">x</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">Zx</span>
 </div>
-<div class="viewcode-block" id="Inference.mvmK"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Inference.mvmK">[docs]</a>    <span class="k">def</span> <span class="nf">mvmK</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">al</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">d0</span><span class="p">):</span>
+<div class="viewcode-block" id="Inference.mvmK"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Inference.mvmK">[docs]</a>    <span class="k">def</span> <span class="nf">mvmK</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">al</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">d0</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Matrix vector multiplication with approximate covariance matrix&#39;&#39;&#39;</span>
         <span class="n">Kal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">al</span><span class="p">))</span> <span class="o">+</span> <span class="n">d0</span><span class="o">*</span><span class="n">al</span>
         <span class="k">return</span> <span class="n">Kal</span>
 </div>
-<div class="viewcode-block" id="Inference.Psi_lineFITC"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Inference.Psi_lineFITC">[docs]</a>    <span class="k">def</span> <span class="nf">Psi_lineFITC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">dalpha</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">d0</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">likfunc</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">inffunc</span><span class="p">):</span>
+<div class="viewcode-block" id="Inference.Psi_lineFITC"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Inference.Psi_lineFITC">[docs]</a>    <span class="k">def</span> <span class="nf">Psi_lineFITC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">dalpha</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">d0</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">likfunc</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">inffunc</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Criterion Psi at alpha + s*dalpha for line search&#39;&#39;&#39;</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">+</span> <span class="n">s</span><span class="o">*</span><span class="n">dalpha</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mvmK</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">d0</span><span class="p">)</span> <span class="o">+</span> <span class="n">m</span>
@@ -311,7 +311,7 @@
         <span class="n">Psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">alpha</span><span class="o">.</span><span class="n">T</span><span class="p">,(</span><span class="n">f</span><span class="o">-</span><span class="n">m</span><span class="p">))</span><span class="o">/</span><span class="mf">2.</span> <span class="o">-</span> <span class="n">lp</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">Psi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">alpha</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">dlp</span><span class="p">,</span><span class="n">W</span>
 </div>
-<div class="viewcode-block" id="Inference.fitcRefresh"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Inference.fitcRefresh">[docs]</a>    <span class="k">def</span> <span class="nf">fitcRefresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d0</span><span class="p">,</span><span class="n">P0</span><span class="p">,</span><span class="n">R0</span><span class="p">,</span><span class="n">R0P0</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+<div class="viewcode-block" id="Inference.fitcRefresh"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Inference.fitcRefresh">[docs]</a>    <span class="k">def</span> <span class="nf">fitcRefresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d0</span><span class="p">,</span><span class="n">P0</span><span class="p">,</span><span class="n">R0</span><span class="p">,</span><span class="n">R0P0</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Refresh the representation of the posterior from initial and site parameters</span>
 <span class="sd">        to prevent possible loss of numerical precision after many epfitcUpdates</span>
 <span class="sd">        effort is O(n*nu^2) provided that nu&lt;n</span>
@@ -327,7 +327,7 @@
         <span class="k">return</span> <span class="n">d</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">R</span>
 
 </div></div>
-<div class="viewcode-block" id="Exact"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Exact">[docs]</a><span class="k">class</span> <span class="nc">Exact</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span>
+<div class="viewcode-block" id="Exact"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Exact">[docs]</a><span class="k">class</span> <span class="nc">Exact</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Exact inference for a GP with Gaussian likelihood. Compute a parametrization</span>
 <span class="sd">    of the posterior, the negative log marginal likelihood and its derivatives</span>
@@ -368,7 +368,7 @@
         <span class="k">return</span> <span class="n">post</span>
 
 </div>
-<div class="viewcode-block" id="FITC_Exact"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.FITC_Exact">[docs]</a><span class="k">class</span> <span class="nc">FITC_Exact</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span>
+<div class="viewcode-block" id="FITC_Exact"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.FITC_Exact">[docs]</a><span class="k">class</span> <span class="nc">FITC_Exact</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    FITC approximation to the posterior Gaussian process. The function is</span>
 <span class="sd">    equivalent to infExact with the covariance function:</span>
@@ -437,7 +437,7 @@
 
 
 </div>
-<div class="viewcode-block" id="Laplace"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.Laplace">[docs]</a><span class="k">class</span> <span class="nc">Laplace</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span> 
+<div class="viewcode-block" id="Laplace"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.Laplace">[docs]</a><span class="k">class</span> <span class="nc">Laplace</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span> 
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Laplace&#39;s Approximation to the posterior Gaussian process.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -544,7 +544,7 @@
 
 
 </div>
-<div class="viewcode-block" id="FITC_Laplace"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.FITC_Laplace">[docs]</a><span class="k">class</span> <span class="nc">FITC_Laplace</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span>
+<div class="viewcode-block" id="FITC_Laplace"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.FITC_Laplace">[docs]</a><span class="k">class</span> <span class="nc">FITC_Laplace</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    FITC-Laplace approximation to the posterior Gaussian process. The function is</span>
 <span class="sd">    equivalent to infLaplace with the covariance function:</span>
@@ -695,7 +695,7 @@
 
 
 </div>
-<div class="viewcode-block" id="EP"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.EP">[docs]</a><span class="k">class</span> <span class="nc">EP</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span>
+<div class="viewcode-block" id="EP"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.EP">[docs]</a><span class="k">class</span> <span class="nc">EP</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Expectation Propagation approximation to the posterior Gaussian Process.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -782,7 +782,7 @@
 
 
 </div>
-<div class="viewcode-block" id="FITC_EP"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.inf.FITC_EP">[docs]</a><span class="k">class</span> <span class="nc">FITC_EP</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span>
+<div class="viewcode-block" id="FITC_EP"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.inf.FITC_EP">[docs]</a><span class="k">class</span> <span class="nc">FITC_EP</span><span class="p">(</span><span class="n">Inference</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    FITC-EP approximation to the posterior Gaussian process. The function is</span>
 <span class="sd">    equivalent to infEP with the covariance function:</span>

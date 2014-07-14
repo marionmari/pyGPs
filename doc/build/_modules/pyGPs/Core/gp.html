@@ -101,7 +101,7 @@
 <span class="n">MEANCOLOR</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.2109375</span><span class="p">,</span> <span class="mf">0.63385</span><span class="p">,</span> <span class="mf">0.1796875</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
 <span class="n">DATACOLOR</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.12109375</span><span class="p">,</span> <span class="mf">0.46875</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
 
-<span class="k">class</span> <span class="nc">GP</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="GP"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP">[docs]</a><span class="k">class</span> <span class="nc">GP</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Base class for GP model&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GP</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
@@ -126,7 +126,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lp</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c"># column vector (of length ns) of log predictive probabilities</span>
 
 
-    <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="GP.setData"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP.setData">[docs]</a>    <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Pass training data and traning labels to model.&#39;&#39;&#39;</span> 
         <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>
@@ -137,8 +137,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span><span class="p">:</span>
             <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Const</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>    <span class="c"># adapt default prior mean wrt. training labels</span>
-
-    <span class="k">def</span> <span class="nf">plotData_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GP.plotData_1d"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP.plotData_1d">[docs]</a>    <span class="k">def</span> <span class="nf">plotData_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Plot 1d (toy) data.&#39;&#39;&#39;</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">DATACOLOR</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">mew</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -148,8 +148,8 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;input x&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;target y&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-    
-    <span class="k">def</span> <span class="nf">plotData_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    </div>
+<div class="viewcode-block" id="GP.plotData_2d"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP.plotData_2d">[docs]</a>    <span class="k">def</span> <span class="nf">plotData_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Plot 2d (toy) data.&#39;&#39;&#39;</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">x1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;b+&#39;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
@@ -160,8 +160,8 @@
         <span class="k">if</span> <span class="n">axisvals</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">axisvals</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">setPrior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GP.setPrior"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP.setPrior">[docs]</a>    <span class="k">def</span> <span class="nf">setPrior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set prior mean and cov&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">mean</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span>
@@ -170,8 +170,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="n">kernel</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span> <span class="ow">is</span> <span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span> <span class="o">=</span> <span class="bp">False</span>
-    
-<div class="viewcode-block" id="GP.setOptimizer"><a class="viewcode-back" href="../../../Opts.html#pyGPs.Core.gp.GP.setOptimizer">[docs]</a>    <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    </div>
+<div class="viewcode-block" id="GP.setOptimizer"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP.setOptimizer">[docs]</a>    <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;This method is used to sepecify optimization configuration. By default, gp uses a single run &quot;minimize&quot;.</span>
 
 <span class="sd">        :param method: Optimization methods. Possible values are:</span>
@@ -200,7 +200,7 @@
         <span class="k">pass</span>
 
 </div>
-    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GP.optimize"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP.optimize">[docs]</a>    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Train optimal hyperparameters based on training data,</span>
 <span class="sd">        adjust new hyperparameters to all mean/cov/lik functions</span>
@@ -227,8 +227,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">apply_in_objects</span><span class="p">(</span><span class="n">optimalHyp</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
 
-
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GP.fit"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Fit the training data. Update negative log marginal likelihood(nlZ), </span>
 <span class="sd">        partial derivatives of nlZ w.r.t. each hyperparameter(dnlZ),</span>
@@ -264,8 +264,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">posterior</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">nlZ</span><span class="p">,</span> <span class="n">dnlZ</span><span class="p">,</span> <span class="n">post</span>    
 
-
-    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GP.predict"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Prediction according to given inputs.</span>
 <span class="sd">        Get predictive output means(ym), </span>
@@ -345,8 +345,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ymu</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fmu</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> 
 
-
-    <span class="k">def</span> <span class="nf">predict_with_posterior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GP.predict_with_posterior"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP.predict_with_posterior">[docs]</a>    <span class="k">def</span> <span class="nf">predict_with_posterior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Prediction with provided posterior</span>
 <span class="sd">        (i.e. you already have the posterior and thus don&#39;t need fitting/training phases)</span>
@@ -431,8 +431,8 @@
 
 
 
-
-<span class="k">class</span> <span class="nc">GPR</span><span class="p">(</span><span class="n">GP</span><span class="p">):</span>
+</div></div>
+<div class="viewcode-block" id="GPR"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPR">[docs]</a><span class="k">class</span> <span class="nc">GPR</span><span class="p">(</span><span class="n">GP</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Gaussian Process Regression&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GPR</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
@@ -442,11 +442,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">Exact</span><span class="p">()</span>                         <span class="c"># inference method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>                <span class="c"># default optimizer       </span>
 
-    <span class="k">def</span> <span class="nf">setNoise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="GPR.setNoise"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPR.setNoise">[docs]</a>    <span class="k">def</span> <span class="nf">setNoise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_sigma</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set noise variance other than default&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">likfunc</span> <span class="o">=</span> <span class="n">lik</span><span class="o">.</span><span class="n">Gauss</span><span class="p">(</span><span class="n">log_sigma</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPR.setOptimizer"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPR.setOptimizer">[docs]</a>    <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set Optimizer. See base class.&#39;&#39;&#39;</span>
         <span class="n">conf</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">num_restarts</span><span class="o">!=</span><span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_threshold</span><span class="o">!=</span><span class="bp">None</span><span class="p">):</span>
@@ -467,8 +467,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">CG</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
         <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&quot;BFGS&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">BFGS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
-                       
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                       </div>
+<div class="viewcode-block" id="GPR.plot"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPR.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Plot 1d GP regression.&#39;&#39;&#39;</span>
         <span class="n">xs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xs</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
@@ -488,8 +488,8 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;input x&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;target y&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPR.useInference"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPR.useInference">[docs]</a>    <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Use another inference techinique other than default exact inference.</span>
 <span class="sd">        </span>
@@ -502,7 +502,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">EP</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Possible inf values are &quot;Laplace&quot;, &quot;EP&quot;.&#39;</span><span class="p">)</span>
-
+</div>
     <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">newLik</span> <span class="o">==</span> <span class="s">&quot;Laplace&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">likfunc</span> <span class="o">=</span> <span class="n">lik</span><span class="o">.</span><span class="n">Laplace</span><span class="p">()</span>
@@ -511,8 +511,8 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Possible lik values are &quot;Laplace&quot;.&#39;</span><span class="p">)</span>
 
 
-
-<span class="k">class</span> <span class="nc">GPC</span><span class="p">(</span><span class="n">GP</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPC"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPC">[docs]</a><span class="k">class</span> <span class="nc">GPC</span><span class="p">(</span><span class="n">GP</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Gaussian Process Classification&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GPC</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
@@ -522,7 +522,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">EP</span><span class="p">()</span>                            <span class="c"># default inference method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>                <span class="c"># default optimizer       </span>
 
-    <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GPC.setOptimizer"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPC.setOptimizer">[docs]</a>    <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set Optimizer. See base class.&#39;&#39;&#39;</span>
         <span class="n">conf</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">num_restarts</span><span class="o">!=</span><span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_threshold</span><span class="o">!=</span><span class="bp">None</span><span class="p">):</span>
@@ -543,8 +543,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">CG</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
         <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&quot;BFGS&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">BFGS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
-                       
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span> 
+                       </div>
+<div class="viewcode-block" id="GPC.plot"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPC.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span> 
         <span class="sd">&#39;&#39;&#39;Plot 2d gp classification.&#39;&#39;&#39;</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">x1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;b+&#39;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
@@ -555,8 +555,8 @@
         <span class="k">if</span> <span class="n">axisvals</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">axisvals</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPC.useInference"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPC.useInference">[docs]</a>    <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Use another inference techinique other than default EP inference.</span>
 
@@ -566,8 +566,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">Laplace</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Possible inf values are &quot;Laplace&quot;.&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPC.useLikelihood"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPC.useLikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Use another likelihood function other than default Erf inference.</span>
 <span class="sd">        (Not used in this version)</span>
@@ -582,8 +582,8 @@
 
 
 
-
-<span class="k">class</span> <span class="nc">GPMC</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</div></div>
+<div class="viewcode-block" id="GPMC"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPMC">[docs]</a><span class="k">class</span> <span class="nc">GPMC</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This is a one vs. one classification wrapper for GPC&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_class</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Zero</span><span class="p">()</span>                <span class="c"># default prior mean </span>
@@ -595,7 +595,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">newLik</span> <span class="o">=</span> <span class="bp">None</span>                         <span class="c"># new likelihood? -&gt; call useLikelihood</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newPrior</span> <span class="o">=</span> <span class="bp">False</span>
 
-    <span class="k">def</span> <span class="nf">setPrior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GPMC.setPrior"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPMC.setPrior">[docs]</a>    <span class="k">def</span> <span class="nf">setPrior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;set prior mean function and covariance function&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">mean</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span>
@@ -604,16 +604,16 @@
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span> <span class="ow">is</span> <span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newPrior</span> <span class="o">=</span> <span class="bp">True</span>
-
-    <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPMC.useInference"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPMC.useInference">[docs]</a>    <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Use another inference techinique other than default EP inference.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newInf</span> <span class="o">=</span> <span class="n">newInf</span>
-
-    <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPMC.useLikelihood"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPMC.useLikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Use another likelihood function other than default Erf inference.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newLik</span> <span class="o">=</span> <span class="n">newLik</span>    
-    
-    <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    </div>
+<div class="viewcode-block" id="GPMC.setData"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPMC.setData">[docs]</a>    <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set data for multi-class model&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>  
@@ -621,8 +621,8 @@
             <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>  
         <span class="bp">self</span><span class="o">.</span><span class="n">x_all</span> <span class="o">=</span> <span class="n">x</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y_all</span> <span class="o">=</span> <span class="n">y</span>
-
-    <span class="k">def</span> <span class="nf">fitAndPredict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPMC.fitAndPredict"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPMC.fitAndPredict">[docs]</a>    <span class="k">def</span> <span class="nf">fitAndPredict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Fitting model and prediction.</span>
 <span class="sd">        predictive_vote is a matrix where</span>
@@ -656,8 +656,8 @@
         <span class="n">predictive_vote</span> <span class="o">/=</span>  <span class="n">predictive_vote</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">predictive_vote</span>
 
-
-    <span class="k">def</span> <span class="nf">optimizeAndPredict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPMC.optimizeAndPredict"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPMC.optimizeAndPredict">[docs]</a>    <span class="k">def</span> <span class="nf">optimizeAndPredict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Optimizing model and prediction.</span>
 <span class="sd">        predictive_vote is a matrix where</span>
@@ -690,8 +690,8 @@
                 <span class="n">predictive_vote</span> <span class="o">+=</span> <span class="n">vote_j</span>
         <span class="n">predictive_vote</span> <span class="o">/=</span>  <span class="n">predictive_vote</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">predictive_vote</span>
-
-    <span class="k">def</span> <span class="nf">createBinaryClass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPMC.createBinaryClass"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPMC.createBinaryClass">[docs]</a>    <span class="k">def</span> <span class="nf">createBinaryClass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Create dataset x(data) and y(label) which only contains class i and j.</span>
 <span class="sd">        Relabel class i to +1 and class j to -1&#39;&#39;&#39;</span>
         <span class="n">class_i</span> <span class="o">=</span> <span class="p">[]</span>
@@ -712,15 +712,15 @@
 
 
 
-
-<span class="k">class</span> <span class="nc">GP_FITC</span><span class="p">(</span><span class="n">GP</span><span class="p">):</span>
+</div></div>
+<div class="viewcode-block" id="GP_FITC"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP_FITC">[docs]</a><span class="k">class</span> <span class="nc">GP_FITC</span><span class="p">(</span><span class="n">GP</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;FITC GP base class&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GP_FITC</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="c"># overriding</span>
-    <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">value_per_axis</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="GP_FITC.setData"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP_FITC.setData">[docs]</a>    <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">value_per_axis</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set training data and derive deault inducing_points.</span>
 
 <span class="sd">        :param x: training data</span>
@@ -751,8 +751,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">gridAxis</span><span class="p">)))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="n">fitc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
 
-    <span class="c"># overriding</span>
-    <span class="k">def</span> <span class="nf">setPrior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">inducing_points</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="c"># overriding</span></div>
+<div class="viewcode-block" id="GP_FITC.setPrior"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GP_FITC.setPrior">[docs]</a>    <span class="k">def</span> <span class="nf">setPrior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">inducing_points</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set GP prior and inducing points&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">kernel</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">inducing_points</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
@@ -771,8 +771,8 @@
 
 
 
-
-<span class="k">class</span> <span class="nc">GPR_FITC</span><span class="p">(</span><span class="n">GP_FITC</span><span class="p">):</span>
+</div></div>
+<div class="viewcode-block" id="GPR_FITC"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPR_FITC">[docs]</a><span class="k">class</span> <span class="nc">GPR_FITC</span><span class="p">(</span><span class="n">GP_FITC</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Gaussian Process Regression FITC&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GPR_FITC</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
@@ -783,11 +783,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>                <span class="c"># default optimizer </span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">None</span>                                      <span class="c"># no default inducing points</span>
 
-    <span class="k">def</span> <span class="nf">setNoise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="GPR_FITC.setNoise"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPR_FITC.setNoise">[docs]</a>    <span class="k">def</span> <span class="nf">setNoise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_sigma</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set noise variance other than default value&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">likfunc</span> <span class="o">=</span> <span class="n">lik</span><span class="o">.</span><span class="n">Gauss</span><span class="p">(</span><span class="n">log_sigma</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPR_FITC.setOptimizer"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPR_FITC.setOptimizer">[docs]</a>    <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set Optimizer. See base class.&#39;&#39;&#39;</span>
         <span class="n">conf</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">num_restarts</span><span class="o">!=</span><span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_threshold</span><span class="o">!=</span><span class="bp">None</span><span class="p">):</span>
@@ -808,8 +808,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">CG</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
         <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&quot;BFGS&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">BFGS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
-                       
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                       </div>
+<div class="viewcode-block" id="GPR_FITC.plot"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPR_FITC.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Plot 1d GP FITC regression.&#39;&#39;&#39;</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
         <span class="n">xss</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xs</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],))</span>
@@ -825,8 +825,8 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;output y&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">),</span> <span class="n">ls</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span><span class="n">mew</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPR_FITC.useInference"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPR_FITC.useInference">[docs]</a>    <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Use another inference techinique other than default exact inference.</span>
 
@@ -838,8 +838,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">FITC_EP</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Possible inf values are &quot;Laplace&quot;, &quot;EP&quot;.&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPR_FITC.useLikelihood"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPR_FITC.useLikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Use another inference techinique other than default Gaussian likelihood.</span>
 
@@ -853,8 +853,8 @@
 
 
 
-   
-<span class="k">class</span> <span class="nc">GPC_FITC</span><span class="p">(</span><span class="n">GP_FITC</span><span class="p">):</span>
+   </div></div>
+<div class="viewcode-block" id="GPC_FITC"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPC_FITC">[docs]</a><span class="k">class</span> <span class="nc">GPC_FITC</span><span class="p">(</span><span class="n">GP_FITC</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Gaussian Process Classification FITC&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GPC_FITC</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
@@ -865,7 +865,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>                <span class="c"># default optimizer </span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">None</span>                                      <span class="c"># no default inducing points</span>
 
-    <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="GPC_FITC.setOptimizer"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPC_FITC.setOptimizer">[docs]</a>    <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set optimizer. See base class.&#39;&#39;&#39;</span>
         <span class="n">conf</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">num_restarts</span><span class="o">!=</span><span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_threshold</span><span class="o">!=</span><span class="bp">None</span><span class="p">):</span>
@@ -886,8 +886,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">CG</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
         <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&quot;BFGS&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">BFGS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
-                       
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span> 
+                       </div>
+<div class="viewcode-block" id="GPC_FITC.plot"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPC_FITC.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span> 
         <span class="sd">&#39;&#39;&#39;Plot 2d GP FITC classification.&#39;&#39;&#39;</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">x1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;b+&#39;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
@@ -899,8 +899,8 @@
         <span class="k">if</span> <span class="n">axisvals</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>    
             <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">axisvals</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  
-
-    <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPC_FITC.useInference"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPC_FITC.useInference">[docs]</a>    <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Use another inference techinique other than default exact inference.</span>
 
@@ -910,8 +910,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">FITC_Laplace</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Possible inf values are &quot;Laplace&quot;.&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GPC_FITC.useLikelihood"><a class="viewcode-back" href="../../../Graph.html#pyGPs.Core.gp.GPC_FITC.useLikelihood">[docs]</a>    <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Use another inference techinique other than default Erf likelihood.</span>
 <span class="sd">        (Not used in this version)</span>
@@ -923,7 +923,7 @@
             <span class="c">#self.likfunc = lik.Logistic()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Possible lik values are &quot;Logistic&quot;.&#39;</span><span class="p">)</span>
-</pre></div>
+</pre></div></div></div>
 
           </div>
         </div>
