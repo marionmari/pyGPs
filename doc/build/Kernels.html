@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Kernels &amp; Means &mdash; pyGPs v1.1 documentation</title>
+    <title>Kernels &amp; Means &mdash; pyGPs v1.2 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     'v1.1',
+        VERSION:     'v1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyGPs v1.1 documentation" href="index.html" />
+    <link rel="top" title="pyGPs v1.2 documentation" href="index.html" />
     <link rel="next" title="Likelihoods &amp; Inference" href="Likelihoods.html" />
     <link rel="prev" title="Semi-supervised Learning with Graphs" href="SemiSupervised.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="SemiSupervised.html" title="Semi-supervised Learning with Graphs"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -272,22 +272,17 @@ Setting FITC gp model will implicitly call this method.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> &#8211; training data</li>
 <li><strong>z</strong> &#8211; test data</li>
-<li><strong>mode</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; &#8216;self_test&#8217; return self covariance matrix of test data(test by 1).</li>
+<li><strong>mode</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; &#8216;self_test&#8217; return self covariance matrix of test data(test by 1). 
+&#8216;train&#8217; return training covariance matrix(train by train).
+&#8216;cross&#8217; return cross covariance matrix between x and z(train by test)</li>
 </ul>
 </td>
 </tr>
-</tbody>
-</table>
-<p>&#8216;train&#8217; return training covariance matrix(train by train).
-&#8216;cross&#8217; return cross covariance matrix between x and z(train by test)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the corresponding covariance matrix</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the corresponding covariance matrix</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -301,23 +296,18 @@ Setting FITC gp model will implicitly call this method.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> &#8211; training data</li>
 <li><strong>z</strong> &#8211; test data</li>
-<li><strong>mode</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; &#8216;self_test&#8217; return self derivative matrix of test data(test by 1).</li>
+<li><strong>mode</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; &#8216;self_test&#8217; return self derivative matrix of test data(test by 1). 
+&#8216;train&#8217; return training derivative matrix(train by train).
+&#8216;cross&#8217; return cross derivative matrix between x and z(train by test)</li>
+<li><strong>der</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index of hyperparameter whose derivative to be computed</li>
 </ul>
 </td>
 </tr>
-</tbody>
-</table>
-<p>&#8216;train&#8217; return training derivative matrix(train by train).
-&#8216;cross&#8217; return cross derivative matrix between x and z(train by test)
-:param int der: index of hyperparameter whose derivative to be computed</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the corresponding derivative matrix</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the corresponding derivative matrix</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -625,6 +615,33 @@ hyp = log_ell_list + [ log_sigma, log_alpha ]</p>
 <dt id="pyGPs.Core.mean.Mean">
 <em class="property">class </em><tt class="descclassname">pyGPs.Core.mean.</tt><tt class="descname">Mean</tt><a class="reference internal" href="_modules/pyGPs/Core/mean.html#Mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.mean.Mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>The base function for mean function</p>
+<dl class="method">
+<dt id="pyGPs.Core.mean.Mean.getDerMatrix">
+<tt class="descname">getDerMatrix</tt><big>(</big><em>x=None</em>, <em>der=None</em><big>)</big><a class="headerlink" href="#pyGPs.Core.mean.Mean.getDerMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute derivatives wrt. hyperparameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; training data</li>
+<li><strong>der</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index of hyperparameter whose derivative to be computed</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the corresponding derivative matrix</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyGPs.Core.mean.Mean.getMean">
+<tt class="descname">getMean</tt><big>(</big><em>x=None</em><big>)</big><a class="headerlink" href="#pyGPs.Core.mean.Mean.getMean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the mean vector.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -729,7 +746,7 @@ hyp = log_ell_list + [ log_sigma, log_alpha ]</p>
         <li class="right" >
           <a href="SemiSupervised.html" title="Semi-supervised Learning with Graphs"
              >previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

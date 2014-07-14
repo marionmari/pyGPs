@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Multi-class Classification &mdash; pyGPs v1.1 documentation</title>
+    <title>Multi-class Classification &mdash; pyGPs v1.2 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     'v1.1',
+        VERSION:     'v1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyGPs v1.1 documentation" href="index.html" />
+    <link rel="top" title="pyGPs v1.2 documentation" href="index.html" />
     <link rel="up" title="Demos" href="Examples.html" />
     <link rel="next" title="K-fold Cross-Validation" href="CV.html" />
     <link rel="prev" title="Sparse Classification" href="GPC_FITC.html" /> 
@@ -36,12 +36,15 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="CV.html" title="K-fold Cross-Validation"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="GPC_FITC.html" title="Sparse Classification"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
           <li><a href="Examples.html" accesskey="U">Demos</a> &raquo;</li> 
       </ul>
     </div>  
@@ -76,7 +79,7 @@ in the USPS digits dataset.</p>
 <div class="section" id="gpmc-example">
 <h2>GPMC example<a class="headerlink" href="#gpmc-example" title="Permalink to this headline">¶</a></h2>
 <p>State model with 10-class classification problem:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPMC</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">GPMC</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Pass data to model:</p>
@@ -86,20 +89,20 @@ in the USPS digits dataset.</p>
 <p>Train default GPC model for each binary classification problem,
 and decide label for test patterns of hand-writen digits.
 The return value <em>predictive_vote[i,j]</em> is the probability of being class <em>j</em> for test pattern <em>i</em>.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">predictive_vote</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">trainAndPredict</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">predictive_vote</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">optimizeAndPredict</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
 <span class="n">predictive_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">predictive_vote</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Just like we did for GP classification,
 you can use specific settings (other than default) for all binary classificiation problem for example by:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Zero</span><span class="p">()</span>
-<span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">Zero</span><span class="p">()</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">setPrior</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">m</span><span class="p">,</span><span class="n">kernel</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">useInference</span><span class="p">(</span><span class="s">&quot;Laplace&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For more information on how to use non-default settings see <a class="reference external" href="GPC.html">demo_GPC</a> and <a class="reference external" href="GPR.html">demo_GPR</a>.</p>
-<p>Beside <em>trainAndPredict(xs)</em>,
+<p>Beside <em>optimizeAndPredict(xs)</em>,
 there is also an option to perform prediction without hyperparameter optimization:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">fitAndPredict</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
 </pre></div>
@@ -163,12 +166,15 @@ there is also an option to perform prediction without hyperparameter optimizatio
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="CV.html" title="K-fold Cross-Validation"
              >next</a> |</li>
         <li class="right" >
           <a href="GPC_FITC.html" title="Sparse Classification"
              >previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
           <li><a href="Examples.html" >Demos</a> &raquo;</li> 
       </ul>
     </div>

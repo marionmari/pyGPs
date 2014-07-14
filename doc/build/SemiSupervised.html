@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Semi-supervised Learning with Graphs &mdash; pyGPs v1.1 documentation</title>
+    <title>Semi-supervised Learning with Graphs &mdash; pyGPs v1.2 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     'v1.1',
+        VERSION:     'v1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyGPs v1.1 documentation" href="index.html" />
+    <link rel="top" title="pyGPs v1.2 documentation" href="index.html" />
     <link rel="up" title="Demos" href="Examples.html" />
     <link rel="next" title="Kernels &amp; Means" href="Kernels.html" />
     <link rel="prev" title="Regression on UCI Housing data" href="demoHousing.html" /> 
@@ -36,12 +36,15 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="Kernels.html" title="Kernels &amp; Means"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="demoHousing.html" title="Regression on UCI Housing data"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
           <li><a href="Examples.html" accesskey="U">Demos</a> &raquo;</li> 
       </ul>
     </div>  
@@ -54,6 +57,14 @@
   <div class="section" id="semi-supervised-learning-with-graphs">
 <h1>Semi-supervised Learning with Graphs<a class="headerlink" href="#semi-supervised-learning-with-graphs" title="Permalink to this headline">¶</a></h1>
 <p>The code shown in this tutorial can be executed by running <em>pyGPs/Demo/demo_KernelOnGraph.py</em></p>
+<div class="section" id="import">
+<h2>Import<a class="headerlink" href="#import" title="Permalink to this headline">¶</a></h2>
+<p>You may want to import some extensions we provide as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyGPs.GraphExtension</span> <span class="kn">import</span> <span class="n">graphUtil</span><span class="p">,</span> <span class="n">nodeKernels</span>
+<span class="kn">from</span> <span class="nn">pyGPs.Validation</span> <span class="kn">import</span> <span class="n">valid</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="load-data">
 <h2>Load data<a class="headerlink" href="#load-data" title="Permalink to this headline">¶</a></h2>
 <p>We used the same dataset from GPMC example. i.e. The USPS digits dataset <a class="footnote-reference" href="#id3" id="id1">[1]</a>.
@@ -70,7 +81,7 @@ For the simplicity of demo, we only selected digits <img class="math" src="_imag
 <h2>Form a nearest neighbour graph<a class="headerlink" href="#form-a-nearest-neighbour-graph" title="Permalink to this headline">¶</a></h2>
 <p>We form a nearest-neighbor graph based on Euclidean distance of the vector representation of digits. Neighboring images have small Euclidean distance. Each digit is a node in the graph. There is an edge if digit <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/> is the k-nearest neighbour of digit <img class="math" src="_images/math/8122aa89ea6e80784c6513d22787ad86e36ad0cc.png" alt="j"/>. We form a symmetrized graph such that we connect nodes <img class="math" src="_images/math/8122aa89ea6e80784c6513d22787ad86e36ad0cc.png" alt="j"/>, <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/> if i is in j’s kNN and vice versa, and therefore a node can have more than k edges. You should import the corresponding module from <em>pyGPs.GraphStuff</em></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">load_binary</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="nb">reduce</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">form_knn_graph</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">graphUtil</span><span class="o">.</span><span class="n">formKnnGraph</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>A is the adjacency matrix of this <img class="math" src="_images/math/d99a9621ebf02e571cd43de80875ea26ac998305.png" alt="2-NN"/> graph.</p>
@@ -82,12 +93,12 @@ For the simplicity of demo, we only selected digits <img class="math" src="_imag
 <div class="section" id="kernel-on-graph">
 <h2>Kernel on graph<a class="headerlink" href="#kernel-on-graph" title="Permalink to this headline">¶</a></h2>
 <p>Several classical kernels on graph described in <a class="reference external" href="Graph.html">Structured Kernels</a> can be built from adjacency matrix <img class="math" src="_images/math/019e9892786e493964e145e7c5cf7b700314e53b.png" alt="A"/>. We use diffusion kernel for this example to get the precomputed kernel matrix.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">Matrix</span> <span class="o">=</span> <span class="n">diffKernel</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Matrix</span> <span class="o">=</span> <span class="n">nodeKernels</span><span class="o">.</span><span class="n">diffKernel</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This a big square matrix with all rows and columns of the number of data points.
 By specifying the indice of training data and test data, we will form two matrix M1 and M2 with the exact format which <em>pyGPs.Core.cov.Pre</em> needed.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">M1</span><span class="p">,</span><span class="n">M2</span> <span class="o">=</span> <span class="n">form_kernel_matrix</span><span class="p">(</span><span class="n">Matrix</span><span class="p">,</span> <span class="n">indice_train</span><span class="p">,</span> <span class="n">indice_test</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">M1</span><span class="p">,</span><span class="n">M2</span> <span class="o">=</span> <span class="n">graphUtil</span><span class="o">.</span><span class="n">formKernelMatrix</span><span class="p">(</span><span class="n">Matrix</span><span class="p">,</span> <span class="n">indice_train</span><span class="p">,</span> <span class="n">indice_test</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -107,8 +118,8 @@ By specifying the indice of training data and test data, we will form two matrix
 <div class="section" id="gp-classification">
 <h2>GP classification<a class="headerlink" href="#gp-classification" title="Permalink to this headline">¶</a></h2>
 <p>Every ingredients for a basic semi-supervised learning is prepared now.  Lets see how to proceed for <img class="math" src="_images/math/192d69ed9c7bd67b3f34486786531bae08ba2d88.png" alt="GP"/> classification. First, the normal way with rbf kernel we have seen several times</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>
-<span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">setPrior</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -116,12 +127,12 @@ By specifying the indice of training data and test data, we will form two matrix
 However you still need to specify <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2a1049c48c89a5e6.png" alt="x"/> just to fit in the usage of pyGPs for generality reason.
 You can create any <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2a1049c48c89a5e6.png" alt="x"/> as long as the dimension is correct.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-<span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span><span class="n">M2</span><span class="p">)</span> <span class="o">+</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span><span class="n">M2</span><span class="p">)</span> <span class="o">+</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">setPrior</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Moreover, you can composite a kernel for both precomputed matrix and regular kernel function if necessary.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span><span class="n">M2</span><span class="p">)</span> <span class="o">+</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBFunit</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span><span class="n">M2</span><span class="p">)</span> <span class="o">+</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">RBFunit</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">setPrior</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -159,6 +170,7 @@ but rbf kernel does the job fine. The right image shows the digit that rbf kerne
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Semi-supervised Learning with Graphs</a><ul>
+<li><a class="reference internal" href="#import">Import</a></li>
 <li><a class="reference internal" href="#load-data">Load data</a></li>
 <li><a class="reference internal" href="#form-a-nearest-neighbour-graph">Form a nearest neighbour graph</a></li>
 <li><a class="reference internal" href="#kernel-on-graph">Kernel on graph</a></li>
@@ -203,12 +215,15 @@ but rbf kernel does the job fine. The right image shows the digit that rbf kerne
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="Kernels.html" title="Kernels &amp; Means"
              >next</a> |</li>
         <li class="right" >
           <a href="demoHousing.html" title="Regression on UCI Housing data"
              >previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
           <li><a href="Examples.html" >Demos</a> &raquo;</li> 
       </ul>
     </div>

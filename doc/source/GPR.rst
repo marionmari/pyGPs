@@ -9,12 +9,14 @@ Import packages
 --------------------
 Once you installed pyGPs, the typical way to import it is: ::
 
-    from pyGPs.Core import *
+    import pyGPs
     import numpy as np
 
 Load data
 --------------------
-First, load the data for this demo. The data consists of :math:`n=20` 1-d data points drawn from a unit Gaussian. This is the same data used in the GPML example (it is hardcoded in *data/regression_data.npz*). ::
+First, load the data for this demo. The data consists of :math:`n=20` 1-d data points drawn from a unit Gaussian. This is the same data used in the GPML example (it is hardcoded in *data/regression_data.npz*). 
+
+Note that target vector :math:`y` can be in 2d matrix with shape (nn,1) or 1d vector with shape (nn,) where :math:`nn` is number of test inputs. pyGPs can work with either format. ::
 
     demoData = np.load('data_for_demo/regression_data.npz')
     x = demoData['x']      # training data
@@ -26,17 +28,17 @@ A five-line toy example
 Now lets do regression with Gaussian processes. 
 Using pyGPs for regression is really simple; here is the most basic example: ::
 
-    model = gp.GPR()    # specify model (GP regression)
-    model.fit(x, y)     # fit default model (mean zero & rbf kernel) with data
-    model.train(x, y)   # optimize hyperparamters (default optimizer: single run minimize)
-    model.predict(z)    # predict test cases
-    model.plot()        # and plot result
+    model = pyGPs.GPR()    # specify model (GP regression)
+    model.fit(x, y)        # fit default model (mean zero & rbf kernel) with data
+    model.optimize(x, y)   # optimize hyperparamters (default optimizer: single run minimize)
+    model.predict(z)       # predict test cases
+    model.plot()           # and plot result
 
 By default, GPR uses a zero mean, the rbf kernel and a Gaussian likelihood. Default optimizer is a single run of Rasmussen's minimize. You will see below how to set non-default values in another example.
 
-*GPR.plot()* will plot the result, where the dark line is the posterior mean and the green-shaded area is the posterior variance. 
+*pyGPs.GPR().plot()* will plot the result, where the dark line is the posterior mean and the green-shaded area is the posterior variance. 
 Note, that *plot()* is not a general method as it is not trivial to visualize high dimensional data. 
-Here, *GPR.plot()* works for 1-d data only, while *GPC.plot()* is a toy method visualising 2-d input data in a classification scenario.
+Here, *pyGPs.GPR().plot()* works for 1-d data only, while *pyGPs.GPC().plot()* is a toy method visualising 2-d input data in a classification scenario.
 
 .. figure:: _images/d1_1.png
    :height: 600 px
@@ -50,19 +52,18 @@ Now lets do another example to get insight into more advanced features of the to
 
 You can specify non-default mean and covariance functions: ::
 
-    m = mean.Linear( D=x.shape[1] ) + mean.Const()   
-    k = cov.RBF()
+    m = pyGPs.mean.Linear( D=x.shape[1] ) + mean.Const()   
+    k = pyGPs.cov.RBF()
     model.setPrior(mean=m, kernel=k) 
 
 Here, we use a composite mean as the sum of a linear and a constant function, and an rbf kernel. The initial hyperparameters are left to their default values. See `Kernels & Means`_ for a complete documentation of kernel/mean specification and custom kernel/mean construction. Once kernel and mean are specified, they are passed to the prior using *setPrior()*.
 
 .. _Kernels & Means: Kernels.html
 
-You can add the traning data to the model explicitly by using *setData()*. So, you avoid passing them into *fit()* or *train()* each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels :math:`y` (if you do not specify mean function by your own).
+You can add the traning data to the model explicitly by using *setData()*. So, you avoid passing them into *fit()* or *optimize()* each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels :math:`y` (if you do not specify mean function by your own).
 
 Further, you can plot the data in the 1-d case: ::
 
-    model.setData(x, y)
     model.plotData_1d()
 
 .. figure:: _images/d1_2.png
@@ -76,14 +77,14 @@ several times with different random initializations: ::
 
     model.setOptimizer("Minimize", num_restarts=30)
 
-The optimized hyperparameters returned by *train()* are then set to be the ones obtained from the run with the best result. 
+The optimized hyperparameters returned by *optimize()* are then set to be the ones obtained from the run with the best result. 
 The whole functionality for optimization is introduced in detail in the documentation `Optimizers`_.
 
 .. _Optimizers: Opts.html
 
-Instead of *fit()*, which only fits data using given hyperparameters, *train()* will optimize hyperparamters based on marginal likelihood: ::
+Instead of *fit()*, which only fits data using given hyperparameters, *optimize()* will optimize hyperparamters based on marginal likelihood: ::
 
-    model.train()
+    model.optimize()
 
 
 There are several properties you can get from the model: ::

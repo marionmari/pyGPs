@@ -17,7 +17,7 @@ based on a low-rank plus diagonal approximation to the exact covariance to deal 
 
 Okay, now the model is FITC regression::
 
-	model = gp.GPR_FITC()  
+	model = pyGPs.GPR_FITC()  
 
 The difference between the usage of basic :math:`GP` regression is that we will have to specify inducing points.
 In the first example here, we will introduce you how to use the default settings.
@@ -32,7 +32,7 @@ The number of inducing points per axis is :math:`5` per default.
 
 Now, the regular training and prediction routines follow: ::
 
-	model.train()            
+	model.optimize()            
 	model.predict(z)
 	model.plot()
 
@@ -67,8 +67,8 @@ You can also use equidistant inducing points :math:`u`, but without the values o
 
 Then pass :math:`u` when specifying prior. ::
 
-	m = mean.Zero()
-	k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
+	m = pyGPs.mean.Zero()
+	k = pyGPs.cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
 	model.setPrior(mean=m, kernel=k, inducing_points=u) 
 
 The left figure below shows the result of fixed inducing points, and the right figure shows the result for equidistant :math:`u`.

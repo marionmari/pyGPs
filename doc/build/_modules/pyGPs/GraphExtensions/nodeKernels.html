@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyGPs.GraphExtensions.nodeKernels &mdash; pyGPs v1.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'v1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pyGPs v1.2 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pyGPs v1.2 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyGPs.GraphExtensions.nodeKernels</h1><div class="highlight"><pre>
+<span class="c">#================================================================================</span>
+<span class="c">#    Marion Neumann [marion dot neumann at uni-bonn dot de]</span>
+<span class="c">#    Daniel Marthaler [marthaler at ge dot com]</span>
+<span class="c">#    Shan Huang [shan dot huang at iais dot fraunhofer dot de]</span>
+<span class="c">#    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]</span>
+<span class="c">#</span>
+<span class="c">#    This file is part of pyGPs.</span>
+<span class="c">#    The software package is released under the BSD 2-Clause (FreeBSD) License.</span>
+<span class="c">#</span>
+<span class="c">#    Copyright (c) by</span>
+<span class="c">#    Marion Neumann, Daniel Marthaler, Shan Huang &amp; Kristian Kersting, 18/02/2014</span>
+<span class="c">#================================================================================</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="kn">as</span> <span class="nn">spla</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="kn">as</span> <span class="nn">spsp</span>
+
+
+<div class="viewcode-block" id="normLap"><a class="viewcode-back" href="../../../Graph.html#pyGPs.GraphExtensions.nodeKernels.normLap">[docs]</a><span class="k">def</span> <span class="nf">normLap</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Normalized Laplacian</span>
+
+<span class="sd">    :param A: adjacency matrix</span>
+<span class="sd">    :return: kernel matrix</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">d</span><span class="p">)</span>    
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">I</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">A</span><span class="p">),</span><span class="n">D</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">L</span>
+
+</div>
+<div class="viewcode-block" id="regLapKernel"><a class="viewcode-back" href="../../../Graph.html#pyGPs.GraphExtensions.nodeKernels.regLapKernel">[docs]</a><span class="k">def</span> <span class="nf">regLapKernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Regularized Laplacian Kernel </span>
+<span class="sd">        </span>
+<span class="sd">    :param A: adjacency matrix</span>
+<span class="sd">    :param sigma: hyperparameter sigma</span>
+<span class="sd">    :return: kernel matrix</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">normLap</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span> <span class="n">I</span><span class="o">+</span><span class="p">(</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">L</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">K</span>
+
+</div>
+<div class="viewcode-block" id="psInvLapKernel"><a class="viewcode-back" href="../../../Graph.html#pyGPs.GraphExtensions.nodeKernels.psInvLapKernel">[docs]</a><span class="k">def</span> <span class="nf">psInvLapKernel</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Pseudo inverse of the normalized Laplacian.</span>
+
+<span class="sd">    :param A: adjacency matrix</span>
+<span class="sd">    :return: kernel matrix</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">normLap</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">K</span>
+
+</div>
+<div class="viewcode-block" id="diffKernel"><a class="viewcode-back" href="../../../Graph.html#pyGPs.GraphExtensions.nodeKernels.diffKernel">[docs]</a><span class="k">def</span> <span class="nf">diffKernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Diffusion Process Kernel </span>
+<span class="sd">        </span>
+<span class="sd">    K = exp(beta * H), where H = -L = A-D</span>
+<span class="sd">    </span>
+<span class="sd">    K = Q exp(beta * Lambda) Q.T</span>
+<span class="sd">        </span>
+<span class="sd">    :param A: adjacency matrix</span>
+<span class="sd">    :param beta: hyperparameter beta</span>
+<span class="sd">    :return: kernel matrix</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="c"># make sure that A is a numpy array!!</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">A</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">w</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+    <span class="n">Lambda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta</span><span class="o">*</span><span class="n">w</span><span class="p">))</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">),</span> <span class="n">Q</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">K</span>
+
+</div>
+<div class="viewcode-block" id="VNDKernel"><a class="viewcode-back" href="../../../Graph.html#pyGPs.GraphExtensions.nodeKernels.VNDKernel">[docs]</a><span class="k">def</span> <span class="nf">VNDKernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Von Neumann Diffusion Kernel on graph (Zhou et al., 2004)</span>
+<span class="sd">    (also label spreading kernel)</span>
+<span class="sd">        </span>
+<span class="sd">    K = (I - alpha*S)^-1, where S = D^-1/2*A*D^-1/2</span>
+<span class="sd">        </span>
+<span class="sd">    :param A: adjacency matrix</span>
+<span class="sd">    :param alpha: hyperparameter alpha</span>
+<span class="sd">    :return: kernel matrix</span>
+<span class="sd">    &#39;&#39;&#39;</span> 
+    <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">d</span><span class="p">)</span>    
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">A</span><span class="p">),</span><span class="n">D</span> <span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span> <span class="n">I</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">*</span><span class="n">S</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">K</span>
+
+</div>
+<div class="viewcode-block" id="rwKernel"><a class="viewcode-back" href="../../../Graph.html#pyGPs.GraphExtensions.nodeKernels.rwKernel">[docs]</a><span class="k">def</span> <span class="nf">rwKernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    p-step Random Walk Kernel with a&gt;1</span>
+<span class="sd">       </span>
+<span class="sd">    K = (aI-L)^p, p&gt;1 and L is the normalized Laplacian </span>
+<span class="sd">     </span>
+<span class="sd">    :param A: adjacency matrix</span>
+<span class="sd">    :param p: step parameter</span>
+<span class="sd">    :param a: hyperparameter a</span>
+<span class="sd">    :return: kernel matrix</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">:</span>
+	<span class="n">p</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+	<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Step parameter p needs to be larger than 0.&#39;</span><span class="p">)</span> 	
+    <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>	
+	<span class="n">a</span><span class="o">=</span><span class="mf">1.0001</span>
+    <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">normLap</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span> <span class="n">a</span><span class="o">*</span><span class="n">I</span> <span class="o">-</span> <span class="n">L</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>	
+    <span class="k">return</span> <span class="n">K</span>
+
+
+</div>
+<div class="viewcode-block" id="cosKernel"><a class="viewcode-back" href="../../../Graph.html#pyGPs.GraphExtensions.nodeKernels.cosKernel">[docs]</a><span class="k">def</span> <span class="nf">cosKernel</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Cosine Kernel (also Inverse Cosine Kernel)</span>
+<span class="sd">    </span>
+<span class="sd">    K = cos (L*pi/4), where L is the normalized Laplacian</span>
+<span class="sd">                </span>
+<span class="sd">    :param A: adjacency matrix</span>
+<span class="sd">    :return: kernel matrix</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">normLap</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">L</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>   
+    <span class="k">return</span> <span class="n">K</span> 
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pyGPs v1.2 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

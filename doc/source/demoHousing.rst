@@ -14,8 +14,8 @@ unit-variance normal distribtion.  The actual values were: :math:`[ -0.75, \; 0.
 was :math:`-2.30`.  The regression started with initial negative log marginal likelihood of :math:` 752.46`.  Note the initial zero mean and the 
 variance that is uniform over the test set. ::
 
-    model = gp.GPR()
-    model.train(x,y)
+    model = pyGPs.GPR()
+    model.optimize(x,y)
     ym, ys2, fm, fs2, lp = model.predict(xs)
     xa  = np.concatenate((data[:,:4],data[:,5:-1]),axis=1)
     xa = (xa - np.mean(xa,axis=0))/(np.std(xa,axis=0)+1.e-16)

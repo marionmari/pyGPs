@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>K-fold Cross-Validation &mdash; pyGPs v1.1 documentation</title>
+    <title>K-fold Cross-Validation &mdash; pyGPs v1.2 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     'v1.1',
+        VERSION:     'v1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyGPs v1.1 documentation" href="index.html" />
+    <link rel="top" title="pyGPs v1.2 documentation" href="index.html" />
     <link rel="up" title="Demos" href="Examples.html" />
     <link rel="next" title="Regression on Mauna Loa data" href="demoMaunaLoa.html" />
     <link rel="prev" title="Multi-class Classification" href="GPMC.html" /> 
@@ -36,12 +36,15 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="demoMaunaLoa.html" title="Regression on Mauna Loa data"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="GPMC.html" title="Multi-class Classification"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
           <li><a href="Examples.html" accesskey="U">Demos</a> &raquo;</li> 
       </ul>
     </div>  
@@ -66,9 +69,9 @@ Then we need to do some data cleaning. Here we deal with label in ionosphere dat
 <div class="highlight-python"><div class="highlight"><pre><span class="n">K</span> <span class="o">=</span> <span class="mi">10</span>             <span class="c"># number of folds</span>
 <span class="k">for</span> <span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="ow">in</span> <span class="n">valid</span><span class="o">.</span><span class="n">k_fold_validation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
     <span class="c"># This is a binary classification problem</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>
     <span class="c"># Since no prior knowldege, leave everything default</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
     <span class="c"># Predition</span>
     <span class="n">ymu</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fmu</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="n">y_test</span><span class="p">)</span>
     <span class="c"># ymu for classification is a continuous value over -1 to +1</span>
@@ -153,12 +156,15 @@ Then we need to do some data cleaning. Here we deal with label in ionosphere dat
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="demoMaunaLoa.html" title="Regression on Mauna Loa data"
              >next</a> |</li>
         <li class="right" >
           <a href="GPMC.html" title="Multi-class Classification"
              >previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li>
           <li><a href="Examples.html" >Demos</a> &raquo;</li> 
       </ul>
     </div>

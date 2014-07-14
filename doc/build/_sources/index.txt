@@ -8,8 +8,8 @@ About the package
 pyGPs is a library hosting Python implementations of Gaussian processes (GPs) for
 machine learning.
 pyGPs bridges the gap between systems designed primarily for users, who mainly
-want to apply gps and need basic machine learning routines for model training, evaluation, and visualiza-
-gp functiontion, and expressive systems for developers, who focus on extending the core
+want to apply GPs and need basic machine learning routines for model training, evaluation, and 
+visualiztion, and expressive systems for developers, who focus on extending the core
 functionalities as covariance and likelihood functions, as well as inference techniques.
 
 
