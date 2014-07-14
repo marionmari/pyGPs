@@ -30,8 +30,12 @@ Further, pyGPs includes implementations of
 Installing pyGPs
 ------------------
 Download the archive and extract it to any local directory.
-Add the local directory to your PYTHONPATH:
-	export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/ (parent directory of pyGPs)
+
+You can either add the local directory to your PYTHONPATH:
+    export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/../parent_folder_of_pyGPs
+
+or install the package using setup.py:
+    sudo python setup.py install
 
 Requirements
 --------------
