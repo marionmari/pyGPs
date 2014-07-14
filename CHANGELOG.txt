@@ -48,3 +48,11 @@ bug fixes:
 - typos in lik.Laplace
 - derivative in lik.Laplace
 
+
+
+July 14th 2014
+----------------
+- online docs updated
+- API file updated
+- method graphUtil.normalize() added
+

@@ -33,35 +33,6 @@
 #   infLOO      [NOT IMPLEMENTED!]
 #               Leave-One-Out predictive probability and Least-Squares Approxim.
 #
-# The interface to the approximation methods is the following:
-#
-# post nlZ dnlZ = inf.proceed(mean, cov, lik, x, y)
-#
-# where:
-#   INPUT:
-#   cov     name of the covariance function (see covFunctions.m)
-#   lik     name of the likelihood function (see likFunctions.m)
-#   x       n by D matrix of training inputs 
-#   y       1d array (of size n) of targets
-#
-#   OUTPUT:
-#   post    struct representation of the (approximate) posterior containing: 
-#           alpha   1d array containing inv(K)*m, 
-#                   where K is the prior covariance matrix and m the approx posterior mean
-#           sW      1d array containing diagonal of sqrt(W)
-#                   the approximate posterior covariance matrix is inv(inv(K)+W)
-#           L       2d array, L = chol(sW*K*sW+identity(n))
-#   nlZ     returned value of the negative log marginal likelihood
-#   dnlZ    1d array of partial derivatives of the negative log marginal likelihood
-#           w.r.t. each hyperparameter
-#
-# Usually, the approximate posterior to be returned admits the form
-# N(m=K*alpha, V=inv(inv(K)+W)), where alpha is a vector and W is diagonal;
-# if not, then L contains instead -inv(K+inv(W)), and sW is unused.
-#
-# For more information on the individual approximation methods and their
-# implementations, see the respective inf* function below. See also gp.py
-#
 #
 # This is a object-oriented python implementation of gpml functionality 
 # (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
@@ -113,6 +84,30 @@ class Inference(object):
         '''
         Inference computation based on inputs.
         post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)
+
+            | INPUT:
+            | cov: name of the covariance function (see covFunctions.m)
+            | lik: name of the likelihood function (see likFunctions.m)
+            | x: n by D matrix of training inputs 
+            | y: 1d array (of size n) of targets
+
+            | OUTPUT:
+            | post: struct representation of the (approximate) posterior containing: 
+            | post.alpha: 1d array containing inv(K)*m, 
+            | where K is the prior covariance matrix and m the approx posterior mean
+            | post.sW: 1d array containing diagonal of sqrt(W)
+            | the approximate posterior covariance matrix is inv(inv(K)+W)
+            | post.L : 2d array, L = chol(sW*K*sW+identity(n))
+            | nlZ: returned value of the negative log marginal likelihood
+            | dnlZ: 1d array of partial derivatives of the negative log marginal likelihood
+            | w.r.t. each hyperparameter
+
+        Usually, the approximate posterior to be returned admits the form: 
+        N(m=K*alpha, V=inv(inv(K)+W)), where alpha is a vector and W is diagonal;
+        if not, then L contains instead -inv(K+inv(W)), and sW is unused.
+
+        For more information on the individual approximation methods and their
+        implementations, see the respective inference function below. See also gp.py
 
         :param meanfunc: mean function
         :param covfunc: covariance function

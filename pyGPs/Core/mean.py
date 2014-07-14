@@ -91,6 +91,23 @@ class Mean(object):
             return PowerOfMean(self,number)
         else:
             print "only non-zero integers are supported for **"
+
+    def getMean(self, x=None):
+        '''
+        Get the mean vector.
+        '''
+        pass
+
+    def getDerMatrix(self, x=None, der=None):
+        '''
+        Compute derivatives wrt. hyperparameters.
+
+        :param x: training data
+        :param int der: index of hyperparameter whose derivative to be computed
+
+        :return: the corresponding derivative matrix
+        '''
+        pass
     
 
 

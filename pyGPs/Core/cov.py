@@ -68,8 +68,8 @@ class Kernel(object):
         :param x: training data
         :param z: test data
         :param str mode: 'self_test' return self covariance matrix of test data(test by 1). 
-        'train' return training covariance matrix(train by train).
-        'cross' return cross covariance matrix between x and z(train by test)
+                         'train' return training covariance matrix(train by train).
+                         'cross' return cross covariance matrix between x and z(train by test)
 
         :return: the corresponding covariance matrix
         '''
@@ -82,8 +82,8 @@ class Kernel(object):
         :param x: training data
         :param z: test data
         :param str mode: 'self_test' return self derivative matrix of test data(test by 1). 
-        'train' return training derivative matrix(train by train).
-        'cross' return cross derivative matrix between x and z(train by test)
+                         'train' return training derivative matrix(train by train).
+                         'cross' return cross derivative matrix between x and z(train by test)
         :param int der: index of hyperparameter whose derivative to be computed
 
         :return: the corresponding derivative matrix

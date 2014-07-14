@@ -25,69 +25,6 @@
 #
 #   Mix         [NOT IMPLEMENTED!] (Mixture of individual covariance functions)
 #
-# The likelihood functions have two possible modes, the mode being selected
-# as follows (where "lik" stands for "proceed" method for any likelihood function):
-#
-#
-# 1) With two or three input arguments:                       [PREDICTION MODE]
-#
-#    lp = lik(y, mu) OR lp, ymu, ys2 = lik(y, mu, s2)
-#
-# This allows to evaluate the predictive distribution. Let p(y_*|f_*) be the
-# likelihood of a test point and N(f_*|mu,s2) an approximation to the posterior
-# marginal p(f_*|x_*,x,y) as returned by an inference method. The predictive
-# distribution p(y_*|x_*,x,y) is approximated by.
-#   q(y_*) = \int N(f_*|mu,s2) p(y_*|f_*) df_*
-#
-#   lp = log( q(y) ) for a particular value of y, if s2 is [] or 0, this
-#                    corresponds to log( p(y|mu) )
-#   ymu and ys2      the mean and variance of the predictive marginal q(y)
-#                    note that these two numbers do not depend on a particular 
-#                    value of y 
-# All vectors have the same size.
-#
-#
-# 2) With four or five input arguments, the fouth being an object of class "Inference" [INFERENCE MODE]
-#
-#  lik(y, mu, s2, inf) OR lik(y, mu, s2, inf, i)
-#
-# There are two cases for inf, namely a) infLaplace, b) infEP 
-# The last input i, refers to derivatives w.r.t. the ith hyperparameter. 
-#
-# a1)   lp,dlp,d2lp,d3lp = lik(y, f, [], 'infLaplace')
-#       lp, dlp, d2lp and d3lp correspond to derivatives of the log likelihood 
-#       log(p(y|f)) w.r.t. to the latent location f.
-#           lp = log( p(y|f) )
-#           dlp = d   log( p(y|f) ) / df
-#           d2lp = d^2 log( p(y|f) ) / df^2
-#           d3lp = d^3 log( p(y|f) ) / df^3
-#
-# a2)   lp_dhyp,dlp_dhyp,d2lp_dhyp = lik(y, f, [], 'infLaplace', i)
-#       returns derivatives w.r.t. to the ith hyperparameter
-#           lp_dhyp = d   log( p(y|f) ) / (     dhyp_i)
-#           dlp_dhyp = d^2 log( p(y|f) ) / (df   dhyp_i)
-#           d2lp_dhyp = d^3 log( p(y|f) ) / (df^2 dhyp_i)
-#
-#
-# b1)   lZ,dlZ,d2lZ = lik(y, mu, s2, 'infEP')
-#       let Z = \int p(y|f) N(f|mu,s2) df then
-#           lZ =     log(Z)
-#           dlZ = d   log(Z) / dmu
-#           d2lZ = d^2 log(Z) / dmu^2
-#
-# b2)   dlZhyp = lik(y, mu, s2, 'infEP', i)
-#       returns derivatives w.r.t. to the ith hyperparameter
-#           dlZhyp = d log(Z) / dhyp_i
-#
-#
-# Cumulative likelihoods are designed for binary classification. Therefore, they
-# only look at the sign of the targets y; zero values are treated as +1.
-#
-# Some examples for valid likelihood functions:
-#      lik = likGauss([0.1])
-#      lik = likErf()
-
-#
 # See the documentation for the individual likelihood for the computations specific 
 # to each likelihood function.
 #
@@ -110,8 +47,71 @@ class Likelihood(object):
         self.hyp = []
     def proceed(self):
         '''
-        The likelihood functions have two possible modes based on inputs. 
-        See lik.py for detail documentation.
+        The likelihood functions have two possible modes, the mode being selected
+        as follows (where "lik" stands for "proceed" method for any likelihood function):
+
+
+        1) With two or three input arguments:                       [PREDICTION MODE]
+
+         lp = lik(y, mu) OR lp, ymu, ys2 = lik(y, mu, s2)
+
+            This allows to evaluate the predictive distribution. Let p(y_*|f_*) be the
+            likelihood of a test point and N(f_*|mu,s2) an approximation to the posterior
+            marginal p(f_*|x_*,x,y) as returned by an inference method. The predictive
+            distribution p(y_*|x_*,x,y) is approximated by:
+            q(y_*) = \int N(f_*|mu,s2) p(y_*|f_*) df_*
+
+            lp = log( q(y) ) for a particular value of y, if s2 is [] or 0, this
+            corresponds to log( p(y|mu) ).
+            
+            ymu and ys2 are the mean and variance of the predictive marginal q(y)
+            note that these two numbers do not depend on a particular 
+            value of y.
+            All vectors have the same size.
+
+
+        2) With four or five input arguments, the fouth being an object of class "Inference" [INFERENCE MODE]
+
+         lik(y, mu, s2, inf) OR lik(y, mu, s2, inf, i)
+
+         There are two cases for inf, namely a) infLaplace, b) infEP 
+         The last input i, refers to derivatives w.r.t. the ith hyperparameter. 
+
+         | a1) 
+         | lp,dlp,d2lp,d3lp = lik(y, f, [], 'infLaplace'). 
+         | lp, dlp, d2lp and d3lp correspond to derivatives of the log likelihood. 
+         | log(p(y|f)) w.r.t. to the latent location f.
+         | lp = log( p(y|f) ) 
+         | dlp = d log( p(y|f) ) / df 
+         | d2lp = d^2 log( p(y|f) ) / df^2
+         | d3lp = d^3 log( p(y|f) ) / df^3 
+
+         | a2)
+         | lp_dhyp,dlp_dhyp,d2lp_dhyp = lik(y, f, [], 'infLaplace', i) 
+         | returns derivatives w.r.t. to the ith hyperparameter 
+         | lp_dhyp = d log( p(y|f) ) / (dhyp_i) 
+         | dlp_dhyp = d^2 log( p(y|f) ) / (df   dhyp_i) 
+         | d2lp_dhyp = d^3 log( p(y|f) ) / (df^2 dhyp_i) 
+
+
+         | b1)
+         | lZ,dlZ,d2lZ = lik(y, mu, s2, 'infEP') 
+         | let Z = \int p(y|f) N(f|mu,s2) df then 
+         | lZ = log(Z) 
+         | dlZ = d log(Z) / dmu 
+         | d2lZ = d^2 log(Z) / dmu^2 
+
+         | b2)
+         | dlZhyp = lik(y, mu, s2, 'infEP', i)
+         | returns derivatives w.r.t. to the ith hyperparameter 
+         | dlZhyp = d log(Z) / dhyp_i 
+
+        Cumulative likelihoods are designed for binary classification. Therefore, they
+        only look at the sign of the targets y; zero values are treated as +1.
+
+        Some examples for valid likelihood functions:
+         | lik = likGauss([0.1])
+         | lik = likErf()
         '''
         pass
 

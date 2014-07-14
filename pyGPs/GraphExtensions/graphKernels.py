@@ -26,7 +26,7 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
 
     :param A: adjacency matrix (num_nodes x num_nodes)
     :param l: label array (num_nodes x 1); values [1,...,k] or -1 for unlabeled nodes 
-    OR label array (num_nodes x num_labels); values [0,1], unlabeled nodes have only 0 entries
+              OR label array (num_nodes x num_labels); values [0,1], unlabeled nodes have only 0 entries
     :param gr_id: graph indicator array (num_nodes x 1); values [0,..,n]
     :param h_max: number of iterations
     :param w: bin widths parameter
