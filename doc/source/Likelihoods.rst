@@ -93,35 +93,6 @@ where **postStruct** and **dnlZStruct** is also defined in *Core.inf*. ::
         dnlZ.lik   ->  list of derivatives for each hyperparameters in likelihood function
         '''
 
-and for customized mean class: ::
-
-    # Your mean class needs to inherit base class Mean, 
-    # which is in the module of Core.mean
-    class MyMean(Mean):
-
-      def __init__(self, hyp):
-          '''
-          Intialize hyperparameters for MyMean.
-          '''
-          self.hyp = hyp
-
-      def getMean(self, x=None):
-          '''
-          Get the mean vector.
-          '''
-          pass
-
-      def getDerMatrix(self, x=None, der=None):
-          '''
-          Compute derivatives wrt. hyperparameters.
-
-          :param x: training data
-          :param int der: index of hyperparameter whose derivative to be computed
-
-          :return: the corresponding derivative matrix
-          '''
-          pass
-
 
 Customizing likelihood function is more complicated. We will omit it here to keep this this page not too long.
 However, you can find detailed explaination either in the **source code** *Core.lik* or in coresponding section of **manual**.
