@@ -21,7 +21,10 @@ import matplotlib.pyplot as plt
     
 def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False, showEachStep=False):
     '''
-    Propagation kernel for graphs.
+    Propagation kernel for graphs as described in: 
+    Neumann, M., Patricia, N., Garnett, R., Kersting, K.: Efficient Graph Kernels by 
+    Randomization. In: P.A. Flach, T.D. Bie, N. Cristianini (eds.) ECML/PKDD, Notes in 
+    Computer Science, vol. 7523, pp. 378-393. Springer (2012).
 
     :param A: adjacency matrix (num_nodes x num_nodes)
     :param l: label array (num_nodes x 1); values [1,...,k] or -1 for unlabeled nodes 
