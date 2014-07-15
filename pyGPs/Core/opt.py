@@ -26,8 +26,25 @@ from ..Optimization import minimize, scg
 from copy import deepcopy
 
 class Optimizer(object):
-    def __init__(self):
-        self.model = None
+    def __init__(self, model=None, searchConfig = None):
+        self.model = model
+
+    def findMin(self, x, y):
+        '''
+        Find minimal value based on negative-log-marginal-likelihood. 
+        optimalHyp, funcValue = findMin(x, y)
+
+        where funcValue is the minimal negative-log-marginal-likelihood during optimization,
+        and optimalHyp is a flattened numpy array 
+        (in sequence of meanfunc.hyp, covfunc.hyp, likfunc.hyp) 
+        of the hyparameters to achieve such value.
+
+        You can achieve advanced search strategy by initializing Optimizer with searchConfig, 
+        which is an instance of pyGPs.Optimization.conf. 
+        See more in pyGPs.Optimization.conf and pyGPs.Core.gp.GP.setOptimizer,
+        as well as in online documentation of section Optimizers.
+        '''
+        pass
 
     def _nlml(self, hypInArray):
         '''Find negative-log-marginal-likelihood'''
