@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -57,13 +56,13 @@
 <span class="c">#    The software package is released under the BSD 2-Clause (FreeBSD) License.</span>
 <span class="c">#</span>
 <span class="c">#    Copyright (c) by</span>
-<span class="c">#    Marion Neumann, Daniel Marthaler, Shan Huang &amp; Kristian Kersting, 30/09/2013</span>
+<span class="c">#    Marion Neumann, Daniel Marthaler, Shan Huang &amp; Kristian Kersting, 18/02/2014</span>
 <span class="c">#================================================================================</span>
 
 <span class="c"># likelihood functions are provided to be used by the gp.py function:</span>
 <span class="c">#</span>
 <span class="c">#   Erf         (Error function, classification, probit regression)</span>
-<span class="c">#   Logistic    (Logistic, classification, logit regression)</span>
+<span class="c">#   Logistic    [NOT IMPLEMENTED!] (Logistic, classification, logit regression)</span>
 <span class="c">#   Uni         [NOT IMPLEMENTED!] (Uniform likelihood, classification)</span>
 <span class="c">#</span>
 <span class="c">#   Gauss       (Gaussian, regression)</span>
@@ -74,81 +73,6 @@
 <span class="c">#   Poisson     [NOT IMPLEMENTED!] (Poisson regression, count data)</span>
 <span class="c">#</span>
 <span class="c">#   Mix         [NOT IMPLEMENTED!] (Mixture of individual covariance functions)</span>
-<span class="c">#</span>
-<span class="c"># The likelihood functions have two possible modes, the mode being selected</span>
-<span class="c"># as follows (where &quot;lik&quot; stands for &quot;proceed&quot; method for any likelihood function):</span>
-<span class="c">#</span>
-<span class="c">#</span>
-<span class="c"># 1) With two or three input arguments:                       [PREDICTION MODE]</span>
-<span class="c">#</span>
-<span class="c">#    lp = lik(y, mu) OR lp, ymu, ys2 = lik(y, mu, s2)</span>
-<span class="c">#</span>
-<span class="c"># This allows to evaluate the predictive distribution. Let p(y_*|f_*) be the</span>
-<span class="c"># likelihood of a test point and N(f_*|mu,s2) an approximation to the posterior</span>
-<span class="c"># marginal p(f_*|x_*,x,y) as returned by an inference method. The predictive</span>
-<span class="c"># distribution p(y_*|x_*,x,y) is approximated by.</span>
-<span class="c">#   q(y_*) = \int N(f_*|mu,s2) p(y_*|f_*) df_*</span>
-<span class="c">#</span>
-<span class="c">#   lp = log( q(y) ) for a particular value of y, if s2 is [] or 0, this</span>
-<span class="c">#                    corresponds to log( p(y|mu) )</span>
-<span class="c">#   ymu and ys2      the mean and variance of the predictive marginal q(y)</span>
-<span class="c">#                    note that these two numbers do not depend on a particular </span>
-<span class="c">#                    value of y </span>
-<span class="c"># All vectors have the same size.</span>
-<span class="c">#</span>
-<span class="c">#</span>
-<span class="c"># 2) With four or five input arguments, the fouth being an object of class &quot;Inference&quot; [INFERENCE MODE]</span>
-<span class="c">#</span>
-<span class="c">#  lik(y, mu, s2, inf) OR lik(y, mu, s2, inf, i)</span>
-<span class="c">#</span>
-<span class="c"># There are three cases for inf, namely a) infLaplace, b) infEP and c) infVB. </span>
-<span class="c"># The last input i, refers to derivatives w.r.t. the ith hyperparameter. </span>
-<span class="c">#</span>
-<span class="c"># a1)   lp,dlp,d2lp,d3lp = lik(y, f, [], &#39;infLaplace&#39;)</span>
-<span class="c">#       lp, dlp, d2lp and d3lp correspond to derivatives of the log likelihood </span>
-<span class="c">#       log(p(y|f)) w.r.t. to the latent location f.</span>
-<span class="c">#           lp = log( p(y|f) )</span>
-<span class="c">#           dlp = d   log( p(y|f) ) / df</span>
-<span class="c">#           d2lp = d^2 log( p(y|f) ) / df^2</span>
-<span class="c">#           d3lp = d^3 log( p(y|f) ) / df^3</span>
-<span class="c">#</span>
-<span class="c"># a2)   lp_dhyp,dlp_dhyp,d2lp_dhyp = lik(y, f, [], &#39;infLaplace&#39;, i)</span>
-<span class="c">#       returns derivatives w.r.t. to the ith hyperparameter</span>
-<span class="c">#           lp_dhyp = d   log( p(y|f) ) / (     dhyp_i)</span>
-<span class="c">#           dlp_dhyp = d^2 log( p(y|f) ) / (df   dhyp_i)</span>
-<span class="c">#           d2lp_dhyp = d^3 log( p(y|f) ) / (df^2 dhyp_i)</span>
-<span class="c">#</span>
-<span class="c">#</span>
-<span class="c"># b1)   lZ,dlZ,d2lZ = lik(y, mu, s2, &#39;infEP&#39;)</span>
-<span class="c">#       let Z = \int p(y|f) N(f|mu,s2) df then</span>
-<span class="c">#           lZ =     log(Z)</span>
-<span class="c">#           dlZ = d   log(Z) / dmu</span>
-<span class="c">#           d2lZ = d^2 log(Z) / dmu^2</span>
-<span class="c">#</span>
-<span class="c"># b2)   dlZhyp = lik(y, mu, s2, &#39;infEP&#39;, i)</span>
-<span class="c">#       returns derivatives w.r.t. to the ith hyperparameter</span>
-<span class="c">#           dlZhyp = d log(Z) / dhyp_i</span>
-<span class="c">#</span>
-<span class="c">#</span>
-<span class="c"># c1)   h,b,dh,db,d2h,d2b = lik(y, [], ga, &#39;infVB&#39;)</span>
-<span class="c">#       ga is the variance of a Gaussian lower bound to the likelihood p(y|f).</span>
-<span class="c">#       p(y|f) \ge exp( b*f - f.^2/(2*ga) - h(ga)/2 ) \propto N(f|b*ga,ga)</span>
-<span class="c">#       The function returns the linear part b and the &quot;scaling function&quot; h(ga) and derivatives</span>
-<span class="c">#           dh = d h/dga</span>
-<span class="c">#           db = d b/dga</span>
-<span class="c">#           d2h = d^2 h/dga</span>
-<span class="c">#           d2b = d^2 b/dga</span>
-<span class="c">#</span>
-<span class="c"># c2)   dhhyp = lik(y, [], ga, &#39;infVB&#39;, i)</span>
-<span class="c">#           dhhyp = dh / dhyp_i, the derivative w.r.t. the ith hyperparameter</span>
-<span class="c">#</span>
-<span class="c"># Cumulative likelihoods are designed for binary classification. Therefore, they</span>
-<span class="c"># only look at the sign of the targets y; zero values are treated as +1.</span>
-<span class="c">#</span>
-<span class="c"># Some examples for valid likelihood functions:</span>
-<span class="c">#      lik = likGauss([0.1])</span>
-<span class="c">#      lik = likErf()</span>
-
 <span class="c">#</span>
 <span class="c"># See the documentation for the individual likelihood for the computations specific </span>
 <span class="c"># to each likelihood function.</span>
@@ -166,14 +90,81 @@
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">erf</span>
 <span class="kn">import</span> <span class="nn">inf</span>
 
-<div class="viewcode-block" id="Likelihood"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.lik.Likelihood">[docs]</a><span class="k">class</span> <span class="nc">Likelihood</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Likelihood</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base function for Likelihood function&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">s2</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">inffunc</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        The likelihood functions have two possible modes, the mode being selected</span>
+<span class="sd">        as follows (where &quot;lik&quot; stands for &quot;proceed&quot; method for any likelihood function):</span>
+
+
+<span class="sd">        1) With two or three input arguments:                       [PREDICTION MODE]</span>
+
+<span class="sd">         lp = lik(y, mu) OR lp, ymu, ys2 = lik(y, mu, s2)</span>
+
+<span class="sd">            This allows to evaluate the predictive distribution. Let p(y_*|f_*) be the</span>
+<span class="sd">            likelihood of a test point and N(f_*|mu,s2) an approximation to the posterior</span>
+<span class="sd">            marginal p(f_*|x_*,x,y) as returned by an inference method. The predictive</span>
+<span class="sd">            distribution p(y_*|x_*,x,y) is approximated by:</span>
+<span class="sd">            q(y_*) = \int N(f_*|mu,s2) p(y_*|f_*) df_*</span>
+
+<span class="sd">            lp = log( q(y) ) for a particular value of y, if s2 is [] or 0, this</span>
+<span class="sd">            corresponds to log( p(y|mu) ).</span>
+<span class="sd">            </span>
+<span class="sd">            ymu and ys2 are the mean and variance of the predictive marginal q(y)</span>
+<span class="sd">            note that these two numbers do not depend on a particular </span>
+<span class="sd">            value of y.</span>
+<span class="sd">            All vectors have the same size.</span>
+
+
+<span class="sd">        2) With four or five input arguments, the fouth being an object of class &quot;Inference&quot; [INFERENCE MODE]</span>
+
+<span class="sd">         lik(y, mu, s2, inf) OR lik(y, mu, s2, inf, i)</span>
+
+<span class="sd">         There are two cases for inf, namely a) infLaplace, b) infEP </span>
+<span class="sd">         The last input i, refers to derivatives w.r.t. the ith hyperparameter. </span>
+
+<span class="sd">         | a1) </span>
+<span class="sd">         | lp,dlp,d2lp,d3lp = lik(y, f, [], &#39;infLaplace&#39;). </span>
+<span class="sd">         | lp, dlp, d2lp and d3lp correspond to derivatives of the log likelihood. </span>
+<span class="sd">         | log(p(y|f)) w.r.t. to the latent location f.</span>
+<span class="sd">         | lp = log( p(y|f) ) </span>
+<span class="sd">         | dlp = d log( p(y|f) ) / df </span>
+<span class="sd">         | d2lp = d^2 log( p(y|f) ) / df^2</span>
+<span class="sd">         | d3lp = d^3 log( p(y|f) ) / df^3 </span>
+
+<span class="sd">         | a2)</span>
+<span class="sd">         | lp_dhyp,dlp_dhyp,d2lp_dhyp = lik(y, f, [], &#39;infLaplace&#39;, i) </span>
+<span class="sd">         | returns derivatives w.r.t. to the ith hyperparameter </span>
+<span class="sd">         | lp_dhyp = d log( p(y|f) ) / (dhyp_i) </span>
+<span class="sd">         | dlp_dhyp = d^2 log( p(y|f) ) / (df   dhyp_i) </span>
+<span class="sd">         | d2lp_dhyp = d^3 log( p(y|f) ) / (df^2 dhyp_i) </span>
+
+
+<span class="sd">         | b1)</span>
+<span class="sd">         | lZ,dlZ,d2lZ = lik(y, mu, s2, &#39;infEP&#39;) </span>
+<span class="sd">         | let Z = \int p(y|f) N(f|mu,s2) df then </span>
+<span class="sd">         | lZ = log(Z) </span>
+<span class="sd">         | dlZ = d log(Z) / dmu </span>
+<span class="sd">         | d2lZ = d^2 log(Z) / dmu^2 </span>
+
+<span class="sd">         | b2)</span>
+<span class="sd">         | dlZhyp = lik(y, mu, s2, &#39;infEP&#39;, i)</span>
+<span class="sd">         | returns derivatives w.r.t. to the ith hyperparameter </span>
+<span class="sd">         | dlZhyp = d log(Z) / dhyp_i </span>
+
+<span class="sd">        Cumulative likelihoods are designed for binary classification. Therefore, they</span>
+<span class="sd">        only look at the sign of the targets y; zero values are treated as +1.</span>
+
+<span class="sd">        Some examples for valid likelihood functions:</span>
+<span class="sd">         | lik = likGauss([0.1])</span>
+<span class="sd">         | lik = likErf()</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">pass</span>
 
-</div>
+
 <div class="viewcode-block" id="Gauss"><a class="viewcode-back" href="../../../Likelihoods.html#pyGPs.Core.lik.Gauss">[docs]</a><span class="k">class</span> <span class="nc">Gauss</span><span class="p">(</span><span class="n">Likelihood</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Gaussian likelihood function for regression. </span>
@@ -377,7 +368,6 @@
 <span class="sd">                varargout = []                           # deriv. wrt hyp.lik</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
-
     <span class="k">def</span> <span class="nf">cumGauss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="c"># return [p,lp] = cumGauss(y,f)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">y</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span> 
@@ -464,7 +454,7 @@
                     <span class="n">ymmu</span> <span class="o">=</span> <span class="n">y</span><span class="o">-</span><span class="n">mu</span>
                     <span class="n">lp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ymmu</span><span class="p">)</span><span class="o">/</span><span class="n">b</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">b</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">nargout</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>                        <span class="c"># derivative of log likelihood</span>
-                        <span class="n">dip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">ymmu</span><span class="p">)</span><span class="o">/</span><span class="n">b</span>
+                        <span class="n">dlp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">ymmu</span><span class="p">)</span><span class="o">/</span><span class="n">b</span>
                         <span class="k">if</span> <span class="n">nargout</span><span class="o">&gt;</span><span class="mi">2</span><span class="p">:</span>                    <span class="c"># 2nd derivative of log likelihood</span>
                             <span class="n">d2lp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ymmu</span><span class="p">)</span>
                             <span class="k">if</span> <span class="n">nargout</span><span class="o">&gt;</span><span class="mi">3</span><span class="p">:</span>                <span class="c"># 3rd derivative of log likelihood</span>
@@ -476,8 +466,11 @@
                             <span class="k">return</span> <span class="n">lp</span><span class="p">,</span><span class="n">dlp</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">lp</span>
-                <span class="k">else</span><span class="p">:</span>                                    <span class="c"># derivative mode</span>
-                    <span class="k">return</span> <span class="p">[]</span>                            <span class="c"># derivative w.r.t. hypers</span>
+                <span class="k">else</span><span class="p">:</span>                                    <span class="c"># derivative w.r.t. hypers</span>
+                    <span class="n">lp_dhyp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">/</span><span class="n">b</span> <span class="o">-</span> <span class="mi">1</span>           <span class="c"># derivative of log likelihood w.r.t. hypers</span>
+                    <span class="n">dlp_dhyp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">mu</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="n">b</span>              <span class="c"># first derivative,</span>
+                    <span class="n">d2lp_dhyp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mu</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>         <span class="c"># and also of the second mu derivative</span>
+                    <span class="k">return</span> <span class="n">lp_dhyp</span><span class="p">,</span> <span class="n">dlp_dhyp</span><span class="p">,</span> <span class="n">d2lp_dhyp</span>     
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inffunc</span><span class="p">,</span> <span class="n">inf</span><span class="o">.</span><span class="n">EP</span><span class="p">):</span>
                 <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">flatten</span><span class="p">()),</span><span class="nb">len</span><span class="p">(</span><span class="n">mu</span><span class="o">.</span><span class="n">flatten</span><span class="p">()),</span><span class="nb">len</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">flatten</span><span class="p">()),</span><span class="nb">len</span><span class="p">(</span><span class="n">sn</span><span class="o">.</span><span class="n">flatten</span><span class="p">())])</span>
                 <span class="n">on</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
@@ -625,8 +618,7 @@
 
 
  
-
-<span class="c"># test</span></div>
+</div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>
@@ -668,7 +660,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
