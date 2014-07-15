@@ -130,7 +130,7 @@ class Kernel(object):
         return FITCOfKernel(self,inducingInput)
     
     # can be replaced by spdist from scipy
-    def sq_dist(self, a, b=None):
+    def _sq_dist(self, a, b=None):
         '''Compute a matrix of all pairwise squared distances
         between two sets of vectors, stored in the row of the two matrices:
         a (of size n by D) and b (of size m by D).'''
@@ -160,15 +160,15 @@ class ProductOfKernel(Kernel):
         self.cov2 = cov2
         self._hyp = cov1.hyp + cov2.hyp
 
-    def sethyp(self,hyp):
+    def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.cov1.hyp)
         self._hyp = hyp 
         self.cov1.hyp = self._hyp[:len1]
         self.cov2.hyp = self._hyp[len1:]
-    def gethyp(self):
+    def _getHyp(self):
         return self._hyp
-    hyp = property(gethyp,sethyp)
+    hyp = property(_getHyp,_setHyp)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         A = self.cov1.getCovMatrix(x,z,mode) * self.cov2.getCovMatrix(x,z,mode)
@@ -192,15 +192,15 @@ class SumOfKernel(Kernel):
         self.cov1 = cov1
         self.cov2 = cov2
         self._hyp = cov1.hyp + cov2.hyp
-    def sethyp(self,hyp):
+    def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.cov1.hyp)
         self._hyp = hyp 
         self.cov1.hyp = self._hyp[:len1]
         self.cov2.hyp = self._hyp[len1:]
-    def gethyp(self):
+    def _getHyp(self):
         return self._hyp
-    hyp = property(gethyp,sethyp)
+    hyp = property(_getHyp,_setHyp)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         A = self.cov1.getCovMatrix(x,z,mode) + self.cov2.getCovMatrix(x,z,mode)
@@ -226,13 +226,13 @@ class ScaleOfKernel(Kernel):
             self._hyp = [scalar] + cov.hyp 
         else:
             self._hyp = [scalar]
-    def sethyp(self,hyp):
+    def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         self._hyp = hyp 
         self.cov.hyp = self._hyp[1:]
-    def gethyp(self):
+    def _getHyp(self):
         return self._hyp
-    hyp = property(gethyp,sethyp)
+    hyp = property(_getHyp,_setHyp)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         sf2 = np.exp(self.hyp[0])                     # scale parameter  
@@ -262,12 +262,12 @@ class FITCOfKernel(Kernel):
         self.covfunc = cov
         self._hyp = cov.hyp
 
-    def getHyp(self):
+    def _getHyp(self):
         return self._hyp
-    def setHyp(self, hyp):
+    def _setHyp(self, hyp):
         self._hyp = hyp
         self.covfunc.hyp = hyp
-    hyp = property(getHyp,setHyp)
+    hyp = property(_getHyp,_setHyp)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         xu = self.inducingInput

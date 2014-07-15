@@ -187,7 +187,7 @@ class CovarianceTests(unittest.TestCase):
     # Test your customized covariance function
     '''
     def test_cov_new(self):
-        # specify your covariance function
+        k = myKernel()     # specify your covariance function
         self.checkCovariance(k)
     '''
 

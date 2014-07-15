@@ -52,6 +52,12 @@ np.seterr(all='ignore')
 class postStruct(object):
     '''
     Data structure for posterior
+
+    | post.alpha: 1d array containing inv(K)*m, 
+    | where K is the prior covariance matrix and m the approx posterior mean
+    | post.sW: 1d array containing diagonal of sqrt(W)
+    | the approximate posterior covariance matrix is inv(inv(K)+W)
+    | post.L : 2d array, L = chol(sW*K*sW+identity(n))
     '''
     def __init__(self):
         self.alpha = np.array([])
@@ -60,7 +66,11 @@ class postStruct(object):
 
 class dnlZStruct(object):
     '''
-    Data structure for the derivatives of mean, cov and lik functions
+    Data structure for the derivatives of mean, cov and lik functions.
+
+    |dnlZ.mean: list of derivatives for each hyperparameters in mean function
+    |dnlZ.cov: list of derivatives for each hyperparameters in covariance function
+    |dnlZ.lik: list of derivatives for each hyperparameters in likelihood function
     '''
     def __init__(self, m, c, l):
         self.mean = []
@@ -92,15 +102,10 @@ class Inference(object):
             | y: 1d array (of size n) of targets
 
             | OUTPUT:
-            | post: struct representation of the (approximate) posterior containing: 
-            | post.alpha: 1d array containing inv(K)*m, 
-            | where K is the prior covariance matrix and m the approx posterior mean
-            | post.sW: 1d array containing diagonal of sqrt(W)
-            | the approximate posterior covariance matrix is inv(inv(K)+W)
-            | post.L : 2d array, L = chol(sW*K*sW+identity(n))
+            | post(postStruct): struct representation of the (approximate) posterior containing: 
             | nlZ: returned value of the negative log marginal likelihood
-            | dnlZ: 1d array of partial derivatives of the negative log marginal likelihood
-            | w.r.t. each hyperparameter
+            | dnlZ(dnlZStruct): struct representation for derivatives of the negative log marginal likelihood
+            | w.r.t. each hyperparameter.
 
         Usually, the approximate posterior to be returned admits the form: 
         N(m=K*alpha, V=inv(inv(K)+W)), where alpha is a vector and W is diagonal;
@@ -119,7 +124,7 @@ class Inference(object):
         '''
         pass
 
-    def epComputeParams(self, K, y, ttau, tnu, likfunc, m, inffunc):
+    def _epComputeParams(self, K, y, ttau, tnu, likfunc, m, inffunc):
         n     = len(y)                                                # number of training cases
         ssi   = np.sqrt(ttau)                                         # compute Sigma and mu
         L     = np.linalg.cholesky(np.eye(n)+np.dot(ssi,ssi.T)*K).T   # L'*L=B=eye(n)+sW*K*sW
@@ -135,12 +140,12 @@ class Inference(object):
                 + (tnu**2/(tau_n+ttau)).sum()/2.- np.log(1.+ttau/tau_n).sum()/2.
         return Sigma, mu, nlZ[0], L
     
-    def logdetA(self,K,w,nargout):
+    def _logdetA(self,K,w,nargout):
         '''
         Compute the log determinant ldA and the inverse iA of a square nxn matrix
         A = eye(n) + K*diag(w) from its LU decomposition; for negative definite A, we 
         return ldA = Inf. We also return mwiA = -diag(w)*inv(A).
-        [ldA,iA,mwiA] = logdetA(K,w)'''
+        [ldA,iA,mwiA] = _logdetA(K,w)'''
         n = K.shape[0]
         assert(K.shape[0] == K.shape[1])
         A = np.eye(n) + K*np.tile(w.T,(n,1))
@@ -168,9 +173,9 @@ class Inference(object):
         else:
             return ldA  
     
-    def Psi_line(self,s,dalpha,alpha,K,m,likfunc,y,inffunc):
+    def _Psi_line(self,s,dalpha,alpha,K,m,likfunc,y,inffunc):
         '''Criterion Psi at alpha + s*dalpha for line search
-        [Psi,alpha,f,dlp,W] = Psi_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)'''
+        [Psi,alpha,f,dlp,W] = _Psi_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)'''
         alpha = alpha + s*dalpha
         f = np.dot(K,alpha) + m
         [lp,dlp,d2lp] = likfunc.proceed(y,f,None,inffunc,None,3) 
@@ -178,7 +183,7 @@ class Inference(object):
         Psi = np.dot(alpha.T,(f-m))/2. - lp.sum()
         return Psi[0],alpha,f,dlp,W  
     
-    def epfitcZ(self,d,P,R,nn,gg,ttau,tnu,d0,R0,P0,y,likfunc,m,inffunc):
+    def _epfitcZ(self,d,P,R,nn,gg,ttau,tnu,d0,R0,P0,y,likfunc,m,inffunc):
         '''Compute the marginal likelihood approximation
         effort is O(n*nu^2) provided that nu<n'''
         T = np.dot(np.dot(R,R0),P)              # temporary variable
@@ -197,7 +202,7 @@ class Inference(object):
             + (tnu**2/(tau_n+ttau)).sum()/2. - (np.log(1+ttau/tau_n)).sum()/2.
         return nlZ,nu_n,tau_n
     
-    def epfitcRefresh(self,d0,P0,R0,R0P0,w,b):
+    def _epfitcRefresh(self,d0,P0,R0,R0P0,w,b):
         '''Refresh the representation of the posterior from initial and site parameters
         to prevent possible loss of numerical precision after many epfitcUpdates
         effort is O(n*nu^2) provided that nu<n
@@ -214,7 +219,7 @@ class Inference(object):
         gg = np.dot(R0.T,np.dot(R.T,np.dot(R,np.dot(R0P0,t*b))))  # O(n*nu)
         return d,P,R,nn,gg
     
-    def epfitcUpdate(self,d,P_i,R,nn,gg,w,b,ii,w_i,b_i,m,d0,P0,R0):
+    def _epfitcUpdate(self,d,P_i,R,nn,gg,w,b,ii,w_i,b_i,m,d0,P0,R0):
         dwi = w_i-w[ii]
         dbi = b_i-b[ii]
         hi = nn[ii] + m[ii] + np.dot(P_i.T,gg)           # posterior mean of site i O(nu)
@@ -236,27 +241,27 @@ class Inference(object):
         P_i = P_i/t                                        # O(nu)
         return d,P_i,R,nn,gg,w,b
     
-    def mvmZ(self,x,RVdd,t):
+    def _mvmZ(self,x,RVdd,t):
         '''Matrix vector multiplication with Z=inv(K+inv(W))'''
         Zx = t*x - np.dot(RVdd.T,np.dot(RVdd,x))
         return Zx
 
-    def mvmK(self,al,V,d0):
+    def _mvmK(self,al,V,d0):
         '''Matrix vector multiplication with approximate covariance matrix'''
         Kal = np.dot(V.T,np.dot(V,al)) + d0*al
         return Kal
 
-    def Psi_lineFITC(self,s,dalpha,alpha,V,d0,m,likfunc,y,inffunc):
+    def _Psi_lineFITC(self,s,dalpha,alpha,V,d0,m,likfunc,y,inffunc):
         '''Criterion Psi at alpha + s*dalpha for line search'''
         alpha = alpha + s*dalpha
-        f = self.mvmK(alpha,V,d0) + m
+        f = self._mvmK(alpha,V,d0) + m
         vargout = likfunc.proceed(y,f,None,inffunc,None,3) 
         lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2] 
         W = -d2lp
         Psi = np.dot(alpha.T,(f-m))/2. - lp.sum()
         return Psi[0],alpha,f,dlp,W
 
-    def fitcRefresh(self,d0,P0,R0,R0P0, w):
+    def _fitcRefresh(self,d0,P0,R0,R0P0, w):
         '''Refresh the representation of the posterior from initial and site parameters
         to prevent possible loss of numerical precision after many epfitcUpdates
         effort is O(n*nu^2) provided that nu<n
@@ -431,7 +436,7 @@ class Laplace(Inference):
             sW = np.sqrt(W); L = np.linalg.cholesky(np.eye(n) + np.dot(sW,sW.T)*K).T
             b = W*(f-m) + dlp; 
             dalpha = b - sW*solve_chol(L,sW*np.dot(K,b)) - alpha
-            vargout = brentmin(0,smax,Nline,thr,self.Psi_line,4,dalpha,alpha,K,m,likfunc,y,inffunc)
+            vargout = brentmin(0,smax,Nline,thr,self._Psi_line,4,dalpha,alpha,K,m,likfunc,y,inffunc)
             s = vargout[0]
             Psi_new = vargout[1]
             Nfun = vargout[2]
@@ -448,7 +453,7 @@ class Laplace(Inference):
         post.alpha = alpha                      # return the posterior parameters
         post.sW = np.sqrt(np.abs(W))*np.sign(W) # preserve sign in case of negative
         if isWneg:
-            [ldA,iA,post.L] = self.logdetA(K,W,3)
+            [ldA,iA,post.L] = self._logdetA(K,W,3)
             nlZ = np.dot(alpha.T,(f-m))/2. - lp.sum() + ldA/2.
             nlZ = nlZ[0] 
         else:
@@ -528,13 +533,13 @@ class FITC_Laplace(Inference):
         Psi_old = np.inf                    # make sure while loop starts by the largest old objective val
         if self.last_alpha == None:         # find a good starting point for alpha and f
             alpha = np.zeros((n,1))
-            f = self.mvmK(alpha,V,d0) + m   # start at mean if sizes not match 
+            f = self._mvmK(alpha,V,d0) + m   # start at mean if sizes not match 
             vargout = likfunc.proceed(y, f, None, inffunc, None, 3)
             lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]
             W=-d2lp; Psi_new = -lp.sum()
         else:
             alpha = self.last_alpha
-            f = self.mvmK(alpha,V,d0) + m                           # try last one
+            f = self._mvmK(alpha,V,d0) + m                           # try last one
             vargout = likfunc.proceed(y, f, None, inffunc, None, 3)
             lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]
             W=-d2lp
@@ -543,7 +548,7 @@ class FITC_Laplace(Inference):
             Psi_def =  vargout[0]                                   # objective for default init f==m
             if Psi_def < Psi_new:                                   # if default is better, we use it
                 alpha = np.zeros((n,1))
-                f = self.mvmK(alpha,V,d0) + m
+                f = self._mvmK(alpha,V,d0) + m
                 vargout = likfunc.proceed(y, f, None, inffunc, None, 3)
                 lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]
                 W=-d2lp; Psi_new = -lp.sum()
@@ -560,7 +565,7 @@ class FITC_Laplace(Inference):
             b = W*(f-m) + dlp; dd = 1/(1+W*d0)
             RV = np.dot( chol_inv( np.eye(nu) + np.dot(V*np.tile((W*dd).T,(nu,1)),V.T)),V ) 
             dalpha = dd*b - (W*dd)*np.dot(RV.T,np.dot(RV,(dd*b))) - alpha # Newt dir + line search
-            vargout = brentmin(0,smax,Nline,thr,self.Psi_lineFITC,4,dalpha,alpha,V,d0,m,likfunc,y,inffunc)
+            vargout = brentmin(0,smax,Nline,thr,self._Psi_lineFITC,4,dalpha,alpha,V,d0,m,likfunc,y,inffunc)
             s = vargout[0]; Psi_new = vargout[1]; Nfun = vargout[2]; alpha = vargout[3]
             f = vargout[4]; dlp = vargout[5]; W = vargout[6]
             isWneg = np.any(W<0)
@@ -588,7 +593,7 @@ class FITC_Laplace(Inference):
 
         if nargout>2:                                               # do we want derivatives?
             dnlZ = dnlZStruct(meanfunc, covfunc, likfunc)           # allocate space for derivatives
-            [d,P,R] = self.fitcRefresh(d0,Ku,R0,V,W)                # g = diag(inv(inv(K)+W))/2
+            [d,P,R] = self._fitcRefresh(d0,Ku,R0,V,W)                # g = diag(inv(inv(K)+W))/2
             g = d/2 + 0.5*np.atleast_2d((np.dot(np.dot(R,R0),P)**2).sum(axis=0)).T
             t = W/(1+W*d0)
             
@@ -602,7 +607,7 @@ class FITC_Laplace(Inference):
                 dnlZ.cov[ii] -= (np.dot(RVdd,dA)*np.dot(RVdd,R0tV.T)).sum()             # explicit part
                 dnlZ.cov[ii] = 0.5*dnlZ.cov[ii] - np.dot(alpha.T,np.dot(dA,np.dot(R0tV,alpha))+v*alpha)/2. # explicit
                 b = np.dot(dA,np.dot(R0tV,dlp)) + v*dlp             # b-K*(Z*b) = inv(eye(n)+K*diag(W))*b
-                KZb = self.mvmK(self.mvmZ(b,RVdd,t),V,d0)
+                KZb = self._mvmK(self._mvmZ(b,RVdd,t),V,d0)
                 dnlZ.cov[ii] -= np.dot(dfhat.T,(b-KZb))             # implicit part
                 dnlZ.cov[ii] = dnlZ.cov[ii][0,0]
                 
@@ -610,8 +615,8 @@ class FITC_Laplace(Inference):
                 vargout = likfunc.proceed(y,f,None,inffunc,ii,3)
                 lp_dhyp = vargout[0]; dlp_dhyp = vargout[1]; d2lp_dhyp = vargout[2] 
                 dnlZ.lik[ii] = -np.dot(g.T,d2lp_dhyp) - lp_dhyp.sum() # explicit part
-                b = self.mvmK(dlp_dhyp,V,d0)                          # implicit part
-                dnlZ.lik[ii] -= np.dot(dfhat.T,b-self.mvmK(self.mvmZ(b,RVdd,t),V,d0))
+                b = self._mvmK(dlp_dhyp,V,d0)                          # implicit part
+                dnlZ.lik[ii] -= np.dot(dfhat.T,b-self._mvmK(self._mvmZ(b,RVdd,t),V,d0))
                 if ii == len(likfunc.hyp)-1:
                     # since snu2 is a fixed fraction of sn2, there is a covariance-like term
                     # in the derivative as well
@@ -622,7 +627,7 @@ class FITC_Laplace(Inference):
                     z = np.dot(alpha.T,np.dot(T.T,np.dot(T,alpha))-t*alpha) - np.dot(np.array([(RVdd*RVdd).sum(axis=0)]),t)
                     z += (np.dot(RVdd,T.T)**2).sum()
                     b = (t*dlp-np.dot(T.T,np.dot(T,dlp)))/2.
-                    KZb = self.mvmK(self.mvmZ(b,RVdd,t),V,d0)
+                    KZb = self._mvmK(self._mvmZ(b,RVdd,t),V,d0)
                     z -= np.dot(dfhat.T,b-KZb)
                     dnlZ.lik[ii] += z
                     dnlZ.lik[ii] = dnlZ.lik[ii][0,0]
@@ -630,8 +635,8 @@ class FITC_Laplace(Inference):
             for ii in range(len(meanfunc.hyp)):                           # mean hypers
                 dm = meanfunc.getDerMatrix(x, ii)
                 dnlZ.mean[ii] = -np.dot(alpha.T,dm)                       # explicit part
-                Zdm = self.mvmZ(dm,RVdd,t)
-                dnlZ.mean[ii] -= np.dot(dfhat.T,(dm-self.mvmK(Zdm,V,d0))) # implicit part
+                Zdm = self._mvmZ(dm,RVdd,t)
+                dnlZ.mean[ii] -= np.dot(dfhat.T,(dm-self._mvmK(Zdm,V,d0))) # implicit part
                 dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
 
             return post,nlZ[0,0],dnlZ
@@ -664,7 +669,7 @@ class EP(Inference):
         else:
             ttau = self.last_ttau                 # try the tilde values from previous call
             tnu  = self.last_tnu
-            Sigma, mu, nlZ, L = self.epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
+            Sigma, mu, nlZ, L = self._epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
             if nlZ > nlZ0:                        # if zero is better ..
                 ttau = np.zeros((n,1))            # .. then initialize with zero instead
                 tnu  = np.zeros((n,1)) 
@@ -689,7 +694,7 @@ class EP(Inference):
                 Sigma = Sigma - ds2/(1.+ds2*si[ii])*np.dot(si,si.T)   # takes 70# of total time
                 mu = np.dot(Sigma,tnu)                                # .. and recompute mu
             # recompute since repeated rank-one updates can destroy numerical precision
-            Sigma, mu, nlZ, L = self.epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
+            Sigma, mu, nlZ, L = self._epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
         if sweep == max_sweep:
             pass
             # print '[warning] maximum number of sweeps reached in function infEP'
@@ -778,17 +783,17 @@ class FITC_EP(Inference):
         if self.last_ttau == None:                      # find starting point for tilde parameters
             ttau  = np.zeros((n,1))                     # initialize to zero if we have no better guess
             tnu   = np.zeros((n,1))
-            [d,P,R,nn,gg] = self.epfitcRefresh(d0,Ku,R0,V,ttau,tnu)   # compute initial repres.
+            [d,P,R,nn,gg] = self._epfitcRefresh(d0,Ku,R0,V,ttau,tnu)   # compute initial repres.
             nlZ = nlZ0
         else:
             ttau = self.last_ttau                       # try the tilde values from previous call
             tnu  = self.last_tnu
-            [d,P,R,nn,gg] = self.epfitcRefresh(d0,Ku,R0,V,ttau,tnu) # compute initial repres.
-            nlZ = self.epfitcZ(d,P,R,nn,gg,ttau,tnu,d0,R0,Ku,y,likfunc,m,inffunc)[0]
+            [d,P,R,nn,gg] = self._epfitcRefresh(d0,Ku,R0,V,ttau,tnu) # compute initial repres.
+            nlZ = self._epfitcZ(d,P,R,nn,gg,ttau,tnu,d0,R0,Ku,y,likfunc,m,inffunc)[0]
             if nlZ > nlZ0:                              # if zero is better ..
                 ttau = np.zeros((n,1))                  # .. then initialize with zero instead
                 tnu  = np.zeros((n,1))
-                [d,P,R,nn,gg] = self.epfitcRefresh(d0,Ku,R0,V,ttau,tnu) # initial repres.
+                [d,P,R,nn,gg] = self._epfitcRefresh(d0,Ku,R0,V,ttau,tnu) # initial repres.
                 nlZ = nlZ0
 
         nlZ_old = np.inf; sweep = 0                     # converged, max. sweeps or min. sweeps?
@@ -808,11 +813,11 @@ class FITC_EP(Inference):
                 ttau_i = -d2lZ  /(1.+d2lZ/tau_ni)
                 ttau_i = max(ttau_i,0)                  # enforce positivity i.e. lower bound ttau by zero
                 tnu_i  = ( dlZ + (m[ii]-nu_ni/tau_ni)*d2lZ )/(1.+d2lZ/tau_ni)
-                [d,P[:,ii],R,nn,gg,ttau,tnu] = self.epfitcUpdate(d,P[:,ii],R,nn,gg,ttau,tnu,ii,ttau_i,tnu_i,m,d0,Ku,R0)# update representation
+                [d,P[:,ii],R,nn,gg,ttau,tnu] = self._epfitcUpdate(d,P[:,ii],R,nn,gg,ttau,tnu,ii,ttau_i,tnu_i,m,d0,Ku,R0)# update representation
       
             # recompute since repeated rank-one updates can destroy numerical precision
-            [d,P,R,nn,gg] = self.epfitcRefresh(d0,Ku,R0,V,ttau,tnu)
-            [nlZ,nu_n,tau_n] = self.epfitcZ(d,P,R,nn,gg,ttau,tnu,d0,R0,Ku,y,likfunc,m,inffunc)
+            [d,P,R,nn,gg] = self._epfitcRefresh(d0,Ku,R0,V,ttau,tnu)
+            [nlZ,nu_n,tau_n] = self._epfitcZ(d,P,R,nn,gg,ttau,tnu,d0,R0,Ku,y,likfunc,m,inffunc)
         if sweep == max_sweep:
             pass
             # print '[warning] maximum number of sweeps reached in function infEP'

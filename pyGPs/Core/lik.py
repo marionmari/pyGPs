@@ -45,7 +45,7 @@ class Likelihood(object):
     """Base function for Likelihood function"""
     def __init__(self):
         self.hyp = []
-    def proceed(self):
+    def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         '''
         The likelihood functions have two possible modes, the mode being selected
         as follows (where "lik" stands for "proceed" method for any likelihood function):

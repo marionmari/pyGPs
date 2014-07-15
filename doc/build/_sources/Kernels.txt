@@ -34,25 +34,11 @@ Some Special Cases
      * *cov.LINard*
      * *cov.RQard*
 
-  
-2. For linear kernel, there is NO signal variance(scalar) in front of the function.
 
-   If you want to add a scalar for it, you can use: ::
-    
-   	   k = 0.5 * cov.LIN()
-
-   If you also want to add a bias term: ::
-	
-	   k = 0.5 * cov.LIN() + cov.Const(c=1.)
-
-   Note 0.5 will also be treated as a hyperparameter.
-   This also applies in *cov.LINard*.
+2. For *cov.RBFunit()*, its signal variance is always 1 (because of unit magnitude). Therefore this function do not have a hyperparameter of "signal variance".
 
 
-3. For *cov.RBFunit()*, its signal variance is always 1 (because of unit magnitude). Therefore this function do not have a hyperparameter of "signal variance".
-
-
-4. *cov.Poly()* has three parameters, where hyperparameters are:
+3. *cov.Poly()* has three parameters, where hyperparameters are:
        * c     -> inhomogeneous offset
        * sigma -> signal deviation 
         
@@ -61,7 +47,7 @@ Some Special Cases
          will be treated as normal parameter, i.e. will not be trained
 
 
-5. Explicitly set *cov.Noise* is not necessary, because noise are already added in likelihood.
+4. Explicitly set *cov.Noise* is not necessary, because noise are already added in likelihood.
 
 
 Composite Kernels & Meams 
@@ -74,12 +60,9 @@ Adding and muliplying Kernels(Means) is really simple: ::
 Scalar will also be treated as a hyperparameter. For example, k = s1 * k1 + s2 * k2, 
 then the list of hyperparameters is hyp = [s1, k1.hyp, s2, k2.hyp]. Scalar is passed in logorithm domain such that it will always be positive during optimization.
 
-Except linear kernel, all kernel functions have a scalar (signal variance) as hyperparameter.
-Therefore, the only explict scalar might be added to cov.LIN()
-
 Beside + / * , there is also a power operator for mean functions: ::
 
-    m = ( mean.One()+mean.Linear(alpha_list=[0.2]) )**2
+    m = ( mean.One() + mean.Linear(alpha_list=[0.2]) )**2
 
 
 Precomputed Kernel Matrix
@@ -106,26 +89,46 @@ A precomputed kernel can also be composited with other kernels. Similar to *cov.
 
 Customizing Kernel & Mean
 ------------------------------
-We also support you to create your own kernel/mean class, your customized kernel class need to follow the structure template as below: ::
+We also support you to create your own kernel/mean class, your customized kernel class need to follow the template as below: ::
 
     # Your kernel class needs to inherit base class Kernel, 
     # which is in the module of Core.cov
     class MyKernel(Kernel):
 
-        def __init__(self, para1=0., para2=0., para3=0.):
-            self.hyp = [para1, para2]     # hyperparameters that can be trained 
-            self.para = [para3]           # static parameters
+      def __init__(self, hyp):
+          '''
+          Intialize hyperparameters for MyKernel.
+          '''
+          self.hyp = hyp
 
-        def proceed(self, x=None, z=None, der=None):
-            ''' x is n by D training patterns matrix, and z is nn by D test case matrix'''
-            return A
+      def getCovMatrix(self,x=None,z=None,mode=None):
+          '''
+          Return the specific covariance matrix according to input mode
 
-where the returning matrix A depends on the input:
-  - if *z == None*, A is covariance matrix of x with shape (n,n)
-  - elif *z == 'diag'*, A is self covariance matrix with shape (n,1)
-  - else *z is a matrix (given test points)*, A is covariance between data sets x and z with shape (n,nn)
-  - if *der == None*, return A as defined previously.
-  - else *der != None*, i.e. given der as an integer der = :math:`k`, return the derivative matrix wrt. to :math:`k_{th}` hyperparameter.
+          :param x: training data
+          :param z: test data
+          :param str mode: 'self_test' return self covariance matrix of test data(test by 1). 
+                           'train' return training covariance matrix(train by train).
+                           'cross' return cross covariance matrix between x and z(train by test)
+
+          :return: the corresponding covariance matrix
+          '''
+          pass
+
+      def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+          '''
+          Compute derivatives wrt. hyperparameters according to input mode
+
+          :param x: training data
+          :param z: test data
+          :param str mode: 'self_test' return self derivative matrix of test data(test by 1). 
+                           'train' return training derivative matrix(train by train).
+                           'cross' return cross derivative matrix between x and z(train by test)
+          :param int der: index of hyperparameter whose derivative to be computed
+
+          :return: the corresponding derivative matrix
+          '''
+          pass
 
 and for customized mean class: ::
 
@@ -133,18 +136,44 @@ and for customized mean class: ::
     # which is in the module of Core.mean
     class MyMean(Mean):
 
-        def __init__(self, para1=0., para2=0., para3=0.):
-            self.hyp = [para1, para2]     # hyperparameters that can be trained 
-            self.para = [para3]           # static parameters
+      def __init__(self, hyp):
+          '''
+          Intialize hyperparameters for MyMean.
+          '''
+          self.hyp = hyp
 
-        def proceed(self, x=None, der=None):
-            ''' x is n by D training patterns matrix'''
-            return A
+      def getMean(self, x=None):
+          '''
+          Get the mean vector.
+          '''
+          pass
 
-where the returning matrix A depends on the input:
-  - if *der == None*, return A as the mean of x
-  - else *der != None*, return the derivative of mean wrt. to :math:`k_{th}` hyperparameter.
+      def getDerMatrix(self, x=None, der=None):
+          '''
+          Compute derivatives wrt. hyperparameters.
 
+          :param x: training data
+          :param int der: index of hyperparameter whose derivative to be computed
+
+          :return: the corresponding derivative matrix
+          '''
+          pass
+
+You can test your customized mean/kernel function using our framework of unit test. 
+Taking kernel test as an example, you can uncomment method *test_cov_new* in 
+*pyGPs.Testing.unit_test_cov.py* to check the outputs of your kernel function. ::
+
+    # Test your customized covariance function
+    def test_cov_new(self):
+        k = myKernel()     # specify your covariance function
+        self.checkCovariance(k)
+
+and testing mean function in *pyGPs.Testing.unit_test_mean.py* ::
+
+    # Test your customized mean function
+    def test_mean_new(self):
+        m = myMean         # specify your mean function
+        self.checkMean(m)
 
 
 List of Kernels and Default Parameters

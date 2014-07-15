@@ -11,11 +11,10 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-'''
-Created on April, 2014
 
-@author: marion, shan
-'''
+# Created on April, 2014
+# @author: marion, shan
+
 import scipy.sparse as spsp
 import numpy as np
 import matplotlib.pyplot as plt

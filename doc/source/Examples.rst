@@ -41,5 +41,6 @@ Some examples for real-world data
    demoMaunaLoa
    demoHousing
    SemiSupervised
+   GraphKernel
 
 

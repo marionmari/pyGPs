@@ -15,7 +15,7 @@ import numpy as np
 from scipy.io import loadmat
 import matplotlib.pyplot as plt
 import pyGPs
-from pyGPs.GraphExtension import graphUtil, nodeKernels
+from pyGPs.GraphExtensions import graphUtil, nodeKernels
 from pyGPs.Validation import valid
 
 

@@ -101,11 +101,7 @@ class LikTests(unittest.TestCase):
     def test_cov_new(self):
         # specify your likelihood function
         self.checkLikelihood(likelihood)
-
-
-
-
-
+    '''
 
 
 if __name__ == "__main__":

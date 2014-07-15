@@ -25,32 +25,32 @@ class random_init_conf(object):
         self._covRange  = [(-5,5) for i in cov.hyp]        
         self._likRange  = [(-5,5) for i in lik.hyp]
 
-    def getmr(self):
+    def _getmr(self):
         return self._meanRange
-    def setmr(self, value):
+    def _setmr(self, value):
         if len(value) == len(self.mean.hyp):
             self._meanRange = value
         else:
             raise Exception('The length of meanRange is not consistent with number of mean hyparameters')
-    meanRange = property(getmr,setmr)
+    meanRange = property(_getmr,_setmr)
     
-    def getcr(self):
+    def _getcr(self):
         return self._covRange
-    def setcr(self, value):
+    def _setcr(self, value):
         if len(value) == len(self.cov.hyp):
             self._covRange = value
         else:
             raise Exception('The length of covRange is not consistent with number of covariance hyparameters')
-    covRange = property(getcr,setcr)
+    covRange = property(_getcr,_setcr)
 
-    def getlr(self):
+    def _getlr(self):
         return self._likRange
-    def setlr(self, value):
+    def _setlr(self, value):
         if len(value) == len(self.lik.hyp):
             self._likRange = value
         else:
             raise Exception('The length of likRange is not consistent with number of liklihood hyparameters')
-    likRange = property(getlr,setlr)
+    likRange = property(_getlr,_setlr)
 
 
 

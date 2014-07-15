@@ -1,7 +1,7 @@
 Semi-supervised Learning with Graphs
 =======================================
 
-The code shown in this tutorial can be executed by running *pyGPs/Demo/demo_KernelOnGraph.py*
+The code shown in this tutorial can be executed by running *pyGPs/Demo/demo_NodeKernel.py*
 
 Import
 -------------------

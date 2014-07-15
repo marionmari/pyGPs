@@ -29,32 +29,32 @@ class Optimizer(object):
     def __init__(self):
         self.model = None
 
-    def nlml(self, hypInArray):
+    def _nlml(self, hypInArray):
         '''Find negative-log-marginal-likelihood'''
-        self.apply_in_objects(hypInArray)
+        self._apply_in_objects(hypInArray)
         nlZ, dnlZ = self.model.fit(der=False)
         return nlZ
 
-    def dnlml(self, hypInArray):
+    def _dnlml(self, hypInArray):
         '''Find derivatives wrt. negative-log-marginal-likelihood'''
-        self.apply_in_objects(hypInArray)
+        self._apply_in_objects(hypInArray)
         nlZ, dnlZ, post = self.model.fit()
         dnlml_List = dnlZ.mean + dnlZ.cov + dnlZ.lik
         return np.array(dnlml_List)
 
-    def nlzAnddnlz(self, hypInArray):
+    def _nlzAnddnlz(self, hypInArray):
         '''Find negative-log-marginal-likelihood and derivatives in one pass(faster)'''
-        self.apply_in_objects(hypInArray)
+        self._apply_in_objects(hypInArray)
         nlZ, dnlZ, post = self.model.fit()
         dnlml_List = dnlZ.mean + dnlZ.cov + dnlZ.lik
         return nlZ, np.array(dnlml_List)
 
-    def convert_to_array(self):
+    def _convert_to_array(self):
         '''Convert all hyparameters in the model to an array'''
         hyplist = self.model.meanfunc.hyp + self.model.covfunc.hyp + self.model.likfunc.hyp
         return np.array(hyplist)
 
-    def apply_in_objects(self, hypInArray):
+    def _apply_in_objects(self, hypInArray):
         '''Apply the values in the input array to hyparameters of model.'''
         Lm = len(self.model.meanfunc.hyp)
         Lc = len(self.model.covfunc.hyp)
@@ -79,9 +79,9 @@ class CG(Optimizer):
         covfunc = self.model.covfunc
         likfunc = self.model.likfunc
         inffunc = self.model.inffunc
-        hypInArray = self.convert_to_array()
+        hypInArray = self._convert_to_array()
         try:
-            opt = cg(self.nlml, hypInArray, self.dnlml, maxiter=100, disp=False, full_output=True)
+            opt = cg(self._nlml, hypInArray, self._dnlml, maxiter=100, disp=False, full_output=True)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1]
             warnFlag   = opt[4]
@@ -105,7 +105,7 @@ class CG(Optimizer):
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = cg(self.nlml, hypInArray, self.dnlml, maxiter=100, disp=False, full_output=True)
+                    thisopt = cg(self._nlml, hypInArray, self._dnlml, maxiter=100, disp=False, full_output=True)
                     if thisopt[1] < funcValue:
                         funcValue  = thisopt[1]
                         optimalHyp = thisopt[0]
@@ -138,10 +138,10 @@ class BFGS(Optimizer):
         covfunc = self.model.covfunc
         likfunc = self.model.likfunc
         inffunc = self.model.inffunc
-        hypInArray = self.convert_to_array()
+        hypInArray = self._convert_to_array()
 
         try:
-            opt = bfgs(self.nlml, hypInArray, self.dnlml, maxiter=100, disp=False, full_output=True)
+            opt = bfgs(self._nlml, hypInArray, self._dnlml, maxiter=100, disp=False, full_output=True)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1]
             warnFlag   = opt[6]
@@ -166,7 +166,7 @@ class BFGS(Optimizer):
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = bfgs(self.nlml, hypInArray, self.dnlml, maxiter=100, disp=False, full_output=True)
+                    thisopt = bfgs(self._nlml, hypInArray, self._dnlml, maxiter=100, disp=False, full_output=True)
                     if thisopt[1] < funcValue:
                         funcValue  = thisopt[1]
                         optimalHyp = thisopt[0]
@@ -200,10 +200,10 @@ class Minimize(Optimizer):
         covfunc = self.model.covfunc
         likfunc = self.model.likfunc
         inffunc = self.model.inffunc
-        hypInArray = self.convert_to_array()
+        hypInArray = self._convert_to_array()
 
         try: 
-            opt = minimize.run(self.nlzAnddnlz, hypInArray, length=-40)
+            opt = minimize.run(self._nlzAnddnlz, hypInArray, length=-40)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1][-1]  
         except:
@@ -222,7 +222,7 @@ class Minimize(Optimizer):
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = minimize.run(self.nlzAnddnlz, hypInArray, length=-40)
+                    thisopt = minimize.run(self._nlzAnddnlz, hypInArray, length=-40)
                     if thisopt[1][-1] < funcValue:
                         funcValue  = thisopt[1][-1]
                         optimalHyp = thisopt[0]
@@ -255,9 +255,9 @@ class SCG(Optimizer):
         covfunc = self.model.covfunc
         likfunc = self.model.likfunc
         inffunc = self.model.inffunc
-        hypInArray = self.convert_to_array()
+        hypInArray = self._convert_to_array()
         try:
-            opt = scg.run(self.nlzAnddnlz, hypInArray)
+            opt = scg.run(self._nlzAnddnlz, hypInArray)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1][-1]
         except:
@@ -276,7 +276,7 @@ class SCG(Optimizer):
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = scg.run(self.nlzAnddnlz, hypInArray)
+                    thisopt = scg.run(self._nlzAnddnlz, hypInArray)
                     if thisopt[1][-1] < funcValue:
                         funcValue  = thisopt[1][-1]
                         optimalHyp = thisopt[0]

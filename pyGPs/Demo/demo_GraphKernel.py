@@ -5,7 +5,7 @@ import numpy as np
 from scipy.sparse.csc import csc_matrix
 import pyGPs
 from pyGPs.Validation import valid
-from pyGPs.GraphExtension import graphUtil,graphKernels
+from pyGPs.GraphExtensions import graphUtil,graphKernels
 
 location = 'data_for_demo/graphData/'
 data = np.load(location+'MUTAG.npz')
@@ -31,7 +31,7 @@ for i in xrange(N):
 num_Iteration = 10
 w = 1e-4
 dist = 'tv' 		# possible values: 'tv', 'hellinger'
-np.random.seed(1)	# set random seed to get reproducible kernel matrices (to account for randomness in kernel average resutls over several reruns of the experiment)	
+np.random.seed(1)	# set random seed to get reproducible kernel matrices (to account for randomness in kernel average resutls over several returns of the experiment)	
 K = graphKernels.propagationKernel(A, node_label, gr_id, num_Iteration, w, dist, 'label_diffusion', SUM=True, VIS=False, showEachStep=False) 
 
 #----------------------------------------------------------------------
@@ -45,7 +45,7 @@ for t in xrange(num_Iteration+1):
     print 'number of kernel iterations =', t
     Matrix = K[:,:,t]
     # normalize kernel matrix (not useful for MUTAG)
-    #Matrix = graphUtil.normalizeKernel(Matrix)
+    # Matrix = graphUtil.normalizeKernel(Matrix)
             
     # start cross-validation for this t
     for index_train, index_test in valid.k_fold_index(N, K=10):
@@ -66,7 +66,7 @@ for t in xrange(num_Iteration+1):
         x_test = np.zeros((n2,1))       
         model.fit(x_train, y_train)
         model.predict(x_test)
-	predictive_class = np.sign(model.ym)
+        predictive_class = np.sign(model.ym)
 
         # evaluation 
         acc = valid.ACC(predictive_class, y_test)   

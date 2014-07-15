@@ -174,7 +174,7 @@ class GP(object):
         self.nlZ= optimalNlZ
 
         # apply optimal hyp to all mean/cov/lik functions here
-        self.optimizer.apply_in_objects(optimalHyp)
+        self.optimizer._apply_in_objects(optimalHyp)
         self.fit()
 
 

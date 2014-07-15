@@ -91,18 +91,6 @@ you should enter as a list, one element for each dimension</p>
 </dd>
 </dl>
 </li>
-<li><p class="first">For linear kernel, there is NO signal variance(scalar) in front of the function.</p>
-<p>If you want to add a scalar for it, you can use:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">cov</span><span class="o">.</span><span class="n">LIN</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>If you also want to add a bias term:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">cov</span><span class="o">.</span><span class="n">LIN</span><span class="p">()</span> <span class="o">+</span> <span class="n">cov</span><span class="o">.</span><span class="n">Const</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Note 0.5 will also be treated as a hyperparameter.
-This also applies in <em>cov.LINard</em>.</p>
-</li>
 <li><p class="first">For <em>cov.RBFunit()</em>, its signal variance is always 1 (because of unit magnitude). Therefore this function do not have a hyperparameter of &#8220;signal variance&#8221;.</p>
 </li>
 <li><dl class="first docutils">
@@ -133,10 +121,8 @@ will be treated as normal parameter, i.e. will not be trained</li>
 </div>
 <p>Scalar will also be treated as a hyperparameter. For example, k = s1 * k1 + s2 * k2,
 then the list of hyperparameters is hyp = [s1, k1.hyp, s2, k2.hyp]. Scalar is passed in logorithm domain such that it will always be positive during optimization.</p>
-<p>Except linear kernel, all kernel functions have a scalar (signal variance) as hyperparameter.
-Therefore, the only explict scalar might be added to cov.LIN()</p>
 <p>Beside + / * , there is also a power operator for mean functions:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="p">(</span> <span class="n">mean</span><span class="o">.</span><span class="n">One</span><span class="p">()</span><span class="o">+</span><span class="n">mean</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">alpha_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">])</span> <span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="p">(</span> <span class="n">mean</span><span class="o">.</span><span class="n">One</span><span class="p">()</span> <span class="o">+</span> <span class="n">mean</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">alpha_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">])</span> <span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 </pre></div>
 </div>
 </div>
@@ -169,53 +155,92 @@ but its non-trivial to write down the exact formula of kernel functions. Then yo
 </div>
 <div class="section" id="customizing-kernel-mean">
 <h2>Customizing Kernel &amp; Mean<a class="headerlink" href="#customizing-kernel-mean" title="Permalink to this headline">¶</a></h2>
-<p>We also support you to create your own kernel/mean class, your customized kernel class need to follow the structure template as below:</p>
+<p>We also support you to create your own kernel/mean class, your customized kernel class need to follow the template as below:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Your kernel class needs to inherit base class Kernel,</span>
 <span class="c"># which is in the module of Core.cov</span>
 <span class="k">class</span> <span class="nc">MyKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para3</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">para1</span><span class="p">,</span> <span class="n">para2</span><span class="p">]</span>     <span class="c"># hyperparameters that can be trained</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span> <span class="p">[</span><span class="n">para3</span><span class="p">]</span>           <span class="c"># static parameters</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyp</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Intialize hyperparameters for MyKernel.</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="n">hyp</span>
 
-    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39; x is n by D training patterns matrix, and z is nn by D test case matrix&#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="n">A</span>
+  <span class="k">def</span> <span class="nf">getCovMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Return the specific covariance matrix according to input mode</span>
+
+<span class="sd">      :param x: training data</span>
+<span class="sd">      :param z: test data</span>
+<span class="sd">      :param str mode: &#39;self_test&#39; return self covariance matrix of test data(test by 1).</span>
+<span class="sd">                       &#39;train&#39; return training covariance matrix(train by train).</span>
+<span class="sd">                       &#39;cross&#39; return cross covariance matrix between x and z(train by test)</span>
+
+<span class="sd">      :return: the corresponding covariance matrix</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="k">pass</span>
+
+  <span class="k">def</span> <span class="nf">getDerMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Compute derivatives wrt. hyperparameters according to input mode</span>
+
+<span class="sd">      :param x: training data</span>
+<span class="sd">      :param z: test data</span>
+<span class="sd">      :param str mode: &#39;self_test&#39; return self derivative matrix of test data(test by 1).</span>
+<span class="sd">                       &#39;train&#39; return training derivative matrix(train by train).</span>
+<span class="sd">                       &#39;cross&#39; return cross derivative matrix between x and z(train by test)</span>
+<span class="sd">      :param int der: index of hyperparameter whose derivative to be computed</span>
+
+<span class="sd">      :return: the corresponding derivative matrix</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="k">pass</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>where the returning matrix A depends on the input:</dt>
-<dd><ul class="first last simple">
-<li>if <em>z == None</em>, A is covariance matrix of x with shape (n,n)</li>
-<li>elif <em>z == &#8216;diag&#8217;</em>, A is self covariance matrix with shape (n,1)</li>
-<li>else <em>z is a matrix (given test points)</em>, A is covariance between data sets x and z with shape (n,nn)</li>
-<li>if <em>der == None</em>, return A as defined previously.</li>
-<li>else <em>der != None</em>, i.e. given der as an integer der = <img class="math" src="_images/math/8c325612684d41304b9751c175df7bcc0f61f64f.png" alt="k"/>, return the derivative matrix wrt. to <img class="math" src="_images/math/b7c4e88b1e586595ec86d07f8f90f47f442eca27.png" alt="k_{th}"/> hyperparameter.</li>
-</ul>
-</dd>
-</dl>
 <p>and for customized mean class:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Your mean class needs to inherit base class Mean,</span>
 <span class="c"># which is in the module of Core.mean</span>
 <span class="k">class</span> <span class="nc">MyMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">para1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">para3</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span><span class="n">para1</span><span class="p">,</span> <span class="n">para2</span><span class="p">]</span>     <span class="c"># hyperparameters that can be trained</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">para</span> <span class="o">=</span> <span class="p">[</span><span class="n">para3</span><span class="p">]</span>           <span class="c"># static parameters</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyp</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Intialize hyperparameters for MyMean.</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="n">hyp</span>
 
-    <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39; x is n by D training patterns matrix&#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="n">A</span>
+  <span class="k">def</span> <span class="nf">getMean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Get the mean vector.</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="k">pass</span>
+
+  <span class="k">def</span> <span class="nf">getDerMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Compute derivatives wrt. hyperparameters.</span>
+
+<span class="sd">      :param x: training data</span>
+<span class="sd">      :param int der: index of hyperparameter whose derivative to be computed</span>
+
+<span class="sd">      :return: the corresponding derivative matrix</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="k">pass</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>where the returning matrix A depends on the input:</dt>
-<dd><ul class="first last simple">
-<li>if <em>der == None</em>, return A as the mean of x</li>
-<li>else <em>der != None</em>, return the derivative of mean wrt. to <img class="math" src="_images/math/b7c4e88b1e586595ec86d07f8f90f47f442eca27.png" alt="k_{th}"/> hyperparameter.</li>
-</ul>
-</dd>
-</dl>
+<p>You can test your customized mean/kernel function using our framework of unit test.
+Taking kernel test as an example, you can uncomment method <em>test_cov_new</em> in
+<em>pyGPs.Testing.unit_test_cov.py</em> to check the outputs of your kernel function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Test your customized covariance function</span>
+<span class="k">def</span> <span class="nf">test_cov_new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">myKernel</span><span class="p">()</span>     <span class="c"># specify your covariance function</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">checkCovariance</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and testing mean function in <em>pyGPs.Testing.unit_test_mean.py</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Test your customized mean function</span>
+<span class="k">def</span> <span class="nf">test_mean_new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">myMean</span>         <span class="c"># specify your mean function</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">checkMean</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="module-pyGPs.Core.cov">
 <span id="list-of-kernels-and-default-parameters"></span><h2>List of Kernels and Default Parameters<a class="headerlink" href="#module-pyGPs.Core.cov" title="Permalink to this headline">¶</a></h2>
@@ -311,14 +336,6 @@ Setting FITC gp model will implicitly call this method.</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyGPs.Core.cov.Kernel.sq_dist">
-<tt class="descname">sq_dist</tt><big>(</big><em>a</em>, <em>b=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Kernel.sq_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Kernel.sq_dist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute a matrix of all pairwise squared distances
-between two sets of vectors, stored in the row of the two matrices:
-a (of size n by D) and b (of size m by D).</p>
 </dd></dl>
 
 </dd></dl>

@@ -122,15 +122,15 @@ class ProductOfMean(Mean):
             self._hyp = mean2.hyp
         elif not mean2.hyp:
             self._hyp = mean1.hyp
-    def sethyp(self,hyp):
+    def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.mean1.hyp)
         self._hyp = hyp 
         self.mean1.hyp = self._hyp[:len1]
         self.mean2.hyp = self._hyp[len1:]
-    def gethyp(self):
+    def _getHyp(self):
         return self._hyp
-    hyp = property(gethyp,sethyp)
+    hyp = property(_getHyp,_setHyp)
     
     def getMean(self, x=None):
         A = self.mean1.getMean(x) * self.mean2.getMean(x)
@@ -159,15 +159,15 @@ class SumOfMean(Mean):
             self._hyp = mean2.hyp
         elif not mean2.hyp:
             self._hyp = mean1.hyp
-    def sethyp(self,hyp):
+    def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.mean1.hyp)
         self._hyp = hyp 
         self.mean1.hyp = self._hyp[:len1]
         self.mean2.hyp = self._hyp[len1:]
-    def gethyp(self):
+    def _getHyp(self):
         return self._hyp
-    hyp = property(gethyp,sethyp)
+    hyp = property(_getHyp,_setHyp)
 
     def getMean(self, x=None):
         A = self.mean1.getMean(x) + self.mean2.getMean(x)
@@ -193,13 +193,13 @@ class ScaleOfMean(Mean):
             self._hyp = [scalar] + mean.hyp 
         else:
             self._hyp = [scalar]
-    def sethyp(self,hyp):
+    def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         self._hyp = hyp 
         self.mean.hyp = self._hyp[1:]
-    def gethyp(self):
+    def _getHyp(self):
         return self._hyp
-    hyp = property(gethyp,sethyp)
+    hyp = property(_getHyp,_setHyp)
 
     def getMean(self, x=None):
         c = self.hyp[0]                          # scale parameter
@@ -224,13 +224,13 @@ class PowerOfMean(Mean):
             self._hyp = [d] + mean.hyp 
         else:
             self._hyp = [d]
-    def sethyp(self,hyp):
+    def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         self._hyp = hyp 
         self.mean.hyp = self._hyp[1:]
-    def gethyp(self):
+    def _getHyp(self):
         return self._hyp
-    hyp = property(gethyp,sethyp)
+    hyp = property(_getHyp,_setHyp)
 
     def getMean(self, x=None):
         d = np.abs(np.floor(self.hyp[0])) 
