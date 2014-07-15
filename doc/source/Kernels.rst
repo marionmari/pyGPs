@@ -87,9 +87,9 @@ A precomputed kernel can also be composited with other kernels. You need to expl
     k = 0.5*pyGPs.cov.Pre(M1, M2) + pyGPs.cov.RBF()
 
 
-Customizing Kernel & Mean
-------------------------------
-We also support you to create your own kernel/mean class, your customized kernel class need to follow the template as below: ::
+Developing New Kernel & Mean Functions
+-----------------------------------------
+We also support the development of new kernel/mean classes, your customized kernel class need to follow the template as below: ::
 
     # Your kernel class needs to inherit base class Kernel, 
     # which is in the module of Core.cov

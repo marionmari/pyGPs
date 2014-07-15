@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Likelihoods &amp; Inference &mdash; pyGPs v1.1 documentation</title>
+    <title>Likelihoods &amp; Inference &mdash; pyGPs v1.2 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     'v1.1',
+        VERSION:     'v1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyGPs v1.1 documentation" href="index.html" />
+    <link rel="top" title="pyGPs v1.2 documentation" href="index.html" />
     <link rel="next" title="Optimizers" href="Opts.html" />
     <link rel="prev" title="Kernels &amp; Means" href="Kernels.html" /> 
   </head>
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="Kernels.html" title="Kernels &amp; Means"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -88,11 +88,182 @@
 </dd>
 </dl>
 </div>
+<div class="section" id="developing-new-likelihood-inference-functions">
+<h2>Developing New Likelihood &amp; Inference Functions<a class="headerlink" href="#developing-new-likelihood-inference-functions" title="Permalink to this headline">¶</a></h2>
+<p>We also support the development of new likelihood/inference classes, your customized inference class need to follow the template as below:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Your inference class needs to inherit base class Inference,</span>
+<span class="c"># which is in the module of Core.inf</span>
+<span class="k">class</span> <span class="nc">MyKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">pass</span>
+
+  <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meanfunc</span><span class="p">,</span> <span class="n">covfunc</span><span class="p">,</span> <span class="n">likfunc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Inference computation based on inputs.</span>
+<span class="sd">      post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)</span>
+
+<span class="sd">      INPUT:</span>
+<span class="sd">      cov: name of the covariance function (see covFunctions.m)</span>
+<span class="sd">      lik: name of the likelihood function (see likFunctions.m)</span>
+<span class="sd">      x: n by D matrix of training inputs</span>
+<span class="sd">      y: 1d array (of size n) of targets</span>
+
+<span class="sd">      OUTPUT:</span>
+<span class="sd">      post(instance of postStruct): struct representation of the (approximate) posterior containing:</span>
+<span class="sd">      nlZ: returned value of the negative log marginal likelihood</span>
+<span class="sd">      dnlZ(instance of dnlZStruct): struct representation for derivatives of the negative log marginal likelihood</span>
+<span class="sd">      w.r.t. each hyperparameter.</span>
+
+<span class="sd">      Usually, the approximate posterior to be returned admits the form:</span>
+<span class="sd">      N(m=K*alpha, V=inv(inv(K)+W)), where alpha is a vector and W is diagonal;</span>
+<span class="sd">      if not, then L contains instead -inv(K+inv(W)), and sW is unused.</span>
+
+<span class="sd">      For more information on the individual approximation methods and their</span>
+<span class="sd">      implementations, see the respective inference function below. See also gp.py</span>
+
+<span class="sd">      :param meanfunc: mean function</span>
+<span class="sd">      :param covfunc: covariance function</span>
+<span class="sd">      :param likfunc: likelihood function</span>
+<span class="sd">      :param x: training data</span>
+<span class="sd">      :param y: training labels</span>
+<span class="sd">      :param nargout: specify the number of output(1,2 or 3)</span>
+<span class="sd">      :return: posterior, negative-log-marginal-likelihood, derivative for negative-log-marginal-likelihood-likelihood</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="k">pass</span>
+</pre></div>
+</div>
+<p>where <strong>postStruct</strong> and <strong>dnlZStruct</strong> is also defined in <em>Core.inf</em>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">postStruct</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Data structure for posterior</span>
+
+<span class="sd">    post.alpha -&gt;  1d array containing inv(K)*m,</span>
+<span class="sd">                   where K is the prior covariance matrix and m the approx posterior mean</span>
+<span class="sd">    post.sW:   -&gt;  1d array containing diagonal of sqrt(W)</span>
+<span class="sd">                   the approximate posterior covariance matrix is inv(inv(K)+W)</span>
+<span class="sd">    post.L     -&gt;  2d array, L = chol(sW*K*sW+identity(n))</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<span class="k">class</span> <span class="nc">dnlZStruct</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Data structure for the derivatives of mean, cov and lik functions.</span>
+
+<span class="sd">    dnlZ.mean  -&gt;  list of derivatives for each hyperparameters in mean function</span>
+<span class="sd">    dnlZ.cov   -&gt;  list of derivatives for each hyperparameters in covariance function</span>
+<span class="sd">    dnlZ.lik   -&gt;  list of derivatives for each hyperparameters in likelihood function</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+</pre></div>
+</div>
+<p>Customizing likelihood function is more complicated. We will omit it here to keep this this page not too long.
+However, you can find detailed explaination either in the <strong>source code</strong> <em>Core.lik</em> or in coresponding section of <strong>manual</strong>.</p>
+<p>Just like testing kernel/mean fucntions, you can also find unit test module for likelihood and inference functions.
+To test your customized inference function, uncomment the following method in <em>pyGPs.Testing.unit_test_inf.py</em>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Test your customized inference function</span>
+<span class="k">def</span> <span class="nf">test_inf_new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c"># specify your inf function</span>
+    <span class="c"># set mean/cov/lik functions</span>
+    <span class="n">post</span><span class="p">,</span> <span class="n">nlZ</span><span class="p">,</span> <span class="n">dnlZ</span> <span class="o">=</span> <span class="n">inffunc</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">meanfunc</span><span class="p">,</span> <span class="n">covfunc</span><span class="p">,</span> <span class="n">likfunc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">checkFITCOutput</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="n">nlZ</span><span class="p">,</span> <span class="n">dnlZ</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and test customized likelihood function in <em>pyGPs.Testing.unit_test_lik.py</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Test your customized likelihood function</span>
+<span class="k">def</span> <span class="nf">test_cov_new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">myLikelihood</span><span class="p">()</span>     <span class="c"># specify your likelihood function</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">checkLikelihood</span><span class="p">(</span><span class="n">likelihood</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="list-of-likelihoods">
 <h2>List of Likelihoods<a class="headerlink" href="#list-of-likelihoods" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyGPs.Core.lik.Erf">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Erf</tt><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Erf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Erf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error function or cumulative Gaussian likelihood function for binary
+classification or probit regression.</p>
+<p><img class="math" src="_images/math/7bf22e34ad48c1790522e60e9f37809d7a1ed009.png" alt="Erf(t)=\frac{1}{2}(1+erf(\frac{t}{\sqrt{2}}))=normcdf(t)"/></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.lik.Gauss">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Gauss</tt><big>(</big><em>log_sigma=-2.3025850929940455</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Gauss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Gauss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gaussian likelihood function for regression.</p>
+<p><img class="math" src="_images/math/ff97ea0691ff78ade77ebe3fd425f924a94e2fc6.png" alt="Gauss(t)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(t-y)^2}{2\sigma^2}}"/>,
+where <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> is the mean and <img class="math" src="_images/math/fa35d9fc104207e09a712110ac81612c5b279a6c.png" alt="\sigma"/> is the standard deviation.</p>
+<p>hyp = [ log_sigma ]</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.lik.Laplace">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Laplace</tt><big>(</big><em>log_sigma=-2.3025850929940455</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Laplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Laplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Laplacian likelihood function for regression. ONLY works with EP inference!</p>
+<p><img class="math" src="_images/math/22af8a3a9d3c790d24b4f31a7e3d8270ac105a7b.png" alt="Laplace(t) = \frac{1}{2b}e^{-\frac{|t-y|}{b}}"/> where <img class="math" src="_images/math/cc23cfcc01f3ea0f1af4f5fe7160f178a5570f2a.png" alt="b=\frac{\sigma}{\sqrt{2}}"/>,
+<img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> is the mean and <img class="math" src="_images/math/fa35d9fc104207e09a712110ac81612c5b279a6c.png" alt="\sigma"/> is the standard deviation.</p>
+<p>hyp = [ log_sigma ]</p>
+</dd></dl>
+
 </div>
 <div class="section" id="list-of-inference">
 <h2>List of Inference<a class="headerlink" href="#list-of-inference" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyGPs.Core.inf.Exact">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">Exact</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Exact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Exact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exact inference for a GP with Gaussian likelihood. Compute a parametrization
+of the posterior, the negative log marginal likelihood and its derivatives
+w.r.t. the hyperparameters.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.EP">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">EP</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#EP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.EP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expectation Propagation approximation to the posterior Gaussian Process.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.Laplace">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">Laplace</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#Laplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.Laplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Laplace&#8217;s Approximation to the posterior Gaussian process.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.FITC_Exact">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">FITC_Exact</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#FITC_Exact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.FITC_Exact" title="Permalink to this definition">¶</a></dt>
+<dd><p>FITC approximation to the posterior Gaussian process. The function is
+equivalent to infExact with the covariance function:
+Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku&#8217; * inv(Quu) * Ku; 
+where Ku and Kuu are covariances w.r.t. to inducing inputs xu, snu2 = sn2/1e6
+is the noise of the inducing inputs and Quu = Kuu + snu2*eye(nu).</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.FITC_EP">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">FITC_EP</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#FITC_EP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.FITC_EP" title="Permalink to this definition">¶</a></dt>
+<dd><p>FITC-EP approximation to the posterior Gaussian process. The function is
+equivalent to infEP with the covariance function:
+Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku&#8217; * inv(Kuu + snu2 * eye(nu)) * Ku;
+where Ku and Kuu are covariances w.r.t. to inducing inputs xu and
+snu2 = sn2/1e6 is the noise of the inducing inputs. We fixed the standard
+deviation of the inducing inputs snu to be a one per mil of the measurement 
+noise&#8217;s standard deviation sn. In case of a likelihood without noise
+parameter sn2, we simply use snu2 = 1e-6.
+For details, see The Generalized FITC Approximation, Andrew Naish-Guzman and
+Sean Holden, NIPS, 2007.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyGPs.Core.inf.FITC_Laplace">
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.inf.</tt><tt class="descname">FITC_Laplace</tt><a class="reference internal" href="_modules/pyGPs/Core/inf.html#FITC_Laplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.inf.FITC_Laplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>FITC-Laplace approximation to the posterior Gaussian process. The function is
+equivalent to infLaplace with the covariance function:
+Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku&#8217; * inv(Kuu + snu2 * eye(nu)) * Ku;
+where Ku and Kuu are covariances w.r.t. to inducing inputs xu and
+snu2 = sn2/1e6 is the noise of the inducing inputs. We fixed the standard
+deviation of the inducing inputs snu to be a one per mil of the measurement 
+noise&#8217;s standard deviation sn. In case of a likelihood without noise
+parameter sn2, we simply use snu2 = 1e-6.</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -106,6 +277,7 @@
   <ul>
 <li><a class="reference internal" href="#">Likelihoods &amp; Inference</a><ul>
 <li><a class="reference internal" href="#changing-likelihood-inference">Changing Likelihood &amp; Inference</a></li>
+<li><a class="reference internal" href="#developing-new-likelihood-inference-functions">Developing New Likelihood &amp; Inference Functions</a></li>
 <li><a class="reference internal" href="#list-of-likelihoods">List of Likelihoods</a></li>
 <li><a class="reference internal" href="#list-of-inference">List of Inference</a></li>
 </ul>
@@ -155,7 +327,7 @@
         <li class="right" >
           <a href="Kernels.html" title="Kernels &amp; Means"
              >previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

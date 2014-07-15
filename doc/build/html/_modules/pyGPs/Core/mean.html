@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyGPs.Core.mean &mdash; pyGPs v1.1 documentation</title>
+    <title>pyGPs.Core.mean &mdash; pyGPs v1.2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     'v1.1',
+        VERSION:     'v1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="pyGPs v1.1 documentation" href="../../../index.html" />
+    <link rel="top" title="pyGPs v1.2 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">pyGPs v1.2 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -140,7 +140,7 @@
     
 
 </div>
-<span class="k">class</span> <span class="nc">ProductOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+<div class="viewcode-block" id="ProductOfMean"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.ProductOfMean">[docs]</a><span class="k">class</span> <span class="nc">ProductOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean1</span><span class="p">,</span><span class="n">mean2</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span> <span class="o">=</span> <span class="n">mean1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mean2</span> <span class="o">=</span> <span class="n">mean2</span>
@@ -178,8 +178,8 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Error: der out of range for meanProduct&quot;</span><span class="p">)</span>            
         <span class="k">return</span> <span class="n">A</span>
 
-
-<span class="k">class</span> <span class="nc">SumOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="SumOfMean"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.SumOfMean">[docs]</a><span class="k">class</span> <span class="nc">SumOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean1</span><span class="p">,</span><span class="n">mean2</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span> <span class="o">=</span> <span class="n">mean1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mean2</span> <span class="o">=</span> <span class="n">mean2</span>
@@ -215,8 +215,8 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Error: der out of range for meanSum&quot;</span><span class="p">)</span>            
         <span class="k">return</span> <span class="n">A</span>
 
-
-<span class="k">class</span> <span class="nc">ScaleOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="ScaleOfMean"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.ScaleOfMean">[docs]</a><span class="k">class</span> <span class="nc">ScaleOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="p">,</span><span class="n">scalar</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span>
         <span class="k">if</span> <span class="n">mean</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
@@ -241,8 +241,8 @@
             <span class="n">A</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">der</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> 
         <span class="k">return</span> <span class="n">A</span>
 
-
-<span class="k">class</span> <span class="nc">PowerOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="PowerOfMean"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.PowerOfMean">[docs]</a><span class="k">class</span> <span class="nc">PowerOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span>
         <span class="k">if</span> <span class="n">mean</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
@@ -270,7 +270,7 @@
 
 
 <span class="c"># simple mean functions </span>
-
+</div>
 <div class="viewcode-block" id="Zero"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.Zero">[docs]</a><span class="k">class</span> <span class="nc">Zero</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Zero mean.&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -412,7 +412,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">pyGPs v1.2 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

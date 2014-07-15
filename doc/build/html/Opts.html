@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Optimizers &mdash; pyGPs v1.1 documentation</title>
+    <title>Optimizers &mdash; pyGPs v1.2 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     'v1.1',
+        VERSION:     'v1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyGPs v1.1 documentation" href="index.html" />
+    <link rel="top" title="pyGPs v1.2 documentation" href="index.html" />
     <link rel="next" title="Kernels for Graph Data" href="Graph.html" />
     <link rel="prev" title="Likelihoods &amp; Inference" href="Likelihoods.html" /> 
   </head>
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="Likelihoods.html" title="Likelihoods &amp; Inference"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -58,6 +58,40 @@
 <div class="section" id="optimization-methods">
 <h2>Optimization Methods<a class="headerlink" href="#optimization-methods" title="Permalink to this headline">¶</a></h2>
 <p>As you may have already seen in the demos, the optimizer is initialized in the following way:</p>
+<dl class="method">
+<dt id="pyGPs.Core.gp.GP.setOptimizer">
+<tt class="descclassname">GP.</tt><tt class="descname">setOptimizer</tt><big>(</big><em>method</em>, <em>num_restarts=None</em>, <em>min_threshold=None</em>, <em>meanRange=None</em>, <em>covRange=None</em>, <em>likRange=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/gp.html#GP.setOptimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.gp.GP.setOptimizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is used to sepecify optimization configuration. By default, gp uses a single run &#8220;minimize&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>method</strong> &#8211; <p>Optimization methods. Possible values are:</p>
+<p>&#8220;Minimize&#8221;   -&gt; minimize by Carl Rasmussen (python implementation of &#8220;minimize&#8221; in GPML)</p>
+<p>&#8220;CG&#8221;         -&gt; conjugent gradient</p>
+<p>&#8220;BFGS&#8221;       -&gt; quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)</p>
+<p>&#8220;SCG&#8221;        -&gt; scaled conjugent gradient (faster than CG)</p>
+</li>
+<li><strong>num_restarts</strong> &#8211; Set if you want to run mulitiple times of optimization with different initial guess. 
+It specifys the maximum number of runs/restarts/trials.</li>
+<li><strong>min_threshold</strong> &#8211; Set if you want to run mulitiple times of optimization with different initial guess. 
+It specifys the threshold of objective function value. Stop optimization when this value is reached.</li>
+<li><strong>meanRange</strong> &#8211; <p>The range of initial guess for mean hyperparameters. 
+e.g. meanRange = [(-2,2), (-5,5), (0,1)].
+Each tuple specifys the range (low, high) of this hyperparameter,
+This is only the range of initial guess, during optimization process, optimal hyperparameters may go out of this range.</p>
+<p>(-5,5) for each hyperparameter by default.</p>
+</li>
+<li><strong>covRange</strong> &#8211; The range of initial guess for kernel hyperparameters. Usage see meanRange</li>
+<li><strong>likRange</strong> &#8211; The range of initial guess for likelihood hyperparameters. Usage see meanRange</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 
@@ -118,7 +152,7 @@
         <li class="right" >
           <a href="Likelihoods.html" title="Likelihoods &amp; Inference"
              >previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs v1.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

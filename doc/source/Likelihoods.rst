@@ -26,9 +26,9 @@ You can change to other likelihood or inference methods using: ::
 
 
 
-Customizing Likelihood & Inference
-------------------------------------
-We also support you to create your own likelihood/inference class, your customized inference class need to follow the template as below: ::
+Developing New Likelihood & Inference Functions
+-------------------------------------------------
+We also support the development of new likelihood/inference classes, your customized inference class need to follow the template as below: ::
 
     # Your inference class needs to inherit base class Inference, 
     # which is in the module of Core.inf

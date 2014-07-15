@@ -46,4 +46,17 @@ structural updates:
 bug fixes:
 
 - typos in lik.Laplace
+- derivative in lik.Laplace
 
+
+July 14th 2014
+----------------
+
+documentation updates:
+
+- online docs updated
+- API file updated
+
+structural updates:
+
+- made private for methods that users don't need to call

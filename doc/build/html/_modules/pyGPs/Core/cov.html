@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyGPs.Core.cov &mdash; pyGPs v1.1 documentation</title>
+    <title>pyGPs.Core.cov &mdash; pyGPs v1.2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     'v1.1',
+        VERSION:     'v1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="pyGPs v1.1 documentation" href="../../../index.html" />
+    <link rel="top" title="pyGPs v1.2 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">pyGPs v1.2 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -99,11 +99,11 @@
             <span class="k">print</span> <span class="s">&quot;only numbers and Kernels are supported operand types for *&quot;</span>
     <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
     <span class="c"># FITC approximation</span>
-    <span class="k">def</span> <span class="nf">fitc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">inducingInput</span><span class="p">):</span>
+<div class="viewcode-block" id="Kernel.fitc"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Kernel.fitc">[docs]</a>    <span class="k">def</span> <span class="nf">fitc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">inducingInput</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">FITCOfKernel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">inducingInput</span><span class="p">)</span>
     
     <span class="c"># not used anymore</span>
-    <span class="c"># replaced by spdist from scipy</span>
+    <span class="c"># replaced by spdist from scipy</span></div>
     <span class="k">def</span> <span class="nf">sq_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="c"># Compute a matrix of all pairwise squared distances</span>
         <span class="c"># between two sets of vectors, stored in the row of the two matrices:</span>
@@ -127,7 +127,7 @@
 
               
         </div>
-<span class="k">class</span> <span class="nc">ProductOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="ProductOfKernel"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.ProductOfKernel">[docs]</a><span class="k">class</span> <span class="nc">ProductOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cov1</span><span class="p">,</span><span class="n">cov2</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cov1</span> <span class="o">=</span> <span class="n">cov1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cov2</span> <span class="o">=</span> <span class="n">cov2</span>
@@ -163,8 +163,8 @@
         <span class="k">return</span> <span class="n">A</span>
         
 
-
-<span class="k">class</span> <span class="nc">SumOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="SumOfKernel"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.SumOfKernel">[docs]</a><span class="k">class</span> <span class="nc">SumOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cov1</span><span class="p">,</span><span class="n">cov2</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cov1</span> <span class="o">=</span> <span class="n">cov1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cov2</span> <span class="o">=</span> <span class="n">cov2</span>
@@ -197,8 +197,8 @@
         <span class="k">return</span> <span class="n">A</span>
     
 
-
-<span class="k">class</span> <span class="nc">ScaleOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="ScaleOfKernel"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.ScaleOfKernel">[docs]</a><span class="k">class</span> <span class="nc">ScaleOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">scalar</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cov</span> <span class="o">=</span> <span class="n">cov</span>
         <span class="k">if</span> <span class="n">cov</span><span class="o">.</span><span class="n">hyp</span><span class="p">:</span>
@@ -224,7 +224,7 @@
         <span class="k">return</span> <span class="n">A</span>
      
 
-
+</div>
 <div class="viewcode-block" id="FITCOfKernel"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.FITCOfKernel">[docs]</a><span class="k">class</span> <span class="nc">FITCOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">inducingInput</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inducingInput</span> <span class="o">=</span> <span class="n">inducingInput</span>
@@ -931,7 +931,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">pyGPs v1.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">pyGPs v1.2 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
