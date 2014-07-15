@@ -10,10 +10,10 @@
 \usepackage{longtable}
 \usepackage{sphinx}
 \usepackage{multirow}
-
+\setcounter{tocdepth}{2}
 
 \title{pyGPs API}
-\date{July 08, 2014}
+\date{July 15, 2014}
 \release{v1.2}
 \author{M. Neumann, S. Huang, D. Marthaler, K. Kersting}
 \newcommand{\sphinxlogo}{}
@@ -225,8 +225,8 @@ sudo port install python27 py27-numpy py27-scipy py27-matplotlib
 For other systems please check the installation instructions on the respective package web sites.
 
 
-\subsection{GPs \& Functionality}
-\label{Theory:gps-functionality}\label{Theory::doc}
+\subsection{GPs}
+\label{Theory::doc}\label{Theory:gps}
 Gaussian Processes (GPs) can conveniently be used for Bayesian supervised learning, such as regression and classification.
 In its simplest form, GP inference can be implemented in a few lines of code. However, in practice, things typically
 get a little more complicated: you might want to use expressive covariance and mean functions, learn good values
@@ -238,9 +238,6 @@ A comprehensive introduction to Gaussian Processes for Machine Learning is provi
 
 \section{Tutorials}
 \label{index:tutorials}\label{index:gpml}
-
-\subsection{Demos}
-\label{Examples:demos}\label{Examples::doc}
 There are several demos exemplifying the use of pyGPs for various Gaussian process ($GP$) tasks.
 We recommend to first go through \emph{Basic GP Regression} which introduces the $GP$ regression model.
 Basic regression is the most intuitive and simplest learning task feasable with $GPs$.
@@ -249,8 +246,9 @@ You will also find the implementation of the demos in the \href{https://github.c
 
 The Demos give some theoretical explanations. Further, it is useful to have a look at our documentation on Kernels \& Means and Optimizers.
 
-Regression
 
+\subsection{Regression}
+\label{Examples:source}\label{Examples::doc}\label{Examples:regression}
 
 \subsubsection{Basic Regression}
 \label{GPR:basic-regression}\label{GPR::doc}
@@ -264,7 +262,7 @@ This demo will not only introduce the regression model, it also provides the gen
 Once you installed pyGPs, the typical way to import it is:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{k+kn}{from} \PYG{n+nn}{pyGPs.Core} \PYG{k+kn}{import} \PYG{o}{*}
+\PYG{k+kn}{import} \PYG{n+nn}{pyGPs}
 \PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
 \end{Verbatim}
 
@@ -272,6 +270,8 @@ Once you installed pyGPs, the typical way to import it is:
 \paragraph{Load data}
 \label{GPR:load-data}
 First, load the data for this demo. The data consists of $n=20$ 1-d data points drawn from a unit Gaussian. This is the same data used in the GPML example (it is hardcoded in \emph{data/regression\_data.npz}).
+
+Note that target vector $y$ can be in 2d matrix with shape (nn,1) or 1d vector with shape (nn,) where $nn$ is number of test inputs. pyGPs can work with either format.
 
 \begin{Verbatim}[commandchars=\\\{\}]
 \PYG{n}{demoData} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{load}\PYG{p}{(}\PYG{l+s}{'}\PYG{l+s}{data\PYGZus{}for\PYGZus{}demo/regression\PYGZus{}data.npz}\PYG{l+s}{'}\PYG{p}{)}
@@ -287,22 +287,22 @@ Now lets do regression with Gaussian processes.
 Using pyGPs for regression is really simple; here is the most basic example:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model} \PYG{o}{=} \PYG{n}{gp}\PYG{o}{.}\PYG{n}{GPR}\PYG{p}{(}\PYG{p}{)}    \PYG{c}{\PYGZsh{} specify model (GP regression)}
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{fit}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}     \PYG{c}{\PYGZsh{} fit default model (mean zero \& rbf kernel) with data}
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{train}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}   \PYG{c}{\PYGZsh{} optimize hyperparamters (default optimizer: single run minimize)}
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{z}\PYG{p}{)}    \PYG{c}{\PYGZsh{} predict test cases}
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{p}{)}        \PYG{c}{\PYGZsh{} and plot result}
+\PYG{n}{model} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{GPR}\PYG{p}{(}\PYG{p}{)}    \PYG{c}{\PYGZsh{} specify model (GP regression)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{fit}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}        \PYG{c}{\PYGZsh{} fit default model (mean zero \& rbf kernel) with data}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{optimize}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}   \PYG{c}{\PYGZsh{} optimize hyperparamters (default optimizer: single run minimize)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{z}\PYG{p}{)}       \PYG{c}{\PYGZsh{} predict test cases}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{p}{)}           \PYG{c}{\PYGZsh{} and plot result}
 \end{Verbatim}
 
 By default, GPR uses a zero mean, the rbf kernel and a Gaussian likelihood. Default optimizer is a single run of Rasmussen's minimize. You will see below how to set non-default values in another example.
 
-\emph{GPR.plot()} will plot the result, where the dark line is the posterior mean and the green-shaded area is the posterior variance.
+\emph{pyGPs.GPR().plot()} will plot the result, where the dark line is the posterior mean and the green-shaded area is the posterior variance.
 Note, that \emph{plot()} is not a general method as it is not trivial to visualize high dimensional data.
-Here, \emph{GPR.plot()} works for 1-d data only, while \emph{GPC.plot()} is a toy method visualising 2-d input data in a classification scenario.
+Here, \emph{pyGPs.GPR().plot()} works for 1-d data only, while \emph{pyGPs.GPC().plot()} is a toy method visualising 2-d input data in a classification scenario.
 \begin{figure}[htbp]
 \centering
 
-\scalebox{0.700000}{\includegraphics{_images/d1_1.png}}
+\scalebox{0.700000}{\includegraphics{d1_1.png}}
 \end{figure}
 
 
@@ -313,25 +313,24 @@ Now lets do another example to get insight into more advanced features of the to
 You can specify non-default mean and covariance functions:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{m} \PYG{o}{=} \PYG{n}{mean}\PYG{o}{.}\PYG{n}{Linear}\PYG{p}{(} \PYG{n}{D}\PYG{o}{=}\PYG{n}{x}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{p}{)} \PYG{o}{+} \PYG{n}{mean}\PYG{o}{.}\PYG{n}{Const}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{k} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{m} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{mean}\PYG{o}{.}\PYG{n}{Linear}\PYG{p}{(} \PYG{n}{D}\PYG{o}{=}\PYG{n}{x}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{p}{)} \PYG{o}{+} \PYG{n}{mean}\PYG{o}{.}\PYG{n}{Const}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{mean}\PYG{o}{=}\PYG{n}{m}\PYG{p}{,} \PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{)}
 \end{Verbatim}
 
 Here, we use a composite mean as the sum of a linear and a constant function, and an rbf kernel. The initial hyperparameters are left to their default values. See Kernels \& Means for a complete documentation of kernel/mean specification and custom kernel/mean construction. Once kernel and mean are specified, they are passed to the prior using \emph{setPrior()}.
 
-You can add the traning data to the model explicitly by using \emph{setData()}. So, you avoid passing them into \emph{fit()} or \emph{train()} each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels $y$ (if you do not specify mean function by your own).
+You can add the traning data to the model explicitly by using \emph{setData()}. So, you avoid passing them into \emph{fit()} or \emph{optimize()} each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels $y$ (if you do not specify mean function by your own).
 
 Further, you can plot the data in the 1-d case:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{setData}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{plotData\PYGZus{}1d}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 \begin{figure}[htbp]
 \centering
 
-\scalebox{0.700000}{\includegraphics{_images/d1_2.png}}
+\scalebox{0.700000}{\includegraphics{d1_2.png}}
 \end{figure}
 
 You can specify a optimization method different from the default, which is a single run of Rasmussen's minimize. For example, you can choose to rerun the optimization method
@@ -341,13 +340,13 @@ several times with different random initializations:
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{setOptimizer}\PYG{p}{(}\PYG{l+s}{"}\PYG{l+s}{Minimize}\PYG{l+s}{"}\PYG{p}{,} \PYG{n}{num\PYGZus{}restarts}\PYG{o}{=}\PYG{l+m+mi}{30}\PYG{p}{)}
 \end{Verbatim}
 
-The optimized hyperparameters returned by \emph{train()} are then set to be the ones obtained from the run with the best result.
+The optimized hyperparameters returned by \emph{optimize()} are then set to be the ones obtained from the run with the best result.
 The whole functionality for optimization is introduced in detail in the documentation Optimizers.
 
-Instead of \emph{fit()}, which only fits data using given hyperparameters, \emph{train()} will optimize hyperparamters based on marginal likelihood:
+Instead of \emph{fit()}, which only fits data using given hyperparameters, \emph{optimize()} will optimize hyperparamters based on marginal likelihood:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{train}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{optimize}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 
 There are several properties you can get from the model:
@@ -391,7 +390,7 @@ Plot data. Note that \emph{GPR.plot()} is a toy method only for visualising 1-d 
 \begin{figure}[htbp]
 \centering
 
-\scalebox{0.700000}{\includegraphics{_images/d1_3.png}}
+\scalebox{0.700000}{\includegraphics{d1_3.png}}
 \end{figure}
 
 
@@ -444,7 +443,7 @@ $u$ and to base the computations on cross-covariances between training, test and
 Okay, now the model is FITC regression:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model} \PYG{o}{=} \PYG{n}{gp}\PYG{o}{.}\PYG{n}{GPR\PYGZus{}FITC}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{GPR\PYGZus{}FITC}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 
 The difference between the usage of basic $GP$ regression is that we will have to specify inducing points.
@@ -463,14 +462,14 @@ The number of inducing points per axis is $5$ per default.
 Now, the regular training and prediction routines follow:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{train}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{optimize}\PYG{p}{(}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{z}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 \begin{figure}[htbp]
 \centering
 
-\scalebox{0.700000}{\includegraphics{_images/d3_1.png}}
+\scalebox{0.700000}{\includegraphics{d3_1.png}}
 \end{figure}
 
 The equidistant default inducing points $u$ that are shown in the figure as black x's.
@@ -504,16 +503,16 @@ You can also use equidistant inducing points $u$, but without the values on the 
 Then pass $u$ when specifying prior.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{m} \PYG{o}{=} \PYG{n}{mean}\PYG{o}{.}\PYG{n}{Zero}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{k} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBFard}\PYG{p}{(}\PYG{n}{log\PYGZus{}ell\PYGZus{}list}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mf}{0.05}\PYG{p}{,}\PYG{l+m+mf}{0.17}\PYG{p}{]}\PYG{p}{,} \PYG{n}{log\PYGZus{}sigma}\PYG{o}{=}\PYG{l+m+mf}{1.}\PYG{p}{)}
+\PYG{n}{m} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{mean}\PYG{o}{.}\PYG{n}{Zero}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBFard}\PYG{p}{(}\PYG{n}{log\PYGZus{}ell\PYGZus{}list}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mf}{0.05}\PYG{p}{,}\PYG{l+m+mf}{0.17}\PYG{p}{]}\PYG{p}{,} \PYG{n}{log\PYGZus{}sigma}\PYG{o}{=}\PYG{l+m+mf}{1.}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{mean}\PYG{o}{=}\PYG{n}{m}\PYG{p}{,} \PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{,} \PYG{n}{inducing\PYGZus{}points}\PYG{o}{=}\PYG{n}{u}\PYG{p}{)}
 \end{Verbatim}
 
 The left figure below shows the result of fixed inducing points, and the right figure shows the result for equidistant $u$.
 
-\includegraphics[width=0.450\linewidth]{_images/d3_2.png}
+\includegraphics[width=0.450\linewidth]{d3_2.png}
 
-\includegraphics[width=0.450\linewidth]{_images/d3_3.png}
+\includegraphics[width=0.450\linewidth]{d3_3.png}
 
 \textbf{{[}Theory{]}}
 Note that the predictive variance is
@@ -530,8 +529,9 @@ Switch to other Inference and Likelihood functions.
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{useLikelihood}\PYG{p}{(}\PYG{l+s}{"}\PYG{l+s}{Laplace}\PYG{l+s}{"}\PYG{p}{)}
 \end{Verbatim}
 
-Classification
 
+\subsection{Classification}
+\label{Examples:classification}
 
 \subsubsection{Basic Classification}
 \label{GPC:basic-classification}\label{GPC::doc}
@@ -559,7 +559,7 @@ given complete information about the generating mechanism.
 \begin{figure}[htbp]
 \centering
 
-\scalebox{0.700000}{\includegraphics{_images/d2_1.png}}
+\scalebox{0.700000}{\includegraphics{d2_1.png}}
 \end{figure}
 
 
@@ -568,9 +568,9 @@ given complete information about the generating mechanism.
 Again, lets see the simplest use of gp classification at first
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model} \PYG{o}{=} \PYG{n}{gp}\PYG{o}{.}\PYG{n}{GPC}\PYG{p}{(}\PYG{p}{)}             \PYG{c}{\PYGZsh{} binary classification (default inference method: EP)}
+\PYG{n}{model} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{gp}\PYG{o}{.}\PYG{n}{GPC}\PYG{p}{(}\PYG{p}{)}             \PYG{c}{\PYGZsh{} binary classification (default inference method: EP)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{fit}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}              \PYG{c}{\PYGZsh{} fit default model (mean zero \& rbf kernel) with data}
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{train}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}            \PYG{c}{\PYGZsh{} optimize hyperparamters (default optimizer: single run minimize)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{optimize}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}            \PYG{c}{\PYGZsh{} optimize hyperparamters (default optimizer: single run minimize)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{z}\PYG{p}{)}             \PYG{c}{\PYGZsh{} predict test cases}
 \end{Verbatim}
 
@@ -582,20 +582,20 @@ Note, that inference is done via expectation propagation (EP) approximation by d
 So we first state the model to be $GP$ classification now:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model} \PYG{o}{=} \PYG{n}{gp}\PYG{o}{.}\PYG{n}{GPC}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{GPC}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 
 The rest is similar to GPR:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{k} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBFard}\PYG{p}{(}\PYG{n}{log\PYGZus{}ell\PYGZus{}list}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mf}{0.05}\PYG{p}{,}\PYG{l+m+mf}{0.17}\PYG{p}{]}\PYG{p}{,} \PYG{n}{log\PYGZus{}sigma}\PYG{o}{=}\PYG{l+m+mf}{1.}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBFard}\PYG{p}{(}\PYG{n}{log\PYGZus{}ell\PYGZus{}list}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mf}{0.05}\PYG{p}{,}\PYG{l+m+mf}{0.17}\PYG{p}{]}\PYG{p}{,} \PYG{n}{log\PYGZus{}sigma}\PYG{o}{=}\PYG{l+m+mf}{1.}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{)}
 
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{setData}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{plotData\PYGZus{}2d}\PYG{p}{(}\PYG{n}{x1}\PYG{p}{,}\PYG{n}{x2}\PYG{p}{,}\PYG{n}{t1}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{,}\PYG{n}{p1}\PYG{p}{,}\PYG{n}{p2}\PYG{p}{)}
 
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{fit}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{train}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{optimize}\PYG{p}{(}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{z}\PYG{p}{,} \PYG{n}{ys}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{ones}\PYG{p}{(}\PYG{p}{(}\PYG{n}{z}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}
 \end{Verbatim}
 
@@ -606,7 +606,7 @@ a total of $3$ hyperparameters. ARD with separate length-scales for each input d
 inputs are important for the predictions: if length-scales are short, input dimensions are very important, and when they grow very large
 (compared to the spread of the data), the corresponding input dimensions will be mostly ignored.
 
-Note, \emph{GPC.plot()} is a toy method for 2-d data:
+Note, \emph{pyGPs.GPC().plot()} is a toy method for 2-d data:
 
 \begin{Verbatim}[commandchars=\\\{\}]
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{x1}\PYG{p}{,}\PYG{n}{x2}\PYG{p}{,}\PYG{n}{t1}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
@@ -618,7 +618,7 @@ away from the data, the probability approaches $1/3$, the overall class probabil
 \begin{figure}[htbp]
 \centering
 
-\scalebox{0.700000}{\includegraphics{_images/d2_2.png}}
+\scalebox{0.700000}{\includegraphics{d2_2.png}}
 \end{figure}
 
 Examining the two ARD characteristic length-scale parameters after learning, you will find that they are fairly similar, reflecting the fact
@@ -652,7 +652,7 @@ $u$ and to base the computations on cross-covariances between training, test and
 Okay, now the model is FITC classificiation:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model} \PYG{o}{=} \PYG{n}{gp}\PYG{o}{.}\PYG{n}{GPC\PYGZus{}FITC}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{GPC\PYGZus{}FITC}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 
 The difference between the usage of basic $GP$ is that we will have to specify inducing points.
@@ -671,14 +671,14 @@ The number of inducing points per axis is $5$ per default. How to change this, s
 Then, the regular process follows:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{train}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{optimize}\PYG{p}{(}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{z}\PYG{p}{,} \PYG{n}{ys}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{ones}\PYG{p}{(}\PYG{p}{(}\PYG{n}{z}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{x1}\PYG{p}{,}\PYG{n}{x2}\PYG{p}{,}\PYG{n}{t1}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
 \end{Verbatim}
 \begin{figure}[htbp]
 \centering
 
-\scalebox{0.700000}{\includegraphics{_images/d4_1.png}}
+\scalebox{0.700000}{\includegraphics{d4_1.png}}
 \end{figure}
 
 The equispaced default inducing points $u$ are shown as black circles in the plot.
@@ -697,8 +697,8 @@ So, in the second example let us use a user-defined set of inducing points:
 Here, we also use a grid euqually spaced, but without the values on the margin of the grid.(i.e. shrinking the grid) Then, we can just pass $u$ when specifying prior:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{m} \PYG{o}{=} \PYG{n}{mean}\PYG{o}{.}\PYG{n}{Zero}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{k} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBFard}\PYG{p}{(}\PYG{n}{log\PYGZus{}ell\PYGZus{}list}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mf}{0.05}\PYG{p}{,}\PYG{l+m+mf}{0.17}\PYG{p}{]}\PYG{p}{,} \PYG{n}{log\PYGZus{}sigma}\PYG{o}{=}\PYG{l+m+mf}{1.}\PYG{p}{)}
+\PYG{n}{m} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{mean}\PYG{o}{.}\PYG{n}{Zero}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBFard}\PYG{p}{(}\PYG{n}{log\PYGZus{}ell\PYGZus{}list}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mf}{0.05}\PYG{p}{,}\PYG{l+m+mf}{0.17}\PYG{p}{]}\PYG{p}{,} \PYG{n}{log\PYGZus{}sigma}\PYG{o}{=}\PYG{l+m+mf}{1.}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{mean}\PYG{o}{=}\PYG{n}{m}\PYG{p}{,} \PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{,} \PYG{n}{inducing\PYGZus{}points}\PYG{o}{=}\PYG{n}{u}\PYG{p}{)}
 \end{Verbatim}
 
@@ -706,7 +706,7 @@ The prediction results for this  set of inducing points are shown below:
 \begin{figure}[htbp]
 \centering
 
-\scalebox{0.700000}{\includegraphics{_images/d4_2.png}}
+\scalebox{0.700000}{\includegraphics{d4_2.png}}
 \end{figure}
 
 
@@ -760,7 +760,7 @@ To be used in GPMC, labels should start from 0 to k (k = number of classes).
 State model with 10-class classification problem:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model} \PYG{o}{=} \PYG{n}{gp}\PYG{o}{.}\PYG{n}{GPMC}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+\PYG{n}{model} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{GPMC}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
 \end{Verbatim}
 
 Pass data to model:
@@ -774,7 +774,7 @@ and decide label for test patterns of hand-writen digits.
 The return value \emph{predictive\_vote{[}i,j{]}} is the probability of being class \emph{j} for test pattern \emph{i}.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{predictive\PYGZus{}vote} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{trainAndPredict}\PYG{p}{(}\PYG{n}{xs}\PYG{p}{)}
+\PYG{n}{predictive\PYGZus{}vote} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{optimizeAndPredict}\PYG{p}{(}\PYG{n}{xs}\PYG{p}{)}
 \PYG{n}{predictive\PYGZus{}class} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{argmax}\PYG{p}{(}\PYG{n}{predictive\PYGZus{}vote}\PYG{p}{,} \PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
 \end{Verbatim}
 
@@ -782,23 +782,24 @@ Just like we did for GP classification,
 you can use specific settings (other than default) for all binary classificiation problem for example by:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{m} \PYG{o}{=} \PYG{n}{mean}\PYG{o}{.}\PYG{n}{Zero}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{k} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{m} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{mean}\PYG{o}{.}\PYG{n}{Zero}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{mean}\PYG{o}{=}\PYG{n}{m}\PYG{p}{,}\PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{useInference}\PYG{p}{(}\PYG{l+s}{"}\PYG{l+s}{Laplace}\PYG{l+s}{"}\PYG{p}{)}
 \end{Verbatim}
 
 For more information on how to use non-default settings see demo\_GPC and demo\_GPR.
 
-Beside \emph{trainAndPredict(xs)},
+Beside \emph{optimizeAndPredict(xs)},
 there is also an option to perform prediction without hyperparameter optimization:
 
 \begin{Verbatim}[commandchars=\\\{\}]
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{fitAndPredict}\PYG{p}{(}\PYG{n}{xs}\PYG{p}{)}
 \end{Verbatim}
 
-Some examples for real-world data
 
+\subsection{Some examples for real-world data}
+\label{Examples:some-examples-for-real-world-data}
 
 \subsubsection{K-fold Cross-Validation}
 \label{CV:k-fold-cross-validation}\label{CV::doc}
@@ -822,9 +823,9 @@ Now, lets focus on the use of cross-validation.
 \PYG{n}{K} \PYG{o}{=} \PYG{l+m+mi}{10}             \PYG{c}{\PYGZsh{} number of folds}
 \PYG{k}{for} \PYG{n}{x\PYGZus{}train}\PYG{p}{,} \PYG{n}{x\PYGZus{}test}\PYG{p}{,} \PYG{n}{y\PYGZus{}train}\PYG{p}{,} \PYG{n}{y\PYGZus{}test} \PYG{o+ow}{in} \PYG{n}{valid}\PYG{o}{.}\PYG{n}{k\PYGZus{}fold\PYGZus{}validation}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{n}{K}\PYG{p}{)}\PYG{p}{:}
     \PYG{c}{\PYGZsh{} This is a binary classification problem}
-    \PYG{n}{model} \PYG{o}{=} \PYG{n}{gp}\PYG{o}{.}\PYG{n}{GPC}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{model} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{GPC}\PYG{p}{(}\PYG{p}{)}
     \PYG{c}{\PYGZsh{} Since no prior knowldege, leave everything default}
-    \PYG{n}{model}\PYG{o}{.}\PYG{n}{train}\PYG{p}{(}\PYG{n}{x\PYGZus{}train}\PYG{p}{,} \PYG{n}{y\PYGZus{}train}\PYG{p}{)}
+    \PYG{n}{model}\PYG{o}{.}\PYG{n}{optimize}\PYG{p}{(}\PYG{n}{x\PYGZus{}train}\PYG{p}{,} \PYG{n}{y\PYGZus{}train}\PYG{p}{)}
     \PYG{c}{\PYGZsh{} Predition}
     \PYG{n}{ymu}\PYG{p}{,} \PYG{n}{ys2}\PYG{p}{,} \PYG{n}{fmu}\PYG{p}{,} \PYG{n}{fs2}\PYG{p}{,} \PYG{n}{lp} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{x\PYGZus{}test}\PYG{p}{,} \PYG{n}{ys}\PYG{o}{=}\PYG{n}{y\PYGZus{}test}\PYG{p}{)}
     \PYG{c}{\PYGZsh{} ymu for classification is a continuous value over -1 to +1}
@@ -882,7 +883,7 @@ $2003$ (with some missing values) \href{http://cdiac.esd.ornl.gov/ftp/trends/co2
 \begin{figure}[htbp]
 \centering
 
-\scalebox{0.700000}{\includegraphics{_images/demoML1.png}}
+\scalebox{0.600000}{\includegraphics{demoML1.png}}
 \end{figure}
 
 The data is shown in the above plot. Our goal is to model the $CO_2$
@@ -954,10 +955,10 @@ with hyperparameters $\theta = (\theta_1,\ldots,\theta_{11})$
 
 \begin{Verbatim}[commandchars=\\\{\}]
 \PYG{c}{\PYGZsh{} DEFINE parameterized covariance function}
-\PYG{n}{k1} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{67.}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{66.}\PYG{p}{)}\PYG{p}{)}
-\PYG{n}{k2} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{Periodic}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{1.3}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{1.0}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{2.4}\PYG{p}{)}\PYG{p}{)} \PYG{o}{*} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{90.}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{2.4}\PYG{p}{)}\PYG{p}{)}
-\PYG{n}{k3} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RQ}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{1.2}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{0.66}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{0.78}\PYG{p}{)}\PYG{p}{)}
-\PYG{n}{k4} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{1.6}\PYG{o}{/}\PYG{l+m+mf}{12.}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{0.18}\PYG{p}{)}\PYG{p}{)} \PYG{o}{+} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{Noise}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{0.19}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{k1} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{67.}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{66.}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{k2} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{Periodic}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{1.3}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{1.0}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{2.4}\PYG{p}{)}\PYG{p}{)} \PYG{o}{*} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{90.}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{2.4}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{k3} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RQ}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{1.2}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{0.66}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{0.78}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{k4} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{1.6}\PYG{o}{/}\PYG{l+m+mf}{12.}\PYG{p}{)}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{0.18}\PYG{p}{)}\PYG{p}{)} \PYG{o}{+} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{Noise}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mf}{0.19}\PYG{p}{)}\PYG{p}{)}
 \PYG{n}{k}  \PYG{o}{=} \PYG{n}{k1} \PYG{o}{+} \PYG{n}{k2} \PYG{o}{+} \PYG{n}{k3} \PYG{o}{+} \PYG{n}{k4}
 \end{Verbatim}
 
@@ -965,7 +966,7 @@ After running the minimization,
 
 \begin{Verbatim}[commandchars=\\\{\}]
 \PYG{n}{t0} \PYG{o}{=} \PYG{n}{clock}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{train}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{optimize}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)}
 \PYG{n}{t1} \PYG{o}{=} \PYG{n}{clock}\PYG{p}{(}\PYG{p}{)}
 \PYG{n}{model}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{xs}\PYG{p}{)}
 \end{Verbatim}
@@ -974,7 +975,7 @@ The extrapolated data looks like:
 \begin{figure}[htbp]
 \centering
 
-\scalebox{0.700000}{\includegraphics{_images/demoML2.png}}
+\scalebox{0.600000}{\includegraphics{demoML2.png}}
 \end{figure}
 
 and the optimized values of the hyperparameters allow for a principled analysis of different components driving the model.
@@ -1002,8 +1003,8 @@ was $-2.30$.  The regression started with initial negative log marginal likeliho
 variance that is uniform over the test set.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model} \PYG{o}{=} \PYG{n}{gp}\PYG{o}{.}\PYG{n}{GPR}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{train}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)}
+\PYG{n}{model} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{GPR}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{optimize}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)}
 \PYG{n}{ym}\PYG{p}{,} \PYG{n}{ys2}\PYG{p}{,} \PYG{n}{fm}\PYG{p}{,} \PYG{n}{fs2}\PYG{p}{,} \PYG{n}{lp} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{xs}\PYG{p}{)}
 \PYG{n}{xa}  \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{concatenate}\PYG{p}{(}\PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,}\PYG{p}{:}\PYG{l+m+mi}{4}\PYG{p}{]}\PYG{p}{,}\PYG{n}{data}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,}\PYG{l+m+mi}{5}\PYG{p}{:}\PYG{o}{-}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{)}\PYG{p}{,}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
 \PYG{n}{xa} \PYG{o}{=} \PYG{p}{(}\PYG{n}{xa} \PYG{o}{-} \PYG{n}{np}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{xa}\PYG{p}{,}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{)}\PYG{o}{/}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{std}\PYG{p}{(}\PYG{n}{xa}\PYG{p}{,}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{o}{+}\PYG{l+m+mf}{1.e-16}\PYG{p}{)}
@@ -1022,130 +1023,6 @@ hyperparameter was $-2.27$.  The final negative log marginal likelihood (optimiz
 
 \includegraphics[width=400pt,height=300pt]{demoH2.png}
 \end{figure}
-
-
-\subsubsection{Semi-supervised Learning with Graphs}
-\label{SemiSupervised:semi-supervised-learning-with-graphs}\label{SemiSupervised::doc}
-The code shown in this tutorial can be executed by running \emph{pyGPs/Demo/demo\_KernelOnGraph.py}
-
-
-\paragraph{Load data}
-\label{SemiSupervised:load-data}
-We used the same dataset from GPMC example. i.e. The USPS digits dataset \footnote{
-A Database for Handwritten Text Recognition Research, J. J. Hull, IEEE PAMI 16(5) 550-554, 1994.
-}.
-Each digit of $16*16$ pixels is flattened into a $256$ dimension vector.
-For the simplicity of demo, we only selected digits $1$ s and $2$ s such that we have a binary classification problem where digit $1$ for class +1 and digit $2$ for class -1. We also reduced the dataset into $100$ samples per digit, where the original dataset consist of thousands of samples for each digit.
-
-Here are samples for two digits for $1$
-
-\includegraphics[width=0.300\linewidth]{_images/digit1_1.png}
-
-\includegraphics[width=0.300\linewidth]{_images/digit1_2.png}
-
-and samples for two digits for $2$
-
-\includegraphics[width=0.300\linewidth]{_images/digit2_1.png}
-
-\includegraphics[width=0.300\linewidth]{_images/digit2_2.png}
-
-
-\paragraph{Form a nearest neighbour graph}
-\label{SemiSupervised:form-a-nearest-neighbour-graph}
-We form a nearest-neighbor graph based on Euclidean distance of the vector representation of digits. Neighboring images have small Euclidean distance. Each digit is a node in the graph. There is an edge if digit $i$ is the k-nearest neighbour of digit $j$. We form a symmetrized graph such that we connect nodes $j$, $i$ if i is in j’s kNN and vice versa, and therefore a node can have more than k edges. You should import the corresponding module from \emph{pyGPs.GraphStuff}
-
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{x}\PYG{p}{,}\PYG{n}{y} \PYG{o}{=} \PYG{n}{load\PYGZus{}binary}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{n+nb}{reduce}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{)}
-\PYG{n}{A} \PYG{o}{=} \PYG{n}{form\PYGZus{}knn\PYGZus{}graph}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}
-\end{Verbatim}
-
-A is the adjacency matrix of this $2-NN$ graph.
-
-Below shows an example of such symmetrized Euclidean $2-NN$ graph on some 1s and 2s taking from Xiaojin Zhu's doctoral thesis \footnote{
-Semi-Supervised Learning with Graphs, Xiaojin Zhu, CMU-LTI-05-192, 2005
-}.
-\begin{figure}[htbp]
-\centering
-
-\includegraphics{_images/2nnGraph.png}
-\end{figure}
-
-
-\paragraph{Kernel on graph}
-\label{SemiSupervised:kernel-on-graph}
-Several classical kernels on graph described in Structured Kernels can be built from adjacency matrix $A$. We use diffusion kernel for this example to get the precomputed kernel matrix.
-
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{Matrix} \PYG{o}{=} \PYG{n}{diffKernel}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
-\end{Verbatim}
-
-This a big square matrix with all rows and columns of the number of data points.
-By specifying the indice of training data and test data, we will form two matrix M1 and M2 with the exact format which \emph{pyGPs.Core.cov.Pre} needed.
-
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{M1}\PYG{p}{,}\PYG{n}{M2} \PYG{o}{=} \PYG{n}{form\PYGZus{}kernel\PYGZus{}matrix}\PYG{p}{(}\PYG{n}{Matrix}\PYG{p}{,} \PYG{n}{indice\PYGZus{}train}\PYG{p}{,} \PYG{n}{indice\PYGZus{}test}\PYG{p}{)}
-\end{Verbatim}
-\begin{description}
-\item[{M1 is a matrix with shape \textbf{number of training points plus 1} by \textbf{number of test points}}] \leavevmode\begin{itemize}
-\item {} 
-cross covariances matrix (train by test)
-
-\item {} 
-last row is self covariances (diagonal of test by test)
-
-\end{itemize}
-
-\item[{M2 is a square matrix with \textbf{number of training points} for each dimension}] \leavevmode\begin{itemize}
-\item {} 
-training set covariance matrix (train by train)
-
-\end{itemize}
-
-\end{description}
-
-
-\paragraph{GP classification}
-\label{SemiSupervised:gp-classification}
-Every ingredients for a basic semi-supervised learning is prepared now.  Lets see how to proceed for $GP$ classification. First, the normal way with rbf kernel we have seen several times
-
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{model} \PYG{o}{=} \PYG{n}{gp}\PYG{o}{.}\PYG{n}{GPC}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{k} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{)}
-\end{Verbatim}
-
-Then lets use our kernel precomputed matrix. If you only use precomputed kernel matrix, there is no training data.
-However you still need to specify $x$ just to fit in the usage of pyGPs for generality reason.
-You can create any $x$ as long as the dimension is correct.
-
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{x} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n}{n}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}
-\PYG{n}{k} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{Pre}\PYG{p}{(}\PYG{n}{M1}\PYG{p}{,}\PYG{n}{M2}\PYG{p}{)} \PYG{o}{+} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{)}
-\end{Verbatim}
-
-Moreover, you can composite a kernel for both precomputed matrix and regular kernel function if necessary.
-
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{k} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{Pre}\PYG{p}{(}\PYG{n}{M1}\PYG{p}{,}\PYG{n}{M2}\PYG{p}{)} \PYG{o}{+} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBFunit}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{)}
-\end{Verbatim}
-
-The rest way of using pyGPs is exactly the same as the demo of GP classification.
-
-
-\paragraph{Result}
-\label{SemiSupervised:result}
-For our manually created graph data, an rbf kernel works better than a diffusion kernel on the graph (higher accuracy). The performance in general should depend on the application as well as features of data.
-
-The left image shows the digit that using diffusion kernel will predict the wrong result (should be $2$),
-but rbf kernel does the job fine. The right image shows the digit that rbf kernel predicts the wrong class, diffusion kernel on the other hand, predicts correctly due to graph information! (should be $1$).
-
-Interestingly, using a composite kernel with diffusion kernel on graph and an rbf kernel together. All test cases including the following are predicted correctly.
-
-\includegraphics[width=0.500\linewidth]{_images/digitDiffwrong.png}
-
-\includegraphics[width=0.500\linewidth]{_images/digitRBFwrong.png}
 
 
 \section{GP functionality}
@@ -1462,7 +1339,7 @@ Negative log predictive density in transformed observation space
 You may already seen, we can specify a kernel function like this(same for mean fucntions):
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{k} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(} \PYG{n}{log\PYGZus{}ell}\PYG{o}{=}\PYG{o}{-}\PYG{l+m+mf}{1.}\PYG{p}{,} \PYG{n}{log\PYGZus{}sigma}\PYG{o}{=}\PYG{l+m+mf}{0.} \PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(} \PYG{n}{log\PYGZus{}ell}\PYG{o}{=}\PYG{o}{-}\PYG{l+m+mf}{1.}\PYG{p}{,} \PYG{n}{log\PYGZus{}sigma}\PYG{o}{=}\PYG{l+m+mf}{0.} \PYG{p}{)}
 \end{Verbatim}
 
 There are several points need to be noticed:
@@ -1486,56 +1363,38 @@ For some kernels/means, number of hyperparameters depends on the dimension of in
 You can either enter the dimension, which use default values:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{m} \PYG{o}{=} \PYG{n}{mean}\PYG{o}{.}\PYG{n}{Linear}\PYG{p}{(} \PYG{n}{D}\PYG{o}{=}\PYG{n}{x}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{p}{)}
+\PYG{n}{m} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{mean}\PYG{o}{.}\PYG{n}{Linear}\PYG{p}{(} \PYG{n}{D}\PYG{o}{=}\PYG{n}{x}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{p}{)}
 \end{Verbatim}
 
 or you can initialze with the exact hyperparameters,
 you should enter as a list, one element for each dimension
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{m} \PYG{o}{=} \PYG{n}{mean}\PYG{o}{.}\PYG{n}{Linear}\PYG{p}{(} \PYG{n}{alpha\PYGZus{}list}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mf}{0.2}\PYG{p}{,} \PYG{l+m+mf}{0.4}\PYG{p}{,} \PYG{l+m+mf}{0.3}\PYG{p}{]} \PYG{p}{)}
+\PYG{n}{m} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{mean}\PYG{o}{.}\PYG{n}{Linear}\PYG{p}{(} \PYG{n}{alpha\PYGZus{}list}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mf}{0.2}\PYG{p}{,} \PYG{l+m+mf}{0.4}\PYG{p}{,} \PYG{l+m+mf}{0.3}\PYG{p}{]} \PYG{p}{)}
 \end{Verbatim}
 \begin{description}
 \item[{All these ``hyp-dim-dependent'' functions are:}] \leavevmode\begin{itemize}
 \item {} 
-\emph{mean.Linear}
+\emph{pyGPs.mean.Linear}
 
 \item {} 
-\emph{cov.RBFard}
+\emph{pyGPs.cov.RBFard}
 
 \item {} 
-\emph{cov.LINard}
+\emph{pyGPs.cov.LINard}
 
 \item {} 
-\emph{cov.RQard}
+\emph{pyGPs.cov.RQard}
 
 \end{itemize}
 
 \end{description}
 
 \item {} 
-For linear kernel, there is NO signal variance(scalar) in front of the function.
-
-If you want to add a scalar for it, you can use:
-
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{k} \PYG{o}{=} \PYG{l+m+mf}{0.5} \PYG{o}{*} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{LIN}\PYG{p}{(}\PYG{p}{)}
-\end{Verbatim}
-
-If you also want to add a bias term:
-
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{k} \PYG{o}{=} \PYG{l+m+mf}{0.5} \PYG{o}{*} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{LIN}\PYG{p}{(}\PYG{p}{)} \PYG{o}{+} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{Const}\PYG{p}{(}\PYG{n}{c}\PYG{o}{=}\PYG{l+m+mf}{1.}\PYG{p}{)}
-\end{Verbatim}
-
-Note 0.5 will also be treated as a hyperparameter.
-This also applies in \emph{cov.LINard}.
-
-\item {} 
-For \emph{cov.RBFunit()}, its signal variance is always 1 (because of unit magnitude). Therefore this function do not have a hyperparameter of ``signal variance''.
+For \emph{pyGPs.cov.RBFunit()}, its signal variance is always 1 (because of unit magnitude). Therefore this function do not have a hyperparameter of ``signal variance''.
 
 \item {} \begin{description}
-\item[{\emph{cov.Poly()} has three parameters, where hyperparameters are:}] \leavevmode\begin{itemize}
+\item[{\emph{pyGPs.cov.Poly()} has three parameters, where hyperparameters are:}] \leavevmode\begin{itemize}
 \item {} 
 c     -\textgreater{} inhomogeneous offset
 
@@ -1554,7 +1413,7 @@ will be treated as normal parameter, i.e. will not be trained
 \end{description}
 
 \item {} 
-Explicitly set \emph{cov.Noise} is not necessary, because noise are already added in likelihood.
+Explicitly set \emph{pyGPs.cov.Noise} is not necessary, because noise are already added in likelihood.
 
 \end{enumerate}
 
@@ -1564,20 +1423,17 @@ Explicitly set \emph{cov.Noise} is not necessary, because noise are already adde
 Adding and muliplying Kernels(Means) is really simple:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{k} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{Periodic}\PYG{p}{(}\PYG{p}{)} \PYG{o}{*} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
-\PYG{n}{k} \PYG{o}{=} \PYG{l+m+mf}{0.5}\PYG{o}{*}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{LIN}\PYG{p}{(}\PYG{p}{)} \PYG{o}{+} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{Periodic}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{Periodic}\PYG{p}{(}\PYG{p}{)} \PYG{o}{*} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{l+m+mf}{0.5}\PYG{o}{*}\PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{LIN}\PYG{p}{(}\PYG{p}{)} \PYG{o}{+} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{Periodic}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 
 Scalar will also be treated as a hyperparameter. For example, k = s1 * k1 + s2 * k2,
 then the list of hyperparameters is hyp = {[}s1, k1.hyp, s2, k2.hyp{]}. Scalar is passed in logorithm domain such that it will always be positive during optimization.
 
-Except linear kernel, all kernel functions have a scalar (signal variance) as hyperparameter.
-Therefore, the only explict scalar might be added to cov.LIN()
-
 Beside + / * , there is also a power operator for mean functions:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{m} \PYG{o}{=} \PYG{p}{(} \PYG{n}{mean}\PYG{o}{.}\PYG{n}{One}\PYG{p}{(}\PYG{p}{)}\PYG{o}{+}\PYG{n}{mean}\PYG{o}{.}\PYG{n}{Linear}\PYG{p}{(}\PYG{n}{alpha\PYGZus{}list}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mf}{0.2}\PYG{p}{]}\PYG{p}{)} \PYG{p}{)}\PYG{o}{*}\PYG{o}{*}\PYG{l+m+mi}{2}
+\PYG{n}{m} \PYG{o}{=} \PYG{p}{(} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{mean}\PYG{o}{.}\PYG{n}{One}\PYG{p}{(}\PYG{p}{)} \PYG{o}{+} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{mean}\PYG{o}{.}\PYG{n}{Linear}\PYG{p}{(}\PYG{n}{alpha\PYGZus{}list}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mf}{0.2}\PYG{p}{]}\PYG{p}{)} \PYG{p}{)}\PYG{o}{*}\PYG{o}{*}\PYG{l+m+mi}{2}
 \end{Verbatim}
 
 
@@ -1587,7 +1443,7 @@ In certain cases, you may have a precomputed kernel matrix,
 but its non-trivial to write down the exact formula of kernel functions. Then you can specify your kernel in the following way. A precomputed kernel also fits with other kernels. In other words, it can also be composited as the way other kernels functions do.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{k} \PYG{o}{=} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{Pre}\PYG{p}{(}\PYG{n}{M1}\PYG{p}{,} \PYG{n}{M2}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{Pre}\PYG{p}{(}\PYG{n}{M1}\PYG{p}{,} \PYG{n}{M2}\PYG{p}{)}
 \end{Verbatim}
 
 M1 and M2 are your precomputed kernel matrix,
@@ -1611,50 +1467,57 @@ training set covariance matrix (train by train)
 
 \end{description}
 
-A precomputed kernel can also be composited with other kernels. Similar to \emph{cov.LIN()}, you need to explictly add scalar for \emph{cov.Pre()}.
+A precomputed kernel can also be composited with other kernels. You need to explictly add scalar for \emph{pyGPs.cov.Pre()}.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{k} \PYG{o}{=} \PYG{l+m+mf}{0.5}\PYG{o}{*}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{Pre}\PYG{p}{(}\PYG{n}{M1}\PYG{p}{,} \PYG{n}{M2}\PYG{p}{)} \PYG{o}{+} \PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{l+m+mf}{0.5}\PYG{o}{*}\PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{Pre}\PYG{p}{(}\PYG{n}{M1}\PYG{p}{,} \PYG{n}{M2}\PYG{p}{)} \PYG{o}{+} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 
 
-\subsubsection{Customizing Kernel \& Mean}
-\label{Kernels:customizing-kernel-mean}
-We also support you to create your own kernel/mean class, your customized kernel class need to follow the structure template as below:
+\subsubsection{Developing New Kernel \& Mean Functions}
+\label{Kernels:developing-new-kernel-mean-functions}
+We also support the development of new kernel/mean classes, your customized kernel class need to follow the template as below:
 
 \begin{Verbatim}[commandchars=\\\{\}]
 \PYG{c}{\PYGZsh{} Your kernel class needs to inherit base class Kernel,}
 \PYG{c}{\PYGZsh{} which is in the module of Core.cov}
 \PYG{k}{class} \PYG{n+nc}{MyKernel}\PYG{p}{(}\PYG{n}{Kernel}\PYG{p}{)}\PYG{p}{:}
 
-    \PYG{k}{def} \PYG{n+nf}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{para1}\PYG{o}{=}\PYG{l+m+mf}{0.}\PYG{p}{,} \PYG{n}{para2}\PYG{o}{=}\PYG{l+m+mf}{0.}\PYG{p}{,} \PYG{n}{para3}\PYG{o}{=}\PYG{l+m+mf}{0.}\PYG{p}{)}\PYG{p}{:}
-        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{hyp} \PYG{o}{=} \PYG{p}{[}\PYG{n}{para1}\PYG{p}{,} \PYG{n}{para2}\PYG{p}{]}     \PYG{c}{\PYGZsh{} hyperparameters that can be trained}
-        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{para} \PYG{o}{=} \PYG{p}{[}\PYG{n}{para3}\PYG{p}{]}           \PYG{c}{\PYGZsh{} static parameters}
+  \PYG{k}{def} \PYG{n+nf}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{hyp}\PYG{p}{)}\PYG{p}{:}
+      \PYG{l+s+sd}{'''}
+\PYG{l+s+sd}{      Intialize hyperparameters for MyKernel.}
+\PYG{l+s+sd}{      '''}
+      \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{hyp} \PYG{o}{=} \PYG{n}{hyp}
 
-    \PYG{k}{def} \PYG{n+nf}{proceed}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{x}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,} \PYG{n}{z}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,} \PYG{n}{der}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{)}\PYG{p}{:}
-        \PYG{l+s+sd}{''' x is n by D training patterns matrix, and z is nn by D test case matrix'''}
-        \PYG{k}{return} \PYG{n}{A}
+  \PYG{k}{def} \PYG{n+nf}{getCovMatrix}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{n}{x}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,}\PYG{n}{z}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,}\PYG{n}{mode}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{)}\PYG{p}{:}
+      \PYG{l+s+sd}{'''}
+\PYG{l+s+sd}{      Return the specific covariance matrix according to input mode}
+
+\PYG{l+s+sd}{      :param x: training data}
+\PYG{l+s+sd}{      :param z: test data}
+\PYG{l+s+sd}{      :param str mode: 'self\PYGZus{}test' return self covariance matrix of test data(test by 1).}
+\PYG{l+s+sd}{                       'train' return training covariance matrix(train by train).}
+\PYG{l+s+sd}{                       'cross' return cross covariance matrix between x and z(train by test)}
+
+\PYG{l+s+sd}{      :return: the corresponding covariance matrix}
+\PYG{l+s+sd}{      '''}
+      \PYG{k}{pass}
+
+  \PYG{k}{def} \PYG{n+nf}{getDerMatrix}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{n}{x}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,}\PYG{n}{z}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,}\PYG{n}{mode}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,}\PYG{n}{der}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{)}\PYG{p}{:}
+      \PYG{l+s+sd}{'''}
+\PYG{l+s+sd}{      Compute derivatives wrt. hyperparameters according to input mode}
+
+\PYG{l+s+sd}{      :param x: training data}
+\PYG{l+s+sd}{      :param z: test data}
+\PYG{l+s+sd}{      :param str mode: 'self\PYGZus{}test' return self derivative matrix of test data(test by 1).}
+\PYG{l+s+sd}{                       'train' return training derivative matrix(train by train).}
+\PYG{l+s+sd}{                       'cross' return cross derivative matrix between x and z(train by test)}
+\PYG{l+s+sd}{      :param int der: index of hyperparameter whose derivative to be computed}
+
+\PYG{l+s+sd}{      :return: the corresponding derivative matrix}
+\PYG{l+s+sd}{      '''}
+      \PYG{k}{pass}
 \end{Verbatim}
-\begin{description}
-\item[{where the returning matrix A depends on the input:}] \leavevmode\begin{itemize}
-\item {} 
-if \emph{z == None}, A is covariance matrix of x with shape (n,n)
-
-\item {} 
-elif \emph{z == `diag'}, A is self covariance matrix with shape (n,1)
-
-\item {} 
-else \emph{z is a matrix (given test points)}, A is covariance between data sets x and z with shape (n,nn)
-
-\item {} 
-if \emph{der == None}, return A as defined previously.
-
-\item {} 
-else \emph{der != None}, i.e. given der as an integer der = $k$, return the derivative matrix wrt. to $k_{th}$ hyperparameter.
-
-\end{itemize}
-
-\end{description}
 
 and for customized mean class:
 
@@ -1663,25 +1526,49 @@ and for customized mean class:
 \PYG{c}{\PYGZsh{} which is in the module of Core.mean}
 \PYG{k}{class} \PYG{n+nc}{MyMean}\PYG{p}{(}\PYG{n}{Mean}\PYG{p}{)}\PYG{p}{:}
 
-    \PYG{k}{def} \PYG{n+nf}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{para1}\PYG{o}{=}\PYG{l+m+mf}{0.}\PYG{p}{,} \PYG{n}{para2}\PYG{o}{=}\PYG{l+m+mf}{0.}\PYG{p}{,} \PYG{n}{para3}\PYG{o}{=}\PYG{l+m+mf}{0.}\PYG{p}{)}\PYG{p}{:}
-        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{hyp} \PYG{o}{=} \PYG{p}{[}\PYG{n}{para1}\PYG{p}{,} \PYG{n}{para2}\PYG{p}{]}     \PYG{c}{\PYGZsh{} hyperparameters that can be trained}
-        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{para} \PYG{o}{=} \PYG{p}{[}\PYG{n}{para3}\PYG{p}{]}           \PYG{c}{\PYGZsh{} static parameters}
+  \PYG{k}{def} \PYG{n+nf}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{hyp}\PYG{p}{)}\PYG{p}{:}
+      \PYG{l+s+sd}{'''}
+\PYG{l+s+sd}{      Intialize hyperparameters for MyMean.}
+\PYG{l+s+sd}{      '''}
+      \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{hyp} \PYG{o}{=} \PYG{n}{hyp}
 
-    \PYG{k}{def} \PYG{n+nf}{proceed}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{x}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,} \PYG{n}{der}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{)}\PYG{p}{:}
-        \PYG{l+s+sd}{''' x is n by D training patterns matrix'''}
-        \PYG{k}{return} \PYG{n}{A}
+  \PYG{k}{def} \PYG{n+nf}{getMean}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{x}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{)}\PYG{p}{:}
+      \PYG{l+s+sd}{'''}
+\PYG{l+s+sd}{      Get the mean vector.}
+\PYG{l+s+sd}{      '''}
+      \PYG{k}{pass}
+
+  \PYG{k}{def} \PYG{n+nf}{getDerMatrix}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{x}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,} \PYG{n}{der}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{)}\PYG{p}{:}
+      \PYG{l+s+sd}{'''}
+\PYG{l+s+sd}{      Compute derivatives wrt. hyperparameters.}
+
+\PYG{l+s+sd}{      :param x: training data}
+\PYG{l+s+sd}{      :param int der: index of hyperparameter whose derivative to be computed}
+
+\PYG{l+s+sd}{      :return: the corresponding derivative matrix}
+\PYG{l+s+sd}{      '''}
+      \PYG{k}{pass}
 \end{Verbatim}
-\begin{description}
-\item[{where the returning matrix A depends on the input:}] \leavevmode\begin{itemize}
-\item {} 
-if \emph{der == None}, return A as the mean of x
 
-\item {} 
-else \emph{der != None}, return the derivative of mean wrt. to $k_{th}$ hyperparameter.
+You can test your customized mean/kernel function using our framework of unit test.
+Taking kernel test as an example, you can uncomment method \emph{test\_cov\_new} in
+\emph{pyGPs.Testing.unit\_test\_cov.py} to check the outputs of your kernel function.
 
-\end{itemize}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZsh{} Test your customized covariance function}
+\PYG{k}{def} \PYG{n+nf}{test\PYGZus{}cov\PYGZus{}new}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{k} \PYG{o}{=} \PYG{n}{myKernel}\PYG{p}{(}\PYG{p}{)}     \PYG{c}{\PYGZsh{} specify your covariance function}
+    \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{checkCovariance}\PYG{p}{(}\PYG{n}{k}\PYG{p}{)}
+\end{Verbatim}
 
-\end{description}
+and testing mean function in \emph{pyGPs.Testing.unit\_test\_mean.py}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZsh{} Test your customized mean function}
+\PYG{k}{def} \PYG{n+nf}{test\PYGZus{}mean\PYGZus{}new}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{m} \PYG{o}{=} \PYG{n}{myMean}         \PYG{c}{\PYGZsh{} specify your mean function}
+    \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{checkMean}\PYG{p}{(}\PYG{n}{m}\PYG{p}{)}
+\end{Verbatim}
 
 
 \subsection{Likelihoods \& Inference}
@@ -1738,268 +1625,100 @@ newInf: \textbf{``Laplace''}
 \end{description}
 
 
-\subsubsection{List of Likelihoods}
-\label{Likelihoods:list-of-likelihoods}\label{Likelihoods:module-pyGPs.Core.lik}\index{pyGPs.Core.lik (module)}\index{Erf (class in pyGPs.Core.lik)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.lik.Erf}\pysigline{\strong{class }\code{pyGPs.Core.lik.}\bfcode{Erf}}
-Error function or cumulative Gaussian likelihood function for binary
-classification or probit regression.
-
-$Erf(t)=\frac{1}{2}(1+erf(\frac{t}{\sqrt{2}}))=normcdf(t)$
-
-\end{fulllineitems}
-
-\index{Gauss (class in pyGPs.Core.lik)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.lik.Gauss}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.lik.}\bfcode{Gauss}}{\emph{log\_sigma=-2.3025850929940455}}{}
-Gaussian likelihood function for regression.
-
-$Gauss(t)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(t-y)^2}{2\sigma^2}}$,
-where $y$ is the mean and $\sigma$ is the standard deviation.
-
-hyp = {[} log\_sigma {]}
-
-\end{fulllineitems}
-
-\index{Laplace (class in pyGPs.Core.lik)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.lik.Laplace}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.lik.}\bfcode{Laplace}}{\emph{log\_sigma=-2.3025850929940455}}{}
-Laplacian likelihood function for regression. ONLY works with EP inference!
-
-$Laplace(t) = \frac{1}{2b}e^{-\frac{|t-y|}{b}}$ where $b=\frac{\sigma}{\sqrt{2}}$,
-$y$ is the mean and $\sigma$ is the standard deviation.
-
-hyp = {[} log\_sigma {]}
-
-\end{fulllineitems}
-
-\index{Likelihood (class in pyGPs.Core.lik)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.lik.Likelihood}\pysigline{\strong{class }\code{pyGPs.Core.lik.}\bfcode{Likelihood}}
-Base function for Likelihood function
-\index{proceed() (pyGPs.Core.lik.Likelihood method)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.lik.Likelihood.proceed}\pysiglinewithargsret{\bfcode{proceed}}{}{}
-The likelihood functions have two possible modes based on inputs. 
-See lik.py for detail documentation.
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-
-
-\subsubsection{List of Inference}
-\label{Likelihoods:module-pyGPs.Core.inf}\label{Likelihoods:list-of-inference}\index{pyGPs.Core.inf (module)}\index{EP (class in pyGPs.Core.inf)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.EP}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{EP}}
-Expectation Propagation approximation to the posterior Gaussian Process.
-
-\end{fulllineitems}
-
-\index{Exact (class in pyGPs.Core.inf)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Exact}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{Exact}}
-Exact inference for a GP with Gaussian likelihood. Compute a parametrization
-of the posterior, the negative log marginal likelihood and its derivatives
-w.r.t. the hyperparameters.
-
-\end{fulllineitems}
-
-\index{FITC\_EP (class in pyGPs.Core.inf)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.FITC_EP}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{FITC\_EP}}
-FITC-EP approximation to the posterior Gaussian process. The function is
-equivalent to infEP with the covariance function:
-Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Kuu + snu2 * eye(nu)) * Ku;
-where Ku and Kuu are covariances w.r.t. to inducing inputs xu and
-snu2 = sn2/1e6 is the noise of the inducing inputs. We fixed the standard
-deviation of the inducing inputs snu to be a one per mil of the measurement 
-noise's standard deviation sn. In case of a likelihood without noise
-parameter sn2, we simply use snu2 = 1e-6.
-For details, see The Generalized FITC Approximation, Andrew Naish-Guzman and
-Sean Holden, NIPS, 2007.
-
-\end{fulllineitems}
-
-\index{FITC\_Exact (class in pyGPs.Core.inf)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.FITC_Exact}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{FITC\_Exact}}
-FITC approximation to the posterior Gaussian process. The function is
-equivalent to infExact with the covariance function:
-Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Quu) * Ku; 
-where Ku and Kuu are covariances w.r.t. to inducing inputs xu, snu2 = sn2/1e6
-is the noise of the inducing inputs and Quu = Kuu + snu2*eye(nu).
-
-\end{fulllineitems}
-
-\index{FITC\_Laplace (class in pyGPs.Core.inf)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.FITC_Laplace}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{FITC\_Laplace}}
-FITC-Laplace approximation to the posterior Gaussian process. The function is
-equivalent to infLaplace with the covariance function:
-Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Kuu + snu2 * eye(nu)) * Ku;
-where Ku and Kuu are covariances w.r.t. to inducing inputs xu and
-snu2 = sn2/1e6 is the noise of the inducing inputs. We fixed the standard
-deviation of the inducing inputs snu to be a one per mil of the measurement 
-noise's standard deviation sn. In case of a likelihood without noise
-parameter sn2, we simply use snu2 = 1e-6.
-
-\end{fulllineitems}
-
-\index{Inference (class in pyGPs.Core.inf)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{Inference}}
-Base class for inference. Defined several tool methods in it.
-\index{Psi\_line() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.Psi_line}\pysiglinewithargsret{\bfcode{Psi\_line}}{\emph{s}, \emph{dalpha}, \emph{alpha}, \emph{K}, \emph{m}, \emph{likfunc}, \emph{y}, \emph{inffunc}}{}
-Criterion Psi at alpha + s*dalpha for line search
-{[}Psi,alpha,f,dlp,W{]} = Psi\_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)
-
-\end{fulllineitems}
-
-\index{Psi\_lineFITC() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.Psi_lineFITC}\pysiglinewithargsret{\bfcode{Psi\_lineFITC}}{\emph{s}, \emph{dalpha}, \emph{alpha}, \emph{V}, \emph{d0}, \emph{m}, \emph{likfunc}, \emph{y}, \emph{inffunc}}{}
-Criterion Psi at alpha + s*dalpha for line search
-
-\end{fulllineitems}
-
-\index{epfitcRefresh() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.epfitcRefresh}\pysiglinewithargsret{\bfcode{epfitcRefresh}}{\emph{d0}, \emph{P0}, \emph{R0}, \emph{R0P0}, \emph{w}, \emph{b}}{}
-Refresh the representation of the posterior from initial and site parameters
-to prevent possible loss of numerical precision after many epfitcUpdates
-effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
-Sigma = inv(inv(K)+diag(W)) = diag(d) + P'{\color{red}\bfseries{}*}R0'{\color{red}\bfseries{}*}R'{\color{red}\bfseries{}*}R*R0*P.
-
-\end{fulllineitems}
-
-\index{epfitcZ() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.epfitcZ}\pysiglinewithargsret{\bfcode{epfitcZ}}{\emph{d}, \emph{P}, \emph{R}, \emph{nn}, \emph{gg}, \emph{ttau}, \emph{tnu}, \emph{d0}, \emph{R0}, \emph{P0}, \emph{y}, \emph{likfunc}, \emph{m}, \emph{inffunc}}{}
-Compute the marginal likelihood approximation
-effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
-
-\end{fulllineitems}
-
-\index{fitcRefresh() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.fitcRefresh}\pysiglinewithargsret{\bfcode{fitcRefresh}}{\emph{d0}, \emph{P0}, \emph{R0}, \emph{R0P0}, \emph{w}}{}
-Refresh the representation of the posterior from initial and site parameters
-to prevent possible loss of numerical precision after many epfitcUpdates
-effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
-Sigma = inv(inv(K)+diag(W)) = diag(d) + P'{\color{red}\bfseries{}*}R0'{\color{red}\bfseries{}*}R'{\color{red}\bfseries{}*}R*R0*P.
-
-\end{fulllineitems}
-
-\index{logdetA() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.logdetA}\pysiglinewithargsret{\bfcode{logdetA}}{\emph{K}, \emph{w}, \emph{nargout}}{}
-Compute the log determinant ldA and the inverse iA of a square nxn matrix
-A = eye(n) + K*diag(w) from its LU decomposition; for negative definite A, we 
-return ldA = Inf. We also return mwiA = -diag(w)*inv(A).
-{[}ldA,iA,mwiA{]} = logdetA(K,w)
-
-\end{fulllineitems}
-
-\index{mvmK() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.mvmK}\pysiglinewithargsret{\bfcode{mvmK}}{\emph{al}, \emph{V}, \emph{d0}}{}
-Matrix vector multiplication with approximate covariance matrix
-
-\end{fulllineitems}
-
-\index{mvmZ() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.mvmZ}\pysiglinewithargsret{\bfcode{mvmZ}}{\emph{x}, \emph{RVdd}, \emph{t}}{}
-Matrix vector multiplication with Z=inv(K+inv(W))
-
-\end{fulllineitems}
-
-\index{proceed() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Inference.proceed}\pysiglinewithargsret{\bfcode{proceed}}{\emph{meanfunc}, \emph{covfunc}, \emph{likfunc}, \emph{x}, \emph{y}, \emph{nargout=1}}{}
-Inference computation based on inputs.
-post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\textbf{meanfunc} -- mean function
-
-\item {} 
-\textbf{covfunc} -- covariance function
-
-\item {} 
-\textbf{likfunc} -- likelihood function
-
-\item {} 
-\textbf{x} -- training data
-
-\item {} 
-\textbf{y} -- training labels
-
-\item {} 
-\textbf{nargout} -- specify the number of output(1,2 or 3)
-
-\end{itemize}
-
-\item[{Returns}] \leavevmode
-posterior, negative-log-marginal-likelihood, derivative for negative-log-marginal-likelihood-likelihood
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-\index{Laplace (class in pyGPs.Core.inf)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.Laplace}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{Laplace}}
-Laplace's Approximation to the posterior Gaussian process.
-
-\end{fulllineitems}
-
-\index{dnlZStruct (class in pyGPs.Core.inf)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.dnlZStruct}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.inf.}\bfcode{dnlZStruct}}{\emph{m}, \emph{c}, \emph{l}}{}
-Data structure for the derivatives of mean, cov and lik functions
-
-\end{fulllineitems}
-
-\index{postStruct (class in pyGPs.Core.inf)}
-
-\begin{fulllineitems}
-\phantomsection\label{Likelihoods:pyGPs.Core.inf.postStruct}\pysigline{\strong{class }\code{pyGPs.Core.inf.}\bfcode{postStruct}}
-Data structure for posterior
-
-\end{fulllineitems}
-
+\subsubsection{Developing New Likelihood \& Inference Functions}
+\label{Likelihoods:developing-new-likelihood-inference-functions}
+We also support the development of new likelihood/inference classes, your customized inference class need to follow the template as below:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZsh{} Your inference class needs to inherit base class Inference,}
+\PYG{c}{\PYGZsh{} which is in the module of Core.inf}
+\PYG{k}{class} \PYG{n+nc}{MyKernel}\PYG{p}{(}\PYG{n}{Kernel}\PYG{p}{)}\PYG{p}{:}
+
+  \PYG{k}{def} \PYG{n+nf}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)}\PYG{p}{:}
+      \PYG{k}{pass}
+
+  \PYG{k}{def} \PYG{n+nf}{proceed}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{meanfunc}\PYG{p}{,} \PYG{n}{covfunc}\PYG{p}{,} \PYG{n}{likfunc}\PYG{p}{,} \PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{n}{nargout}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{:}
+      \PYG{l+s+sd}{'''}
+\PYG{l+s+sd}{      Inference computation based on inputs.}
+\PYG{l+s+sd}{      post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)}
+
+\PYG{l+s+sd}{      INPUT:}
+\PYG{l+s+sd}{      cov: name of the covariance function (see covFunctions.m)}
+\PYG{l+s+sd}{      lik: name of the likelihood function (see likFunctions.m)}
+\PYG{l+s+sd}{      x: n by D matrix of training inputs}
+\PYG{l+s+sd}{      y: 1d array (of size n) of targets}
+
+\PYG{l+s+sd}{      OUTPUT:}
+\PYG{l+s+sd}{      post(instance of postStruct): struct representation of the (approximate) posterior containing:}
+\PYG{l+s+sd}{      nlZ: returned value of the negative log marginal likelihood}
+\PYG{l+s+sd}{      dnlZ(instance of dnlZStruct): struct representation for derivatives of the negative log marginal likelihood}
+\PYG{l+s+sd}{      w.r.t. each hyperparameter.}
+
+\PYG{l+s+sd}{      Usually, the approximate posterior to be returned admits the form:}
+\PYG{l+s+sd}{      N(m=K*alpha, V=inv(inv(K)+W)), where alpha is a vector and W is diagonal;}
+\PYG{l+s+sd}{      if not, then L contains instead -inv(K+inv(W)), and sW is unused.}
+
+\PYG{l+s+sd}{      For more information on the individual approximation methods and their}
+\PYG{l+s+sd}{      implementations, see the respective inference function below. See also gp.py}
+
+\PYG{l+s+sd}{      :param meanfunc: mean function}
+\PYG{l+s+sd}{      :param covfunc: covariance function}
+\PYG{l+s+sd}{      :param likfunc: likelihood function}
+\PYG{l+s+sd}{      :param x: training data}
+\PYG{l+s+sd}{      :param y: training labels}
+\PYG{l+s+sd}{      :param nargout: specify the number of output(1,2 or 3)}
+\PYG{l+s+sd}{      :return: posterior, negative-log-marginal-likelihood, derivative for negative-log-marginal-likelihood-likelihood}
+\PYG{l+s+sd}{      '''}
+      \PYG{k}{pass}
+\end{Verbatim}
+
+where \textbf{postStruct} and \textbf{dnlZStruct} is also defined in \emph{Core.inf}.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{class} \PYG{n+nc}{postStruct}\PYG{p}{(}\PYG{n+nb}{object}\PYG{p}{)}\PYG{p}{:}
+    \PYG{l+s+sd}{'''}
+\PYG{l+s+sd}{    Data structure for posterior}
+
+\PYG{l+s+sd}{    post.alpha -\textgreater{}  1d array containing inv(K)*m,}
+\PYG{l+s+sd}{                   where K is the prior covariance matrix and m the approx posterior mean}
+\PYG{l+s+sd}{    post.sW:   -\textgreater{}  1d array containing diagonal of sqrt(W)}
+\PYG{l+s+sd}{                   the approximate posterior covariance matrix is inv(inv(K)+W)}
+\PYG{l+s+sd}{    post.L     -\textgreater{}  2d array, L = chol(sW*K*sW+identity(n))}
+\PYG{l+s+sd}{    '''}
+
+\PYG{k}{class} \PYG{n+nc}{dnlZStruct}\PYG{p}{(}\PYG{n+nb}{object}\PYG{p}{)}\PYG{p}{:}
+    \PYG{l+s+sd}{'''}
+\PYG{l+s+sd}{    Data structure for the derivatives of mean, cov and lik functions.}
+
+\PYG{l+s+sd}{    dnlZ.mean  -\textgreater{}  list of derivatives for each hyperparameters in mean function}
+\PYG{l+s+sd}{    dnlZ.cov   -\textgreater{}  list of derivatives for each hyperparameters in covariance function}
+\PYG{l+s+sd}{    dnlZ.lik   -\textgreater{}  list of derivatives for each hyperparameters in likelihood function}
+\PYG{l+s+sd}{    '''}
+\end{Verbatim}
+
+Customizing likelihood function is more complicated. We will omit it here to keep this this page not too long.
+However, you can find detailed explaination either in the \textbf{source code} \emph{Core.lik} or in coresponding section of \textbf{manual}.
+
+Just like testing kernel/mean fucntions, you can also find unit test module for likelihood and inference functions.
+To test your customized inference function, uncomment the following method in \emph{pyGPs.Testing.unit\_test\_inf.py}.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZsh{} Test your customized inference function}
+\PYG{k}{def} \PYG{n+nf}{test\PYGZus{}inf\PYGZus{}new}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)}\PYG{p}{:}
+    \PYG{c}{\PYGZsh{} specify your inf function}
+    \PYG{c}{\PYGZsh{} set mean/cov/lik functions}
+    \PYG{n}{post}\PYG{p}{,} \PYG{n}{nlZ}\PYG{p}{,} \PYG{n}{dnlZ} \PYG{o}{=} \PYG{n}{inffunc}\PYG{o}{.}\PYG{n}{proceed}\PYG{p}{(}\PYG{n}{meanfunc}\PYG{p}{,} \PYG{n}{covfunc}\PYG{p}{,} \PYG{n}{likfunc}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{x}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{y}\PYG{p}{,} \PYG{n}{nargout}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{)}
+    \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{checkFITCOutput}\PYG{p}{(}\PYG{n}{post}\PYG{p}{,} \PYG{n}{nlZ}\PYG{p}{,} \PYG{n}{dnlZ}\PYG{p}{)}
+\end{Verbatim}
+
+and test customized likelihood function in \emph{pyGPs.Testing.unit\_test\_lik.py}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZsh{} Test your customized likelihood function}
+\PYG{k}{def} \PYG{n+nf}{test\PYGZus{}cov\PYGZus{}new}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{likelihood} \PYG{o}{=} \PYG{n}{myLikelihood}\PYG{p}{(}\PYG{p}{)}     \PYG{c}{\PYGZsh{} specify your likelihood function}
+    \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{checkLikelihood}\PYG{p}{(}\PYG{n}{likelihood}\PYG{p}{)}
+\end{Verbatim}
 
 
 \subsection{Optimizers}
@@ -2060,144 +1779,320 @@ This is only the range of initial guess, during optimization process, optimal hy
 
 
 
-\section{Extensions}
-\label{index:extensions}
-
-\subsection{Kernels for Graph Data}
-\label{Graph::doc}\label{Graph:kernels-for-graph-data}
-You can refer to our demo of semi-supervised learning for a simple usage of kernels for graph data.
+\section{GraphExtensions}
+\label{index:graphextensions}
+We provide functionality for kernels on graphs for learning on the node-level and graph kernels for
+learning on the graph-level. Kernels on graphs can also be used for graph-based semi-supervised learning.
 
 
-\subsubsection{Kernels on Graph}
-\label{Graph:semi-supervised-learning}\label{Graph:module-pyGPs.GraphStuff.kernels_on_graph}\label{Graph:kernels-on-graph}\index{pyGPs.GraphStuff.kernels\_on\_graph (module)}\index{VNDKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)}
+\subsection{Kernels on Graphs}
+\label{Graph::doc}\label{Graph:kernels-on-graphs}
 
-\begin{fulllineitems}
-\phantomsection\label{Graph:pyGPs.GraphStuff.kernels_on_graph.VNDKernel}\pysiglinewithargsret{\code{pyGPs.GraphStuff.kernels\_on\_graph.}\bfcode{VNDKernel}}{\emph{A}, \emph{alpha=0.5}}{}
-Von Neumann Diffusion Kernel on graph (Zhou et al., 2004)
-(also label spreading kernel)
+\subsubsection{Demo}
+\label{Graph:demo}
 
-K = (I - alpha*S)\textasciicircum{}-1, where S = D\textasciicircum{}-1/2*A*D\textasciicircum{}-1/2
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
+\paragraph{Semi-supervised Learning with Graphs}
+\label{SemiSupervised:semi-supervised-learning-with-graphs}\label{SemiSupervised::doc}
+The code shown in this tutorial can be executed by running \emph{pyGPs/Demo/demo\_NodeKernel.py}
+
+
+\subparagraph{Import}
+\label{SemiSupervised:import}
+You may want to import some extensions we provide as follows:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from} \PYG{n+nn}{pyGPs.GraphExtension} \PYG{k+kn}{import} \PYG{n}{graphUtil}\PYG{p}{,} \PYG{n}{nodeKernels}
+\PYG{k+kn}{from} \PYG{n+nn}{pyGPs.Validation} \PYG{k+kn}{import} \PYG{n}{valid}
+\end{Verbatim}
+
+
+\subparagraph{Load data}
+\label{SemiSupervised:load-data}
+We used the same dataset from GPMC example. i.e. The USPS digits dataset \footnote{
+A Database for Handwritten Text Recognition Research, J. J. Hull, IEEE PAMI 16(5) 550-554, 1994.
+}.
+Each digit of $16*16$ pixels is flattened into a $256$ dimension vector.
+For the simplicity of demo, we only selected digits $1$ s and $2$ s such that we have a binary classification problem where digit $1$ for class +1 and digit $2$ for class -1. We also reduced the dataset into $100$ samples per digit, where the original dataset consist of thousands of samples for each digit.
+
+Here are samples for two digits for $1$
+
+\mbox{
+  \includegraphics[width=0.300\linewidth]{digit1_1.png}
+  \includegraphics[width=0.300\linewidth]{digit1_2.png}}
+
+and samples for two digits for $2$
+
+\mbox{
+  \includegraphics[width=0.300\linewidth]{digit2_1.png}
+  \includegraphics[width=0.300\linewidth]{digit2_2.png}}
+
+
+\subparagraph{Form a nearest neighbour graph}
+\label{SemiSupervised:form-a-nearest-neighbour-graph}
+We form a nearest-neighbor graph based on Euclidean distance of the vector representation of digits. Neighboring images have small Euclidean distance. Each digit is a node in the graph. There is an edge if digit $i$ is the k-nearest neighbour of digit $j$. We form a symmetrized graph such that we connect nodes $j$, $i$ if i is in j’s kNN and vice versa, and therefore a node can have more than k edges. You should import the corresponding module from \emph{pyGPs.GraphStuff}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{x}\PYG{p}{,}\PYG{n}{y} \PYG{o}{=} \PYG{n}{load\PYGZus{}binary}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{n+nb}{reduce}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{)}
+\PYG{n}{A} \PYG{o}{=} \PYG{n}{graphUtil}\PYG{o}{.}\PYG{n}{formKnnGraph}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}
+\end{Verbatim}
+
+A is the adjacency matrix of this $2-NN$ graph.
+
+Below shows an example of such symmetrized Euclidean $2-NN$ graph on some 1s and 2s taking from Xiaojin Zhu's doctoral thesis \footnote{
+Semi-Supervised Learning with Graphs, Xiaojin Zhu, CMU-LTI-05-192, 2005
+}.
+\begin{figure}[htbp]
+\centering
+
+\includegraphics[width=0.500\linewidth]{2nnGraph.png}
+\end{figure}
+
+
+\subparagraph{Kernel on graph}
+\label{SemiSupervised:kernel-on-graph}
+Several classical kernels on graph described in Structured Kernels can be built from adjacency matrix $A$. We use diffusion kernel for this example to get the precomputed kernel matrix.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{Matrix} \PYG{o}{=} \PYG{n}{nodeKernels}\PYG{o}{.}\PYG{n}{diffKernel}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+\end{Verbatim}
+
+This a big square matrix with all rows and columns of the number of data points.
+By specifying the indice of training data and test data, we will form two matrix M1 and M2 with the exact format which \emph{pyGPs.Core.cov.Pre} needed.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{M1}\PYG{p}{,}\PYG{n}{M2} \PYG{o}{=} \PYG{n}{graphUtil}\PYG{o}{.}\PYG{n}{formKernelMatrix}\PYG{p}{(}\PYG{n}{Matrix}\PYG{p}{,} \PYG{n}{indice\PYGZus{}train}\PYG{p}{,} \PYG{n}{indice\PYGZus{}test}\PYG{p}{)}
+\end{Verbatim}
+\begin{description}
+\item[{M1 is a matrix with shape \textbf{number of training points plus 1} by \textbf{number of test points}}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{A} -- adjacency matrix
+cross covariances matrix (train by test)
 
 \item {} 
-\textbf{alpha} -- (hyper)parameter(s)
+last row is self covariances (diagonal of test by test)
 
 \end{itemize}
 
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{cosKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)}
-
-\begin{fulllineitems}
-\phantomsection\label{Graph:pyGPs.GraphStuff.kernels_on_graph.cosKernel}\pysiglinewithargsret{\code{pyGPs.GraphStuff.kernels\_on\_graph.}\bfcode{cosKernel}}{\emph{A}}{}
-Cosine Kernel (also Inverse Cosine Kernel)
-
-K = cos (L*pi/4), where L is the normalized Laplacian
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{A} -- adjacency matrix
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{diffKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)}
-
-\begin{fulllineitems}
-\phantomsection\label{Graph:pyGPs.GraphStuff.kernels_on_graph.diffKernel}\pysiglinewithargsret{\code{pyGPs.GraphStuff.kernels\_on\_graph.}\bfcode{diffKernel}}{\emph{A}, \emph{beta=0.5}}{}
-Diffusion Process Kernel
-
-K = exp(beta * H), where H = -L = A-D
-
-K = Q exp(beta * Lambda) Q.T
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
+\item[{M2 is a square matrix with \textbf{number of training points} for each dimension}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{A} -- adjacency matrix
-
-\item {} 
-\textbf{beta} -- (hyper)parameter(s)
+training set covariance matrix (train by train)
 
 \end{itemize}
 
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{normLap() (in module pyGPs.GraphStuff.kernels\_on\_graph)}
-
-\begin{fulllineitems}
-\phantomsection\label{Graph:pyGPs.GraphStuff.kernels_on_graph.normLap}\pysiglinewithargsret{\code{pyGPs.GraphStuff.kernels\_on\_graph.}\bfcode{normLap}}{\emph{A}}{}
-normalized Laplacian
-
-\end{fulllineitems}
-
-\index{psInvLapKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)}
-
-\begin{fulllineitems}
-\phantomsection\label{Graph:pyGPs.GraphStuff.kernels_on_graph.psInvLapKernel}\pysiglinewithargsret{\code{pyGPs.GraphStuff.kernels\_on\_graph.}\bfcode{psInvLapKernel}}{\emph{A}}{}
-Pseudo inverse of the normalized Laplacian.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{A} -- adjacency matrix
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{regLapKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)}
-
-\begin{fulllineitems}
-\phantomsection\label{Graph:pyGPs.GraphStuff.kernels_on_graph.regLapKernel}\pysiglinewithargsret{\code{pyGPs.GraphStuff.kernels\_on\_graph.}\bfcode{regLapKernel}}{\emph{A}, \emph{sigma=1}}{}
-Regularized Laplacian Kernel
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\textbf{A} -- adjacency matrix
-
-\item {} 
-\textbf{sigma} -- (hyper)parameter(s)
-
-\end{itemize}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{rwKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)}
-
-\begin{fulllineitems}
-\phantomsection\label{Graph:pyGPs.GraphStuff.kernels_on_graph.rwKernel}\pysiglinewithargsret{\code{pyGPs.GraphStuff.kernels\_on\_graph.}\bfcode{rwKernel}}{\emph{A}, \emph{p=1}, \emph{a=2}}{}
-p-step Random Walk Kernel with a\textgreater{}1
-
-K = (aI-L)\textasciicircum{}p, p\textgreater{}1 and L is the normalized Laplacian
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\textbf{A} -- adjacency matrix
-
-\item {} 
-\textbf{p} -- step parameter
-
-\item {} 
-\textbf{a} -- (hyper)parameter(s)
-
-\end{itemize}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
+\end{description}
 
 
+\subparagraph{GP classification}
+\label{SemiSupervised:gp-classification}
+Every ingredients for a basic semi-supervised learning is prepared now.  Lets see how to proceed for $GP$ classification. First, the normal way with rbf kernel we have seen several times
 
-\subsubsection{Graph Kernels}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{model} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{GPC}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{)}
+\end{Verbatim}
+
+Then lets use our kernel precomputed matrix. If you only use precomputed kernel matrix, there is no training data.
+However you still need to specify $x$ just to fit in the usage of pyGPs for generality reason.
+You can create any $x$ as long as the dimension is correct.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{x} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n}{n}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{Pre}\PYG{p}{(}\PYG{n}{M1}\PYG{p}{,}\PYG{n}{M2}\PYG{p}{)} \PYG{o}{+} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBF}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{)}
+\end{Verbatim}
+
+Moreover, you can composite a kernel for both precomputed matrix and regular kernel function if necessary.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{Pre}\PYG{p}{(}\PYG{n}{M1}\PYG{p}{,}\PYG{n}{M2}\PYG{p}{)} \PYG{o}{+} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{RBFunit}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{)}
+\end{Verbatim}
+
+The rest way of using pyGPs is exactly the same as the demo of GP classification.
+
+
+\subparagraph{Result}
+\label{SemiSupervised:result}
+For our manually created graph data, an rbf kernel works better than a diffusion kernel on the graph (higher accuracy). The performance in general should depend on the application as well as features of data.
+
+The left image shows the digit that using diffusion kernel will predict the wrong result (should be $2$),
+but rbf kernel does the job fine. The right image shows the digit that rbf kernel predicts the wrong class, diffusion kernel on the other hand, predicts correctly due to graph information! (should be $1$).
+
+Interestingly, using a composite kernel with diffusion kernel on graph and an rbf kernel together. All test cases including the following are predicted correctly.
+
+\mbox{
+  \includegraphics[width=0.500\linewidth]{digitDiffwrong.png}
+  \includegraphics[width=0.500\linewidth]{digitRBFwrong.png}}
+
+
+\subsubsection{Functionality}
+\label{Graph:functionality}
+Implemented kernels on graphs:
+
+\begin{tabulary}{\linewidth}{|L|L|}
+\hline
+
+diffKernel
+ & 
+Diffusion kernel
+\\\hline
+
+VNDKernel
+ & 
+Von-Neumann diffusion kernel
+\\\hline
+
+psInvLapKernel
+ & 
+Pseudo-Inverse of the Laplacian
+\\\hline
+
+regLapKernel
+ & 
+Regularized Laplacian kernel
+\\\hline
+
+rwKernel
+ & 
+p-step random walk kernel
+\\\hline
+
+cosKernel
+ & 
+Inverse Cosine Kernel
+\\\hline
+\end{tabulary}
+
+
+
+\subsection{Graph Kernels}
 \label{Graph:graph-kernels}
-tbd.
+
+\subsubsection{Demo}
+\label{Graph:id1}
+
+\paragraph{Graph Kernels}
+\label{GraphKernel:graph-kernels}\label{GraphKernel::doc}
+The code shown in this tutorial can be executed by running \emph{pyGPs/Demo/demo\_GraphKernel.py}
+
+
+\subparagraph{Load data}
+\label{GraphKernel:load-data}
+MUTAG \footnote{
+Debnath, A., Lopez de Compadre, R., Debnath, G., Shusterman, A., and Hansch, C.. Structure-activity relationship of mutagenic aromatic and heteroaromatic nitro compounds. Correlation with molecular orbital energies and hydrophobicity. J. Med. Chem., 34:786–797, 1991.
+} is a data set of 188 mutagenic aromatic and heteroaromatic
+nitro compounds labeled according to whether or not they have a mutagenic effect on the
+Gram-negative bacterium Salmonella typhimurium. MUTAG is a simple but popular dataset
+to benchmark graph kernels.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{data} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{load}\PYG{p}{(}\PYG{l+s}{'}\PYG{l+s}{MUTAG.npz}\PYG{l+s}{'}\PYG{p}{)}
+\PYG{n}{A} \PYG{o}{=} \PYG{n}{csc\PYGZus{}matrix}\PYG{p}{(} \PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{adj\PYGZus{}data}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{,} \PYG{n}{data}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{adj\PYGZus{}indice}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{,} \PYGZbs{}
+    \PYG{n}{data}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{adj\PYGZus{}indptr}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{)}\PYG{p}{,} \PYG{n}{shape}\PYG{o}{=}\PYG{n}{data}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{adj\PYGZus{}shape}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{)}     \PYG{c}{\PYGZsh{} n x n adjancy array (sparse matrix)}
+\PYG{n}{gr\PYGZus{}id} \PYG{o}{=} \PYG{n}{data}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{graph\PYGZus{}ind}\PYG{l+s}{'}\PYG{p}{]}                             \PYG{c}{\PYGZsh{} n x 1 graph id array}
+\PYG{n}{node\PYGZus{}label} \PYG{o}{=} \PYG{n}{data}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{responses}\PYG{l+s}{'}\PYG{p}{]}                        \PYG{c}{\PYGZsh{} n x 1 node label array}
+\PYG{n}{graph\PYGZus{}label} \PYG{o}{=} \PYG{n}{data}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{labels}\PYG{l+s}{'}\PYG{p}{]}                          \PYG{c}{\PYGZsh{} N x 1 graph label array}
+\end{Verbatim}
+
+Note that adjacency matrix for all graphs is usually too big to fit into memory when using $GP$.
+Therefore, we generate $A$ using sparse matrix \emph{csc\_matrix} provided by \emph{scipy}.
+
+
+\subparagraph{Compute propagation kernel matrix}
+\label{GraphKernel:compute-propagation-kernel-matrix}
+Propagation kernels \footnote{
+Neumann, M., Patricia, N., Garnett, R., Kersting, K.: Efficient Graph Kernels by Randomization. In: P.A. Flach, T.D. Bie, N. Cristianini (eds.) ECML/PKDD, Notes in Computer Science, vol. 7523, pp. 378-393. Springer (2012).
+} are recently introduced fast and flexible graph kernels.
+Generate prapagation kernel based on given graph data.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{num\PYGZus{}Iteration} \PYG{o}{=} \PYG{l+m+mi}{10}
+\PYG{n}{w} \PYG{o}{=} \PYG{l+m+mf}{1e-4}
+\PYG{n}{dist} \PYG{o}{=} \PYG{l+s}{'}\PYG{l+s}{tv}\PYG{l+s}{'}      \PYG{c}{\PYGZsh{} possible values: 'tv', 'hellinger'}
+\PYG{n}{K} \PYG{o}{=} \PYG{n}{graphKernels}\PYG{o}{.}\PYG{n}{propagationKernel}\PYG{p}{(}\PYG{n}{A}\PYG{p}{,} \PYG{n}{node\PYGZus{}label}\PYG{p}{,} \PYG{n}{gr\PYGZus{}id}\PYG{p}{,} \PYG{n}{num\PYGZus{}Iteration}\PYG{p}{,} \PYG{n}{w}\PYG{p}{,} \PYG{n}{dist}\PYG{p}{,} \PYG{l+s}{'}\PYG{l+s}{label\PYGZus{}diffusion}\PYG{l+s}{'}\PYG{p}{)}
+\end{Verbatim}
+
+Adjacency matrix $A$ can either be in format of standard numpy matrix or sparse matrix.
+
+
+\subparagraph{Standard GP Classification}
+\label{GraphKernel:standard-gp-classification}
+$K$ is a big square matrix with all rows and columns of the number of data points.
+By specifying the indice of training data and test data, we will form two matrix M1 and M2 with the exact format which \emph{pyGPs.Core.cov.Pre} needed.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{M1}\PYG{p}{,}\PYG{n}{M2} \PYG{o}{=} \PYG{n}{graphUtil}\PYG{o}{.}\PYG{n}{formKernelMatrix}\PYG{p}{(}\PYG{n}{Matrix}\PYG{p}{,} \PYG{n}{indice\PYGZus{}train}\PYG{p}{,} \PYG{n}{indice\PYGZus{}test}\PYG{p}{)}
+\PYG{n}{k} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{cov}\PYG{o}{.}\PYG{n}{Pre}\PYG{p}{(}\PYG{n}{M1}\PYG{p}{,}\PYG{n}{M2}\PYG{p}{)}
+\end{Verbatim}
+\begin{description}
+\item[{M1 is a matrix with shape \textbf{number of training points plus 1} by \textbf{number of test points}}] \leavevmode\begin{itemize}
+\item {} 
+cross covariances matrix (train by test)
+
+\item {} 
+last row is self covariances (diagonal of test by test)
+
+\end{itemize}
+
+\item[{M2 is a square matrix with \textbf{number of training points} for each dimension}] \leavevmode\begin{itemize}
+\item {} 
+training set covariance matrix (train by train)
+
+\end{itemize}
+
+\end{description}
+
+The following is the standard way to do GP classification
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{model} \PYG{o}{=} \PYG{n}{pyGPs}\PYG{o}{.}\PYG{n}{GPC}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{setPrior}\PYG{p}{(}\PYG{n}{kernel}\PYG{o}{=}\PYG{n}{k}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{fit}\PYG{p}{(}\PYG{n}{x\PYGZus{}train}\PYG{p}{,} \PYG{n}{y\PYGZus{}train}\PYG{p}{)}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{x\PYGZus{}test}\PYG{p}{)}
+\end{Verbatim}
+
+
+\subsubsection{Functionality}
+\label{Graph:id2}
+Implemented graph kernels:
+
+\begin{tabulary}{\linewidth}{|L|L|}
+\hline
+
+propagationKernel
+ & 
+Propagation kernel
+\\\hline
+\end{tabulary}
+
+
+
+\subsection{Graph Utilities}
+\label{Graph:graph-utilities}
+
+\subsubsection{Functionality}
+\label{Graph:id3}
+Implemented graph utilities:
+
+\begin{tabulary}{\linewidth}{|L|L|}
+\hline
+
+formKnnGraph
+ & 
+create knn graph from vector-valued data
+\\\hline
+
+formKernelMatrix
+ & 
+transfer precomputed kernel matrix to pyGPs format
+\\\hline
+
+normalizeKernel
+ & 
+normalize kernel matrix
+\\\hline
+\end{tabulary}
+
 
 
 \chapter{API}
@@ -2272,22 +2167,10 @@ the inputs x, z and the inducing inputs xu as needed by infFITC
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.FITCOfKernel.getDerMatrix}\pysiglinewithargsret{\bfcode{getDerMatrix}}{\emph{x=None}, \emph{z=None}, \emph{mode=None}, \emph{der=None}}{}
 \end{fulllineitems}
 
-\index{getHyp() (pyGPs.Core.cov.FITCOfKernel method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.FITCOfKernel.getHyp}\pysiglinewithargsret{\bfcode{getHyp}}{}{}
-\end{fulllineitems}
-
 \index{hyp (pyGPs.Core.cov.FITCOfKernel attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.FITCOfKernel.hyp}\pysigline{\bfcode{hyp}}
-\end{fulllineitems}
-
-\index{setHyp() (pyGPs.Core.cov.FITCOfKernel method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.FITCOfKernel.setHyp}\pysiglinewithargsret{\bfcode{setHyp}}{\emph{hyp}}{}
 \end{fulllineitems}
 
 
@@ -2330,15 +2213,12 @@ Return the specific covariance matrix according to input mode
 \textbf{z} -- test data
 
 \item {} 
-\textbf{mode} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `self\_test' return self covariance matrix of test data(test by 1).
+\textbf{mode} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `self\_test' return self covariance matrix of test data(test by 1). 
+`train' return training covariance matrix(train by train).
+`cross' return cross covariance matrix between x and z(train by test)
 
 \end{itemize}
 
-\end{description}\end{quote}
-
-`train' return training covariance matrix(train by train).
-`cross' return cross covariance matrix between x and z(train by test)
-\begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
 the corresponding covariance matrix
 
@@ -2360,30 +2240,19 @@ Compute derivatives wrt. hyperparameters according to input mode
 \textbf{z} -- test data
 
 \item {} 
-\textbf{mode} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `self\_test' return self derivative matrix of test data(test by 1).
+\textbf{mode} (\href{http://docs.python.org/library/functions.html\#str}{\emph{str}}) -- `self\_test' return self derivative matrix of test data(test by 1). 
+`train' return training derivative matrix(train by train).
+`cross' return cross derivative matrix between x and z(train by test)
+
+\item {} 
+\textbf{der} (\href{http://docs.python.org/library/functions.html\#int}{\emph{int}}) -- index of hyperparameter whose derivative to be computed
 
 \end{itemize}
 
-\end{description}\end{quote}
-
-`train' return training derivative matrix(train by train).
-`cross' return cross derivative matrix between x and z(train by test)
-:param int der: index of hyperparameter whose derivative to be computed
-\begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
 the corresponding derivative matrix
 
 \end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{sq\_dist() (pyGPs.Core.cov.Kernel method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.Kernel.sq_dist}\pysiglinewithargsret{\bfcode{sq\_dist}}{\emph{a}, \emph{b=None}}{}
-Compute a matrix of all pairwise squared distances
-between two sets of vectors, stored in the row of the two matrices:
-a (of size n by D) and b (of size m by D).
 
 \end{fulllineitems}
 
@@ -2431,6 +2300,11 @@ hyp = log\_ell\_list
 Bases: {\hyperref[pyGPs.Core:pyGPs.Core.cov.Kernel]{\code{pyGPs.Core.cov.Kernel}}}
 
 Linear kernel. hyp = {[} log\_sigma {]}.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{log\_sigma} -- signal deviation.
+
+\end{description}\end{quote}
 \index{getCovMatrix() (pyGPs.Core.cov.Linear method)}
 
 \begin{fulllineitems}
@@ -2732,22 +2606,10 @@ Product of two kernel function.
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.ProductOfKernel.getDerMatrix}\pysiglinewithargsret{\bfcode{getDerMatrix}}{\emph{x=None}, \emph{z=None}, \emph{mode=None}, \emph{der=None}}{}
 \end{fulllineitems}
 
-\index{gethyp() (pyGPs.Core.cov.ProductOfKernel method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.ProductOfKernel.gethyp}\pysiglinewithargsret{\bfcode{gethyp}}{}{}
-\end{fulllineitems}
-
 \index{hyp (pyGPs.Core.cov.ProductOfKernel attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.ProductOfKernel.hyp}\pysigline{\bfcode{hyp}}
-\end{fulllineitems}
-
-\index{sethyp() (pyGPs.Core.cov.ProductOfKernel method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.ProductOfKernel.sethyp}\pysiglinewithargsret{\bfcode{sethyp}}{\emph{hyp}}{}
 \end{fulllineitems}
 
 
@@ -2948,22 +2810,10 @@ Scale of a kernel function.
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.ScaleOfKernel.getDerMatrix}\pysiglinewithargsret{\bfcode{getDerMatrix}}{\emph{x=None}, \emph{z=None}, \emph{mode=None}, \emph{der=None}}{}
 \end{fulllineitems}
 
-\index{gethyp() (pyGPs.Core.cov.ScaleOfKernel method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.ScaleOfKernel.gethyp}\pysiglinewithargsret{\bfcode{gethyp}}{}{}
-\end{fulllineitems}
-
 \index{hyp (pyGPs.Core.cov.ScaleOfKernel attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.ScaleOfKernel.hyp}\pysigline{\bfcode{hyp}}
-\end{fulllineitems}
-
-\index{sethyp() (pyGPs.Core.cov.ScaleOfKernel method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.ScaleOfKernel.sethyp}\pysiglinewithargsret{\bfcode{sethyp}}{\emph{hyp}}{}
 \end{fulllineitems}
 
 
@@ -2988,22 +2838,10 @@ Sum of two kernel function.
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.SumOfKernel.getDerMatrix}\pysiglinewithargsret{\bfcode{getDerMatrix}}{\emph{x=None}, \emph{z=None}, \emph{mode=None}, \emph{der=None}}{}
 \end{fulllineitems}
 
-\index{gethyp() (pyGPs.Core.cov.SumOfKernel method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.SumOfKernel.gethyp}\pysiglinewithargsret{\bfcode{gethyp}}{}{}
-\end{fulllineitems}
-
 \index{hyp (pyGPs.Core.cov.SumOfKernel attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.cov.SumOfKernel.hyp}\pysigline{\bfcode{hyp}}
-\end{fulllineitems}
-
-\index{sethyp() (pyGPs.Core.cov.SumOfKernel method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.cov.SumOfKernel.sethyp}\pysiglinewithargsret{\bfcode{sethyp}}{\emph{hyp}}{}
 \end{fulllineitems}
 
 
@@ -3638,99 +3476,37 @@ parameter sn2, we simply use snu2 = 1e-6.
 Bases: \code{object}
 
 Base class for inference. Defined several tool methods in it.
-\index{Psi\_line() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.Psi_line}\pysiglinewithargsret{\bfcode{Psi\_line}}{\emph{s}, \emph{dalpha}, \emph{alpha}, \emph{K}, \emph{m}, \emph{likfunc}, \emph{y}, \emph{inffunc}}{}
-Criterion Psi at alpha + s*dalpha for line search
-{[}Psi,alpha,f,dlp,W{]} = Psi\_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)
-
-\end{fulllineitems}
-
-\index{Psi\_lineFITC() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.Psi_lineFITC}\pysiglinewithargsret{\bfcode{Psi\_lineFITC}}{\emph{s}, \emph{dalpha}, \emph{alpha}, \emph{V}, \emph{d0}, \emph{m}, \emph{likfunc}, \emph{y}, \emph{inffunc}}{}
-Criterion Psi at alpha + s*dalpha for line search
-
-\end{fulllineitems}
-
-\index{epComputeParams() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.epComputeParams}\pysiglinewithargsret{\bfcode{epComputeParams}}{\emph{K}, \emph{y}, \emph{ttau}, \emph{tnu}, \emph{likfunc}, \emph{m}, \emph{inffunc}}{}
-\end{fulllineitems}
-
-\index{epfitcRefresh() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.epfitcRefresh}\pysiglinewithargsret{\bfcode{epfitcRefresh}}{\emph{d0}, \emph{P0}, \emph{R0}, \emph{R0P0}, \emph{w}, \emph{b}}{}
-Refresh the representation of the posterior from initial and site parameters
-to prevent possible loss of numerical precision after many epfitcUpdates
-effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
-Sigma = inv(inv(K)+diag(W)) = diag(d) + P'{\color{red}\bfseries{}*}R0'{\color{red}\bfseries{}*}R'{\color{red}\bfseries{}*}R*R0*P.
-
-\end{fulllineitems}
-
-\index{epfitcUpdate() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.epfitcUpdate}\pysiglinewithargsret{\bfcode{epfitcUpdate}}{\emph{d}, \emph{P\_i}, \emph{R}, \emph{nn}, \emph{gg}, \emph{w}, \emph{b}, \emph{ii}, \emph{w\_i}, \emph{b\_i}, \emph{m}, \emph{d0}, \emph{P0}, \emph{R0}}{}
-\end{fulllineitems}
-
-\index{epfitcZ() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.epfitcZ}\pysiglinewithargsret{\bfcode{epfitcZ}}{\emph{d}, \emph{P}, \emph{R}, \emph{nn}, \emph{gg}, \emph{ttau}, \emph{tnu}, \emph{d0}, \emph{R0}, \emph{P0}, \emph{y}, \emph{likfunc}, \emph{m}, \emph{inffunc}}{}
-Compute the marginal likelihood approximation
-effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
-
-\end{fulllineitems}
-
-\index{fitcRefresh() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.fitcRefresh}\pysiglinewithargsret{\bfcode{fitcRefresh}}{\emph{d0}, \emph{P0}, \emph{R0}, \emph{R0P0}, \emph{w}}{}
-Refresh the representation of the posterior from initial and site parameters
-to prevent possible loss of numerical precision after many epfitcUpdates
-effort is O(n*nu\textasciicircum{}2) provided that nu\textless{}n
-Sigma = inv(inv(K)+diag(W)) = diag(d) + P'{\color{red}\bfseries{}*}R0'{\color{red}\bfseries{}*}R'{\color{red}\bfseries{}*}R*R0*P.
-
-\end{fulllineitems}
-
-\index{logdetA() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.logdetA}\pysiglinewithargsret{\bfcode{logdetA}}{\emph{K}, \emph{w}, \emph{nargout}}{}
-Compute the log determinant ldA and the inverse iA of a square nxn matrix
-A = eye(n) + K*diag(w) from its LU decomposition; for negative definite A, we 
-return ldA = Inf. We also return mwiA = -diag(w)*inv(A).
-{[}ldA,iA,mwiA{]} = logdetA(K,w)
-
-\end{fulllineitems}
-
-\index{mvmK() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.mvmK}\pysiglinewithargsret{\bfcode{mvmK}}{\emph{al}, \emph{V}, \emph{d0}}{}
-Matrix vector multiplication with approximate covariance matrix
-
-\end{fulllineitems}
-
-\index{mvmZ() (pyGPs.Core.inf.Inference method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.mvmZ}\pysiglinewithargsret{\bfcode{mvmZ}}{\emph{x}, \emph{RVdd}, \emph{t}}{}
-Matrix vector multiplication with Z=inv(K+inv(W))
-
-\end{fulllineitems}
-
 \index{proceed() (pyGPs.Core.inf.Inference method)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.Inference.proceed}\pysiglinewithargsret{\bfcode{proceed}}{\emph{meanfunc}, \emph{covfunc}, \emph{likfunc}, \emph{x}, \emph{y}, \emph{nargout=1}}{}
 Inference computation based on inputs.
 post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)
+\begin{quote}
+
+\begin{DUlineblock}{0em}
+\item[] INPUT:
+\item[] cov: name of the covariance function (see covFunctions.m)
+\item[] lik: name of the likelihood function (see likFunctions.m)
+\item[] x: n by D matrix of training inputs 
+\item[] y: 1d array (of size n) of targets
+\end{DUlineblock}
+
+\begin{DUlineblock}{0em}
+\item[] OUTPUT:
+\item[] post(postStruct): struct representation of the (approximate) posterior containing: 
+\item[] nlZ: returned value of the negative log marginal likelihood
+\item[] dnlZ(dnlZStruct): struct representation for derivatives of the negative log marginal likelihood
+\item[] w.r.t. each hyperparameter.
+\end{DUlineblock}
+\end{quote}
+
+Usually, the approximate posterior to be returned admits the form: 
+N(m=K*alpha, V=inv(inv(K)+W)), where alpha is a vector and W is diagonal;
+if not, then L contains instead -inv(K+inv(W)), and sW is unused.
+
+For more information on the individual approximation methods and their
+implementations, see the respective inference function below. See also gp.py
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
@@ -3785,7 +3561,11 @@ Laplace's Approximation to the posterior Gaussian process.
 \phantomsection\label{pyGPs.Core:pyGPs.Core.inf.dnlZStruct}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.inf.}\bfcode{dnlZStruct}}{\emph{m}, \emph{c}, \emph{l}}{}
 Bases: \code{object}
 
-Data structure for the derivatives of mean, cov and lik functions
+Data structure for the derivatives of mean, cov and lik functions.
+
+{\color{red}\bfseries{}\textbar{}}dnlZ.mean: list of derivatives for each hyperparameters in mean function
+{\color{red}\bfseries{}\textbar{}}dnlZ.cov: list of derivatives for each hyperparameters in covariance function
+{\color{red}\bfseries{}\textbar{}}dnlZ.lik: list of derivatives for each hyperparameters in likelihood function
 
 \end{fulllineitems}
 
@@ -3796,6 +3576,14 @@ Data structure for the derivatives of mean, cov and lik functions
 Bases: \code{object}
 
 Data structure for posterior
+
+\begin{DUlineblock}{0em}
+\item[] post.alpha: 1d array containing inv(K)*m, 
+\item[] where K is the prior covariance matrix and m the approx posterior mean
+\item[] post.sW: 1d array containing diagonal of sqrt(W)
+\item[] the approximate posterior covariance matrix is inv(inv(K)+W)
+\item[] post.L : 2d array, L = chol(sW*K*sW+identity(n))
+\end{DUlineblock}
 
 \end{fulllineitems}
 
@@ -3891,9 +3679,94 @@ Base function for Likelihood function
 \index{proceed() (pyGPs.Core.lik.Likelihood method)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.lik.Likelihood.proceed}\pysiglinewithargsret{\bfcode{proceed}}{}{}
-The likelihood functions have two possible modes based on inputs. 
-See lik.py for detail documentation.
+\phantomsection\label{pyGPs.Core:pyGPs.Core.lik.Likelihood.proceed}\pysiglinewithargsret{\bfcode{proceed}}{\emph{y=None}, \emph{mu=None}, \emph{s2=None}, \emph{inffunc=None}, \emph{der=None}, \emph{nargout=1}}{}
+The likelihood functions have two possible modes, the mode being selected
+as follows (where ``lik'' stands for ``proceed'' method for any likelihood function):
+\begin{enumerate}
+\item {} 
+With two or three input arguments:                       {[}PREDICTION MODE{]}
+
+\end{enumerate}
+\begin{quote}
+
+lp = lik(y, mu) OR lp, ymu, ys2 = lik(y, mu, s2)
+\begin{quote}
+
+This allows to evaluate the predictive distribution. Let p(y\_*\textbar{}f\_*) be the
+likelihood of a test point and N(f\_*\textbar{}mu,s2) an approximation to the posterior
+marginal p(f\_*\textbar{}x\_*,x,y) as returned by an inference method. The predictive
+distribution p(y\_*\textbar{}x\_*,x,y) is approximated by:
+q(y\_*) = int N(f\_*\textbar{}mu,s2) p(y\_*\textbar{}f\_*) df\_*
+
+lp = log( q(y) ) for a particular value of y, if s2 is {[}{]} or 0, this
+corresponds to log( p(y\textbar{}mu) ).
+
+ymu and ys2 are the mean and variance of the predictive marginal q(y)
+note that these two numbers do not depend on a particular 
+value of y.
+All vectors have the same size.
+\end{quote}
+\end{quote}
+\begin{enumerate}
+\setcounter{enumi}{1}
+\item {} 
+With four or five input arguments, the fouth being an object of class ``Inference'' {[}INFERENCE MODE{]}
+
+\end{enumerate}
+\begin{quote}
+
+lik(y, mu, s2, inf) OR lik(y, mu, s2, inf, i)
+
+There are two cases for inf, namely a) infLaplace, b) infEP 
+The last input i, refers to derivatives w.r.t. the ith hyperparameter.
+
+\begin{DUlineblock}{0em}
+\item[] a1) 
+\item[] lp,dlp,d2lp,d3lp = lik(y, f, {[}{]}, `infLaplace'). 
+\item[] lp, dlp, d2lp and d3lp correspond to derivatives of the log likelihood. 
+\item[] log(p(y\textbar{}f)) w.r.t. to the latent location f.
+\item[] lp = log( p(y\textbar{}f) ) 
+\item[] dlp = d log( p(y\textbar{}f) ) / df 
+\item[] d2lp = d\textasciicircum{}2 log( p(y\textbar{}f) ) / df\textasciicircum{}2
+\item[] d3lp = d\textasciicircum{}3 log( p(y\textbar{}f) ) / df\textasciicircum{}3 
+\end{DUlineblock}
+
+\begin{DUlineblock}{0em}
+\item[] a2)
+\item[] lp\_dhyp,dlp\_dhyp,d2lp\_dhyp = lik(y, f, {[}{]}, `infLaplace', i) 
+\item[] returns derivatives w.r.t. to the ith hyperparameter 
+\item[] lp\_dhyp = d log( p(y\textbar{}f) ) / (dhyp\_i) 
+\item[] dlp\_dhyp = d\textasciicircum{}2 log( p(y\textbar{}f) ) / (df   dhyp\_i) 
+\item[] d2lp\_dhyp = d\textasciicircum{}3 log( p(y\textbar{}f) ) / (df\textasciicircum{}2 dhyp\_i) 
+\end{DUlineblock}
+
+\begin{DUlineblock}{0em}
+\item[] b1)
+\item[] lZ,dlZ,d2lZ = lik(y, mu, s2, `infEP') 
+\item[] let Z = int p(y\textbar{}f) N(f\textbar{}mu,s2) df then 
+\item[] lZ = log(Z) 
+\item[] dlZ = d log(Z) / dmu 
+\item[] d2lZ = d\textasciicircum{}2 log(Z) / dmu\textasciicircum{}2 
+\end{DUlineblock}
+
+\begin{DUlineblock}{0em}
+\item[] b2)
+\item[] dlZhyp = lik(y, mu, s2, `infEP', i)
+\item[] returns derivatives w.r.t. to the ith hyperparameter 
+\item[] dlZhyp = d log(Z) / dhyp\_i 
+\end{DUlineblock}
+\end{quote}
+
+Cumulative likelihoods are designed for binary classification. Therefore, they
+only look at the sign of the targets y; zero values are treated as +1.
+\begin{description}
+\item[{Some examples for valid likelihood functions:}] \leavevmode
+\begin{DUlineblock}{0em}
+\item[] lik = likGauss({[}0.1{]})
+\item[] lik = likErf()
+\end{DUlineblock}
+
+\end{description}
 
 \end{fulllineitems}
 
@@ -3967,6 +3840,36 @@ scalar alpha for each dimension
 Bases: \code{object}
 
 The base function for mean function
+\index{getDerMatrix() (pyGPs.Core.mean.Mean method)}
+
+\begin{fulllineitems}
+\phantomsection\label{pyGPs.Core:pyGPs.Core.mean.Mean.getDerMatrix}\pysiglinewithargsret{\bfcode{getDerMatrix}}{\emph{x=None}, \emph{der=None}}{}
+Compute derivatives wrt. hyperparameters.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{x} -- training data
+
+\item {} 
+\textbf{der} (\href{http://docs.python.org/library/functions.html\#int}{\emph{int}}) -- index of hyperparameter whose derivative to be computed
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+the corresponding derivative matrix
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{getMean() (pyGPs.Core.mean.Mean method)}
+
+\begin{fulllineitems}
+\phantomsection\label{pyGPs.Core:pyGPs.Core.mean.Mean.getMean}\pysiglinewithargsret{\bfcode{getMean}}{\emph{x=None}}{}
+Get the mean vector.
+
+\end{fulllineitems}
+
 
 \end{fulllineitems}
 
@@ -4011,22 +3914,10 @@ Power of a mean fucntion.
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.PowerOfMean.getMean}\pysiglinewithargsret{\bfcode{getMean}}{\emph{x=None}}{}
 \end{fulllineitems}
 
-\index{gethyp() (pyGPs.Core.mean.PowerOfMean method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.mean.PowerOfMean.gethyp}\pysiglinewithargsret{\bfcode{gethyp}}{}{}
-\end{fulllineitems}
-
 \index{hyp (pyGPs.Core.mean.PowerOfMean attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.PowerOfMean.hyp}\pysigline{\bfcode{hyp}}
-\end{fulllineitems}
-
-\index{sethyp() (pyGPs.Core.mean.PowerOfMean method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.mean.PowerOfMean.sethyp}\pysiglinewithargsret{\bfcode{sethyp}}{\emph{hyp}}{}
 \end{fulllineitems}
 
 
@@ -4051,22 +3942,10 @@ Product of two mean fucntions.
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.ProductOfMean.getMean}\pysiglinewithargsret{\bfcode{getMean}}{\emph{x=None}}{}
 \end{fulllineitems}
 
-\index{gethyp() (pyGPs.Core.mean.ProductOfMean method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.mean.ProductOfMean.gethyp}\pysiglinewithargsret{\bfcode{gethyp}}{}{}
-\end{fulllineitems}
-
 \index{hyp (pyGPs.Core.mean.ProductOfMean attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.ProductOfMean.hyp}\pysigline{\bfcode{hyp}}
-\end{fulllineitems}
-
-\index{sethyp() (pyGPs.Core.mean.ProductOfMean method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.mean.ProductOfMean.sethyp}\pysiglinewithargsret{\bfcode{sethyp}}{\emph{hyp}}{}
 \end{fulllineitems}
 
 
@@ -4091,22 +3970,10 @@ Scale of a mean function.
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.ScaleOfMean.getMean}\pysiglinewithargsret{\bfcode{getMean}}{\emph{x=None}}{}
 \end{fulllineitems}
 
-\index{gethyp() (pyGPs.Core.mean.ScaleOfMean method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.mean.ScaleOfMean.gethyp}\pysiglinewithargsret{\bfcode{gethyp}}{}{}
-\end{fulllineitems}
-
 \index{hyp (pyGPs.Core.mean.ScaleOfMean attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.ScaleOfMean.hyp}\pysigline{\bfcode{hyp}}
-\end{fulllineitems}
-
-\index{sethyp() (pyGPs.Core.mean.ScaleOfMean method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.mean.ScaleOfMean.sethyp}\pysiglinewithargsret{\bfcode{sethyp}}{\emph{hyp}}{}
 \end{fulllineitems}
 
 
@@ -4131,22 +3998,10 @@ Sum of two mean functions.
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.SumOfMean.getMean}\pysiglinewithargsret{\bfcode{getMean}}{\emph{x=None}}{}
 \end{fulllineitems}
 
-\index{gethyp() (pyGPs.Core.mean.SumOfMean method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.mean.SumOfMean.gethyp}\pysiglinewithargsret{\bfcode{gethyp}}{}{}
-\end{fulllineitems}
-
 \index{hyp (pyGPs.Core.mean.SumOfMean attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Core:pyGPs.Core.mean.SumOfMean.hyp}\pysigline{\bfcode{hyp}}
-\end{fulllineitems}
-
-\index{sethyp() (pyGPs.Core.mean.SumOfMean method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.mean.SumOfMean.sethyp}\pysiglinewithargsret{\bfcode{sethyp}}{\emph{hyp}}{}
 \end{fulllineitems}
 
 
@@ -4228,45 +4083,24 @@ minimize by Carl Rasmussen (python implementation of ``minimize'' in GPML)
 \index{Optimizer (class in pyGPs.Core.opt)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer}\pysigline{\strong{class }\code{pyGPs.Core.opt.}\bfcode{Optimizer}}
+\phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer}\pysiglinewithargsret{\strong{class }\code{pyGPs.Core.opt.}\bfcode{Optimizer}}{\emph{model=None}, \emph{searchConfig=None}}{}
 Bases: \code{object}
-\index{apply\_in\_objects() (pyGPs.Core.opt.Optimizer method)}
+\index{findMin() (pyGPs.Core.opt.Optimizer method)}
 
 \begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer.apply_in_objects}\pysiglinewithargsret{\bfcode{apply\_in\_objects}}{\emph{hypInArray}}{}
-Apply the values in the input array to hyparameters of model.
+\phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer.findMin}\pysiglinewithargsret{\bfcode{findMin}}{\emph{x}, \emph{y}}{}
+Find minimal value based on negative-log-marginal-likelihood. 
+optimalHyp, funcValue = findMin(x, y)
 
-\end{fulllineitems}
+where funcValue is the minimal negative-log-marginal-likelihood during optimization,
+and optimalHyp is a flattened numpy array 
+(in sequence of meanfunc.hyp, covfunc.hyp, likfunc.hyp) 
+of the hyparameters to achieve such value.
 
-\index{convert\_to\_array() (pyGPs.Core.opt.Optimizer method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer.convert_to_array}\pysiglinewithargsret{\bfcode{convert\_to\_array}}{}{}
-Convert all hyparameters in the model to an array
-
-\end{fulllineitems}
-
-\index{dnlml() (pyGPs.Core.opt.Optimizer method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer.dnlml}\pysiglinewithargsret{\bfcode{dnlml}}{\emph{hypInArray}}{}
-Find derivatives wrt. negative-log-marginal-likelihood
-
-\end{fulllineitems}
-
-\index{nlml() (pyGPs.Core.opt.Optimizer method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer.nlml}\pysiglinewithargsret{\bfcode{nlml}}{\emph{hypInArray}}{}
-Find negative-log-marginal-likelihood
-
-\end{fulllineitems}
-
-\index{nlzAnddnlz() (pyGPs.Core.opt.Optimizer method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Core:pyGPs.Core.opt.Optimizer.nlzAnddnlz}\pysiglinewithargsret{\bfcode{nlzAnddnlz}}{\emph{hypInArray}}{}
-Find negative-log-marginal-likelihood and derivatives in one pass(faster)
+You can achieve advanced search strategy by initializing Optimizer with searchConfig, 
+which is an instance of pyGPs.Optimization.conf. 
+See more in pyGPs.Optimization.conf and pyGPs.Core.gp.GP.setOptimizer,
+as well as in online documentation of section Optimizers.
 
 \end{fulllineitems}
 
@@ -4372,34 +4206,40 @@ Return a list with unique elements.
 \label{pyGPs.GraphExtensions:id1}\phantomsection\label{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions}\index{pyGPs.GraphExtensions (module)}
 
 \subparagraph{\texttt{graphKernels} Module}
-\label{pyGPs.GraphExtensions:graphkernels-module}\label{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions.graphKernels}\index{pyGPs.GraphExtensions.graphKernels (module)}
-Created on April, 2014
-
-@author: marion, shan
-\index{propagationKernel() (in module pyGPs.GraphExtensions.graphKernels)}
+\label{pyGPs.GraphExtensions:graphkernels-module}\label{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions.graphKernels}\index{pyGPs.GraphExtensions.graphKernels (module)}\index{propagationKernel() (in module pyGPs.GraphExtensions.graphKernels)}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.GraphExtensions:pyGPs.GraphExtensions.graphKernels.propagationKernel}\pysiglinewithargsret{\code{pyGPs.GraphExtensions.graphKernels.}\bfcode{propagationKernel}}{\emph{A}, \emph{l}, \emph{gr\_id}, \emph{h\_max}, \emph{w}, \emph{p}, \emph{ktype=None}, \emph{SUM=True}, \emph{VIS=False}, \emph{showEachStep=False}}{}
-Propagation kernel for graphs.
+Propagation kernel for graphs as described in: 
+Neumann, M., Patricia, N., Garnett, R., Kersting, K.: Efficient Graph Kernels by 
+Randomization. In: P.A. Flach, T.D. Bie, N. Cristianini (eds.) ECML/PKDD, Notes in 
+Computer Science, vol. 7523, pp. 378-393. Springer (2012).
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \textbf{A} -- adjacency matrix (num\_nodes x num\_nodes)
 
 \item {} 
-\textbf{l} -- label array (num\_nodes x 1); values {[}1,...,k{]} or -1 for unlabeled nodes
+\textbf{l} -- label array (num\_nodes x 1); values {[}1,...,k{]} or -1 for unlabeled nodes 
+OR label array (num\_nodes x num\_labels); values {[}0,1{]}, unlabeled nodes have only 0 entries
+
+\item {} 
+\textbf{gr\_id} -- graph indicator array (num\_nodes x 1); values {[}0,..,n{]}
+
+\item {} 
+\textbf{h\_max} -- number of iterations
+
+\item {} 
+\textbf{w} -- bin widths parameter
+
+\item {} 
+\textbf{p} -- distance (`tv', `hellinger', `L1', `L2')
+
+\item {} 
+\textbf{ktype} -- type of propagation kernel {[}'diffusion', `label\_propagation', `label\_spreading', `belief\_propagation'{]}
 
 \end{itemize}
 
-\end{description}\end{quote}
-
-OR label array (num\_nodes x num\_labels); values {[}0,1{]}, unlabeled nodes have only 0 entries
-:param gr\_id: graph indicator array (num\_nodes x 1); values {[}0,..,n{]}
-:param h\_max: number of iterations
-:param w: bin widths parameter
-:param p: distance (`tv', `hellinger', `L1', `L2')
-:param ktype: type of propagation kernel {[}'diffusion', `label\_propagation', `label\_spreading', `belief\_propagation'{]}
-\begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
 kernel matrix
 
@@ -4652,24 +4492,6 @@ Bases: \code{object}
 \phantomsection\label{pyGPs.Optimization:pyGPs.Optimization.conf.random_init_conf.covRange}\pysigline{\bfcode{covRange}}
 \end{fulllineitems}
 
-\index{getcr() (pyGPs.Optimization.conf.random\_init\_conf method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Optimization:pyGPs.Optimization.conf.random_init_conf.getcr}\pysiglinewithargsret{\bfcode{getcr}}{}{}
-\end{fulllineitems}
-
-\index{getlr() (pyGPs.Optimization.conf.random\_init\_conf method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Optimization:pyGPs.Optimization.conf.random_init_conf.getlr}\pysiglinewithargsret{\bfcode{getlr}}{}{}
-\end{fulllineitems}
-
-\index{getmr() (pyGPs.Optimization.conf.random\_init\_conf method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Optimization:pyGPs.Optimization.conf.random_init_conf.getmr}\pysiglinewithargsret{\bfcode{getmr}}{}{}
-\end{fulllineitems}
-
 \index{likRange (pyGPs.Optimization.conf.random\_init\_conf attribute)}
 
 \begin{fulllineitems}
@@ -4680,24 +4502,6 @@ Bases: \code{object}
 
 \begin{fulllineitems}
 \phantomsection\label{pyGPs.Optimization:pyGPs.Optimization.conf.random_init_conf.meanRange}\pysigline{\bfcode{meanRange}}
-\end{fulllineitems}
-
-\index{setcr() (pyGPs.Optimization.conf.random\_init\_conf method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Optimization:pyGPs.Optimization.conf.random_init_conf.setcr}\pysiglinewithargsret{\bfcode{setcr}}{\emph{value}}{}
-\end{fulllineitems}
-
-\index{setlr() (pyGPs.Optimization.conf.random\_init\_conf method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Optimization:pyGPs.Optimization.conf.random_init_conf.setlr}\pysiglinewithargsret{\bfcode{setlr}}{\emph{value}}{}
-\end{fulllineitems}
-
-\index{setmr() (pyGPs.Optimization.conf.random\_init\_conf method)}
-
-\begin{fulllineitems}
-\phantomsection\label{pyGPs.Optimization:pyGPs.Optimization.conf.random_init_conf.setmr}\pysiglinewithargsret{\bfcode{setmr}}{\emph{value}}{}
 \end{fulllineitems}
 
 
@@ -4916,10 +4720,7 @@ iterable is of length (K-1)*len(X)/K.
 \item {\texttt{pyGPs.Core.opt}}, \pageref{pyGPs.Core:module-pyGPs.Core.opt}
 \item {\texttt{pyGPs.Core.tools}}, \pageref{pyGPs.Core:module-pyGPs.Core.tools}
 \item {\texttt{pyGPs.GraphExtensions}}, \pageref{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions}
-\item {\texttt{pyGPs.GraphExtensions.graphKernels}}, \pageref{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions.graphKernels}
 \item {\texttt{pyGPs.GraphExtensions.graphUtil}}, \pageref{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions.graphUtil}
-\item {\texttt{pyGPs.GraphExtensions.nodeKernels}}, \pageref{pyGPs.GraphExtensions:module-pyGPs.GraphExtensions.nodeKernels}
-\item {\texttt{pyGPs.GraphStuff.kernels\_on\_graph}}, \pageref{Graph:module-pyGPs.GraphStuff.kernels_on_graph}
 \item {\texttt{pyGPs.Optimization}}, \pageref{pyGPs.Optimization:module-pyGPs.Optimization}
 \item {\texttt{pyGPs.Optimization.conf}}, \pageref{pyGPs.Optimization:module-pyGPs.Optimization.conf}
 \item {\texttt{pyGPs.Optimization.minimize}}, \pageref{pyGPs.Optimization:module-pyGPs.Optimization.minimize}

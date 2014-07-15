@@ -1,10 +1,23 @@
 \BOOKMARK [0][-]{chapter.1}{pyGPs - A Package for Gaussian Processes}{}
 \BOOKMARK [1][-]{section.1.1}{About the package}{chapter.1}
 \BOOKMARK [1][-]{section.1.2}{Getting started}{chapter.1}
+\BOOKMARK [2][-]{subsection.1.2.1}{Installation}{section.1.2}
+\BOOKMARK [2][-]{subsection.1.2.2}{GPs}{section.1.2}
 \BOOKMARK [1][-]{section.1.3}{Tutorials}{chapter.1}
+\BOOKMARK [2][-]{subsection.1.3.1}{Regression}{section.1.3}
+\BOOKMARK [2][-]{subsection.1.3.2}{Classification}{section.1.3}
+\BOOKMARK [2][-]{subsection.1.3.3}{Some examples for real-world data}{section.1.3}
 \BOOKMARK [1][-]{section.1.4}{GP functionality}{chapter.1}
-\BOOKMARK [1][-]{section.1.5}{Extensions}{chapter.1}
+\BOOKMARK [2][-]{subsection.1.4.1}{A brief overview of pyGPs functionality}{section.1.4}
+\BOOKMARK [2][-]{subsection.1.4.2}{Kernels \046 Means}{section.1.4}
+\BOOKMARK [2][-]{subsection.1.4.3}{Likelihoods \046 Inference}{section.1.4}
+\BOOKMARK [2][-]{subsection.1.4.4}{Optimizers}{section.1.4}
+\BOOKMARK [1][-]{section.1.5}{GraphExtensions}{chapter.1}
+\BOOKMARK [2][-]{subsection.1.5.1}{Kernels on Graphs}{section.1.5}
+\BOOKMARK [2][-]{subsection.1.5.2}{Graph Kernels}{section.1.5}
+\BOOKMARK [2][-]{subsection.1.5.3}{Graph Utilities}{section.1.5}
 \BOOKMARK [0][-]{chapter.2}{API}{}
 \BOOKMARK [1][-]{section.2.1}{pyGPs}{chapter.2}
-\BOOKMARK [0][-]{section*.360}{Python Module Index}{}
-\BOOKMARK [0][-]{section*.361}{Index}{}
+\BOOKMARK [2][-]{subsection.2.1.1}{pyGPs Package}{section.2.1}
+\BOOKMARK [0][-]{section*.302}{Python Module Index}{}
+\BOOKMARK [0][-]{section*.303}{Index}{}

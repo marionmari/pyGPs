@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Kernels for Graph Data &mdash; pyGPs v1.2 documentation</title>
+    <title>Kernels on Graphs &mdash; pyGPs v1.2 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pyGPs v1.2 documentation" href="index.html" />
-    <link rel="next" title="pyGPs" href="modules.html" />
+    <link rel="next" title="Semi-supervised Learning with Graphs" href="SemiSupervised.html" />
     <link rel="prev" title="Optimizers" href="Opts.html" /> 
   </head>
   <body>
@@ -39,7 +39,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="modules.html" title="pyGPs"
+          <a href="SemiSupervised.html" title="Semi-supervised Learning with Graphs"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="Opts.html" title="Optimizers"
@@ -53,128 +53,95 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="kernels-for-graph-data">
-<h1>Kernels for Graph Data<a class="headerlink" href="#kernels-for-graph-data" title="Permalink to this headline">¶</a></h1>
-<p>You can refer to our demo of <a class="reference external" href="SemiSupervised.html">semi-supervised learning</a> for a simple usage of kernels for graph data.</p>
-<div class="section" id="module-pyGPs.GraphStuff.kernels_on_graph">
-<span id="kernels-on-graph"></span><h2>Kernels on Graph<a class="headerlink" href="#module-pyGPs.GraphStuff.kernels_on_graph" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="pyGPs.GraphStuff.kernels_on_graph.VNDKernel">
-<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">VNDKernel</tt><big>(</big><em>A</em>, <em>alpha=0.5</em><big>)</big><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.VNDKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Von Neumann Diffusion Kernel on graph (Zhou et al., 2004)
-(also label spreading kernel)</p>
-<p>K = (I - alpha*S)^-1, where S = D^-1/2*A*D^-1/2</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>A</strong> &#8211; adjacency matrix</li>
-<li><strong>alpha</strong> &#8211; (hyper)parameter(s)</li>
+  <div class="section" id="kernels-on-graphs">
+<h1>Kernels on Graphs<a class="headerlink" href="#kernels-on-graphs" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="demo">
+<h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="SemiSupervised.html">Semi-supervised Learning with Graphs</a></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphStuff.kernels_on_graph.cosKernel">
-<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">cosKernel</tt><big>(</big><em>A</em><big>)</big><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.cosKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cosine Kernel (also Inverse Cosine Kernel)</p>
-<p>K = cos (L*pi/4), where L is the normalized Laplacian</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
+</div>
+</div>
+<div class="section" id="functionality">
+<h2>Functionality<a class="headerlink" href="#functionality" title="Permalink to this headline">¶</a></h2>
+<p>Implemented kernels on graphs:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>A</strong> &#8211; adjacency matrix</td>
+<tr class="row-odd"><td>diffKernel</td>
+<td>Diffusion kernel</td>
+</tr>
+<tr class="row-even"><td>VNDKernel</td>
+<td>Von-Neumann diffusion kernel</td>
+</tr>
+<tr class="row-odd"><td>psInvLapKernel</td>
+<td>Pseudo-Inverse of the Laplacian</td>
+</tr>
+<tr class="row-even"><td>regLapKernel</td>
+<td>Regularized Laplacian kernel</td>
+</tr>
+<tr class="row-odd"><td>rwKernel</td>
+<td>p-step random walk kernel</td>
+</tr>
+<tr class="row-even"><td>cosKernel</td>
+<td>Inverse Cosine Kernel</td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphStuff.kernels_on_graph.diffKernel">
-<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">diffKernel</tt><big>(</big><em>A</em>, <em>beta=0.5</em><big>)</big><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.diffKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Diffusion Process Kernel</p>
-<p>K = exp(beta * H), where H = -L = A-D</p>
-<p>K = Q exp(beta * Lambda) Q.T</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>A</strong> &#8211; adjacency matrix</li>
-<li><strong>beta</strong> &#8211; (hyper)parameter(s)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphStuff.kernels_on_graph.normLap">
-<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">normLap</tt><big>(</big><em>A</em><big>)</big><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.normLap" title="Permalink to this definition">¶</a></dt>
-<dd><p>normalized Laplacian</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphStuff.kernels_on_graph.psInvLapKernel">
-<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">psInvLapKernel</tt><big>(</big><em>A</em><big>)</big><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.psInvLapKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pseudo inverse of the normalized Laplacian.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>A</strong> &#8211; adjacency matrix</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphStuff.kernels_on_graph.regLapKernel">
-<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">regLapKernel</tt><big>(</big><em>A</em>, <em>sigma=1</em><big>)</big><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.regLapKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Regularized Laplacian Kernel</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>A</strong> &#8211; adjacency matrix</li>
-<li><strong>sigma</strong> &#8211; (hyper)parameter(s)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyGPs.GraphStuff.kernels_on_graph.rwKernel">
-<tt class="descclassname">pyGPs.GraphStuff.kernels_on_graph.</tt><tt class="descname">rwKernel</tt><big>(</big><em>A</em>, <em>p=1</em>, <em>a=2</em><big>)</big><a class="headerlink" href="#pyGPs.GraphStuff.kernels_on_graph.rwKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>p-step Random Walk Kernel with a&gt;1</p>
-<p>K = (aI-L)^p, p&gt;1 and L is the normalized Laplacian</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>A</strong> &#8211; adjacency matrix</li>
-<li><strong>p</strong> &#8211; step parameter</li>
-<li><strong>a</strong> &#8211; (hyper)parameter(s)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+</div>
 </div>
 <div class="section" id="graph-kernels">
-<h2>Graph Kernels<a class="headerlink" href="#graph-kernels" title="Permalink to this headline">¶</a></h2>
-<p>tbd.</p>
+<h1>Graph Kernels<a class="headerlink" href="#graph-kernels" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2>Demo<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="GraphKernel.html">Graph Kernels</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>Functionality<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>Implemented graph kernels:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>propagationKernel</td>
+<td>Propagation kernel</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="graph-utilities">
+<h1>Graph Utilities<a class="headerlink" href="#graph-utilities" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id3">
+<h2>Functionality<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>Implemented graph utilities:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>formKnnGraph</td>
+<td>create knn graph from vector-valued data</td>
+</tr>
+<tr class="row-even"><td>formKernelMatrix</td>
+<td>transfer precomputed kernel matrix to pyGPs format</td>
+</tr>
+<tr class="row-odd"><td>normalizeKernel</td>
+<td>normalize kernel matrix</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -186,9 +153,22 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Kernels for Graph Data</a><ul>
-<li><a class="reference internal" href="#module-pyGPs.GraphStuff.kernels_on_graph">Kernels on Graph</a></li>
-<li><a class="reference internal" href="#graph-kernels">Graph Kernels</a></li>
+<li><a class="reference internal" href="#">Kernels on Graphs</a><ul>
+<li><a class="reference internal" href="#demo">Demo</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#functionality">Functionality</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#graph-kernels">Graph Kernels</a><ul>
+<li><a class="reference internal" href="#id1">Demo</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#id2">Functionality</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#graph-utilities">Graph Utilities</a><ul>
+<li><a class="reference internal" href="#id3">Functionality</a></li>
 </ul>
 </li>
 </ul>
@@ -197,8 +177,8 @@
   <p class="topless"><a href="Opts.html"
                         title="previous chapter">Optimizers</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="modules.html"
-                        title="next chapter">pyGPs</a></p>
+  <p class="topless"><a href="SemiSupervised.html"
+                        title="next chapter">Semi-supervised Learning with Graphs</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/Graph.txt"
@@ -231,7 +211,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="modules.html" title="pyGPs"
+          <a href="SemiSupervised.html" title="Semi-supervised Learning with Graphs"
              >next</a> |</li>
         <li class="right" >
           <a href="Opts.html" title="Optimizers"

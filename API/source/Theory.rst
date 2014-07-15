@@ -1,4 +1,4 @@
-GPs & Functionality
+GPs 
 ========================
 Gaussian Processes (GPs) can conveniently be used for Bayesian supervised learning, such as regression and classification. 
 In its simplest form, GP inference can be implemented in a few lines of code. However, in practice, things typically 

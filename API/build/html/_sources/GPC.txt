@@ -31,9 +31,9 @@ First example :math:`\rightarrow` state default values
 ----------------------------------------------------------------
 Again, lets see the simplest use of gp classification at first ::
 
-	model = gp.GPC()             # binary classification (default inference method: EP)
+	model = pyGPs.gp.GPC()             # binary classification (default inference method: EP)
 	model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
-	model.train(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
+	model.optimize(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
 	model.predict(z)             # predict test cases
 
 Note, that inference is done via expectation propagation (EP) approximation by deault. How to set inference to Laplace approximation, see :ref:`more_on_GPC`.
@@ -43,18 +43,18 @@ Second example :math:`\rightarrow` GP classification
 ------------------------------------------------------------
 So we first state the model to be :math:`GP` classification now::
 
-    model = gp.GPC() 
+    model = pyGPs.GPC() 
 
 The rest is similar to GPR::
 
-	k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
+	k = pyGPs.cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
 	model.setPrior(kernel=k) 
 
 	model.setData(x, y)
 	model.plotData_2d(x1,x2,t1,t2,p1,p2)
 
 	model.fit()
-	model.train()
+	model.optimize()
 	model.predict(z, ys=np.ones((z.shape[0],1)))
 
 **[Theory]**
@@ -65,7 +65,7 @@ inputs are important for the predictions: if length-scales are short, input dime
 (compared to the spread of the data), the corresponding input dimensions will be mostly ignored. 
 
 
-Note, *GPC.plot()* is a toy method for 2-d data::
+Note, *pyGPs.GPC().plot()* is a toy method for 2-d data::
 
 	model.plot(x1,x2,t1,t2)
 

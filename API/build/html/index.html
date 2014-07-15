@@ -59,11 +59,11 @@
 <p>pyGPs is a library hosting Python implementations of Gaussian processes (GPs) for
 machine learning.
 pyGPs bridges the gap between systems designed primarily for users, who mainly
-want to apply gps and need basic machine learning routines for model training, evaluation, and visualiza-
-gp functiontion, and expressive systems for developers, who focus on extending the core
+want to apply GPs and need basic machine learning routines for model training, evaluation, and
+visualiztion, and expressive systems for developers, who focus on extending the core
 functionalities as covariance and likelihood functions, as well as inference techniques.</p>
 <p>The software package is released under the BSD 2-Clause (FreeBSD) License.
-<tt class="xref doc docutils literal"><span class="pre">Copyright</span></tt> (c) by
+<a class="reference internal" href="_static/copyright.html"><em>Copyright</em></a> (c) by
 Marion Neumann, Shan Huang, Daniel Marthaler, &amp; Kristian Kersting, Feb.2014</p>
 <p>Further, it includes implementations of</p>
 <ul class="simple">
@@ -72,7 +72,7 @@ Marion Neumann, Shan Huang, Daniel Marthaler, &amp; Kristian Kersting, Feb.2014<
 <li>brentmin.py (Copyright (c) Hannes Nickisch 2010-01-10)</li>
 <li>FITC functionality (following matlab implementations under Copyright (c) by Ed Snelson, Carl Edward Rasmussen and Hannes Nickisch, 2011-11-02)</li>
 </ul>
-<p>This is a stable release. If you observe problems or bugs, please let us know.
+<p>The most recent stable release is pyGPs v1.2. If you observe problems or bugs, please let us know.
 You can also download a <a class="reference external" href="https://github.com/marionmari/pyGP_PR/">procedual implementation</a> of GP functionality from Github. However, the procedual version will not be supported in future.</p>
 <dl class="docutils">
 <dt>Authors:</dt>
@@ -92,7 +92,7 @@ You can also download a <a class="reference external" href="https://github.com/m
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Theory.html">GPs &amp; Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Theory.html">GPs</a></li>
 </ul>
 </div>
 </div>
@@ -100,7 +100,9 @@ You can also download a <a class="reference external" href="https://github.com/m
 <h2>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Examples.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#classification">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html#some-examples-for-real-world-data">Some examples for real-world data</a></li>
 </ul>
 </div>
 </div>
@@ -108,17 +110,22 @@ You can also download a <a class="reference external" href="https://github.com/m
 <h2>GP functionality<a class="headerlink" href="#gp-functionality" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="functionality.html">A brief overview of pyGPs functionality</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Kernels.html">Kernels &amp; Means</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Likelihoods.html">Likelihoods &amp; Inference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Opts.html">Optimizers</a></li>
 </ul>
 </div>
 </div>
-<div class="section" id="extensions">
-<h2>Extensions<a class="headerlink" href="#extensions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="graphextensions">
+<h2>GraphExtensions<a class="headerlink" href="#graphextensions" title="Permalink to this headline">¶</a></h2>
+<p>We provide functionality for kernels on graphs for learning on the node-level and graph kernels for
+learning on the graph-level. Kernels on graphs can also be used for graph-based semi-supervised learning.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Graph.html">Kernels for Graph Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Graph.html">Kernels on Graphs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Graph.html#graph-kernels">Graph Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Graph.html#graph-utilities">Graph Utilities</a></li>
 </ul>
 </div>
 </div>
@@ -152,7 +159,7 @@ You can also download a <a class="reference external" href="https://github.com/m
 <li><a class="reference internal" href="#gp-functionality">GP functionality</a><ul>
 </ul>
 </li>
-<li><a class="reference internal" href="#extensions">Extensions</a><ul>
+<li><a class="reference internal" href="#graphextensions">GraphExtensions</a><ul>
 </ul>
 </li>
 </ul>

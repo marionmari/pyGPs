@@ -1,5 +1,3 @@
-Demos
-=========================
 There are several demos exemplifying the use of pyGPs for various Gaussian process (:math:`GP`) tasks. 
 We recommend to first go through *Basic GP Regression* which introduces the :math:`GP` regression model. 
 Basic regression is the most intuitive and simplest learning task feasable with :math:`GPs`. 
@@ -16,6 +14,7 @@ The Demos give some theoretical explanations. Further, it is useful to have a lo
 .. _source: https://github.com/marionmari/pyGPs
 
 Regression
+=========================
 
 .. toctree::
    :maxdepth: 1
@@ -24,6 +23,7 @@ Regression
    GPR_FITC
 
 Classification
+=========================
 
 .. toctree::
    :maxdepth: 1
@@ -33,6 +33,7 @@ Classification
    GPMC
 
 Some examples for real-world data
+=========================
 
 .. toctree::
    :maxdepth: 1
@@ -40,6 +41,6 @@ Some examples for real-world data
    CV
    demoMaunaLoa
    demoHousing
-   SemiSupervised
+
 
 

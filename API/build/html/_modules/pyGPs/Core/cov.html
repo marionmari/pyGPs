@@ -74,7 +74,7 @@
 <span class="kn">import</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">as</span> <span class="nn">spdist</span>
 
 
-<div class="viewcode-block" id="Kernel"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Kernel">[docs]</a><span class="k">class</span> <span class="nc">Kernel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Kernel"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.Kernel">[docs]</a><span class="k">class</span> <span class="nc">Kernel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This is a base class of Kernel functions</span>
 <span class="sd">    there is no computation in this class, it just defines rules about a kernel class should have</span>
@@ -271,7 +271,7 @@
      
 
 </div>
-<div class="viewcode-block" id="FITCOfKernel"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.FITCOfKernel">[docs]</a><span class="k">class</span> <span class="nc">FITCOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="FITCOfKernel"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.FITCOfKernel">[docs]</a><span class="k">class</span> <span class="nc">FITCOfKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Covariance function to be used together with the FITC approximation.</span>
 <span class="sd">    The function allows for more than one output argument and does not respect the</span>
@@ -362,7 +362,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
 
 </div>
-<div class="viewcode-block" id="Poly"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Poly">[docs]</a><span class="k">class</span> <span class="nc">Poly</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="Poly"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.Poly">[docs]</a><span class="k">class</span> <span class="nc">Poly</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Polynomial covariance function. hyp = [ log_c, log_sigma ]</span>
 
@@ -450,7 +450,7 @@
    
 
 </div>
-<div class="viewcode-block" id="PiecePoly"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.PiecePoly">[docs]</a><span class="k">class</span> <span class="nc">PiecePoly</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="PiecePoly"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.PiecePoly">[docs]</a><span class="k">class</span> <span class="nc">PiecePoly</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Piecewise polynomial kernel with compact support. </span>
 <span class="sd">    hyp = [log_ell, log_sigma]</span>
@@ -584,7 +584,7 @@
 
 
 </div>
-<div class="viewcode-block" id="RBF"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RBF">[docs]</a><span class="k">class</span> <span class="nc">RBF</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="RBF"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.RBF">[docs]</a><span class="k">class</span> <span class="nc">RBF</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Squared Exponential kernel with isotropic distance measure. hyp = [log_ell, log_sigma]</span>
 
@@ -651,7 +651,7 @@
     
 
 </div>
-<div class="viewcode-block" id="RBFunit"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RBFunit">[docs]</a><span class="k">class</span> <span class="nc">RBFunit</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="RBFunit"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.RBFunit">[docs]</a><span class="k">class</span> <span class="nc">RBFunit</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Squared Exponential kernel with isotropic distance measure with unit magnitude.</span>
 <span class="sd">    i.e signal variance is always 1. hyp = [ log_ell ]</span>
@@ -710,7 +710,7 @@
 
 
 </div>
-<div class="viewcode-block" id="RBFard"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RBFard">[docs]</a><span class="k">class</span> <span class="nc">RBFard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="RBFard"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.RBFard">[docs]</a><span class="k">class</span> <span class="nc">RBFard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Squared Exponential kernel with Automatic Relevance Determination.</span>
 <span class="sd">    hyp = log_ell_list + [log_sigma]</span>
@@ -804,7 +804,7 @@
 
     
 </div>
-<div class="viewcode-block" id="Const"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Const">[docs]</a><span class="k">class</span> <span class="nc">Const</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="Const"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.Const">[docs]</a><span class="k">class</span> <span class="nc">Const</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Constant kernel. hyp = [ log_sigma ]</span>
 
@@ -864,7 +864,7 @@
 
 
 </div>
-<div class="viewcode-block" id="Linear"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Linear">[docs]</a><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="Linear"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.Linear">[docs]</a><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Linear kernel. No hyperparameters.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -903,7 +903,7 @@
 
 
 </div>
-<div class="viewcode-block" id="LINard"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.LINard">[docs]</a><span class="k">class</span> <span class="nc">LINard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="LINard"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.LINard">[docs]</a><span class="k">class</span> <span class="nc">LINard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Linear covariance function with Automatic Relevance Detemination.</span>
 <span class="sd">    hyp = log_ell_list </span>
@@ -975,7 +975,7 @@
 
 
 </div>
-<div class="viewcode-block" id="Matern"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Matern">[docs]</a><span class="k">class</span> <span class="nc">Matern</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="Matern"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.Matern">[docs]</a><span class="k">class</span> <span class="nc">Matern</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Matern covariance function with nu = d/2 and isotropic distance measure. </span>
 <span class="sd">    For d=1 the function is also known as the exponential covariance function </span>
@@ -1113,7 +1113,7 @@
 
 
 </div>
-<div class="viewcode-block" id="Periodic"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Periodic">[docs]</a><span class="k">class</span> <span class="nc">Periodic</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="Periodic"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.Periodic">[docs]</a><span class="k">class</span> <span class="nc">Periodic</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Stationary kernel for a smooth periodic function. </span>
 <span class="sd">    hyp = [ log_ell, log_p, log_sigma]</span>
@@ -1205,7 +1205,7 @@
 
 
 </div>
-<div class="viewcode-block" id="Noise"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Noise">[docs]</a><span class="k">class</span> <span class="nc">Noise</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="Noise"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.Noise">[docs]</a><span class="k">class</span> <span class="nc">Noise</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Independent covariance function, i.e &quot;white noise&quot;, with specified variance.</span>
 <span class="sd">    Normally NOT used anymore since noise is now added in liklihood.</span>
@@ -1276,7 +1276,7 @@
 
 
 </div>
-<div class="viewcode-block" id="RQ"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RQ">[docs]</a><span class="k">class</span> <span class="nc">RQ</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="RQ"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.RQ">[docs]</a><span class="k">class</span> <span class="nc">RQ</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; </span>
 <span class="sd">    Rational Quadratic covariance function with isotropic distance measure.</span>
 <span class="sd">    hyp = [ log_ell, log_sigma, log_alpha ]</span>
@@ -1355,7 +1355,7 @@
 
 
 </div>
-<div class="viewcode-block" id="RQard"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.RQard">[docs]</a><span class="k">class</span> <span class="nc">RQard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="RQard"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.RQard">[docs]</a><span class="k">class</span> <span class="nc">RQard</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Rational Quadratic covariance function with Automatic Relevance Detemination</span>
 <span class="sd">    (ARD) distance measure.</span>
@@ -1461,7 +1461,7 @@
 
 
 </div>
-<div class="viewcode-block" id="Pre"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Pre">[docs]</a><span class="k">class</span> <span class="nc">Pre</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="Pre"><a class="viewcode-back" href="../../../pyGPs.Core.html#pyGPs.Core.cov.Pre">[docs]</a><span class="k">class</span> <span class="nc">Pre</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Precomputed kernel matrix. No hyperparameters and thus nothing will be optimised. </span>
 

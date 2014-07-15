@@ -21,7 +21,7 @@ air samples collected at the Mauna Loa Observatory, Hawaii, between :math:`1958`
    :height: 600 px
    :width: 800 px
    :align: center
-   :scale: 70 %
+   :scale: 60 %
 
 The data is shown in the above plot. Our goal is to model the :math:`CO_2`
 concentration as a function of time :math:`t`. Several features are
@@ -99,17 +99,17 @@ The final covariance function is:
 with hyperparameters :math:`\theta = (\theta_1,\ldots,\theta_{11})` ::
 
     # DEFINE parameterized covariance function
-    k1 = cov.RBF(np.log(67.), np.log(66.))
-    k2 = cov.Periodic(np.log(1.3), np.log(1.0), np.log(2.4)) * cov.RBF(np.log(90.), np.log(2.4))
-    k3 = cov.RQ(np.log(1.2), np.log(0.66), np.log(0.78))
-    k4 = cov.RBF(np.log(1.6/12.), np.log(0.18)) + cov.Noise(np.log(0.19))
+    k1 = pyGPs.cov.RBF(np.log(67.), np.log(66.))
+    k2 = pyGPs.cov.Periodic(np.log(1.3), np.log(1.0), np.log(2.4)) * cov.RBF(np.log(90.), np.log(2.4))
+    k3 = pyGPs.cov.RQ(np.log(1.2), np.log(0.66), np.log(0.78))
+    k4 = pyGPs.cov.RBF(np.log(1.6/12.), np.log(0.18)) + cov.Noise(np.log(0.19))
     k  = k1 + k2 + k3 + k4 
 
 
 After running the minimization, ::
 
     t0 = clock()
-    model.train(x,y)
+    model.optimize(x,y)
     t1 = clock()
     model.predict(xs) 
 
@@ -119,7 +119,7 @@ The extrapolated data looks like:
    :height: 600 px
    :width: 800 px
    :align: center
-   :scale: 70 %
+   :scale: 60 %
 
 and the optimized values of the hyperparameters allow for a principled analysis of different components driving the model.
 

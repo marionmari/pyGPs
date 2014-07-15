@@ -29,7 +29,7 @@ GPMC example
 ---------------------
 State model with 10-class classification problem: ::
 
-	model = gp.GPMC(10)
+	model = pyGPs.GPMC(10)
 
 Pass data to model: ::
 
@@ -39,14 +39,14 @@ Train default GPC model for each binary classification problem,
 and decide label for test patterns of hand-writen digits.
 The return value *predictive_vote[i,j]* is the probability of being class *j* for test pattern *i*. ::
 
-	predictive_vote = model.trainAndPredict(xs)
+	predictive_vote = model.optimizeAndPredict(xs)
 	predictive_class = np.argmax(predictive_vote, axis=1)
 
 Just like we did for GP classification, 
 you can use specific settings (other than default) for all binary classificiation problem for example by: ::
 
-	m = mean.Zero()
-	k = cov.RBF()
+	m = pyGPs.mean.Zero()
+	k = pyGPs.cov.RBF()
 	model.setPrior(mean=m,kernel=k)
 	model.useInference("Laplace")
 
@@ -57,7 +57,7 @@ For more information on how to use non-default settings see `demo_GPC`_ and `dem
 .. _demo_GPR: GPR.html 
 
 
-Beside *trainAndPredict(xs)*, 
+Beside *optimizeAndPredict(xs)*, 
 there is also an option to perform prediction without hyperparameter optimization: ::
 
     model.fitAndPredict(xs)

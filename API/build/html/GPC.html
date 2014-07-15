@@ -80,9 +80,9 @@ given complete information about the generating mechanism.</p>
 <div class="section" id="first-example-state-default-values">
 <h2>First example \rightarrow state default values<a class="headerlink" href="#first-example-state-default-values" title="Permalink to this headline">¶</a></h2>
 <p>Again, lets see the simplest use of gp classification at first</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>             <span class="c"># binary classification (default inference method: EP)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">gp</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>             <span class="c"># binary classification (default inference method: EP)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>              <span class="c"># fit default model (mean zero &amp; rbf kernel) with data</span>
-<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>            <span class="c"># optimize hyperparamters (default optimizer: single run minimize)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>            <span class="c"># optimize hyperparamters (default optimizer: single run minimize)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>             <span class="c"># predict test cases</span>
 </pre></div>
 </div>
@@ -91,18 +91,18 @@ given complete information about the generating mechanism.</p>
 <div class="section" id="second-example-gp-classification">
 <h2>Second example \rightarrow GP classification<a class="headerlink" href="#second-example-gp-classification" title="Permalink to this headline">¶</a></h2>
 <p>So we first state the model to be GP classification now:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The rest is similar to GPR:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBFard</span><span class="p">(</span><span class="n">log_ell_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.17</span><span class="p">],</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">k</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">RBFard</span><span class="p">(</span><span class="n">log_ell_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.17</span><span class="p">],</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">setPrior</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">plotData_2d</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">)</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">)))</span>
 </pre></div>
 </div>
@@ -112,7 +112,7 @@ characteristic length-scale parameter for each dimension of the input space (her
 a total of 3 hyperparameters. ARD with separate length-scales for each input dimension is a very powerful tool to learn which
 inputs are important for the predictions: if length-scales are short, input dimensions are very important, and when they grow very large
 (compared to the spread of the data), the corresponding input dimensions will be mostly ignored.</p>
-<p>Note, <em>GPC.plot()</em> is a toy method for 2-d data:</p>
+<p>Note, <em>pyGPs.GPC().plot()</em> is a toy method for 2-d data:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">)</span>
 </pre></div>
 </div>

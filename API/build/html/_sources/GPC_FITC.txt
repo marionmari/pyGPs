@@ -16,7 +16,7 @@ based on a low-rank plus diagonal approximation to the exact covariance to deal 
 
 Okay, now the model is FITC classificiation::
 
-	model = gp.GPC_FITC()  
+	model = pyGPs.GPC_FITC()  
 
 The difference between the usage of basic :math:`GP` is that we will have to specify inducing points.
 In our first example, we will introduce how to perform sparse GPC with the default settings.
@@ -32,7 +32,7 @@ The number of inducing points per axis is :math:`5` per default. How to change t
 
 Then, the regular process follows::
 
-	model.train()           
+	model.optimize()           
 	model.predict(z, ys=np.ones((z.shape[0],1))) 
 	model.plot(x1,x2,t1,t2)
 
@@ -56,8 +56,8 @@ So, in the second example let us use a user-defined set of inducing points::
 
 Here, we also use a grid euqually spaced, but without the values on the margin of the grid.(i.e. shrinking the grid) Then, we can just pass :math:`u` when specifying prior::
 
-	m = mean.Zero()
-	k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
+	m = pyGPs.mean.Zero()
+	k = pyGPs.cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
 	model.setPrior(mean=m, kernel=k, inducing_points=u) 
 
 The prediction results for this  set of inducing points are shown below:

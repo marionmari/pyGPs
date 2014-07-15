@@ -67,8 +67,8 @@ unit variance (The categorical variable was dropped).  The data was partitioned 
 unit-variance normal distribtion.  The actual values were: [ -0.75, \; 0.59, \; -0.45 ]. The initial likelihood hyperparameter
 was -2.30.  The regression started with initial negative log marginal likelihood of :math:` 752.46`.  Note the initial zero mean and the
 variance that is uniform over the test set.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPR</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">GPR</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
 <span class="n">ym</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fm</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
 <span class="n">xa</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">data</span><span class="p">[:,:</span><span class="mi">4</span><span class="p">],</span><span class="n">data</span><span class="p">[:,</span><span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">xa</span> <span class="o">=</span> <span class="p">(</span><span class="n">xa</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xa</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">xa</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="mf">1.e-16</span><span class="p">)</span>
@@ -76,12 +76,12 @@ variance that is uniform over the test set.</p>
 </pre></div>
 </div>
 <div class="figure align-center">
-<img alt="_images/demoH1.png" src="_images/demoH1.png" style="width: 600pt; height: 300pt;" />
+<img alt="_images/demoH1.png" src="_images/demoH1.png" style="width: 400pt; height: 300pt;" />
 </div>
 <p>After hyperparameter optimization, the covariance hyperparameters were [ 1.17, \;  0.45, \; -1.41 ] and the likelihood
 hyperparameter was -2.27.  The final negative log marginal likelihood (optimized) was  214.46.</p>
 <div class="figure align-center">
-<img alt="_images/demoH2.png" src="_images/demoH2.png" style="width: 600pt; height: 300pt;" />
+<img alt="_images/demoH2.png" src="_images/demoH2.png" style="width: 400pt; height: 300pt;" />
 </div>
 <table class="docutils footnote" frame="void" id="id2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>

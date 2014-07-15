@@ -77,8 +77,11 @@ GP functionality
    Likelihoods
    Opts
 
-Extensions
+GraphExtensions
 ------------------------------
+We provide functionality for kernels on graphs for learning on the node-level and graph kernels for 
+learning on the graph-level. Kernels on graphs can also be used for graph-based semi-supervised learning. 
+
 .. toctree::
    :maxdepth: 1
 

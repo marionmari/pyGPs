@@ -17,9 +17,9 @@ Now, lets focus on the use of cross-validation. ::
 	K = 10             # number of folds
 	for x_train, x_test, y_train, y_test in valid.k_fold_validation(x, y, K):
 	    # This is a binary classification problem
-	    model = gp.GPC()
+	    model = pyGPs.GPC()
 	    # Since no prior knowldege, leave everything default 
-	    model.train(x_train, y_train)
+	    model.optimize(x_train, y_train)
 	    # Predition 
 	    ymu, ys2, fmu, fs2, lp = model.predict(x_test, ys=y_test)
 	    # ymu for classification is a continuous value over -1 to +1

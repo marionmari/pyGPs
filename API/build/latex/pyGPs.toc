@@ -4,9 +4,9 @@
 \contentsline {section}{\numberline {1.2}Getting started}{2}{section.1.2}
 \contentsline {subsection}{\numberline {1.2.1}Installation}{2}{subsection.1.2.1}
 \contentsline {subsubsection}{Requirements}{2}{subsubsection*.3}
-\contentsline {subsection}{\numberline {1.2.2}GPs \& Functionality}{2}{subsection.1.2.2}
+\contentsline {subsection}{\numberline {1.2.2}GPs}{2}{subsection.1.2.2}
 \contentsline {section}{\numberline {1.3}Tutorials}{2}{section.1.3}
-\contentsline {subsection}{\numberline {1.3.1}Demos}{2}{subsection.1.3.1}
+\contentsline {subsection}{\numberline {1.3.1}Regression}{3}{subsection.1.3.1}
 \contentsline {subsubsection}{Basic Regression}{3}{subsubsection*.4}
 \contentsline {paragraph}{Import packages}{3}{paragraph*.5}
 \contentsline {paragraph}{Load data}{3}{paragraph*.6}
@@ -17,80 +17,91 @@
 \contentsline {paragraph}{First example $\rightarrow $ default inducing points}{6}{paragraph*.11}
 \contentsline {paragraph}{Second example $\rightarrow $ user-defined inducing points}{7}{paragraph*.12}
 \contentsline {paragraph}{A bit more things you can do}{8}{paragraph*.13}
-\contentsline {subsubsection}{Basic Classification}{8}{subsubsection*.14}
+\contentsline {subsection}{\numberline {1.3.2}Classification}{9}{subsection.1.3.2}
+\contentsline {subsubsection}{Basic Classification}{9}{subsubsection*.14}
 \contentsline {paragraph}{Load data}{9}{paragraph*.15}
 \contentsline {paragraph}{First example $\rightarrow $ state default values}{9}{paragraph*.16}
-\contentsline {paragraph}{Second example $\rightarrow $ GP classification}{9}{paragraph*.17}
-\contentsline {paragraph}{A bit more things you can do}{11}{paragraph*.18}
-\contentsline {subsubsection}{Sparse Classification}{11}{subsubsection*.19}
-\contentsline {paragraph}{First example $\rightarrow $ default inducing points}{11}{paragraph*.20}
+\contentsline {paragraph}{Second example $\rightarrow $ GP classification}{10}{paragraph*.17}
+\contentsline {paragraph}{A bit more things you can do}{10}{paragraph*.18}
+\contentsline {subsubsection}{Sparse Classification}{10}{subsubsection*.19}
+\contentsline {paragraph}{First example $\rightarrow $ default inducing points}{10}{paragraph*.20}
 \contentsline {paragraph}{Second example $\rightarrow $ user-defined inducing points}{11}{paragraph*.21}
 \contentsline {paragraph}{A bit more things you can do}{12}{paragraph*.22}
 \contentsline {subsubsection}{Multi-class Classification}{12}{subsubsection*.23}
-\contentsline {paragraph}{Load data}{12}{paragraph*.24}
+\contentsline {paragraph}{Load data}{13}{paragraph*.24}
 \contentsline {paragraph}{GPMC example}{13}{paragraph*.25}
+\contentsline {subsection}{\numberline {1.3.3}Some examples for real-world data}{14}{subsection.1.3.3}
 \contentsline {subsubsection}{K-fold Cross-Validation}{14}{subsubsection*.26}
 \contentsline {paragraph}{Load data}{14}{paragraph*.27}
 \contentsline {paragraph}{Cross Validation}{14}{paragraph*.28}
 \contentsline {paragraph}{Evaluation measures}{14}{paragraph*.29}
 \contentsline {subsubsection}{Regression on Mauna Loa data}{15}{subsubsection*.30}
 \contentsline {subsubsection}{Regression on UCI Housing data}{17}{subsubsection*.31}
-\contentsline {subsubsection}{Semi-supervised Learning with Graphs}{19}{subsubsection*.32}
-\contentsline {paragraph}{Load data}{19}{paragraph*.33}
-\contentsline {paragraph}{Form a nearest neighbour graph}{20}{paragraph*.34}
-\contentsline {paragraph}{Kernel on graph}{21}{paragraph*.35}
-\contentsline {paragraph}{GP classification}{21}{paragraph*.36}
-\contentsline {paragraph}{Result}{21}{paragraph*.37}
-\contentsline {section}{\numberline {1.4}GP functionality}{22}{section.1.4}
-\contentsline {subsection}{\numberline {1.4.1}A brief overview of pyGPs functionality}{22}{subsection.1.4.1}
-\contentsline {subsubsection}{kernel functions:}{22}{subsubsection*.38}
-\contentsline {subsubsection}{mean functions:}{23}{subsubsection*.39}
-\contentsline {subsubsection}{lik functions:}{23}{subsubsection*.40}
-\contentsline {subsubsection}{inf functions:}{23}{subsubsection*.41}
-\contentsline {subsubsection}{optimization methods:}{24}{subsubsection*.42}
-\contentsline {subsubsection}{evaluation measures:}{24}{subsubsection*.43}
-\contentsline {subsection}{\numberline {1.4.2}Kernels \& Means}{24}{subsection.1.4.2}
-\contentsline {subsubsection}{Simple Kernel \& Mean}{24}{subsubsection*.44}
-\contentsline {subsubsection}{Some Special Cases}{24}{subsubsection*.45}
-\contentsline {subsubsection}{Composite Kernels \& Meams}{25}{subsubsection*.46}
-\contentsline {subsubsection}{Precomputed Kernel Matrix}{25}{subsubsection*.47}
-\contentsline {subsubsection}{Customizing Kernel \& Mean}{26}{subsubsection*.48}
-\contentsline {subsection}{\numberline {1.4.3}Likelihoods \& Inference}{26}{subsection.1.4.3}
-\contentsline {subsubsection}{Changing Likelihood \& Inference}{26}{subsubsection*.49}
-\contentsline {subsubsection}{List of Likelihoods}{27}{subsubsection*.50}
-\contentsline {subsubsection}{List of Inference}{27}{subsubsection*.56}
-\contentsline {subsection}{\numberline {1.4.4}Optimizers}{29}{subsection.1.4.4}
-\contentsline {subsubsection}{Optimization Methods}{29}{subsubsection*.75}
-\contentsline {section}{\numberline {1.5}Extensions}{30}{section.1.5}
-\contentsline {subsection}{\numberline {1.5.1}Kernels for Graph Data}{30}{subsection.1.5.1}
-\contentsline {subsubsection}{Kernels on Graph}{30}{subsubsection*.77}
-\contentsline {subsubsection}{Graph Kernels}{31}{subsubsection*.85}
-\contentsline {chapter}{\numberline {2}API}{33}{chapter.2}
-\contentsline {section}{\numberline {2.1}pyGPs}{33}{section.2.1}
-\contentsline {subsection}{\numberline {2.1.1}pyGPs Package}{33}{subsection.2.1.1}
-\contentsline {subsubsection}{\texttt {pyGPs} Package}{33}{subsubsection*.86}
-\contentsline {subsubsection}{Subpackages}{33}{subsubsection*.88}
-\contentsline {paragraph}{Core Package}{33}{paragraph*.89}
-\contentsline {subparagraph}{\texttt {Core} Package}{33}{subparagraph*.90}
-\contentsline {subparagraph}{\texttt {cov} Module}{33}{subparagraph*.92}
-\contentsline {subparagraph}{\texttt {gp} Module}{38}{subparagraph*.173}
-\contentsline {subparagraph}{\texttt {inf} Module}{42}{subparagraph*.217}
-\contentsline {subparagraph}{\texttt {lik} Module}{44}{subparagraph*.244}
-\contentsline {subparagraph}{\texttt {mean} Module}{44}{subparagraph*.256}
-\contentsline {subparagraph}{\texttt {opt} Module}{46}{subparagraph*.294}
-\contentsline {subparagraph}{\texttt {tools} Module}{47}{subparagraph*.309}
-\contentsline {paragraph}{GraphExtensions Package}{47}{paragraph*.314}
-\contentsline {subparagraph}{\texttt {GraphExtensions} Package}{47}{subparagraph*.315}
-\contentsline {subparagraph}{\texttt {graphKernels} Module}{47}{subparagraph*.317}
-\contentsline {subparagraph}{\texttt {graphUtil} Module}{48}{subparagraph*.319}
-\contentsline {subparagraph}{\texttt {nodeKernels} Module}{48}{subparagraph*.323}
-\contentsline {paragraph}{Optimization Package}{49}{paragraph*.331}
-\contentsline {subparagraph}{\texttt {Optimization} Package}{49}{subparagraph*.332}
-\contentsline {subparagraph}{\texttt {conf} Module}{49}{subparagraph*.334}
-\contentsline {subparagraph}{\texttt {minimize} Module}{50}{subparagraph*.345}
-\contentsline {subparagraph}{\texttt {scg} Module}{50}{subparagraph*.347}
-\contentsline {paragraph}{Validation Package}{50}{paragraph*.349}
-\contentsline {subparagraph}{\texttt {Validation} Package}{50}{subparagraph*.350}
-\contentsline {subparagraph}{\texttt {valid} Module}{50}{subparagraph*.352}
-\contentsline {chapter}{Python Module Index}{53}{section*.360}
-\contentsline {chapter}{Index}{55}{section*.361}
+\contentsline {section}{\numberline {1.4}GP functionality}{19}{section.1.4}
+\contentsline {subsection}{\numberline {1.4.1}A brief overview of pyGPs functionality}{19}{subsection.1.4.1}
+\contentsline {subsubsection}{kernel functions:}{19}{subsubsection*.32}
+\contentsline {subsubsection}{mean functions:}{19}{subsubsection*.33}
+\contentsline {subsubsection}{lik functions:}{19}{subsubsection*.34}
+\contentsline {subsubsection}{inf functions:}{20}{subsubsection*.35}
+\contentsline {subsubsection}{optimization methods:}{20}{subsubsection*.36}
+\contentsline {subsubsection}{evaluation measures:}{20}{subsubsection*.37}
+\contentsline {subsection}{\numberline {1.4.2}Kernels \& Means}{20}{subsection.1.4.2}
+\contentsline {subsubsection}{Simple Kernel \& Mean}{20}{subsubsection*.38}
+\contentsline {subsubsection}{Some Special Cases}{20}{subsubsection*.39}
+\contentsline {subsubsection}{Composite Kernels \& Meams}{21}{subsubsection*.40}
+\contentsline {subsubsection}{Precomputed Kernel Matrix}{21}{subsubsection*.41}
+\contentsline {subsubsection}{Developing New Kernel \& Mean Functions}{22}{subsubsection*.42}
+\contentsline {subsection}{\numberline {1.4.3}Likelihoods \& Inference}{23}{subsection.1.4.3}
+\contentsline {subsubsection}{Changing Likelihood \& Inference}{23}{subsubsection*.43}
+\contentsline {subsubsection}{Developing New Likelihood \& Inference Functions}{24}{subsubsection*.44}
+\contentsline {subsection}{\numberline {1.4.4}Optimizers}{25}{subsection.1.4.4}
+\contentsline {subsubsection}{Optimization Methods}{25}{subsubsection*.45}
+\contentsline {section}{\numberline {1.5}GraphExtensions}{26}{section.1.5}
+\contentsline {subsection}{\numberline {1.5.1}Kernels on Graphs}{26}{subsection.1.5.1}
+\contentsline {subsubsection}{Demo}{26}{subsubsection*.47}
+\contentsline {paragraph}{Semi-supervised Learning with Graphs}{26}{paragraph*.48}
+\contentsline {subparagraph}{Import}{26}{subparagraph*.49}
+\contentsline {subparagraph}{Load data}{26}{subparagraph*.50}
+\contentsline {subparagraph}{Form a nearest neighbour graph}{27}{subparagraph*.51}
+\contentsline {subparagraph}{Kernel on graph}{27}{subparagraph*.52}
+\contentsline {subparagraph}{GP classification}{28}{subparagraph*.53}
+\contentsline {subparagraph}{Result}{28}{subparagraph*.54}
+\contentsline {subsubsection}{Functionality}{29}{subsubsection*.55}
+\contentsline {subsection}{\numberline {1.5.2}Graph Kernels}{29}{subsection.1.5.2}
+\contentsline {subsubsection}{Demo}{29}{subsubsection*.56}
+\contentsline {paragraph}{Graph Kernels}{29}{paragraph*.57}
+\contentsline {subparagraph}{Load data}{29}{subparagraph*.58}
+\contentsline {subparagraph}{Compute propagation kernel matrix}{29}{subparagraph*.59}
+\contentsline {subparagraph}{Standard GP Classification}{29}{subparagraph*.60}
+\contentsline {subsubsection}{Functionality}{30}{subsubsection*.61}
+\contentsline {subsection}{\numberline {1.5.3}Graph Utilities}{30}{subsection.1.5.3}
+\contentsline {subsubsection}{Functionality}{30}{subsubsection*.62}
+\contentsline {chapter}{\numberline {2}API}{31}{chapter.2}
+\contentsline {section}{\numberline {2.1}pyGPs}{31}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}pyGPs Package}{31}{subsection.2.1.1}
+\contentsline {subsubsection}{\texttt {pyGPs} Package}{31}{subsubsection*.63}
+\contentsline {subsubsection}{Subpackages}{31}{subsubsection*.65}
+\contentsline {paragraph}{Core Package}{31}{paragraph*.66}
+\contentsline {subparagraph}{\texttt {Core} Package}{31}{subparagraph*.67}
+\contentsline {subparagraph}{\texttt {cov} Module}{31}{subparagraph*.69}
+\contentsline {subparagraph}{\texttt {gp} Module}{36}{subparagraph*.141}
+\contentsline {subparagraph}{\texttt {inf} Module}{39}{subparagraph*.185}
+\contentsline {subparagraph}{\texttt {lik} Module}{41}{subparagraph*.202}
+\contentsline {subparagraph}{\texttt {mean} Module}{43}{subparagraph*.214}
+\contentsline {subparagraph}{\texttt {opt} Module}{45}{subparagraph*.246}
+\contentsline {subparagraph}{\texttt {tools} Module}{46}{subparagraph*.257}
+\contentsline {paragraph}{GraphExtensions Package}{46}{paragraph*.262}
+\contentsline {subparagraph}{\texttt {GraphExtensions} Package}{46}{subparagraph*.263}
+\contentsline {subparagraph}{\texttt {graphKernels} Module}{46}{subparagraph*.265}
+\contentsline {subparagraph}{\texttt {graphUtil} Module}{47}{subparagraph*.267}
+\contentsline {subparagraph}{\texttt {nodeKernels} Module}{47}{subparagraph*.271}
+\contentsline {paragraph}{Optimization Package}{48}{paragraph*.279}
+\contentsline {subparagraph}{\texttt {Optimization} Package}{48}{subparagraph*.280}
+\contentsline {subparagraph}{\texttt {conf} Module}{48}{subparagraph*.282}
+\contentsline {subparagraph}{\texttt {minimize} Module}{49}{subparagraph*.287}
+\contentsline {subparagraph}{\texttt {scg} Module}{49}{subparagraph*.289}
+\contentsline {paragraph}{Validation Package}{49}{paragraph*.291}
+\contentsline {subparagraph}{\texttt {Validation} Package}{49}{subparagraph*.292}
+\contentsline {subparagraph}{\texttt {valid} Module}{49}{subparagraph*.294}
+\contentsline {chapter}{Python Module Index}{51}{section*.302}
+\contentsline {chapter}{Index}{53}{section*.303}

@@ -67,7 +67,7 @@ In case the number of training inputs x exceeds a few hundred, approximate infer
 based on a low-rank plus diagonal approximation to the exact covariance to deal with these cases. The general idea is to use inducing points
 u and to base the computations on cross-covariances between training, test and inducing points only.</p>
 <p>Okay, now the model is FITC classificiation:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">GPC_FITC</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">GPC_FITC</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The difference between the usage of basic GP is that we will have to specify inducing points.
@@ -80,7 +80,7 @@ In order to specify the dimension of input data, we HAVE TO set data first:</p>
 </div>
 <p>The number of inducing points per axis is 5 per default. How to change this, see <a class="reference internal" href="#more-on-gpc-fitc"><em>A bit more things you can do</em></a>.</p>
 <p>Then, the regular process follows:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">)))</span>
 <span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">)</span>
 </pre></div>
@@ -99,8 +99,8 @@ So, in the second example let us use a user-defined set of inducing points:</p>
 </pre></div>
 </div>
 <p>Here, we also use a grid euqually spaced, but without the values on the margin of the grid.(i.e. shrinking the grid) Then, we can just pass u when specifying prior:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Zero</span><span class="p">()</span>
-<span class="n">k</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBFard</span><span class="p">(</span><span class="n">log_ell_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.17</span><span class="p">],</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">m</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">Zero</span><span class="p">()</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">RBFard</span><span class="p">(</span><span class="n">log_ell_list</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.17</span><span class="p">],</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">setPrior</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">inducing_points</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
 </pre></div>
 </div>

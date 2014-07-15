@@ -17,6 +17,5 @@ Subpackages
     pyGPs.Core
     pyGPs.GraphExtensions
     pyGPs.Optimization
-    pyGPs.Valid
     pyGPs.Validation
 

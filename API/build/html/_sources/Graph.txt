@@ -1,16 +1,59 @@
-Kernels for Graph Data
+Kernels on Graphs
 ============================
-You can refer to our demo of `semi-supervised learning`_ for a simple usage of kernels for graph data.
 
-.. _`semi-supervised learning`: SemiSupervised.html
 
-Kernels on Graph
+Demo
 ---------------------------------------
 
-.. automodule:: pyGPs.GraphStuff.kernels_on_graph
-   :members:
+.. toctree::
+   :maxdepth: 1
+   
+   SemiSupervised
+
+Functionality
+---------------------------------------
+Implemented kernels on graphs: 
+
+======================  =================================
+diffKernel 	  	Diffusion kernel	  	  	 
+VNDKernel		Von-Neumann diffusion kernel
+psInvLapKernel  	Pseudo-Inverse of the Laplacian
+regLapKernel    	Regularized Laplacian kernel
+rwKernel      	        p-step random walk kernel	
+cosKernel               Inverse Cosine Kernel
+======================  =================================
+
+
 
 Graph Kernels
+============================
+
+Demo
 ---------------------------------------
 
-tbd.
+.. toctree::
+   :maxdepth: 1
+   
+   GraphKernel
+
+Functionality
+---------------------------------------
+Implemented graph kernels:
+
+==================  =====================================
+propagationKernel   Propagation kernel
+==================  =====================================
+
+
+Graph Utilities
+============================
+
+Functionality
+---------------------------------------
+Implemented graph utilities:
+
+==================  =======================================================
+formKnnGraph   	    create knn graph from vector-valued data
+formKernelMatrix    transfer precomputed kernel matrix to pyGPs format
+normalizeKernel     normalize kernel matrix
+==================  =======================================================

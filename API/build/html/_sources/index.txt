@@ -14,8 +14,8 @@ About the package
 pyGPs is a library hosting Python implementations of Gaussian processes (GPs) for
 machine learning.
 pyGPs bridges the gap between systems designed primarily for users, who mainly
-want to apply gps and need basic machine learning routines for model training, evaluation, and visualiza-
-gp functiontion, and expressive systems for developers, who focus on extending the core
+want to apply GPs and need basic machine learning routines for model training, evaluation, and 
+visualiztion, and expressive systems for developers, who focus on extending the core
 functionalities as covariance and likelihood functions, as well as inference techniques.
 
 
@@ -33,7 +33,7 @@ Further, it includes implementations of
 
 * FITC functionality (following matlab implementations under Copyright (c) by Ed Snelson, Carl Edward Rasmussen and Hannes Nickisch, 2011-11-02)
 
-This is a stable release. If you observe problems or bugs, please let us know.
+The most recent stable release is pyGPs v1.2. If you observe problems or bugs, please let us know.
 You can also download a `procedual implementation`_ of GP functionality from Github. However, the procedual version will not be supported in future.
 
 .. _procedual implementation: https://github.com/marionmari/pyGP_PR/  
@@ -72,12 +72,16 @@ GP functionality
 .. toctree::
    :maxdepth: 1
 
+   functionality
    Kernels
    Likelihoods
    Opts
 
-Extensions
+GraphExtensions
 ------------------------------
+We provide functionality for kernels on graphs for learning on the node-level and graph kernels for 
+learning on the graph-level. Kernels on graphs can also be used for graph-based semi-supervised learning. 
+
 .. toctree::
    :maxdepth: 1
 

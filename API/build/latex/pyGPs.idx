@@ -1,298 +1,230 @@
-\indexentry{pyGPs.Core.lik (module)|hyperpage}{27}
-\indexentry{Erf (class in pyGPs.Core.lik)|hyperpage}{27}
-\indexentry{Gauss (class in pyGPs.Core.lik)|hyperpage}{27}
-\indexentry{Laplace (class in pyGPs.Core.lik)|hyperpage}{27}
-\indexentry{Likelihood (class in pyGPs.Core.lik)|hyperpage}{27}
-\indexentry{proceed() (pyGPs.Core.lik.Likelihood method)|hyperpage}{27}
-\indexentry{pyGPs.Core.inf (module)|hyperpage}{27}
-\indexentry{EP (class in pyGPs.Core.inf)|hyperpage}{27}
-\indexentry{Exact (class in pyGPs.Core.inf)|hyperpage}{27}
-\indexentry{FITC\_EP (class in pyGPs.Core.inf)|hyperpage}{27}
-\indexentry{FITC\_Exact (class in pyGPs.Core.inf)|hyperpage}{28}
-\indexentry{FITC\_Laplace (class in pyGPs.Core.inf)|hyperpage}{28}
-\indexentry{Inference (class in pyGPs.Core.inf)|hyperpage}{28}
-\indexentry{Psi\_line() (pyGPs.Core.inf.Inference method)|hyperpage}{28}
-\indexentry{Psi\_lineFITC() (pyGPs.Core.inf.Inference method)|hyperpage}{28}
-\indexentry{epfitcRefresh() (pyGPs.Core.inf.Inference method)|hyperpage}{28}
-\indexentry{epfitcZ() (pyGPs.Core.inf.Inference method)|hyperpage}{28}
-\indexentry{fitcRefresh() (pyGPs.Core.inf.Inference method)|hyperpage}{28}
-\indexentry{logdetA() (pyGPs.Core.inf.Inference method)|hyperpage}{28}
-\indexentry{mvmK() (pyGPs.Core.inf.Inference method)|hyperpage}{28}
-\indexentry{mvmZ() (pyGPs.Core.inf.Inference method)|hyperpage}{28}
-\indexentry{proceed() (pyGPs.Core.inf.Inference method)|hyperpage}{28}
-\indexentry{Laplace (class in pyGPs.Core.inf)|hyperpage}{29}
-\indexentry{dnlZStruct (class in pyGPs.Core.inf)|hyperpage}{29}
-\indexentry{postStruct (class in pyGPs.Core.inf)|hyperpage}{29}
-\indexentry{setOptimizer() (pyGPs.Core.gp.GP method)|hyperpage}{29}
-\indexentry{pyGPs.GraphStuff.kernels\_on\_graph (module)|hyperpage}{30}
-\indexentry{VNDKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)|hyperpage}{30}
-\indexentry{cosKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)|hyperpage}{30}
-\indexentry{diffKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)|hyperpage}{30}
-\indexentry{normLap() (in module pyGPs.GraphStuff.kernels\_on\_graph)|hyperpage}{30}
-\indexentry{psInvLapKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)|hyperpage}{30}
-\indexentry{regLapKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)|hyperpage}{30}
-\indexentry{rwKernel() (in module pyGPs.GraphStuff.kernels\_on\_graph)|hyperpage}{30}
-\indexentry{pyGPs.\_\_init\_\_ (module)|hyperpage}{33}
-\indexentry{pyGPs.Core (module)|hyperpage}{33}
-\indexentry{pyGPs.Core.cov (module)|hyperpage}{33}
-\indexentry{Const (class in pyGPs.Core.cov)|hyperpage}{33}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.Const method)|hyperpage}{33}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.Const method)|hyperpage}{33}
-\indexentry{FITCOfKernel (class in pyGPs.Core.cov)|hyperpage}{33}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.FITCOfKernel method)|hyperpage}{33}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.FITCOfKernel method)|hyperpage}{33}
-\indexentry{getHyp() (pyGPs.Core.cov.FITCOfKernel method)|hyperpage}{33}
-\indexentry{hyp (pyGPs.Core.cov.FITCOfKernel attribute)|hyperpage}{33}
-\indexentry{setHyp() (pyGPs.Core.cov.FITCOfKernel method)|hyperpage}{33}
-\indexentry{Kernel (class in pyGPs.Core.cov)|hyperpage}{33}
-\indexentry{fitc() (pyGPs.Core.cov.Kernel method)|hyperpage}{34}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.Kernel method)|hyperpage}{34}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.Kernel method)|hyperpage}{34}
-\indexentry{sq\_dist() (pyGPs.Core.cov.Kernel method)|hyperpage}{34}
-\indexentry{LINard (class in pyGPs.Core.cov)|hyperpage}{34}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.LINard method)|hyperpage}{34}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.LINard method)|hyperpage}{34}
-\indexentry{Linear (class in pyGPs.Core.cov)|hyperpage}{34}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.Linear method)|hyperpage}{34}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.Linear method)|hyperpage}{35}
-\indexentry{Matern (class in pyGPs.Core.cov)|hyperpage}{35}
-\indexentry{dfunc() (pyGPs.Core.cov.Matern method)|hyperpage}{35}
-\indexentry{dmfunc() (pyGPs.Core.cov.Matern method)|hyperpage}{35}
-\indexentry{func() (pyGPs.Core.cov.Matern method)|hyperpage}{35}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.Matern method)|hyperpage}{35}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.Matern method)|hyperpage}{35}
-\indexentry{mfunc() (pyGPs.Core.cov.Matern method)|hyperpage}{35}
-\indexentry{Noise (class in pyGPs.Core.cov)|hyperpage}{35}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.Noise method)|hyperpage}{35}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.Noise method)|hyperpage}{35}
-\indexentry{Periodic (class in pyGPs.Core.cov)|hyperpage}{35}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.Periodic method)|hyperpage}{35}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.Periodic method)|hyperpage}{35}
-\indexentry{PiecePoly (class in pyGPs.Core.cov)|hyperpage}{35}
-\indexentry{dfunc() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{36}
-\indexentry{dpp() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{36}
-\indexentry{func() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{36}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{36}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{36}
-\indexentry{pp() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{36}
-\indexentry{ppmax() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{36}
-\indexentry{Poly (class in pyGPs.Core.cov)|hyperpage}{36}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.Poly method)|hyperpage}{36}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.Poly method)|hyperpage}{36}
-\indexentry{Pre (class in pyGPs.Core.cov)|hyperpage}{36}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.Pre method)|hyperpage}{36}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.Pre method)|hyperpage}{36}
-\indexentry{ProductOfKernel (class in pyGPs.Core.cov)|hyperpage}{36}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.ProductOfKernel method)|hyperpage}{36}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.ProductOfKernel method)|hyperpage}{36}
-\indexentry{gethyp() (pyGPs.Core.cov.ProductOfKernel method)|hyperpage}{36}
-\indexentry{hyp (pyGPs.Core.cov.ProductOfKernel attribute)|hyperpage}{36}
-\indexentry{sethyp() (pyGPs.Core.cov.ProductOfKernel method)|hyperpage}{36}
-\indexentry{RBF (class in pyGPs.Core.cov)|hyperpage}{36}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.RBF method)|hyperpage}{37}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.RBF method)|hyperpage}{37}
-\indexentry{RBFard (class in pyGPs.Core.cov)|hyperpage}{37}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.RBFard method)|hyperpage}{37}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.RBFard method)|hyperpage}{37}
-\indexentry{RBFunit (class in pyGPs.Core.cov)|hyperpage}{37}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.RBFunit method)|hyperpage}{37}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.RBFunit method)|hyperpage}{37}
-\indexentry{RQ (class in pyGPs.Core.cov)|hyperpage}{37}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.RQ method)|hyperpage}{37}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.RQ method)|hyperpage}{37}
-\indexentry{RQard (class in pyGPs.Core.cov)|hyperpage}{37}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.RQard method)|hyperpage}{38}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.RQard method)|hyperpage}{38}
-\indexentry{ScaleOfKernel (class in pyGPs.Core.cov)|hyperpage}{38}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.ScaleOfKernel method)|hyperpage}{38}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.ScaleOfKernel method)|hyperpage}{38}
-\indexentry{gethyp() (pyGPs.Core.cov.ScaleOfKernel method)|hyperpage}{38}
-\indexentry{hyp (pyGPs.Core.cov.ScaleOfKernel attribute)|hyperpage}{38}
-\indexentry{sethyp() (pyGPs.Core.cov.ScaleOfKernel method)|hyperpage}{38}
-\indexentry{SumOfKernel (class in pyGPs.Core.cov)|hyperpage}{38}
-\indexentry{getCovMatrix() (pyGPs.Core.cov.SumOfKernel method)|hyperpage}{38}
-\indexentry{getDerMatrix() (pyGPs.Core.cov.SumOfKernel method)|hyperpage}{38}
-\indexentry{gethyp() (pyGPs.Core.cov.SumOfKernel method)|hyperpage}{38}
-\indexentry{hyp (pyGPs.Core.cov.SumOfKernel attribute)|hyperpage}{38}
-\indexentry{sethyp() (pyGPs.Core.cov.SumOfKernel method)|hyperpage}{38}
-\indexentry{pyGPs.Core.gp (module)|hyperpage}{38}
-\indexentry{GP (class in pyGPs.Core.gp)|hyperpage}{38}
-\indexentry{fit() (pyGPs.Core.gp.GP method)|hyperpage}{38}
-\indexentry{optimize() (pyGPs.Core.gp.GP method)|hyperpage}{38}
-\indexentry{plotData\_1d() (pyGPs.Core.gp.GP method)|hyperpage}{38}
-\indexentry{plotData\_2d() (pyGPs.Core.gp.GP method)|hyperpage}{38}
-\indexentry{predict() (pyGPs.Core.gp.GP method)|hyperpage}{38}
-\indexentry{predict\_with\_posterior() (pyGPs.Core.gp.GP method)|hyperpage}{39}
-\indexentry{setData() (pyGPs.Core.gp.GP method)|hyperpage}{39}
-\indexentry{setOptimizer() (pyGPs.Core.gp.GP method)|hyperpage}{39}
-\indexentry{setPrior() (pyGPs.Core.gp.GP method)|hyperpage}{39}
-\indexentry{GPC (class in pyGPs.Core.gp)|hyperpage}{40}
-\indexentry{plot() (pyGPs.Core.gp.GPC method)|hyperpage}{40}
-\indexentry{setOptimizer() (pyGPs.Core.gp.GPC method)|hyperpage}{40}
-\indexentry{useInference() (pyGPs.Core.gp.GPC method)|hyperpage}{40}
-\indexentry{useLikelihood() (pyGPs.Core.gp.GPC method)|hyperpage}{40}
-\indexentry{GPC\_FITC (class in pyGPs.Core.gp)|hyperpage}{40}
-\indexentry{plot() (pyGPs.Core.gp.GPC\_FITC method)|hyperpage}{40}
-\indexentry{setOptimizer() (pyGPs.Core.gp.GPC\_FITC method)|hyperpage}{40}
-\indexentry{useInference() (pyGPs.Core.gp.GPC\_FITC method)|hyperpage}{40}
-\indexentry{useLikelihood() (pyGPs.Core.gp.GPC\_FITC method)|hyperpage}{40}
-\indexentry{GPMC (class in pyGPs.Core.gp)|hyperpage}{40}
-\indexentry{createBinaryClass() (pyGPs.Core.gp.GPMC method)|hyperpage}{40}
-\indexentry{fitAndPredict() (pyGPs.Core.gp.GPMC method)|hyperpage}{40}
-\indexentry{optimizeAndPredict() (pyGPs.Core.gp.GPMC method)|hyperpage}{40}
-\indexentry{setData() (pyGPs.Core.gp.GPMC method)|hyperpage}{40}
-\indexentry{setPrior() (pyGPs.Core.gp.GPMC method)|hyperpage}{40}
-\indexentry{useInference() (pyGPs.Core.gp.GPMC method)|hyperpage}{41}
-\indexentry{useLikelihood() (pyGPs.Core.gp.GPMC method)|hyperpage}{41}
-\indexentry{GPR (class in pyGPs.Core.gp)|hyperpage}{41}
-\indexentry{plot() (pyGPs.Core.gp.GPR method)|hyperpage}{41}
-\indexentry{setNoise() (pyGPs.Core.gp.GPR method)|hyperpage}{41}
-\indexentry{setOptimizer() (pyGPs.Core.gp.GPR method)|hyperpage}{41}
-\indexentry{useInference() (pyGPs.Core.gp.GPR method)|hyperpage}{41}
-\indexentry{useLikelihood() (pyGPs.Core.gp.GPR method)|hyperpage}{41}
-\indexentry{GPR\_FITC (class in pyGPs.Core.gp)|hyperpage}{41}
-\indexentry{plot() (pyGPs.Core.gp.GPR\_FITC method)|hyperpage}{41}
-\indexentry{setNoise() (pyGPs.Core.gp.GPR\_FITC method)|hyperpage}{41}
-\indexentry{setOptimizer() (pyGPs.Core.gp.GPR\_FITC method)|hyperpage}{41}
-\indexentry{useInference() (pyGPs.Core.gp.GPR\_FITC method)|hyperpage}{41}
-\indexentry{useLikelihood() (pyGPs.Core.gp.GPR\_FITC method)|hyperpage}{41}
-\indexentry{GP\_FITC (class in pyGPs.Core.gp)|hyperpage}{41}
-\indexentry{setData() (pyGPs.Core.gp.GP\_FITC method)|hyperpage}{41}
-\indexentry{setPrior() (pyGPs.Core.gp.GP\_FITC method)|hyperpage}{42}
-\indexentry{pyGPs.Core.inf (module)|hyperpage}{42}
-\indexentry{EP (class in pyGPs.Core.inf)|hyperpage}{42}
-\indexentry{proceed() (pyGPs.Core.inf.EP method)|hyperpage}{42}
-\indexentry{Exact (class in pyGPs.Core.inf)|hyperpage}{42}
-\indexentry{proceed() (pyGPs.Core.inf.Exact method)|hyperpage}{42}
-\indexentry{FITC\_EP (class in pyGPs.Core.inf)|hyperpage}{42}
-\indexentry{proceed() (pyGPs.Core.inf.FITC\_EP method)|hyperpage}{42}
-\indexentry{FITC\_Exact (class in pyGPs.Core.inf)|hyperpage}{42}
-\indexentry{proceed() (pyGPs.Core.inf.FITC\_Exact method)|hyperpage}{42}
-\indexentry{FITC\_Laplace (class in pyGPs.Core.inf)|hyperpage}{42}
-\indexentry{proceed() (pyGPs.Core.inf.FITC\_Laplace method)|hyperpage}{42}
-\indexentry{Inference (class in pyGPs.Core.inf)|hyperpage}{42}
-\indexentry{Psi\_line() (pyGPs.Core.inf.Inference method)|hyperpage}{42}
-\indexentry{Psi\_lineFITC() (pyGPs.Core.inf.Inference method)|hyperpage}{43}
-\indexentry{epComputeParams() (pyGPs.Core.inf.Inference method)|hyperpage}{43}
-\indexentry{epfitcRefresh() (pyGPs.Core.inf.Inference method)|hyperpage}{43}
-\indexentry{epfitcUpdate() (pyGPs.Core.inf.Inference method)|hyperpage}{43}
-\indexentry{epfitcZ() (pyGPs.Core.inf.Inference method)|hyperpage}{43}
-\indexentry{fitcRefresh() (pyGPs.Core.inf.Inference method)|hyperpage}{43}
-\indexentry{logdetA() (pyGPs.Core.inf.Inference method)|hyperpage}{43}
-\indexentry{mvmK() (pyGPs.Core.inf.Inference method)|hyperpage}{43}
-\indexentry{mvmZ() (pyGPs.Core.inf.Inference method)|hyperpage}{43}
-\indexentry{proceed() (pyGPs.Core.inf.Inference method)|hyperpage}{43}
-\indexentry{Laplace (class in pyGPs.Core.inf)|hyperpage}{43}
-\indexentry{proceed() (pyGPs.Core.inf.Laplace method)|hyperpage}{43}
-\indexentry{dnlZStruct (class in pyGPs.Core.inf)|hyperpage}{43}
-\indexentry{postStruct (class in pyGPs.Core.inf)|hyperpage}{44}
-\indexentry{pyGPs.Core.lik (module)|hyperpage}{44}
-\indexentry{Erf (class in pyGPs.Core.lik)|hyperpage}{44}
-\indexentry{cumGauss() (pyGPs.Core.lik.Erf method)|hyperpage}{44}
-\indexentry{gauOverCumGauss() (pyGPs.Core.lik.Erf method)|hyperpage}{44}
-\indexentry{logphi() (pyGPs.Core.lik.Erf method)|hyperpage}{44}
-\indexentry{proceed() (pyGPs.Core.lik.Erf method)|hyperpage}{44}
-\indexentry{Gauss (class in pyGPs.Core.lik)|hyperpage}{44}
-\indexentry{proceed() (pyGPs.Core.lik.Gauss method)|hyperpage}{44}
-\indexentry{Laplace (class in pyGPs.Core.lik)|hyperpage}{44}
-\indexentry{proceed() (pyGPs.Core.lik.Laplace method)|hyperpage}{44}
-\indexentry{Likelihood (class in pyGPs.Core.lik)|hyperpage}{44}
-\indexentry{proceed() (pyGPs.Core.lik.Likelihood method)|hyperpage}{44}
-\indexentry{pyGPs.Core.mean (module)|hyperpage}{44}
-\indexentry{Const (class in pyGPs.Core.mean)|hyperpage}{44}
-\indexentry{getDerMatrix() (pyGPs.Core.mean.Const method)|hyperpage}{44}
-\indexentry{getMean() (pyGPs.Core.mean.Const method)|hyperpage}{44}
-\indexentry{Linear (class in pyGPs.Core.mean)|hyperpage}{45}
-\indexentry{getDerMatrix() (pyGPs.Core.mean.Linear method)|hyperpage}{45}
-\indexentry{getMean() (pyGPs.Core.mean.Linear method)|hyperpage}{45}
-\indexentry{Mean (class in pyGPs.Core.mean)|hyperpage}{45}
-\indexentry{One (class in pyGPs.Core.mean)|hyperpage}{45}
-\indexentry{getDerMatrix() (pyGPs.Core.mean.One method)|hyperpage}{45}
-\indexentry{getMean() (pyGPs.Core.mean.One method)|hyperpage}{45}
-\indexentry{PowerOfMean (class in pyGPs.Core.mean)|hyperpage}{45}
-\indexentry{getDerMatrix() (pyGPs.Core.mean.PowerOfMean method)|hyperpage}{45}
-\indexentry{getMean() (pyGPs.Core.mean.PowerOfMean method)|hyperpage}{45}
-\indexentry{gethyp() (pyGPs.Core.mean.PowerOfMean method)|hyperpage}{45}
-\indexentry{hyp (pyGPs.Core.mean.PowerOfMean attribute)|hyperpage}{45}
-\indexentry{sethyp() (pyGPs.Core.mean.PowerOfMean method)|hyperpage}{45}
-\indexentry{ProductOfMean (class in pyGPs.Core.mean)|hyperpage}{45}
-\indexentry{getDerMatrix() (pyGPs.Core.mean.ProductOfMean method)|hyperpage}{45}
-\indexentry{getMean() (pyGPs.Core.mean.ProductOfMean method)|hyperpage}{45}
-\indexentry{gethyp() (pyGPs.Core.mean.ProductOfMean method)|hyperpage}{45}
-\indexentry{hyp (pyGPs.Core.mean.ProductOfMean attribute)|hyperpage}{45}
-\indexentry{sethyp() (pyGPs.Core.mean.ProductOfMean method)|hyperpage}{45}
-\indexentry{ScaleOfMean (class in pyGPs.Core.mean)|hyperpage}{45}
-\indexentry{getDerMatrix() (pyGPs.Core.mean.ScaleOfMean method)|hyperpage}{45}
-\indexentry{getMean() (pyGPs.Core.mean.ScaleOfMean method)|hyperpage}{45}
-\indexentry{gethyp() (pyGPs.Core.mean.ScaleOfMean method)|hyperpage}{45}
-\indexentry{hyp (pyGPs.Core.mean.ScaleOfMean attribute)|hyperpage}{45}
-\indexentry{sethyp() (pyGPs.Core.mean.ScaleOfMean method)|hyperpage}{46}
-\indexentry{SumOfMean (class in pyGPs.Core.mean)|hyperpage}{46}
-\indexentry{getDerMatrix() (pyGPs.Core.mean.SumOfMean method)|hyperpage}{46}
-\indexentry{getMean() (pyGPs.Core.mean.SumOfMean method)|hyperpage}{46}
-\indexentry{gethyp() (pyGPs.Core.mean.SumOfMean method)|hyperpage}{46}
-\indexentry{hyp (pyGPs.Core.mean.SumOfMean attribute)|hyperpage}{46}
-\indexentry{sethyp() (pyGPs.Core.mean.SumOfMean method)|hyperpage}{46}
-\indexentry{Zero (class in pyGPs.Core.mean)|hyperpage}{46}
-\indexentry{getDerMatrix() (pyGPs.Core.mean.Zero method)|hyperpage}{46}
-\indexentry{getMean() (pyGPs.Core.mean.Zero method)|hyperpage}{46}
-\indexentry{pyGPs.Core.opt (module)|hyperpage}{46}
-\indexentry{BFGS (class in pyGPs.Core.opt)|hyperpage}{46}
-\indexentry{findMin() (pyGPs.Core.opt.BFGS method)|hyperpage}{46}
-\indexentry{CG (class in pyGPs.Core.opt)|hyperpage}{46}
-\indexentry{findMin() (pyGPs.Core.opt.CG method)|hyperpage}{46}
-\indexentry{Minimize (class in pyGPs.Core.opt)|hyperpage}{46}
-\indexentry{findMin() (pyGPs.Core.opt.Minimize method)|hyperpage}{46}
-\indexentry{Optimizer (class in pyGPs.Core.opt)|hyperpage}{46}
-\indexentry{apply\_in\_objects() (pyGPs.Core.opt.Optimizer method)|hyperpage}{46}
-\indexentry{convert\_to\_array() (pyGPs.Core.opt.Optimizer method)|hyperpage}{46}
-\indexentry{dnlml() (pyGPs.Core.opt.Optimizer method)|hyperpage}{46}
-\indexentry{nlml() (pyGPs.Core.opt.Optimizer method)|hyperpage}{46}
-\indexentry{nlzAnddnlz() (pyGPs.Core.opt.Optimizer method)|hyperpage}{46}
-\indexentry{SCG (class in pyGPs.Core.opt)|hyperpage}{46}
-\indexentry{findMin() (pyGPs.Core.opt.SCG method)|hyperpage}{47}
-\indexentry{pyGPs.Core.tools (module)|hyperpage}{47}
-\indexentry{brentmin() (in module pyGPs.Core.tools)|hyperpage}{47}
-\indexentry{cholupdate() (in module pyGPs.Core.tools)|hyperpage}{47}
-\indexentry{solve\_chol() (in module pyGPs.Core.tools)|hyperpage}{47}
-\indexentry{unique() (in module pyGPs.Core.tools)|hyperpage}{47}
-\indexentry{pyGPs.GraphExtensions (module)|hyperpage}{47}
-\indexentry{pyGPs.GraphExtensions.graphKernels (module)|hyperpage}{47}
-\indexentry{propagationKernel() (in module pyGPs.GraphExtensions.graphKernels)|hyperpage}{47}
-\indexentry{pyGPs.GraphExtensions.graphUtil (module)|hyperpage}{48}
-\indexentry{formKernelMatrix() (in module pyGPs.GraphExtensions.graphUtil)|hyperpage}{48}
-\indexentry{formKnnGraph() (in module pyGPs.GraphExtensions.graphUtil)|hyperpage}{48}
-\indexentry{normalizeKernel() (in module pyGPs.GraphExtensions.graphUtil)|hyperpage}{48}
-\indexentry{pyGPs.GraphExtensions.nodeKernels (module)|hyperpage}{48}
-\indexentry{VNDKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{48}
-\indexentry{cosKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{48}
-\indexentry{diffKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{48}
-\indexentry{normLap() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{49}
-\indexentry{psInvLapKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{49}
-\indexentry{regLapKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{49}
-\indexentry{rwKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{49}
-\indexentry{pyGPs.Optimization (module)|hyperpage}{49}
-\indexentry{pyGPs.Optimization.conf (module)|hyperpage}{49}
-\indexentry{random\_init\_conf (class in pyGPs.Optimization.conf)|hyperpage}{49}
-\indexentry{covRange (pyGPs.Optimization.conf.random\_init\_conf attribute)|hyperpage}{49}
-\indexentry{getcr() (pyGPs.Optimization.conf.random\_init\_conf method)|hyperpage}{49}
-\indexentry{getlr() (pyGPs.Optimization.conf.random\_init\_conf method)|hyperpage}{50}
-\indexentry{getmr() (pyGPs.Optimization.conf.random\_init\_conf method)|hyperpage}{50}
-\indexentry{likRange (pyGPs.Optimization.conf.random\_init\_conf attribute)|hyperpage}{50}
-\indexentry{meanRange (pyGPs.Optimization.conf.random\_init\_conf attribute)|hyperpage}{50}
-\indexentry{setcr() (pyGPs.Optimization.conf.random\_init\_conf method)|hyperpage}{50}
-\indexentry{setlr() (pyGPs.Optimization.conf.random\_init\_conf method)|hyperpage}{50}
-\indexentry{setmr() (pyGPs.Optimization.conf.random\_init\_conf method)|hyperpage}{50}
-\indexentry{pyGPs.Optimization.minimize (module)|hyperpage}{50}
-\indexentry{run() (in module pyGPs.Optimization.minimize)|hyperpage}{50}
-\indexentry{pyGPs.Optimization.scg (module)|hyperpage}{50}
-\indexentry{run() (in module pyGPs.Optimization.scg)|hyperpage}{50}
-\indexentry{pyGPs.Validation (module)|hyperpage}{50}
-\indexentry{pyGPs.Validation.valid (module)|hyperpage}{50}
-\indexentry{ACC() (in module pyGPs.Validation.valid)|hyperpage}{50}
-\indexentry{NLPD() (in module pyGPs.Validation.valid)|hyperpage}{50}
-\indexentry{Prec() (in module pyGPs.Validation.valid)|hyperpage}{50}
-\indexentry{RMSE() (in module pyGPs.Validation.valid)|hyperpage}{51}
-\indexentry{Recall() (in module pyGPs.Validation.valid)|hyperpage}{51}
-\indexentry{k\_fold\_index() (in module pyGPs.Validation.valid)|hyperpage}{51}
-\indexentry{k\_fold\_validation() (in module pyGPs.Validation.valid)|hyperpage}{51}
+\indexentry{setOptimizer() (pyGPs.Core.gp.GP method)|hyperpage}{25}
+\indexentry{pyGPs.\_\_init\_\_ (module)|hyperpage}{31}
+\indexentry{pyGPs.Core (module)|hyperpage}{31}
+\indexentry{pyGPs.Core.cov (module)|hyperpage}{31}
+\indexentry{Const (class in pyGPs.Core.cov)|hyperpage}{31}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.Const method)|hyperpage}{31}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.Const method)|hyperpage}{31}
+\indexentry{FITCOfKernel (class in pyGPs.Core.cov)|hyperpage}{31}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.FITCOfKernel method)|hyperpage}{31}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.FITCOfKernel method)|hyperpage}{31}
+\indexentry{hyp (pyGPs.Core.cov.FITCOfKernel attribute)|hyperpage}{31}
+\indexentry{Kernel (class in pyGPs.Core.cov)|hyperpage}{31}
+\indexentry{fitc() (pyGPs.Core.cov.Kernel method)|hyperpage}{31}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.Kernel method)|hyperpage}{32}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.Kernel method)|hyperpage}{32}
+\indexentry{LINard (class in pyGPs.Core.cov)|hyperpage}{32}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.LINard method)|hyperpage}{32}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.LINard method)|hyperpage}{32}
+\indexentry{Linear (class in pyGPs.Core.cov)|hyperpage}{32}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.Linear method)|hyperpage}{32}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.Linear method)|hyperpage}{32}
+\indexentry{Matern (class in pyGPs.Core.cov)|hyperpage}{32}
+\indexentry{dfunc() (pyGPs.Core.cov.Matern method)|hyperpage}{33}
+\indexentry{dmfunc() (pyGPs.Core.cov.Matern method)|hyperpage}{33}
+\indexentry{func() (pyGPs.Core.cov.Matern method)|hyperpage}{33}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.Matern method)|hyperpage}{33}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.Matern method)|hyperpage}{33}
+\indexentry{mfunc() (pyGPs.Core.cov.Matern method)|hyperpage}{33}
+\indexentry{Noise (class in pyGPs.Core.cov)|hyperpage}{33}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.Noise method)|hyperpage}{33}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.Noise method)|hyperpage}{33}
+\indexentry{Periodic (class in pyGPs.Core.cov)|hyperpage}{33}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.Periodic method)|hyperpage}{33}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.Periodic method)|hyperpage}{33}
+\indexentry{PiecePoly (class in pyGPs.Core.cov)|hyperpage}{33}
+\indexentry{dfunc() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{33}
+\indexentry{dpp() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{33}
+\indexentry{func() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{34}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{34}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{34}
+\indexentry{pp() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{34}
+\indexentry{ppmax() (pyGPs.Core.cov.PiecePoly method)|hyperpage}{34}
+\indexentry{Poly (class in pyGPs.Core.cov)|hyperpage}{34}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.Poly method)|hyperpage}{34}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.Poly method)|hyperpage}{34}
+\indexentry{Pre (class in pyGPs.Core.cov)|hyperpage}{34}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.Pre method)|hyperpage}{34}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.Pre method)|hyperpage}{34}
+\indexentry{ProductOfKernel (class in pyGPs.Core.cov)|hyperpage}{34}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.ProductOfKernel method)|hyperpage}{34}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.ProductOfKernel method)|hyperpage}{34}
+\indexentry{hyp (pyGPs.Core.cov.ProductOfKernel attribute)|hyperpage}{34}
+\indexentry{RBF (class in pyGPs.Core.cov)|hyperpage}{34}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.RBF method)|hyperpage}{34}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.RBF method)|hyperpage}{34}
+\indexentry{RBFard (class in pyGPs.Core.cov)|hyperpage}{34}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.RBFard method)|hyperpage}{35}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.RBFard method)|hyperpage}{35}
+\indexentry{RBFunit (class in pyGPs.Core.cov)|hyperpage}{35}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.RBFunit method)|hyperpage}{35}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.RBFunit method)|hyperpage}{35}
+\indexentry{RQ (class in pyGPs.Core.cov)|hyperpage}{35}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.RQ method)|hyperpage}{35}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.RQ method)|hyperpage}{35}
+\indexentry{RQard (class in pyGPs.Core.cov)|hyperpage}{35}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.RQard method)|hyperpage}{35}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.RQard method)|hyperpage}{35}
+\indexentry{ScaleOfKernel (class in pyGPs.Core.cov)|hyperpage}{35}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.ScaleOfKernel method)|hyperpage}{36}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.ScaleOfKernel method)|hyperpage}{36}
+\indexentry{hyp (pyGPs.Core.cov.ScaleOfKernel attribute)|hyperpage}{36}
+\indexentry{SumOfKernel (class in pyGPs.Core.cov)|hyperpage}{36}
+\indexentry{getCovMatrix() (pyGPs.Core.cov.SumOfKernel method)|hyperpage}{36}
+\indexentry{getDerMatrix() (pyGPs.Core.cov.SumOfKernel method)|hyperpage}{36}
+\indexentry{hyp (pyGPs.Core.cov.SumOfKernel attribute)|hyperpage}{36}
+\indexentry{pyGPs.Core.gp (module)|hyperpage}{36}
+\indexentry{GP (class in pyGPs.Core.gp)|hyperpage}{36}
+\indexentry{fit() (pyGPs.Core.gp.GP method)|hyperpage}{36}
+\indexentry{optimize() (pyGPs.Core.gp.GP method)|hyperpage}{36}
+\indexentry{plotData\_1d() (pyGPs.Core.gp.GP method)|hyperpage}{36}
+\indexentry{plotData\_2d() (pyGPs.Core.gp.GP method)|hyperpage}{36}
+\indexentry{predict() (pyGPs.Core.gp.GP method)|hyperpage}{36}
+\indexentry{predict\_with\_posterior() (pyGPs.Core.gp.GP method)|hyperpage}{36}
+\indexentry{setData() (pyGPs.Core.gp.GP method)|hyperpage}{37}
+\indexentry{setOptimizer() (pyGPs.Core.gp.GP method)|hyperpage}{37}
+\indexentry{setPrior() (pyGPs.Core.gp.GP method)|hyperpage}{37}
+\indexentry{GPC (class in pyGPs.Core.gp)|hyperpage}{37}
+\indexentry{plot() (pyGPs.Core.gp.GPC method)|hyperpage}{37}
+\indexentry{setOptimizer() (pyGPs.Core.gp.GPC method)|hyperpage}{37}
+\indexentry{useInference() (pyGPs.Core.gp.GPC method)|hyperpage}{37}
+\indexentry{useLikelihood() (pyGPs.Core.gp.GPC method)|hyperpage}{37}
+\indexentry{GPC\_FITC (class in pyGPs.Core.gp)|hyperpage}{37}
+\indexentry{plot() (pyGPs.Core.gp.GPC\_FITC method)|hyperpage}{38}
+\indexentry{setOptimizer() (pyGPs.Core.gp.GPC\_FITC method)|hyperpage}{38}
+\indexentry{useInference() (pyGPs.Core.gp.GPC\_FITC method)|hyperpage}{38}
+\indexentry{useLikelihood() (pyGPs.Core.gp.GPC\_FITC method)|hyperpage}{38}
+\indexentry{GPMC (class in pyGPs.Core.gp)|hyperpage}{38}
+\indexentry{createBinaryClass() (pyGPs.Core.gp.GPMC method)|hyperpage}{38}
+\indexentry{fitAndPredict() (pyGPs.Core.gp.GPMC method)|hyperpage}{38}
+\indexentry{optimizeAndPredict() (pyGPs.Core.gp.GPMC method)|hyperpage}{38}
+\indexentry{setData() (pyGPs.Core.gp.GPMC method)|hyperpage}{38}
+\indexentry{setPrior() (pyGPs.Core.gp.GPMC method)|hyperpage}{38}
+\indexentry{useInference() (pyGPs.Core.gp.GPMC method)|hyperpage}{38}
+\indexentry{useLikelihood() (pyGPs.Core.gp.GPMC method)|hyperpage}{38}
+\indexentry{GPR (class in pyGPs.Core.gp)|hyperpage}{38}
+\indexentry{plot() (pyGPs.Core.gp.GPR method)|hyperpage}{38}
+\indexentry{setNoise() (pyGPs.Core.gp.GPR method)|hyperpage}{38}
+\indexentry{setOptimizer() (pyGPs.Core.gp.GPR method)|hyperpage}{38}
+\indexentry{useInference() (pyGPs.Core.gp.GPR method)|hyperpage}{39}
+\indexentry{useLikelihood() (pyGPs.Core.gp.GPR method)|hyperpage}{39}
+\indexentry{GPR\_FITC (class in pyGPs.Core.gp)|hyperpage}{39}
+\indexentry{plot() (pyGPs.Core.gp.GPR\_FITC method)|hyperpage}{39}
+\indexentry{setNoise() (pyGPs.Core.gp.GPR\_FITC method)|hyperpage}{39}
+\indexentry{setOptimizer() (pyGPs.Core.gp.GPR\_FITC method)|hyperpage}{39}
+\indexentry{useInference() (pyGPs.Core.gp.GPR\_FITC method)|hyperpage}{39}
+\indexentry{useLikelihood() (pyGPs.Core.gp.GPR\_FITC method)|hyperpage}{39}
+\indexentry{GP\_FITC (class in pyGPs.Core.gp)|hyperpage}{39}
+\indexentry{setData() (pyGPs.Core.gp.GP\_FITC method)|hyperpage}{39}
+\indexentry{setPrior() (pyGPs.Core.gp.GP\_FITC method)|hyperpage}{39}
+\indexentry{pyGPs.Core.inf (module)|hyperpage}{39}
+\indexentry{EP (class in pyGPs.Core.inf)|hyperpage}{39}
+\indexentry{proceed() (pyGPs.Core.inf.EP method)|hyperpage}{39}
+\indexentry{Exact (class in pyGPs.Core.inf)|hyperpage}{40}
+\indexentry{proceed() (pyGPs.Core.inf.Exact method)|hyperpage}{40}
+\indexentry{FITC\_EP (class in pyGPs.Core.inf)|hyperpage}{40}
+\indexentry{proceed() (pyGPs.Core.inf.FITC\_EP method)|hyperpage}{40}
+\indexentry{FITC\_Exact (class in pyGPs.Core.inf)|hyperpage}{40}
+\indexentry{proceed() (pyGPs.Core.inf.FITC\_Exact method)|hyperpage}{40}
+\indexentry{FITC\_Laplace (class in pyGPs.Core.inf)|hyperpage}{40}
+\indexentry{proceed() (pyGPs.Core.inf.FITC\_Laplace method)|hyperpage}{40}
+\indexentry{Inference (class in pyGPs.Core.inf)|hyperpage}{40}
+\indexentry{proceed() (pyGPs.Core.inf.Inference method)|hyperpage}{40}
+\indexentry{Laplace (class in pyGPs.Core.inf)|hyperpage}{41}
+\indexentry{proceed() (pyGPs.Core.inf.Laplace method)|hyperpage}{41}
+\indexentry{dnlZStruct (class in pyGPs.Core.inf)|hyperpage}{41}
+\indexentry{postStruct (class in pyGPs.Core.inf)|hyperpage}{41}
+\indexentry{pyGPs.Core.lik (module)|hyperpage}{41}
+\indexentry{Erf (class in pyGPs.Core.lik)|hyperpage}{41}
+\indexentry{cumGauss() (pyGPs.Core.lik.Erf method)|hyperpage}{41}
+\indexentry{gauOverCumGauss() (pyGPs.Core.lik.Erf method)|hyperpage}{42}
+\indexentry{logphi() (pyGPs.Core.lik.Erf method)|hyperpage}{42}
+\indexentry{proceed() (pyGPs.Core.lik.Erf method)|hyperpage}{42}
+\indexentry{Gauss (class in pyGPs.Core.lik)|hyperpage}{42}
+\indexentry{proceed() (pyGPs.Core.lik.Gauss method)|hyperpage}{42}
+\indexentry{Laplace (class in pyGPs.Core.lik)|hyperpage}{42}
+\indexentry{proceed() (pyGPs.Core.lik.Laplace method)|hyperpage}{42}
+\indexentry{Likelihood (class in pyGPs.Core.lik)|hyperpage}{42}
+\indexentry{proceed() (pyGPs.Core.lik.Likelihood method)|hyperpage}{42}
+\indexentry{pyGPs.Core.mean (module)|hyperpage}{43}
+\indexentry{Const (class in pyGPs.Core.mean)|hyperpage}{43}
+\indexentry{getDerMatrix() (pyGPs.Core.mean.Const method)|hyperpage}{43}
+\indexentry{getMean() (pyGPs.Core.mean.Const method)|hyperpage}{43}
+\indexentry{Linear (class in pyGPs.Core.mean)|hyperpage}{43}
+\indexentry{getDerMatrix() (pyGPs.Core.mean.Linear method)|hyperpage}{44}
+\indexentry{getMean() (pyGPs.Core.mean.Linear method)|hyperpage}{44}
+\indexentry{Mean (class in pyGPs.Core.mean)|hyperpage}{44}
+\indexentry{getDerMatrix() (pyGPs.Core.mean.Mean method)|hyperpage}{44}
+\indexentry{getMean() (pyGPs.Core.mean.Mean method)|hyperpage}{44}
+\indexentry{One (class in pyGPs.Core.mean)|hyperpage}{44}
+\indexentry{getDerMatrix() (pyGPs.Core.mean.One method)|hyperpage}{44}
+\indexentry{getMean() (pyGPs.Core.mean.One method)|hyperpage}{44}
+\indexentry{PowerOfMean (class in pyGPs.Core.mean)|hyperpage}{44}
+\indexentry{getDerMatrix() (pyGPs.Core.mean.PowerOfMean method)|hyperpage}{44}
+\indexentry{getMean() (pyGPs.Core.mean.PowerOfMean method)|hyperpage}{44}
+\indexentry{hyp (pyGPs.Core.mean.PowerOfMean attribute)|hyperpage}{44}
+\indexentry{ProductOfMean (class in pyGPs.Core.mean)|hyperpage}{44}
+\indexentry{getDerMatrix() (pyGPs.Core.mean.ProductOfMean method)|hyperpage}{44}
+\indexentry{getMean() (pyGPs.Core.mean.ProductOfMean method)|hyperpage}{44}
+\indexentry{hyp (pyGPs.Core.mean.ProductOfMean attribute)|hyperpage}{44}
+\indexentry{ScaleOfMean (class in pyGPs.Core.mean)|hyperpage}{44}
+\indexentry{getDerMatrix() (pyGPs.Core.mean.ScaleOfMean method)|hyperpage}{44}
+\indexentry{getMean() (pyGPs.Core.mean.ScaleOfMean method)|hyperpage}{44}
+\indexentry{hyp (pyGPs.Core.mean.ScaleOfMean attribute)|hyperpage}{44}
+\indexentry{SumOfMean (class in pyGPs.Core.mean)|hyperpage}{44}
+\indexentry{getDerMatrix() (pyGPs.Core.mean.SumOfMean method)|hyperpage}{45}
+\indexentry{getMean() (pyGPs.Core.mean.SumOfMean method)|hyperpage}{45}
+\indexentry{hyp (pyGPs.Core.mean.SumOfMean attribute)|hyperpage}{45}
+\indexentry{Zero (class in pyGPs.Core.mean)|hyperpage}{45}
+\indexentry{getDerMatrix() (pyGPs.Core.mean.Zero method)|hyperpage}{45}
+\indexentry{getMean() (pyGPs.Core.mean.Zero method)|hyperpage}{45}
+\indexentry{pyGPs.Core.opt (module)|hyperpage}{45}
+\indexentry{BFGS (class in pyGPs.Core.opt)|hyperpage}{45}
+\indexentry{findMin() (pyGPs.Core.opt.BFGS method)|hyperpage}{45}
+\indexentry{CG (class in pyGPs.Core.opt)|hyperpage}{45}
+\indexentry{findMin() (pyGPs.Core.opt.CG method)|hyperpage}{45}
+\indexentry{Minimize (class in pyGPs.Core.opt)|hyperpage}{45}
+\indexentry{findMin() (pyGPs.Core.opt.Minimize method)|hyperpage}{45}
+\indexentry{Optimizer (class in pyGPs.Core.opt)|hyperpage}{45}
+\indexentry{findMin() (pyGPs.Core.opt.Optimizer method)|hyperpage}{45}
+\indexentry{SCG (class in pyGPs.Core.opt)|hyperpage}{45}
+\indexentry{findMin() (pyGPs.Core.opt.SCG method)|hyperpage}{45}
+\indexentry{pyGPs.Core.tools (module)|hyperpage}{46}
+\indexentry{brentmin() (in module pyGPs.Core.tools)|hyperpage}{46}
+\indexentry{cholupdate() (in module pyGPs.Core.tools)|hyperpage}{46}
+\indexentry{solve\_chol() (in module pyGPs.Core.tools)|hyperpage}{46}
+\indexentry{unique() (in module pyGPs.Core.tools)|hyperpage}{46}
+\indexentry{pyGPs.GraphExtensions (module)|hyperpage}{46}
+\indexentry{pyGPs.GraphExtensions.graphKernels (module)|hyperpage}{46}
+\indexentry{propagationKernel() (in module pyGPs.GraphExtensions.graphKernels)|hyperpage}{46}
+\indexentry{pyGPs.GraphExtensions.graphUtil (module)|hyperpage}{47}
+\indexentry{formKernelMatrix() (in module pyGPs.GraphExtensions.graphUtil)|hyperpage}{47}
+\indexentry{formKnnGraph() (in module pyGPs.GraphExtensions.graphUtil)|hyperpage}{47}
+\indexentry{normalizeKernel() (in module pyGPs.GraphExtensions.graphUtil)|hyperpage}{47}
+\indexentry{pyGPs.GraphExtensions.nodeKernels (module)|hyperpage}{47}
+\indexentry{VNDKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{47}
+\indexentry{cosKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{47}
+\indexentry{diffKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{47}
+\indexentry{normLap() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{48}
+\indexentry{psInvLapKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{48}
+\indexentry{regLapKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{48}
+\indexentry{rwKernel() (in module pyGPs.GraphExtensions.nodeKernels)|hyperpage}{48}
+\indexentry{pyGPs.Optimization (module)|hyperpage}{48}
+\indexentry{pyGPs.Optimization.conf (module)|hyperpage}{48}
+\indexentry{random\_init\_conf (class in pyGPs.Optimization.conf)|hyperpage}{48}
+\indexentry{covRange (pyGPs.Optimization.conf.random\_init\_conf attribute)|hyperpage}{48}
+\indexentry{likRange (pyGPs.Optimization.conf.random\_init\_conf attribute)|hyperpage}{48}
+\indexentry{meanRange (pyGPs.Optimization.conf.random\_init\_conf attribute)|hyperpage}{49}
+\indexentry{pyGPs.Optimization.minimize (module)|hyperpage}{49}
+\indexentry{run() (in module pyGPs.Optimization.minimize)|hyperpage}{49}
+\indexentry{pyGPs.Optimization.scg (module)|hyperpage}{49}
+\indexentry{run() (in module pyGPs.Optimization.scg)|hyperpage}{49}
+\indexentry{pyGPs.Validation (module)|hyperpage}{49}
+\indexentry{pyGPs.Validation.valid (module)|hyperpage}{49}
+\indexentry{ACC() (in module pyGPs.Validation.valid)|hyperpage}{49}
+\indexentry{NLPD() (in module pyGPs.Validation.valid)|hyperpage}{49}
+\indexentry{Prec() (in module pyGPs.Validation.valid)|hyperpage}{49}
+\indexentry{RMSE() (in module pyGPs.Validation.valid)|hyperpage}{49}
+\indexentry{Recall() (in module pyGPs.Validation.valid)|hyperpage}{50}
+\indexentry{k\_fold\_index() (in module pyGPs.Validation.valid)|hyperpage}{50}
+\indexentry{k\_fold\_validation() (in module pyGPs.Validation.valid)|hyperpage}{50}

@@ -1,8 +1,14 @@
 Semi-supervised Learning with Graphs
 =======================================
 
-The code shown in this tutorial can be executed by running *pyGPs/Demo/demo_KernelOnGraph.py*
+The code shown in this tutorial can be executed by running *pyGPs/Demo/demo_NodeKernel.py*
 
+Import
+-------------------
+You may want to import some extensions we provide as follows: ::
+
+    from pyGPs.GraphExtension import graphUtil, nodeKernels
+    from pyGPs.Validation import valid
 
 Load data
 --------------------
@@ -32,7 +38,7 @@ Form a nearest neighbour graph
 We form a nearest-neighbor graph based on Euclidean distance of the vector representation of digits. Neighboring images have small Euclidean distance. Each digit is a node in the graph. There is an edge if digit :math:`i` is the k-nearest neighbour of digit :math:`j`. We form a symmetrized graph such that we connect nodes :math:`j`, :math:`i` if i is in j’s kNN and vice versa, and therefore a node can have more than k edges. You should import the corresponding module from *pyGPs.GraphStuff* ::
 
     x,y = load_binary(1,2,reduce=True)
-    A = form_knn_graph(x,2)
+    A = graphUtil.formKnnGraph(x,2)
 
 A is the adjacency matrix of this :math:`2-NN` graph.
 
@@ -40,20 +46,21 @@ Below shows an example of such symmetrized Euclidean :math:`2-NN` graph on some 
 
 .. figure:: _images/2nnGraph.png
    :align: center
+   :width: 50%
 
 
 Kernel on graph
 ------------------
 Several classical kernels on graph described in `Structured Kernels`_ can be built from adjacency matrix :math:`A`. We use diffusion kernel for this example to get the precomputed kernel matrix. ::
 
-    Matrix = diffKernel(A)
+    Matrix = nodeKernels.diffKernel(A)
 
 .. _Structured Kernels: Graph.html
 
 This a big square matrix with all rows and columns of the number of data points.
 By specifying the indice of training data and test data, we will form two matrix M1 and M2 with the exact format which *pyGPs.Core.cov.Pre* needed. ::
 
-    M1,M2 = form_kernel_matrix(Matrix, indice_train, indice_test)
+    M1,M2 = graphUtil.formKernelMatrix(Matrix, indice_train, indice_test)
 
 M1 is a matrix with shape **number of training points plus 1** by **number of test points** 
  - cross covariances matrix (train by test) 
@@ -66,8 +73,8 @@ GP classification
 -----------------------
 Every ingredients for a basic semi-supervised learning is prepared now.  Lets see how to proceed for :math:`GP` classification. First, the normal way with rbf kernel we have seen several times ::
 
-        model = gp.GPC()
-        k = cov.RBF()
+        model = pyGPs.GPC()
+        k = pyGPs.cov.RBF()
         model.setPrior(kernel=k)
 
 Then lets use our kernel precomputed matrix. If you only use precomputed kernel matrix, there is no training data.
@@ -75,12 +82,12 @@ However you still need to specify :math:`x` just to fit in the usage of pyGPs fo
 You can create any :math:`x` as long as the dimension is correct. ::
 
         x = np.zeros((n,1))
-        k = cov.Pre(M1,M2) + cov.RBF()
+        k = pyGPs.cov.Pre(M1,M2) + pyGPs.cov.RBF()
         model.setPrior(kernel=k)
 
 Moreover, you can composite a kernel for both precomputed matrix and regular kernel function if necessary. ::
 
-        k = cov.Pre(M1,M2) + cov.RBFunit()
+        k = pyGPs.cov.Pre(M1,M2) + pyGPs.cov.RBFunit()
         model.setPrior(kernel=k)
 
 The rest way of using pyGPs is exactly the same as the demo of GP classification.
