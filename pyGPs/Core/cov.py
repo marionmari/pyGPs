@@ -661,6 +661,8 @@ class Const(Kernel):
 class Linear(Kernel):
     '''
     Linear kernel. hyp = [ log_sigma ].
+
+    :param log_sigma: signal deviation.
     '''
     def __init__(self, log_sigma=0.):
         self.hyp = [ log_sigma ]
