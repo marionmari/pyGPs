@@ -4,10 +4,10 @@ The code shown in this tutorial can be executed by running *pyGPs/Demo/demo_Grap
 
 Load data
 --------------------
-Mutag dataset [1]_ was constructed based on data from review of literatures
-about mutagenicities in Salmonella Typhimurium based on 200 aromatic and
-heteroaromatic nitro compounds. Mutag dataset is very suitable for
-machine learning and is widely used as one of the standard dataset. ::
+MUTAG [1]_ is a data set of 188 mutagenic aromatic and heteroaromatic
+nitro compounds labeled according to whether or not they have a mutagenic effect on the 
+Gram-negative bacterium Salmonella typhimurium. MUTAG is a simple but popular dataset 
+to benchmark graph kernels. ::
 
     data = np.load('MUTAG.npz')
     A = csc_matrix( (data['adj_data'], data['adj_indice'], \
@@ -22,6 +22,7 @@ Therefore, we generate :math:`A` using sparse matrix *csc_matrix* provided by *s
 
 Compute propagation kernel matrix
 ----------------------------------------
+Propagation kernels [2]_ are recently introduced fast and flexible graph kernels. 
 Generate prapagation kernel based on given graph data. ::
 
     num_Iteration = 10
@@ -65,4 +66,7 @@ The following is the standard way to do GP classification ::
 
 
 
-.. [1] Feragen, A., Kasenburg, N., Petersen, J., de Bruijne, M., Borgwardt, K.M.: Scalable kernels for graphs with continuous attributes. 2013.
+.. [1] Debnath, A., Lopez de Compadre, R., Debnath, G., Shusterman, A., and Hansch, C.. Structure-activity relationship of mutagenic aromatic and heteroaromatic nitro compounds. Correlation with molecular orbital energies and hydrophobicity. J. Med. Chem., 34:786–797, 1991.
+
+.. [2] Neumann, M., Patricia, N., Garnett, R., Kersting, K.: Efficient Graph Kernels by Randomization. In: P.A. Flach, T.D. Bie, N. Cristianini (eds.) ECML/PKDD, Notes in Computer Science, vol. 7523, pp. 378-393. Springer (2012).
+

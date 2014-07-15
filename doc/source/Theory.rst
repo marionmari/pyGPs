@@ -69,6 +69,8 @@ This table lists the functionality implemented in pyGPs.
 |             |p-step Random Walk |            |                         |               |                  |
 |             +-------------------+            |                         |               |                  |
 |             |Inverse Cosine     |            |                         |               |                  |
+|             +-------------------+            |                         |               |                  |
+|             |Propagation Kernel |            |                         |               |                  |
 +-------------+-------------------+------------+-------------------------+---------------+------------------+
 | Other       | Customized        | Customized |                         |               |                  |
 |             +-------------------+------------+                         |               |                  |
