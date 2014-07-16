@@ -39,7 +39,7 @@ You can also download a `procedual implementation`_ of GP functionality from Git
 Authors:
     - Marion Neumann [marion dot neumann at uni-bonn dot de]
     - Shan Huang [shan dot huang at iais dot fraunhofer dot de]
-    - Daniel Marthaler [marthaler at ge dot com]
+    - Daniel Marthaler [dan dot marthaler at gmail dot com]
     - Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 
 The following persons helped to improve this software: Roman Garnett, Maciej Kurek, Hannes Nickisch, Zhao Xu, and Alejandro Molina.
