@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -57,7 +58,7 @@
 <span class="c">#    The software package is released under the BSD 2-Clause (FreeBSD) License.</span>
 <span class="c">#</span>
 <span class="c">#    Copyright (c) by</span>
-<span class="c">#    Marion Neumann, Daniel Marthaler, Shan Huang &amp; Kristian Kersting, 18/02/2014</span>
+<span class="c">#    Marion Neumann, Daniel Marthaler, Shan Huang &amp; Kristian Kersting, 30/09/2013</span>
 <span class="c">#================================================================================</span>
 
 <span class="c">#   MEANING OF NOTATION:</span>
@@ -101,7 +102,7 @@
 <span class="n">DATACOLOR</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.12109375</span><span class="p">,</span> <span class="mf">0.46875</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
 
 <span class="k">class</span> <span class="nc">GP</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Base class for GP model&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Base class for GP model&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GP</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span> <span class="o">=</span> <span class="bp">True</span>  <span class="c"># was using default mean function now?</span>
@@ -126,11 +127,6 @@
 
 
     <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Pass training data and traning labels to model.&#39;&#39;&#39;</span> 
-        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>  
         <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span><span class="p">:</span>
@@ -138,7 +134,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Const</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>    <span class="c"># adapt default prior mean wrt. training labels</span>
 
     <span class="k">def</span> <span class="nf">plotData_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Plot 1d (toy) data.&#39;&#39;&#39;</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s">&#39;None&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">DATACOLOR</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">mew</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">axisvals</span><span class="p">:</span>
@@ -149,7 +144,6 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
     
     <span class="k">def</span> <span class="nf">plotData_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Plot 2d (toy) data.&#39;&#39;&#39;</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">x1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;b+&#39;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">x2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;r+&#39;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
@@ -161,14 +155,12 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">setPrior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set prior mean and cov&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;set prior mean and cov&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">mean</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">if</span> <span class="n">kernel</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="n">kernel</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span> <span class="ow">is</span> <span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span> <span class="o">=</span> <span class="bp">False</span>
     
 <div class="viewcode-block" id="GP.setOptimizer"><a class="viewcode-back" href="../../../Opts.html#pyGPs.Core.gp.GP.setOptimizer">[docs]</a>    <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;This method is used to sepecify optimization configuration. By default, gp uses a single run &quot;minimize&quot;.</span>
@@ -199,52 +191,40 @@
         <span class="k">pass</span>
 
 </div>
-    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Train optimal hyperparameters based on training data,</span>
-<span class="sd">        adjust new hyperparameters to all mean/cov/lik functions</span>
+<span class="sd">        train optimal hyperparameters </span>
+<span class="sd">        adjust to all mean/cov/lik functions</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>   
-            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> 
-
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>  
         <span class="k">if</span> <span class="n">y</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>  
             <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Const</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>    <span class="c"># adapt default prior mean wrt. training labels</span>
 
         <span class="c"># optimize </span>
         <span class="n">optimalHyp</span><span class="p">,</span> <span class="n">optimalNlZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">findMin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nlZ</span><span class="o">=</span> <span class="n">optimalNlZ</span>
 
         <span class="c"># apply optimal hyp to all mean/cov/lik functions here</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">_apply_in_objects</span><span class="p">(</span><span class="n">optimalHyp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">apply_in_objects</span><span class="p">(</span><span class="n">optimalHyp</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
 
 
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">der</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Fit the training data. Update negative log marginal likelihood(nlZ), </span>
-<span class="sd">        partial derivatives of nlZ w.r.t. each hyperparameter(dnlZ),</span>
-<span class="sd">        and struct representation of the (approximate) posterior(post), </span>
-<span class="sd">        which consists of post.alpha, post.L, post.sW.</span>
+<span class="sd">        fit the training data</span>
+<span class="sd">        @return  [nlZ, post]        if der = False</span>
+<span class="sd">        @return  [nlZ, dnlZ, post]  if der = True (default)</span>
+<span class="sd">            </span>
+<span class="sd">            where nlZ  is the negative log marginal likelihood</span>
+<span class="sd">                  dnlZ is partial derivatives of nlZ w.r.t. each hyperparameter</span>
+<span class="sd">                  post is struct representation of the (approximate) posterior</span>
+<span class="sd">                  post consists of post.alpha, post.L, post.sW</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>   
-            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>  
         <span class="k">if</span> <span class="n">y</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>  
             <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Const</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>    <span class="c"># adapt default prior mean wrt. training labels</span>
         <span class="c"># call inference method</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likfunc</span><span class="p">,</span> <span class="n">lik</span><span class="o">.</span><span class="n">Erf</span><span class="p">):</span> <span class="c">#or is instance(self.likfunc, lik.Logistic):  </span>
             <span class="n">uy</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>        
@@ -266,17 +246,17 @@
 
     <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Prediction according to given inputs.</span>
-<span class="sd">        Get predictive output means(ym), </span>
-<span class="sd">        predictive output variances(ys2),</span>
-<span class="sd">        predictive latent means(fm),</span>
-<span class="sd">        predictive latent variances(fs2),</span>
-<span class="sd">        log predictive probabilities(lp).</span>
+<span class="sd">        prediction according to given inputs </span>
 
-<span class="sd">        :param xs: test input</span>
-<span class="sd">        :param ys: test target(optional)</span>
+<span class="sd">        @param xs           test input</span>
+<span class="sd">        @param ys           test target(optional)</span>
 
-<span class="sd">        :return: ym, ys2, fm, fs2, lp</span>
+<span class="sd">        @return ymu, ys2, fmu, fs2, lp</span>
+<span class="sd">                where ymu is predictive output means</span>
+<span class="sd">                      ys2 is predictive output variances</span>
+<span class="sd">                      fm2 is predictive latent means</span>
+<span class="sd">                      fs2 is predictive latent variances</span>
+<span class="sd">                      lp  is log predictive probabilities(if ys is given, otherwise is None)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">meanfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span>
         <span class="n">covfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span>
@@ -284,13 +264,8 @@
         <span class="n">inffunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
-        <span class="k">if</span> <span class="n">xs</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>   
         <span class="bp">self</span><span class="o">.</span><span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span>
-        <span class="k">if</span> <span class="n">ys</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ys</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="p">(</span><span class="n">ys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span> 
-            <span class="bp">self</span><span class="o">.</span><span class="n">ys</span> <span class="o">=</span> <span class="n">ys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ys</span> <span class="o">=</span> <span class="n">ys</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">posterior</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>   
             <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>        
@@ -300,7 +275,7 @@
         
         <span class="n">nz</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alpha</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]))</span>         <span class="c"># non-sparse representation </span>
         <span class="k">if</span> <span class="n">L</span> <span class="o">==</span> <span class="p">[]:</span>                         <span class="c"># in case L is not provided, we compute it</span>
-            <span class="n">K</span> <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">getCovMatrix</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">nz</span><span class="p">,:],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;train&#39;</span><span class="p">)</span>
+            <span class="n">K</span> <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">nz</span><span class="p">,:])</span>
             <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">nz</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sW</span><span class="p">,</span><span class="n">sW</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">K</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="p">)</span>
         <span class="n">Ltril</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span> <span class="c"># is L an upper triangular matrix?</span>
         <span class="n">ns</span>        <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                  <span class="c"># number of data points</span>
@@ -313,9 +288,9 @@
         <span class="n">lp</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ns</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">while</span> <span class="n">nact</span><span class="o">&lt;=</span><span class="n">ns</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>                              <span class="c"># process minibatches of test cases to save memory</span>
             <span class="nb">id</span>  <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">nact</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">nact</span><span class="o">+</span><span class="n">nperbatch</span><span class="p">,</span><span class="n">ns</span><span class="p">))</span>   <span class="c"># data points to process</span>
-            <span class="n">kss</span> <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">getCovMatrix</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;self_test&#39;</span><span class="p">)</span>    <span class="c"># self-variances</span>
-            <span class="n">Ks</span>  <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">getCovMatrix</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">nz</span><span class="p">,:],</span> <span class="n">z</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;cross&#39;</span><span class="p">)</span>   <span class="c"># cross-covariances</span>
-            <span class="n">ms</span>  <span class="o">=</span> <span class="n">meanfunc</span><span class="o">.</span><span class="n">getMean</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:])</span>         
+            <span class="n">kss</span> <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:],</span> <span class="s">&#39;diag&#39;</span><span class="p">)</span>    <span class="c"># self-variances</span>
+            <span class="n">Ks</span>  <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">nz</span><span class="p">,:],</span> <span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:])</span>   <span class="c"># cross-covariances</span>
+            <span class="n">ms</span>  <span class="o">=</span> <span class="n">meanfunc</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:])</span>         
             <span class="n">N</span>   <span class="o">=</span> <span class="p">(</span><span class="n">alpha</span><span class="o">.</span><span class="n">shape</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>                     <span class="c"># number of alphas (usually 1; more in case of sampling)</span>
             <span class="n">Fmu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">ms</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Ks</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">alpha</span><span class="p">[</span><span class="n">nz</span><span class="p">])</span>          <span class="c"># conditional mean fs|f</span>
             <span class="n">fmu</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">Fmu</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">,(</span><span class="nb">len</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span><span class="mi">1</span><span class="p">))</span>       <span class="c"># predictive means</span>
@@ -347,19 +322,19 @@
 
     <span class="k">def</span> <span class="nf">predict_with_posterior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Prediction with provided posterior</span>
+<span class="sd">        prediction with provided posterior</span>
 <span class="sd">        (i.e. you already have the posterior and thus don&#39;t need fitting/training phases)</span>
-<span class="sd">        Get predictive output means(ym), </span>
-<span class="sd">        predictive output variances(ys2),</span>
-<span class="sd">        predictive latent means(fm),</span>
-<span class="sd">        predictive latent variances(fs2),</span>
-<span class="sd">        log predictive probabilities(lp).</span>
+<span class="sd">        </span>
+<span class="sd">        @param post         posterior structcture</span>
+<span class="sd">        @param xs           test input</span>
+<span class="sd">        @param ys           test target(optional)</span>
 
-<span class="sd">        :param post: struct representation of posterior</span>
-<span class="sd">        :param xs: test input</span>
-<span class="sd">        :param ys: test target(optional)</span>
-
-<span class="sd">        :return: ym, ys2, fm, fs2, lp</span>
+<span class="sd">        @return ymu, ys2, fmu, fs2, lp</span>
+<span class="sd">                where ymu is predictive output means</span>
+<span class="sd">                      ys2 is predictive output variances</span>
+<span class="sd">                      fm2 is predictive latent means</span>
+<span class="sd">                      fs2 is predictive latent variances</span>
+<span class="sd">                      lp  is log predictive probabilities(if ys is given, otherwise is None)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">meanfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span>
         <span class="n">covfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span>
@@ -367,14 +342,7 @@
         <span class="n">inffunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
-        <span class="k">if</span> <span class="n">xs</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>   
-        <span class="bp">self</span><span class="o">.</span><span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span>
-        <span class="k">if</span> <span class="n">ys</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">ys</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="p">(</span><span class="n">ys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span> 
-            <span class="bp">self</span><span class="o">.</span><span class="n">ys</span> <span class="o">=</span> <span class="n">ys</span>
-
+        
         <span class="bp">self</span><span class="o">.</span><span class="n">posterior</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">alpha</span>
         <span class="n">L</span>     <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">L</span>
@@ -382,7 +350,7 @@
 
         <span class="n">nz</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alpha</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]))</span>         <span class="c"># non-sparse representation </span>
         <span class="k">if</span> <span class="n">L</span> <span class="o">==</span> <span class="p">[]:</span>                         <span class="c"># in case L is not provided, we compute it</span>
-            <span class="n">K</span> <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">getCovMatrix</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">nz</span><span class="p">,:],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;train&#39;</span><span class="p">)</span>
+            <span class="n">K</span> <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">nz</span><span class="p">,:])</span>
             <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">nz</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sW</span><span class="p">,</span><span class="n">sW</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">K</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="p">)</span>
         <span class="n">Ltril</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span> <span class="c"># is L an upper triangular matrix?</span>
         <span class="n">ns</span>        <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                  <span class="c"># number of data points</span>
@@ -395,9 +363,9 @@
         <span class="n">lp</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ns</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">while</span> <span class="n">nact</span><span class="o">&lt;=</span><span class="n">ns</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>                              <span class="c"># process minibatches of test cases to save memory</span>
             <span class="nb">id</span>  <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">nact</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">nact</span><span class="o">+</span><span class="n">nperbatch</span><span class="p">,</span><span class="n">ns</span><span class="p">))</span>   <span class="c"># data points to process</span>
-            <span class="n">kss</span> <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">getCovMatrix</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;self_test&#39;</span><span class="p">)</span>    <span class="c"># self-variances</span>
-            <span class="n">Ks</span>  <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">getCovMatrix</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">nz</span><span class="p">,:],</span> <span class="n">z</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:],</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;cross&#39;</span><span class="p">)</span>   <span class="c"># cross-covariances</span>
-            <span class="n">ms</span>  <span class="o">=</span> <span class="n">meanfunc</span><span class="o">.</span><span class="n">getMean</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:])</span>         
+            <span class="n">kss</span> <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:],</span> <span class="s">&#39;diag&#39;</span><span class="p">)</span>    <span class="c"># self-variances</span>
+            <span class="n">Ks</span>  <span class="o">=</span> <span class="n">covfunc</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">nz</span><span class="p">,:],</span> <span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:])</span>   <span class="c"># cross-covariances</span>
+            <span class="n">ms</span>  <span class="o">=</span> <span class="n">meanfunc</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="nb">id</span><span class="p">,:])</span>         
             <span class="n">N</span>   <span class="o">=</span> <span class="p">(</span><span class="n">alpha</span><span class="o">.</span><span class="n">shape</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>                     <span class="c"># number of alphas (usually 1; more in case of sampling)</span>
             <span class="n">Fmu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">ms</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Ks</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">alpha</span><span class="p">[</span><span class="n">nz</span><span class="p">])</span>          <span class="c"># conditional mean fs|f</span>
             <span class="n">fmu</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">Fmu</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">N</span><span class="p">,(</span><span class="nb">len</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span><span class="mi">1</span><span class="p">))</span>       <span class="c"># predictive means</span>
@@ -432,7 +400,7 @@
 
 
 <span class="k">class</span> <span class="nc">GPR</span><span class="p">(</span><span class="n">GP</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Gaussian Process Regression&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Gaussian Process Regression&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GPR</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Zero</span><span class="p">()</span>                        <span class="c"># default prior mean </span>
@@ -442,11 +410,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>                <span class="c"># default optimizer       </span>
 
     <span class="k">def</span> <span class="nf">setNoise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_sigma</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set noise variance other than default&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;explicitly set noise variance other than default&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">likfunc</span> <span class="o">=</span> <span class="n">lik</span><span class="o">.</span><span class="n">Gauss</span><span class="p">(</span><span class="n">log_sigma</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set Optimizer. See base class.&#39;&#39;&#39;</span>
         <span class="n">conf</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">num_restarts</span><span class="o">!=</span><span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_threshold</span><span class="o">!=</span><span class="bp">None</span><span class="p">):</span>
             <span class="n">conf</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">Optimization</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">random_init_conf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">likfunc</span><span class="p">)</span>
@@ -468,7 +435,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">BFGS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
                        
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Plot 1d GP regression.&#39;&#39;&#39;</span>
         <span class="n">xs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xs</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
@@ -488,13 +454,8 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;target y&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
+    <span class="c">### !!!TODO: debug starting from GPR and lik Laplace</span>
     <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Use another inference techinique other than default exact inference.</span>
-<span class="sd">        </span>
-<span class="sd">        :param str newInf: &#39;Laplace&#39; or &#39;EP&#39;</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
         <span class="k">if</span> <span class="n">newInf</span> <span class="o">==</span> <span class="s">&quot;Laplace&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">Laplace</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">newInf</span> <span class="o">==</span> <span class="s">&quot;EP&quot;</span><span class="p">:</span>
@@ -511,8 +472,12 @@
 
 
 
+
+
+
+
 <span class="k">class</span> <span class="nc">GPC</span><span class="p">(</span><span class="n">GP</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Gaussian Process Classification&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Gaussian Process Classification&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GPC</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Zero</span><span class="p">()</span>                        <span class="c"># default prior mean </span>
@@ -522,7 +487,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>                <span class="c"># default optimizer       </span>
 
     <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set Optimizer. See base class.&#39;&#39;&#39;</span>
         <span class="n">conf</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">num_restarts</span><span class="o">!=</span><span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_threshold</span><span class="o">!=</span><span class="bp">None</span><span class="p">):</span>
             <span class="n">conf</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">Optimization</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">random_init_conf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">likfunc</span><span class="p">)</span>
@@ -544,7 +508,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">BFGS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
                        
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span> 
-        <span class="sd">&#39;&#39;&#39;Plot 2d gp classification.&#39;&#39;&#39;</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">x1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;b+&#39;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">x2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;r+&#39;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
@@ -556,23 +519,12 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Use another inference techinique other than default EP inference.</span>
-
-<span class="sd">        :param str newInf: &#39;Laplace&#39;</span>
-<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">newInf</span> <span class="o">==</span> <span class="s">&quot;Laplace&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">Laplace</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Possible inf values are &quot;Laplace&quot;.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Use another likelihood function other than default Erf inference.</span>
-<span class="sd">        (Not used in this version)</span>
-
-<span class="sd">        :param str newLik: &#39;Logistic&#39;</span>
-<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">newLik</span> <span class="o">==</span> <span class="s">&quot;Logistic&quot;</span><span class="p">:</span>
             <span class="k">pass</span>
             <span class="c">#self.likfunc = lik.Logistic()</span>
@@ -583,7 +535,7 @@
 
 
 <span class="k">class</span> <span class="nc">GPMC</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;This is a one vs. one classification wrapper for GPC&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;This is a one vs. one classification wrapper for GPC&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_class</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Zero</span><span class="p">()</span>                <span class="c"># default prior mean </span>
         <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>                   <span class="c"># default prior covariance</span>
@@ -595,43 +547,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">newPrior</span> <span class="o">=</span> <span class="bp">False</span>
 
     <span class="k">def</span> <span class="nf">setPrior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;set prior mean function and covariance function&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;set prior mean and cov&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">mean</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span>
         <span class="k">if</span> <span class="n">kernel</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="n">kernel</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span> <span class="ow">is</span> <span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newPrior</span> <span class="o">=</span> <span class="bp">True</span>
 
     <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Use another inference techinique other than default EP inference.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newInf</span> <span class="o">=</span> <span class="n">newInf</span>
 
     <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Use another likelihood function other than default Erf inference.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">newLik</span> <span class="o">=</span> <span class="n">newLik</span>    
     
     <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set data for multi-class model&#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>  
-        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>  
+        <span class="sd">&#39;&#39;&#39;for multi-class, data is x_all and y_all&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x_all</span> <span class="o">=</span> <span class="n">x</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y_all</span> <span class="o">=</span> <span class="n">y</span>
 
     <span class="k">def</span> <span class="nf">fitAndPredict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Fitting model and prediction.</span>
 <span class="sd">        predictive_vote is a matrix where</span>
-<span class="sd">        row i is each test point i</span>
-<span class="sd">        column j is the probability for being class j</span>
-
-<span class="sd">        :return: predictive_vote</span>
+<span class="sd">        row i    -&gt; each test point i</span>
+<span class="sd">        column j -&gt; probability for being eahc class j</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="n">xs</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span> 
         <span class="n">predictive_vote</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">n_class</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_class</span><span class="p">):</span>         <span class="c"># classifier for class i...</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_class</span><span class="p">):</span> <span class="c"># ...and class j</span>
@@ -656,17 +595,12 @@
         <span class="k">return</span> <span class="n">predictive_vote</span>
 
 
-    <span class="k">def</span> <span class="nf">optimizeAndPredict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">trainAndPredict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Optimizing model and prediction.</span>
 <span class="sd">        predictive_vote is a matrix where</span>
-<span class="sd">        row i is each test point i</span>
-<span class="sd">        column j is the probability for being class j</span>
-
-<span class="sd">        :return: predictive_vote</span>
+<span class="sd">        row i    -&gt; each test point i</span>
+<span class="sd">        column j -&gt; probability for being eahc class j</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="n">xs</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="p">(</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span> 
         <span class="n">predictive_vote</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">n_class</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_class</span><span class="p">):</span>         <span class="c"># classifier for class i...</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_class</span><span class="p">):</span> <span class="c"># ...and class j</span>
@@ -678,7 +612,7 @@
                     <span class="n">model</span><span class="o">.</span><span class="n">useInference</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">newInf</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">newLik</span><span class="p">:</span>
                     <span class="n">model</span><span class="o">.</span><span class="n">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">newLik</span><span class="p">)</span>
-                <span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>               <span class="c"># training</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>               <span class="c"># training</span>
                 <span class="n">ym</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">ym</span> <span class="o">+=</span> <span class="mi">1</span>     <span class="c"># now scale into 0 to 2,  ym=0 is class j, ym=2 is class i </span>
                 <span class="n">vote_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">n_class</span><span class="p">))</span>
@@ -691,8 +625,8 @@
         <span class="k">return</span> <span class="n">predictive_vote</span>
 
     <span class="k">def</span> <span class="nf">createBinaryClass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39; Create dataset x(data) and y(label) which only contains class i and j.</span>
-<span class="sd">        Relabel class i to +1 and class j to -1&#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39; create data points x,y which only contains class i and j</span>
+<span class="sd">        class_i is +1 and class_j is -1&#39;&#39;&#39;</span>
         <span class="n">class_i</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">class_j</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_all</span><span class="p">)):</span>       <span class="c"># check all classes</span>
@@ -713,23 +647,17 @@
 
 
 <span class="k">class</span> <span class="nc">GP_FITC</span><span class="p">(</span><span class="n">GP</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;FITC GP base class&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;GP_FITC base class&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GP_FITC</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">None</span>
 
-    <span class="c"># overriding</span>
+    <span class="c"># override</span>
     <span class="k">def</span> <span class="nf">setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">value_per_axis</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set training data and derive deault inducing_points.</span>
+        <span class="sd">&#39;&#39;&#39;set Data and derive deault inducing_points</span>
 
-<span class="sd">        :param x: training data</span>
-<span class="sd">        :param y: training target</span>
-<span class="sd">        :param int value_per_axis: number of value in each dimension </span>
-<span class="sd">        when using a uni-distant default inducing points&#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>  
-        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">))</span>  
+<span class="sd">        value_per_axis is number of value in each dimension...</span>
+<span class="sd">        ...when using a default inducing point grid&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span><span class="p">:</span>
@@ -750,9 +678,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">gridAxis</span><span class="p">)))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="o">.</span><span class="n">fitc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
 
-    <span class="c"># overriding</span>
+    <span class="c"># override</span>
     <span class="k">def</span> <span class="nf">setPrior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">inducing_points</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set GP prior and inducing points&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;set prior and inducing_points&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">kernel</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">inducing_points</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="n">kernel</span><span class="o">.</span><span class="n">fitc</span><span class="p">(</span><span class="n">inducing_points</span><span class="p">)</span>
@@ -762,17 +690,14 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span> <span class="o">=</span> <span class="n">kernel</span><span class="o">.</span><span class="n">fitc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">error</span><span class="p">(</span><span class="s">&quot;To use default inducing points, please call setData() first!&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span> <span class="ow">is</span> <span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">if</span> <span class="n">mean</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">usingDefaultMean</span> <span class="o">=</span> <span class="bp">False</span>
 
 
 
 
 <span class="k">class</span> <span class="nc">GPR_FITC</span><span class="p">(</span><span class="n">GP_FITC</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Gaussian Process Regression FITC&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Gaussian Process Regression FITC&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GPR_FITC</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Zero</span><span class="p">()</span>                        <span class="c"># default prior mean </span>
@@ -783,11 +708,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">None</span>                                      <span class="c"># no default inducing points</span>
 
     <span class="k">def</span> <span class="nf">setNoise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_sigma</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set noise variance other than default value&#39;&#39;&#39;</span>
+        <span class="sd">&quot;&quot;&quot;explicitly set noise variance other than default&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">likfunc</span> <span class="o">=</span> <span class="n">lik</span><span class="o">.</span><span class="n">Gauss</span><span class="p">(</span><span class="n">log_sigma</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set Optimizer. See base class.&#39;&#39;&#39;</span>
         <span class="n">conf</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">num_restarts</span><span class="o">!=</span><span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_threshold</span><span class="o">!=</span><span class="bp">None</span><span class="p">):</span>
             <span class="n">conf</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">Optimization</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">random_init_conf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">likfunc</span><span class="p">)</span>
@@ -809,7 +733,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">BFGS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
                        
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Plot 1d GP FITC regression.&#39;&#39;&#39;</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
         <span class="n">xss</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xs</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">xs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],))</span>
         <span class="n">ymm</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ym</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">ym</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],))</span>
@@ -826,11 +749,6 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Use another inference techinique other than default exact inference.</span>
-
-<span class="sd">        :param str newInf: &#39;Laplace&#39; or &#39;EP&#39;</span>
-<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">newInf</span> <span class="o">==</span> <span class="s">&quot;Laplace&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">FITC_Laplace</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">newInf</span> <span class="o">==</span> <span class="s">&quot;EP&quot;</span><span class="p">:</span>
@@ -839,11 +757,6 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Possible inf values are &quot;Laplace&quot;, &quot;EP&quot;.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Use another inference techinique other than default Gaussian likelihood.</span>
-
-<span class="sd">        :param str newLik: &#39;Laplace&#39;</span>
-<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">newLik</span> <span class="o">==</span> <span class="s">&quot;Laplace&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">likfunc</span> <span class="o">=</span> <span class="n">lik</span><span class="o">.</span><span class="n">Laplace</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">FITC_EP</span><span class="p">()</span>
@@ -854,7 +767,7 @@
 
    
 <span class="k">class</span> <span class="nc">GPC_FITC</span><span class="p">(</span><span class="n">GP_FITC</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Gaussian Process Classification FITC&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Gaussian Process Classification FITC&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GPC_FITC</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">Zero</span><span class="p">()</span>                        <span class="c"># default prior mean </span>
@@ -864,8 +777,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>                <span class="c"># default optimizer </span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">None</span>                                      <span class="c"># no default inducing points</span>
 
+    <span class="k">def</span> <span class="nf">useLaplace_FITC</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;use Laplace approxiamation other than EP&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">FITC_Laplace</span><span class="p">()</span> 
+
     <span class="k">def</span> <span class="nf">setOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">num_restarts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">min_threshold</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">meanRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">covRange</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">likRange</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set optimizer. See base class.&#39;&#39;&#39;</span>
         <span class="n">conf</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">num_restarts</span><span class="o">!=</span><span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_threshold</span><span class="o">!=</span><span class="bp">None</span><span class="p">):</span>
             <span class="n">conf</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">Optimization</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">random_init_conf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meanfunc</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">covfunc</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">likfunc</span><span class="p">)</span>
@@ -887,7 +803,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">BFGS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conf</span><span class="p">)</span>  
                        
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">axisvals</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span> 
-        <span class="sd">&#39;&#39;&#39;Plot 2d GP FITC classification.&#39;&#39;&#39;</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">x1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;b+&#39;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">x2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;r+&#39;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
@@ -900,23 +815,12 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  
 
     <span class="k">def</span> <span class="nf">useInference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newInf</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Use another inference techinique other than default exact inference.</span>
-
-<span class="sd">        :param str newInf: &#39;Laplace&#39; or &#39;EP&#39;</span>
-<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">newInf</span> <span class="o">==</span> <span class="s">&quot;Laplace&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inffunc</span> <span class="o">=</span> <span class="n">inf</span><span class="o">.</span><span class="n">FITC_Laplace</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Possible inf values are &quot;Laplace&quot;.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">useLikelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newLik</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Use another inference techinique other than default Erf likelihood.</span>
-<span class="sd">        (Not used in this version)</span>
-
-<span class="sd">        :param str newLik: &#39;Logistic&#39;</span>
-<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">newLik</span> <span class="o">==</span> <span class="s">&quot;Logistic&quot;</span><span class="p">:</span>
             <span class="k">pass</span>
             <span class="c">#self.likfunc = lik.Logistic()</span>
@@ -961,7 +865,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

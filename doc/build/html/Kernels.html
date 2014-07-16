@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,7 +14,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     'v1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -291,7 +292,7 @@ Setting FITC gp model will implicitly call this method.</p>
 
 <dl class="method">
 <dt id="pyGPs.Core.cov.Kernel.getCovMatrix">
-<tt class="descname">getCovMatrix</tt><big>(</big><em>x=None</em>, <em>z=None</em>, <em>mode=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Kernel.getCovMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Kernel.getCovMatrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">getCovMatrix</tt><big>(</big><em>x=None</em>, <em>z=None</em>, <em>mode=None</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.Kernel.getCovMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the specific covariance matrix according to input mode</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -315,7 +316,7 @@ Setting FITC gp model will implicitly call this method.</p>
 
 <dl class="method">
 <dt id="pyGPs.Core.cov.Kernel.getDerMatrix">
-<tt class="descname">getDerMatrix</tt><big>(</big><em>x=None</em>, <em>z=None</em>, <em>mode=None</em>, <em>der=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Kernel.getDerMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Kernel.getDerMatrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">getDerMatrix</tt><big>(</big><em>x=None</em>, <em>z=None</em>, <em>mode=None</em>, <em>der=None</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.Kernel.getDerMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute derivatives wrt. hyperparameters according to input mode</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -361,7 +362,7 @@ hyp = log_ell_list</p>
 
 <dl class="class">
 <dt id="pyGPs.Core.cov.Linear">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Linear</tt><big>(</big><em>log_sigma=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Linear" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Linear</tt><big>(</big><em>log_sigma=0.0</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.Linear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Linear kernel. hyp = [ log_sigma ].</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -630,7 +631,7 @@ hyp = log_ell_list + [ log_sigma, log_alpha ]</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>D</strong> &#8211; dimension of training data. Set if you want default alpha, which is 0.5 for each dimension.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Alpha_list:</th><td class="field-body">scalar alpha for each dimension</td>
+<tr class="field-even field"><th class="field-name">Alpha_list :</th><td class="field-body">scalar alpha for each dimension</td>
 </tr>
 </tbody>
 </table>
@@ -642,7 +643,7 @@ hyp = log_ell_list + [ log_sigma, log_alpha ]</p>
 <dd><p>The base function for mean function</p>
 <dl class="method">
 <dt id="pyGPs.Core.mean.Mean.getDerMatrix">
-<tt class="descname">getDerMatrix</tt><big>(</big><em>x=None</em>, <em>der=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/mean.html#Mean.getDerMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.mean.Mean.getDerMatrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">getDerMatrix</tt><big>(</big><em>x=None</em>, <em>der=None</em><big>)</big><a class="headerlink" href="#pyGPs.Core.mean.Mean.getDerMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute derivatives wrt. hyperparameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -663,7 +664,7 @@ hyp = log_ell_list + [ log_sigma, log_alpha ]</p>
 
 <dl class="method">
 <dt id="pyGPs.Core.mean.Mean.getMean">
-<tt class="descname">getMean</tt><big>(</big><em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/mean.html#Mean.getMean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.mean.Mean.getMean" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">getMean</tt><big>(</big><em>x=None</em><big>)</big><a class="headerlink" href="#pyGPs.Core.mean.Mean.getMean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the mean vector.</p>
 </dd></dl>
 
@@ -776,7 +777,7 @@ hyp = log_ell_list + [ log_sigma, log_alpha ]</p>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
