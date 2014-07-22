@@ -307,6 +307,189 @@ class FITCOfKernel(Kernel):
             K = self.covfunc.getDerMatrix(x=xu,z=z,mode='cross',der=der)
             return K 
         
+class Gabor(Kernel):
+    '''
+    Gabor covariance function with length scale ell and period p. The
+    covariance function is parameterized as:
+ 
+    k(x,z) = h( ||x-z|| ) with h(t) = exp(-t^2/(2*ell^2))*cos(2*pi*t/p).
+ 
+    The hyperparameters are:
+ 
+    hyp = [ log(ell)
+            log(p)   ]
+ 
+    Note that covSM implements a weighted sum of Gabor covariance functions, but
+    using an alternative (spectral) parameterization.
+ 
+    :param log_ell: characteristic length scale.
+    :param log_p: period.
+    '''
+ 
+    def __init__(self, log_ell=0., log_p=0.):
+        self.hyp = [log_ell, log_p]
+ 
+    def getCovMatrix(self,x=None,z=None,mode=None):
+        ell = np.exp(self.hyp[0])  # characteristic length scale
+        p = np.exp(2. * self.hyp[1])  # period
+        (n, D) = x.shape
+        if mode == 'self_test':               # self covariances for the test cases
+            A = np.zeros((n, 1))
+        elif mode == 'train':                 # compute covariance matix for dataset x
+            A = spdist.cdist(x / ell, x / ell, 'sqeuclidean')
+        elif mode == 'cross':                 # compute covariance between data sets x and z
+            A = spdist.cdist(x / ell, z / ell, 'sqeuclidean')
+        dp = 2 * np.pi * np.sqrt(A) * ell / p
+        A = np.exp(-0.5 * A) * np.cos(dp)
+        return A
+
+    def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        ell = np.exp(self.hyp[0])  # characteristic length scale
+        p = np.exp(2. * self.hyp[1])  # period
+        (n, D) = x.shape
+        if mode == 'self_test':               # self covariances for the test cases
+            A = np.zeros((n, 1))
+        elif mode == 'train':                 # compute covariance matix for dataset x
+            A = spdist.cdist(x / ell, x / ell, 'sqeuclidean')
+        elif mode == 'cross':                 # compute covariance between data sets x and z
+            A = spdist.cdist(x / ell, z / ell, 'sqeuclidean')
+        dp = 2 * np.pi * np.sqrt(A) * ell / p
+
+        if der == 0:                          # compute derivative matrix wrt 1st parameter
+            A = np.exp(-0.5 * A) * np.cos(dp)
+            A = dp * A
+        elif der == 1:                        # compute derivative matrix wrt 2nd parameter
+            A = np.exp(-0.5 * A) * np.cos(dp)
+            A = np.tan(dp) * dp * A
+        else:
+            raise Exception("Wrong derivative entry in Gabor")
+
+        return A
+ 
+ 
+
+class SM(Kernel):
+    '''
+    Gaussian Spectral Mixture covariance function. The
+    covariance function is parameterized as:
+ 
+    k(x^p,x^q) = w'*prod( exp(-2*pi^2*d^2*v)*cos(2*pi*d*m), 2), d = |x^p,x^q|
+ 
+    where m(DxQ), v(DxQ) are the means and variances of the spectral mixture
+    components and w are the mixture weights. The hyperparameters are:
+ 
+    hyp = [ log(w)
+            log(m(:))
+            log(sqrt(v(:))) ]
+ 
+    Copyright (c) by Andrew Gordon Wilson and Hannes Nickisch, 2013-10-09.
+ 
+    For more details, see
+    1) Gaussian Process Kernels for Pattern Discovery and Extrapolation,
+    ICML, 2013, by Andrew Gordon Wilson and Ryan Prescott Adams.
+    2) GPatt: Fast Multidimensional Pattern Extrapolation with Gaussian
+    Processes, arXiv 1310.5288, 2013, by Andrew Gordon Wilson, Elad Gilboa,
+    Arye Nehorai and John P. Cunningham, and
+    http://mlg.eng.cam.ac.uk/andrew/pattern
+ 
+    :param log_w: weight coefficients.
+    :param log_m: spectral means (frequencies).
+    :param log_v: spectral variances.
+    '''
+ 
+    def __init__(self, Q=0, hyps=[]):
+        self.hyp = hyps
+        self.para = [Q]
+    
+    def getCovMatrix(self,x=None,z=None,mode=None):
+        Q = self.para[0]
+        (n, D) = x.shape
+        assert Q == len(self.hyp) / (1 + 2 * D)
+        
+        w = np.exp(self.hyp[:Q])
+        m = np.exp(np.reshape(self.hyp[Q:Q + Q * D], (D, Q)))
+        v = np.exp(2 * np.reshape(self.hyp[Q + Q * D:], (D, Q)))
+
+        if mode == 'self_test':               # self covariances for the test cases
+            d2 = np.zeros((n, 1, D))
+        elif mode == 'train':                 # compute covariance matix for dataset x
+            d2 = np.zeros((n, n, D))
+            for j in range(D):
+                xslice = np.atleast_2d(x[:, j]).T
+                d2[:, :, j] = spdist.cdist(xslice, xslice, 'sqeuclidean')
+        elif mode == 'cross':                 # compute covariance between data sets x and z
+            d2 = np.zeros((n, z.shape[0], D))
+            for j in range(D):
+                xslice = np.atleast_2d(x[:, j]).T
+                zslice = np.atleast_2d(z[:, j]).T
+                d2[:, :, j] = spdist.cdist(xslice, zslice, 'sqeuclidean')
+        d = np.sqrt(d2)
+
+        k = lambda (d2v, dm): np.exp(-2 * np.pi ** 2 * d2v) * np.cos(2* np.pi * dm)  # evaluation of the covariance
+        km = lambda dm: -2 * np.pi * np.tan(2 * np.pi * dm) * dm  # remainder when differentiating w.r.t. m
+        kv = lambda d2v: -d2v * (2 * np.pi) ** 2  # remainder when differentiating w.r.t. v
+
+        A = 0.
+        c = 1
+        qq = range(Q)
+        for q in qq:
+            C = w[q] * c
+            for j in range(D):
+                C = C * k((d2[:, :, j] * v[j, q], d[:, :, j] * m[j, q]))
+                A = A + C
+        return A
+            
+    def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        Q = self.para[0]
+        (n, D) = x.shape
+        assert Q == len(self.hyp) / (1 + 2 * D)
+    
+        w = np.exp(self.hyp[:Q])
+        m = np.exp(np.reshape(self.hyp[Q:Q + Q * D], (D, Q)))
+        v = np.exp(2 * np.reshape(self.hyp[Q + Q * D:], (D, Q)))
+    
+        if mode == 'self_test':               # self covariances for the test cases
+            d2 = np.zeros((n, 1, D))
+        elif mode == 'train':                 # compute covariance matix for dataset x
+            d2 = np.zeros((n, n, D))
+            for j in range(D):
+                xslice = np.atleast_2d(x[:, j]).T
+                d2[:, :, j] = spdist.cdist(xslice, xslice, 'sqeuclidean')
+        elif mode == 'cross':                 # compute covariance between data sets x and z
+            d2 = np.zeros((n, z.shape[0], D))
+            for j in range(D):
+                xslice = np.atleast_2d(x[:, j]).T
+                zslice = np.atleast_2d(z[:, j]).T
+                d2[:, :, j] = spdist.cdist(xslice, zslice, 'sqeuclidean')
+        d = np.sqrt(d2)
+    
+        k = lambda (d2v, dm): np.exp(-2 * np.pi ** 2 * d2v) * np.cos(2* np.pi * dm)  # evaluation of the covariance
+        km = lambda dm: -2 * np.pi * np.tan(2 * np.pi * dm) * dm  # remainder when differentiating w.r.t. m
+        kv = lambda d2v: -d2v * (2 * np.pi) ** 2  # remainder when differentiating w.r.t. v
+        
+        if der < Q:                         # compute derivative matrix wrt w
+            c = 1
+            qq = [der]
+        elif der < Q + Q * D:               # compute derivative matrix wrt sig
+            p = (der - Q) % D
+            q = (der - Q - p) / D
+            c = km(d[:, :, p] * m[p, q])
+            qq = [q]
+        elif der < 2 * Q * D + Q:           # compute derivative matrix wrt mu
+            p = (der - (D + 1) * Q) % D
+            q = (der - (D + 1) * Q - p) / D
+            c = kv(d2[:, :, p] * v[p, q])
+            qq = [q]
+        else:
+            raise Exception("Wrong derivative entry in SM")
+                
+        for q in qq:
+            C = w[q] * c
+            for j in range(D):
+                C = C * k((d2[:, :, j] * v[j, q], d[:, :, j] * m[j, q]))
+                A = A + C
+        return A
+
 
 
 class Poly(Kernel):

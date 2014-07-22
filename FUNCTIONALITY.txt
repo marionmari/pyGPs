@@ -22,7 +22,8 @@
        RQ            - Rational Quadratic covariance function with isotropic distance measure.
        RQard         - Rational Quadratic covariance function with ARD distance measure.
        Pre           - Precomputed kernel matrix.
-
+       Gabor         - Gabor Covariance function
+       SM            - Spectral Mixture covariance function
 	* composite covariance functions:
 	
 	ProductOfKernel or "*"  - product of covariance functions
