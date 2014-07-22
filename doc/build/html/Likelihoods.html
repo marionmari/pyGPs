@@ -181,15 +181,15 @@ To test your customized inference function, uncomment the following method in <e
 <em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Erf</tt><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Erf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Erf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error function or cumulative Gaussian likelihood function for binary
 classification or probit regression.</p>
-<p><img class="math" src="_images/math/7bf22e34ad48c1790522e60e9f37809d7a1ed009.png" alt="Erf(t)=\frac{1}{2}(1+erf(\frac{t}{\sqrt{2}}))=normcdf(t)"/></p>
+<p><img class="math" src="_images/math/6d4e164567280dc8c2e043836c1654e6c1ab1b39.png" alt="Erf(t)=\frac{1}{2}(1+erf(\frac{t}{\sqrt{2}}))=normcdf(t)"/></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="pyGPs.Core.lik.Gauss">
 <em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Gauss</tt><big>(</big><em>log_sigma=-2.3025850929940455</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Gauss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Gauss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gaussian likelihood function for regression.</p>
-<p><img class="math" src="_images/math/ff97ea0691ff78ade77ebe3fd425f924a94e2fc6.png" alt="Gauss(t)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(t-y)^2}{2\sigma^2}}"/>,
-where <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> is the mean and <img class="math" src="_images/math/fa35d9fc104207e09a712110ac81612c5b279a6c.png" alt="\sigma"/> is the standard deviation.</p>
+<p><img class="math" src="_images/math/fae605346b499c4f082a51a7b94aba620f9f1b1c.png" alt="Gauss(t)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(t-y)^2}{2\sigma^2}}"/>,
+where <img class="math" src="_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> is the mean and <img class="math" src="_images/math/2298cf1485084afe72757a9c8483af49a138d81f.png" alt="\sigma"/> is the standard deviation.</p>
 <p>hyp = [ log_sigma ]</p>
 </dd></dl>
 
@@ -197,8 +197,8 @@ where <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c
 <dt id="pyGPs.Core.lik.Laplace">
 <em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Laplace</tt><big>(</big><em>log_sigma=-2.3025850929940455</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Laplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Laplace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Laplacian likelihood function for regression. ONLY works with EP inference!</p>
-<p><img class="math" src="_images/math/22af8a3a9d3c790d24b4f31a7e3d8270ac105a7b.png" alt="Laplace(t) = \frac{1}{2b}e^{-\frac{|t-y|}{b}}"/> where <img class="math" src="_images/math/cc23cfcc01f3ea0f1af4f5fe7160f178a5570f2a.png" alt="b=\frac{\sigma}{\sqrt{2}}"/>,
-<img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> is the mean and <img class="math" src="_images/math/fa35d9fc104207e09a712110ac81612c5b279a6c.png" alt="\sigma"/> is the standard deviation.</p>
+<p><img class="math" src="_images/math/49b8c8eb155a7daf16f3e48d605a6932a3ef0171.png" alt="Laplace(t) = \frac{1}{2b}e^{-\frac{|t-y|}{b}}"/> where <img class="math" src="_images/math/a313227a289292aa9bffb3ea489f5063f011acb4.png" alt="b=\frac{\sigma}{\sqrt{2}}"/>,
+<img class="math" src="_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> is the mean and <img class="math" src="_images/math/2298cf1485084afe72757a9c8483af49a138d81f.png" alt="\sigma"/> is the standard deviation.</p>
 <p>hyp = [ log_sigma ]</p>
 </dd></dl>
 
@@ -331,7 +331,7 @@ parameter sn2, we simply use snu2 = 1e-6.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

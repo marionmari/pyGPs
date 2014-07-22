@@ -71,8 +71,8 @@ to benchmark graph kernels.</p>
 <span class="n">graph_label</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;labels&#39;</span><span class="p">]</span>                          <span class="c"># N x 1 graph label array</span>
 </pre></div>
 </div>
-<p>Note that adjacency matrix for all graphs is usually too big to fit into memory when using <img class="math" src="_images/math/192d69ed9c7bd67b3f34486786531bae08ba2d88.png" alt="GP"/>.
-Therefore, we generate <img class="math" src="_images/math/019e9892786e493964e145e7c5cf7b700314e53b.png" alt="A"/> using sparse matrix <em>csc_matrix</em> provided by <em>scipy</em>.</p>
+<p>Note that adjacency matrix for all graphs is usually too big to fit into memory when using <img class="math" src="_images/math/bc008ec23119a8f24d723e0616fee9a6f9a87cd2.png" alt="GP"/>.
+Therefore, we generate <img class="math" src="_images/math/0acafa529182e79b4f56165ec677554fba7fcf98.png" alt="A"/> using sparse matrix <em>csc_matrix</em> provided by <em>scipy</em>.</p>
 </div>
 <div class="section" id="compute-propagation-kernel-matrix">
 <h2>Compute propagation kernel matrix<a class="headerlink" href="#compute-propagation-kernel-matrix" title="Permalink to this headline">¶</a></h2>
@@ -84,11 +84,11 @@ Generate prapagation kernel based on given graph data.</p>
 <span class="n">K</span> <span class="o">=</span> <span class="n">graphKernels</span><span class="o">.</span><span class="n">propagationKernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">node_label</span><span class="p">,</span> <span class="n">gr_id</span><span class="p">,</span> <span class="n">num_Iteration</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="s">&#39;label_diffusion&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Adjacency matrix <img class="math" src="_images/math/019e9892786e493964e145e7c5cf7b700314e53b.png" alt="A"/> can either be in format of standard numpy matrix or sparse matrix.</p>
+<p>Adjacency matrix <img class="math" src="_images/math/0acafa529182e79b4f56165ec677554fba7fcf98.png" alt="A"/> can either be in format of standard numpy matrix or sparse matrix.</p>
 </div>
 <div class="section" id="standard-gp-classification">
 <h2>Standard GP Classification<a class="headerlink" href="#standard-gp-classification" title="Permalink to this headline">¶</a></h2>
-<p><img class="math" src="_images/math/dfb064112b6c94470339f6571f69d07afc1c024c.png" alt="K"/> is a big square matrix with all rows and columns of the number of data points.
+<p><img class="math" src="_images/math/28e003020d0ae96250b302d7d779c791f183f707.png" alt="K"/> is a big square matrix with all rows and columns of the number of data points.
 By specifying the indice of training data and test data, we will form two matrix M1 and M2 with the exact format which <em>pyGPs.Core.cov.Pre</em> needed.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">M1</span><span class="p">,</span><span class="n">M2</span> <span class="o">=</span> <span class="n">graphUtil</span><span class="o">.</span><span class="n">formKernelMatrix</span><span class="p">(</span><span class="n">Matrix</span><span class="p">,</span> <span class="n">indice_train</span><span class="p">,</span> <span class="n">indice_test</span><span class="p">)</span>
 <span class="n">k</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span><span class="n">M2</span><span class="p">)</span>
@@ -194,7 +194,7 @@ By specifying the indice of training data and test data, we will form two matrix
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

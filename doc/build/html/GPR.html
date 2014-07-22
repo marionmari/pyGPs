@@ -68,8 +68,8 @@
 </div>
 <div class="section" id="load-data">
 <h2>Load data<a class="headerlink" href="#load-data" title="Permalink to this headline">¶</a></h2>
-<p>First, load the data for this demo. The data consists of <img class="math" src="_images/math/731fff2fc30062dd7135caff108b191df21ea8bf.png" alt="n=20"/> 1-d data points drawn from a unit Gaussian. This is the same data used in the GPML example (it is hardcoded in <em>data/regression_data.npz</em>).</p>
-<p>Note that target vector <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> can be in 2d matrix with shape (nn,1) or 1d vector with shape (nn,) where <img class="math" src="_images/math/a308ed5fe8ca3af22615a13ce3509d18d9c99ca1.png" alt="nn"/> is number of test inputs. pyGPs can work with either format.</p>
+<p>First, load the data for this demo. The data consists of <img class="math" src="_images/math/1c15dfaa964437d0cc8a76e56d7fe9f90ec57b13.png" alt="n=20"/> 1-d data points drawn from a unit Gaussian. This is the same data used in the GPML example (it is hardcoded in <em>data/regression_data.npz</em>).</p>
+<p>Note that target vector <img class="math" src="_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> can be in 2d matrix with shape (nn,1) or 1d vector with shape (nn,) where <img class="math" src="_images/math/17053d8843de7b81256c95bbc7d5332de1312b8a.png" alt="nn"/> is number of test inputs. pyGPs can work with either format.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">demoData</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;data_for_demo/regression_data.npz&#39;</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>      <span class="c"># training data</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span>      <span class="c"># training target</span>
@@ -106,7 +106,7 @@ Here, <em>pyGPs.GPR().plot()</em> works for 1-d data only, while <em>pyGPs.GPC()
 </pre></div>
 </div>
 <p>Here, we use a composite mean as the sum of a linear and a constant function, and an rbf kernel. The initial hyperparameters are left to their default values. See <a class="reference external" href="Kernels.html">Kernels &amp; Means</a> for a complete documentation of kernel/mean specification and custom kernel/mean construction. Once kernel and mean are specified, they are passed to the prior using <em>setPrior()</em>.</p>
-<p>You can add the traning data to the model explicitly by using <em>setData()</em>. So, you avoid passing them into <em>fit()</em> or <em>optimize()</em> each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> (if you do not specify mean function by your own).</p>
+<p>You can add the traning data to the model explicitly by using <em>setData()</em>. So, you avoid passing them into <em>fit()</em> or <em>optimize()</em> each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels <img class="math" src="_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> (if you do not specify mean function by your own).</p>
 <p>Further, you can plot the data in the 1-d case:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">plotData_1d</span><span class="p">()</span>
 </pre></div>
@@ -167,7 +167,7 @@ output mean (ymu) resp. variance (ys2), latent mean (fmu) resp. variance (fs2), 
 <span class="n">ym</span><span class="p">,</span> <span class="n">ys2</span><span class="p">,</span> <span class="n">fm</span><span class="p">,</span> <span class="n">fs2</span><span class="p">,</span> <span class="n">lp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_with_posterior</span><span class="p">(</span> <span class="n">post</span><span class="p">,</span><span class="n">z</span> <span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>[Only for Regression]</strong> Specify noise of data (with <img class="math" src="_images/math/2072174f4575230fae760c1122545fbe6ef35eb7.png" alt="\sigma=0.1"/> by default):</p>
+<p><strong>[Only for Regression]</strong> Specify noise of data (with <img class="math" src="_images/math/9451fe7d22ef7ff7dde7afa0cf40039cc0e59b4e.png" alt="\sigma=0.1"/> by default):</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">setNoise</span><span class="p">(</span> <span class="n">log_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
@@ -251,7 +251,7 @@ output mean (ymu) resp. variance (ys2), latent mean (fmu) resp. variance (fs2), 
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

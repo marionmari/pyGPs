@@ -68,31 +68,31 @@
 <div class="section" id="load-data">
 <h2>Load data<a class="headerlink" href="#load-data" title="Permalink to this headline">¶</a></h2>
 <p>We used the same dataset from GPMC example. i.e. The USPS digits dataset <a class="footnote-reference" href="#id3" id="id1">[1]</a>.
-Each digit of <img class="math" src="_images/math/f3c19812b1b3f3cc95f5f55e7fbd1399eee6004a.png" alt="16*16"/> pixels is flattened into a <img class="math" src="_images/math/abd678361b0f40ec2723283c0f2bab3df5cadc68.png" alt="256"/> dimension vector.
-For the simplicity of demo, we only selected digits <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/> s and <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/> s such that we have a binary classification problem where digit <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/> for class +1 and digit <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/> for class -1. We also reduced the dataset into <img class="math" src="_images/math/e59e2c6e83eb78cca610a5fd4070ae01c8d4ae60.png" alt="100"/> samples per digit, where the original dataset consist of thousands of samples for each digit.</p>
-<p>Here are samples for two digits for <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/></p>
+Each digit of <img class="math" src="_images/math/634f30cffdb4731a6151074f964d0fa6b84cc288.png" alt="16*16"/> pixels is flattened into a <img class="math" src="_images/math/af847fb995302cbbcfa680c1a787a09a6f263753.png" alt="256"/> dimension vector.
+For the simplicity of demo, we only selected digits <img class="math" src="_images/math/123e375e88da91240024aaf085abee194c4a2d06.png" alt="1"/> s and <img class="math" src="_images/math/15c663954a3e059d1f876bc8a4621de376038c96.png" alt="2"/> s such that we have a binary classification problem where digit <img class="math" src="_images/math/123e375e88da91240024aaf085abee194c4a2d06.png" alt="1"/> for class +1 and digit <img class="math" src="_images/math/15c663954a3e059d1f876bc8a4621de376038c96.png" alt="2"/> for class -1. We also reduced the dataset into <img class="math" src="_images/math/63e297a7a3a6ea37ad6b6bbf3f8ec35f5b1a3dba.png" alt="100"/> samples per digit, where the original dataset consist of thousands of samples for each digit.</p>
+<p>Here are samples for two digits for <img class="math" src="_images/math/123e375e88da91240024aaf085abee194c4a2d06.png" alt="1"/></p>
 <a class="reference internal image-reference" href="_images/digit1_1.png"><img alt="_images/digit1_1.png" src="_images/digit1_1.png" style="width: 30%;" /></a>
 <a class="reference internal image-reference" href="_images/digit1_2.png"><img alt="_images/digit1_2.png" src="_images/digit1_2.png" style="width: 30%;" /></a>
-<p>and samples for two digits for <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/></p>
+<p>and samples for two digits for <img class="math" src="_images/math/15c663954a3e059d1f876bc8a4621de376038c96.png" alt="2"/></p>
 <a class="reference internal image-reference" href="_images/digit2_1.png"><img alt="_images/digit2_1.png" src="_images/digit2_1.png" style="width: 30%;" /></a>
 <a class="reference internal image-reference" href="_images/digit2_2.png"><img alt="_images/digit2_2.png" src="_images/digit2_2.png" style="width: 30%;" /></a>
 </div>
 <div class="section" id="form-a-nearest-neighbour-graph">
 <h2>Form a nearest neighbour graph<a class="headerlink" href="#form-a-nearest-neighbour-graph" title="Permalink to this headline">¶</a></h2>
-<p>We form a nearest-neighbor graph based on Euclidean distance of the vector representation of digits. Neighboring images have small Euclidean distance. Each digit is a node in the graph. There is an edge if digit <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/> is the k-nearest neighbour of digit <img class="math" src="_images/math/8122aa89ea6e80784c6513d22787ad86e36ad0cc.png" alt="j"/>. We form a symmetrized graph such that we connect nodes <img class="math" src="_images/math/8122aa89ea6e80784c6513d22787ad86e36ad0cc.png" alt="j"/>, <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/> if i is in j’s kNN and vice versa, and therefore a node can have more than k edges. You should import the corresponding module from <em>pyGPs.GraphStuff</em></p>
+<p>We form a nearest-neighbor graph based on Euclidean distance of the vector representation of digits. Neighboring images have small Euclidean distance. Each digit is a node in the graph. There is an edge if digit <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/> is the k-nearest neighbour of digit <img class="math" src="_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/>. We form a symmetrized graph such that we connect nodes <img class="math" src="_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/>, <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/> if i is in j’s kNN and vice versa, and therefore a node can have more than k edges. You should import the corresponding module from <em>pyGPs.GraphStuff</em></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">load_binary</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="nb">reduce</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">graphUtil</span><span class="o">.</span><span class="n">formKnnGraph</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>A is the adjacency matrix of this <img class="math" src="_images/math/d99a9621ebf02e571cd43de80875ea26ac998305.png" alt="2-NN"/> graph.</p>
-<p>Below shows an example of such symmetrized Euclidean <img class="math" src="_images/math/d99a9621ebf02e571cd43de80875ea26ac998305.png" alt="2-NN"/> graph on some 1s and 2s taking from Xiaojin Zhu&#8217;s doctoral thesis <a class="footnote-reference" href="#id4" id="id2">[2]</a>.</p>
+<p>A is the adjacency matrix of this <img class="math" src="_images/math/17cc6db0cb2cbcda2f0aebfd92c16c77eba9ee5e.png" alt="2-NN"/> graph.</p>
+<p>Below shows an example of such symmetrized Euclidean <img class="math" src="_images/math/17cc6db0cb2cbcda2f0aebfd92c16c77eba9ee5e.png" alt="2-NN"/> graph on some 1s and 2s taking from Xiaojin Zhu&#8217;s doctoral thesis <a class="footnote-reference" href="#id4" id="id2">[2]</a>.</p>
 <div class="figure align-center">
 <img alt="_images/2nnGraph.png" src="_images/2nnGraph.png" />
 </div>
 </div>
 <div class="section" id="kernel-on-graph">
 <h2>Kernel on graph<a class="headerlink" href="#kernel-on-graph" title="Permalink to this headline">¶</a></h2>
-<p>Several classical kernels on graph described in <a class="reference external" href="Graph.html">Structured Kernels</a> can be built from adjacency matrix <img class="math" src="_images/math/019e9892786e493964e145e7c5cf7b700314e53b.png" alt="A"/>. We use diffusion kernel for this example to get the precomputed kernel matrix.</p>
+<p>Several classical kernels on graph described in <a class="reference external" href="Graph.html">Structured Kernels</a> can be built from adjacency matrix <img class="math" src="_images/math/0acafa529182e79b4f56165ec677554fba7fcf98.png" alt="A"/>. We use diffusion kernel for this example to get the precomputed kernel matrix.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">Matrix</span> <span class="o">=</span> <span class="n">nodeKernels</span><span class="o">.</span><span class="n">diffKernel</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -117,15 +117,15 @@ By specifying the indice of training data and test data, we will form two matrix
 </div>
 <div class="section" id="gp-classification">
 <h2>GP classification<a class="headerlink" href="#gp-classification" title="Permalink to this headline">¶</a></h2>
-<p>Every ingredients for a basic semi-supervised learning is prepared now.  Lets see how to proceed for <img class="math" src="_images/math/192d69ed9c7bd67b3f34486786531bae08ba2d88.png" alt="GP"/> classification. First, the normal way with rbf kernel we have seen several times</p>
+<p>Every ingredients for a basic semi-supervised learning is prepared now.  Lets see how to proceed for <img class="math" src="_images/math/bc008ec23119a8f24d723e0616fee9a6f9a87cd2.png" alt="GP"/> classification. First, the normal way with rbf kernel we have seen several times</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>
 <span class="n">k</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">setPrior</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Then lets use our kernel precomputed matrix. If you only use precomputed kernel matrix, there is no training data.
-However you still need to specify <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2a1049c48c89a5e6.png" alt="x"/> just to fit in the usage of pyGPs for generality reason.
-You can create any <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2a1049c48c89a5e6.png" alt="x"/> as long as the dimension is correct.</p>
+However you still need to specify <img class="math" src="_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/> just to fit in the usage of pyGPs for generality reason.
+You can create any <img class="math" src="_images/math/188c175aac0a8a9c22499336711b5d7256407254.png" alt="x"/> as long as the dimension is correct.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">k</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">Pre</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span><span class="n">M2</span><span class="p">)</span> <span class="o">+</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">cov</span><span class="o">.</span><span class="n">RBF</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">setPrior</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
@@ -141,8 +141,8 @@ You can create any <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2
 <div class="section" id="result">
 <h2>Result<a class="headerlink" href="#result" title="Permalink to this headline">¶</a></h2>
 <p>For our manually created graph data, an rbf kernel works better than a diffusion kernel on the graph (higher accuracy). The performance in general should depend on the application as well as features of data.</p>
-<p>The left image shows the digit that using diffusion kernel will predict the wrong result (should be <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/>),
-but rbf kernel does the job fine. The right image shows the digit that rbf kernel predicts the wrong class, diffusion kernel on the other hand, predicts correctly due to graph information! (should be <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/>).</p>
+<p>The left image shows the digit that using diffusion kernel will predict the wrong result (should be <img class="math" src="_images/math/15c663954a3e059d1f876bc8a4621de376038c96.png" alt="2"/>),
+but rbf kernel does the job fine. The right image shows the digit that rbf kernel predicts the wrong class, diffusion kernel on the other hand, predicts correctly due to graph information! (should be <img class="math" src="_images/math/123e375e88da91240024aaf085abee194c4a2d06.png" alt="1"/>).</p>
 <p>Interestingly, using a composite kernel with diffusion kernel on graph and an rbf kernel together. All test cases including the following are predicted correctly.</p>
 <a class="reference internal image-reference" href="_images/digitDiffwrong.png"><img alt="_images/digitDiffwrong.png" src="_images/digitDiffwrong.png" style="width: 50%;" /></a>
 <a class="reference internal image-reference" href="_images/digitRBFwrong.png"><img alt="_images/digitRBFwrong.png" src="_images/digitRBFwrong.png" style="width: 50%;" /></a>
@@ -229,7 +229,7 @@ but rbf kernel does the job fine. The right image shows the digit that rbf kerne
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

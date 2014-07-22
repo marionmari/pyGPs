@@ -710,6 +710,8 @@
 <div class="viewcode-block" id="Linear"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.cov.Linear">[docs]</a><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Linear kernel. hyp = [ log_sigma ].</span>
+
+<span class="sd">    :param log_sigma: signal deviation.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_sigma</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[</span> <span class="n">log_sigma</span> <span class="p">]</span>
@@ -1192,7 +1194,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>
