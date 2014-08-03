@@ -92,11 +92,21 @@ class CG(Optimizer):
         self.errorCounter = 0
 
     def findMin(self, x, y):
-        meanfunc = self.model.meanfunc
-        covfunc = self.model.covfunc
-        likfunc = self.model.likfunc
-        inffunc = self.model.inffunc
+        meanfunc   = self.model.meanfunc
+        covfunc    = self.model.covfunc
+        likfunc    = self.model.likfunc
+        inffunc    = self.model.inffunc
         hypInArray = self._convert_to_array()
+
+        opt = cg(self._nlml, hypInArray, self._dnlml, maxiter=100, disp=False, full_output=True)
+        optimalHyp = deepcopy(opt[0])
+        funcValue  = opt[1]
+        warnFlag   = opt[4]
+        if warnFlag == 1:
+            print "Maximum number of iterations exceeded."
+        elif warnFlag ==  2:
+            print "Gradient and/or function calls not changing."
+
         try:
             opt = cg(self._nlml, hypInArray, self._dnlml, maxiter=100, disp=False, full_output=True)
             optimalHyp = deepcopy(opt[0])
@@ -109,7 +119,7 @@ class CG(Optimizer):
         except:
             self.errorCounter += 1
             if not self.searchConfig:         
-                raise Exception("Can not use conjugate gradient. Try other hyparameters")
+                raise Exception("Cannot use conjugate gradient (CG). Try other hyperparameters")
         self.trailsCounter += 1
 
         if self.searchConfig:
@@ -169,7 +179,7 @@ class BFGS(Optimizer):
         except:
             self.errorCounter += 1
             if not self.searchConfig:         
-                raise Exception("Can not use BFGS. Try other hyparameters")
+                raise Exception("Cannot use BFGS. Try other hyperparameters")
         self.trailsCounter += 1
 
 
@@ -226,7 +236,7 @@ class Minimize(Optimizer):
         except:
             self.errorCounter += 1
             if not self.searchConfig:         
-                raise Exception("Can not use minimize. Try other hyparameters")
+                raise Exception("Cannot use minimize. Try other hyperparameters")
         self.trailsCounter += 1
 
         if self.searchConfig:
@@ -280,7 +290,7 @@ class SCG(Optimizer):
         except:
             self.errorCounter += 1
             if not self.searchConfig:         
-                raise Exception("Can not use Scaled conjugate gradient. Try other hyparameters")
+                raise Exception("Cannot use Scaled conjugate gradient (SGC) . Try other hyperparameters")
         self.trailsCounter += 1
 
         if self.searchConfig:

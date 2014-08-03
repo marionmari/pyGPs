@@ -40,7 +40,7 @@ print '---------------------GPMC DEMO-----------------------'
 #----------------------------------------------------------------------
 # Load USPS digits dataset
 #----------------------------------------------------------------------
-data = loadmat('data_for_demo/usps_resampled.mat')
+data = loadmat('usps_resampled.mat')
 x = data['train_patterns'].T   # train patterns
 y = data['train_labels'].T     # train labels
 xs = data['test_patterns'].T   # test patterns

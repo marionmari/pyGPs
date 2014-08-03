@@ -7,8 +7,7 @@ import pyGPs
 from pyGPs.Validation import valid
 from pyGPs.GraphExtensions import graphUtil,graphKernels
 
-location = 'data_for_demo/graphData/'
-data = np.load(location+'MUTAG.npz')
+data = np.load('MUTAG.npz')
 
 # n = num of nodes
 # N = num of graphs

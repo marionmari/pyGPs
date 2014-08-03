@@ -31,7 +31,7 @@ import numpy as np
 if __name__ == '__main__':
 
     # LOAD data
-    infile = 'data_for_demo/mauna.txt'	# Note: Samples with value -99.99 were dropped.
+    infile = 'mauna.txt'	# Note: Samples with value -99.99 were dropped.
     f      = open(infile,'r')
     year   = []
     co2    = []
@@ -56,12 +56,12 @@ if __name__ == '__main__':
     xs = np.arange(2004+1./24.,2024-1./24.,1./12.)     
     xs = xs.reshape(len(xs),1)
 
-    # DEFINE parameterized covariance function
-    k1 = pyGPs.cov.RBF(np.log(67.), np.log(66.))
-    k2 = pyGPs.cov.Periodic(np.log(1.3), np.log(1.0), np.log(2.4)) * cov.RBF(np.log(90.), np.log(2.4))
-    k3 = pyGPs.cov.RQ(np.log(1.2), np.log(0.66), np.log(0.78))
-    k4 = pyGPs.cov.RBF(np.log(1.6/12.), np.log(0.18)) + cov.Noise(np.log(0.19))
-    k  = k1 + k2 + k3 + k4 
+    # DEFINE covariance function
+    # Set some parameters
+    Q = 10
+    nItr = 10
+    hyps = pyGPs.cov.initSMhypers(Q, x, y)
+    k = pyGPs.cov.SM(Q, hyps)
     
     # STANDARD GP (prediction)  
     model = pyGPs.GPR()

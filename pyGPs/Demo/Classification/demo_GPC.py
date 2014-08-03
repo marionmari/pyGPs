@@ -25,7 +25,7 @@ print '---------------------GPC DEMO-------------------------'
 # Load demo data (generated from Gaussians)
 #----------------------------------------------------------------------
 # GPC target class are +1 and -1
-demoData = np.load('data_for_demo/classification_data.npz')
+demoData = np.load('classification_data.npz')
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data

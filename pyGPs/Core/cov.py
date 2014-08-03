@@ -50,6 +50,114 @@ import numpy as np
 import math
 import scipy.spatial.distance as spdist
 
+def initCovParams(hyperunits, x, y):
+    """
+    Initialize hyperparameters of the covariance function. Set hyperunits to the units of the hypers.
+    eg. hyperUnits = [0 1 2 1] =>
+    hyper[0] has the units of y
+    hyper[1] and [3] have units of x[:,0]
+    and hyper[2] have units of x[:,1]
+    etc.
+ 
+    """
+ 
+    hypinit = np.empty(len(hyperunits))
+ 
+    outputMaxvRange = 1.
+    outputMinvRange = 150.
+    inputMaxvRange = 1.
+    inputMinvDelta = 0.333
+    minVarPossible = 1.
+ 
+    numHypers = len(hyperunits)
+    (N, D) = x.shape
+ 
+    # get 95% range of inputs
+ 
+    inputRange = np.diff(np.percentile(x, [.25, 97.5]))
+ 
+    # get typical between distance amounts
+ 
+    inputDelta = np.atleast_1d(np.median(np.diff(np.sort(x), axis=0)))
+ 
+    # get 95% range of outputs: 1 sd = range / 4
+ 
+    outputRange = np.diff(np.percentile(y, [.25, 97.5]))
+ 
+    hyperMax = np.zeros(numHypers)
+    hyperMin = np.zeros(numHypers)
+ 
+    hyperMax[hyperunits == 0] = np.log(outputRange / outputMaxvRange)
+    hyperMin[hyperunits == 0] = np.log(outputRange / outputMinvRange)
+ 
+    for ii in range(D):
+        hyperMax[hyperunits == ii] = np.log(inputRange[ii]
+                / inputMaxvRange)
+        hyperMin[hyperunits == ii] = np.log(inputDelta[ii]
+                / inputMinvDelta)
+ 
+    # Take the midpoint as the mean
+ 
+    hyperMean = 0.5 * (hyperMax + hyperMin)
+ 
+    # Take range = 95% of the normal => std = range / 4 => then ^2 for variance
+ 
+    hyperVar = (.25 * (hyperMax - hyperMin)) ** 2
+ 
+    # take max op with floor
+ 
+    hyperVar = np.clip(hyperVar, -np.inf, minVarPossible)
+ 
+    # Sample from this distribution
+ 
+    hypinit = np.exp(np.random.multivariate_normal(hyperMean,
+                     np.diag(hyperVar)))
+ 
+    return hypinit
+ 
+ 
+def initSMhypers(Q, x, y):
+    """
+    Initialize hyperparameters for the spectral-mixture kernel. Weights are
+    all set to be uniformly distributed, means are given by a random sample
+    from a uniform distribution scaled by the Nyquist frequency, and variances
+    are given by a random sample from a uniform distribution scaled by the max
+    distance.
+    """
+ 
+    x = np.atleast_2d(x)
+    y = np.atleast_2d(y)
+ 
+    (n, D) = x.shape
+    w = np.zeros(Q)
+    m = np.zeros((D, Q))
+    s = np.zeros((D, Q))
+    w[:] = np.std(y) / Q
+ 
+    hypinit = np.zeros(Q + 2 * D * Q)
+ 
+    for i in range(D):
+ 
+        # Calculate distances
+ 
+        xslice = np.atleast_2d(x[:, i]).T
+        d2 = spdist.cdist(xslice, xslice, 'sqeuclidean')
+        if n > 1:
+            d2[d2 == 0] = d2[0, 1]
+        else:
+            d2[d2 == 0] = 1
+        minshift = np.min(np.min(np.sqrt(d2)))
+        nyquist = 0.5 / minshift
+        m[i, :] = nyquist * np.random.ranf((1, Q))
+        maxshift = np.max(np.max(np.sqrt(d2)))
+        s[i, :] = 1. / np.abs(maxshift * np.random.ranf((1, Q)))
+ 
+    hypinit[:Q] = np.log(w)
+    hypinit[Q + np.arange(0, Q * D)] = np.log(m[:]).T
+    hypinit[Q + Q * D + np.arange(0, Q * D)] = np.log(s[:]).T
+    return list(hypinit)
+
+
 
 class Kernel(object):
     """
@@ -332,13 +440,15 @@ class Gabor(Kernel):
     def getCovMatrix(self,x=None,z=None,mode=None):
         ell = np.exp(self.hyp[0])  # characteristic length scale
         p = np.exp(2. * self.hyp[1])  # period
-        (n, D) = x.shape
         if mode == 'self_test':               # self covariances for the test cases
-            A = np.zeros((n, 1))
+            (nn, D) = z.shape
+            A = np.zeros((nn, 1))
         elif mode == 'train':                 # compute covariance matix for dataset x
             A = spdist.cdist(x / ell, x / ell, 'sqeuclidean')
         elif mode == 'cross':                 # compute covariance between data sets x and z
             A = spdist.cdist(x / ell, z / ell, 'sqeuclidean')
+        else:
+            raise Error('Wrong mode type in Gabor covariance\n')
         dp = 2 * np.pi * np.sqrt(A) * ell / p
         A = np.exp(-0.5 * A) * np.cos(dp)
         return A
@@ -346,13 +456,16 @@ class Gabor(Kernel):
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         ell = np.exp(self.hyp[0])  # characteristic length scale
         p = np.exp(2. * self.hyp[1])  # period
-        (n, D) = x.shape
         if mode == 'self_test':               # self covariances for the test cases
-            A = np.zeros((n, 1))
+            (nn, D) = z.shape
+            A = np.zeros((nn, 1))
         elif mode == 'train':                 # compute covariance matix for dataset x
             A = spdist.cdist(x / ell, x / ell, 'sqeuclidean')
         elif mode == 'cross':                 # compute covariance between data sets x and z
             A = spdist.cdist(x / ell, z / ell, 'sqeuclidean')
+        else:
+            raise Error('Wrong mode type in Gabor covariance\n')
+
         dp = 2 * np.pi * np.sqrt(A) * ell / p
 
         if der == 0:                          # compute derivative matrix wrt 1st parameter
@@ -398,12 +511,16 @@ class SM(Kernel):
     '''
  
     def __init__(self, Q=0, hyps=[]):
-        self.hyp = hyps
+        self.hyp  = hyps
         self.para = [Q]
     
     def getCovMatrix(self,x=None,z=None,mode=None):
         Q = self.para[0]
-        (n, D) = x.shape
+        if mode == 'self_test':
+            (nn, D) = z.shape
+        else:
+            (nn, D) = x.shape
+
         assert Q == len(self.hyp) / (1 + 2 * D)
         
         w = np.exp(self.hyp[:Q])
@@ -411,18 +528,20 @@ class SM(Kernel):
         v = np.exp(2 * np.reshape(self.hyp[Q + Q * D:], (D, Q)))
 
         if mode == 'self_test':               # self covariances for the test cases
-            d2 = np.zeros((n, 1, D))
+            d2 = np.zeros((nn, 1, D))
         elif mode == 'train':                 # compute covariance matix for dataset x
-            d2 = np.zeros((n, n, D))
+            d2 = np.zeros((nn, nn, D))
             for j in range(D):
                 xslice = np.atleast_2d(x[:, j]).T
                 d2[:, :, j] = spdist.cdist(xslice, xslice, 'sqeuclidean')
         elif mode == 'cross':                 # compute covariance between data sets x and z
-            d2 = np.zeros((n, z.shape[0], D))
+            d2 = np.zeros((nn, z.shape[0], D))
             for j in range(D):
                 xslice = np.atleast_2d(x[:, j]).T
                 zslice = np.atleast_2d(z[:, j]).T
                 d2[:, :, j] = spdist.cdist(xslice, zslice, 'sqeuclidean')
+        else:
+            raise Error('Wrong mode type in Spectral Mixture (SM)  covariance\n')
         d = np.sqrt(d2)
 
         k = lambda (d2v, dm): np.exp(-2 * np.pi ** 2 * d2v) * np.cos(2* np.pi * dm)  # evaluation of the covariance
@@ -441,7 +560,10 @@ class SM(Kernel):
             
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         Q = self.para[0]
-        (n, D) = x.shape
+        if mode == 'self_test':
+            (nn, D) = z.shape
+        else:
+            (nn, D) = x.shape
         assert Q == len(self.hyp) / (1 + 2 * D)
     
         w = np.exp(self.hyp[:Q])
@@ -449,18 +571,20 @@ class SM(Kernel):
         v = np.exp(2 * np.reshape(self.hyp[Q + Q * D:], (D, Q)))
     
         if mode == 'self_test':               # self covariances for the test cases
-            d2 = np.zeros((n, 1, D))
+            d2 = np.zeros((nn, 1, D))
         elif mode == 'train':                 # compute covariance matix for dataset x
-            d2 = np.zeros((n, n, D))
+            d2 = np.zeros((nn, nn, D))
             for j in range(D):
                 xslice = np.atleast_2d(x[:, j]).T
                 d2[:, :, j] = spdist.cdist(xslice, xslice, 'sqeuclidean')
         elif mode == 'cross':                 # compute covariance between data sets x and z
-            d2 = np.zeros((n, z.shape[0], D))
+            d2 = np.zeros((nn, z.shape[0], D))
             for j in range(D):
                 xslice = np.atleast_2d(x[:, j]).T
                 zslice = np.atleast_2d(z[:, j]).T
                 d2[:, :, j] = spdist.cdist(xslice, zslice, 'sqeuclidean')
+        else:
+            raise Error('Wrong mode type in Spectral Mixture (SM)  covariance\n')
         d = np.sqrt(d2)
     
         k = lambda (d2v, dm): np.exp(-2 * np.pi ** 2 * d2v) * np.cos(2* np.pi * dm)  # evaluation of the covariance
@@ -482,7 +606,7 @@ class SM(Kernel):
             qq = [q]
         else:
             raise Exception("Wrong derivative entry in SM")
-                
+        A = 0.                
         for q in qq:
             C = w[q] * c
             for j in range(D):

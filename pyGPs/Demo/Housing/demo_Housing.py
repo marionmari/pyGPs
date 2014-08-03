@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
 
-    infile = 'data_for_demo/housing.txt'
+    infile = 'housing.txt'
     data = np.genfromtxt(infile)
 
     DN, DD = data.shape
