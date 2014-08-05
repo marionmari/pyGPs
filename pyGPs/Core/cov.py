@@ -332,9 +332,9 @@ class Gabor(Kernel):
     def getCovMatrix(self,x=None,z=None,mode=None):
         ell = np.exp(self.hyp[0])  # characteristic length scale
         p = np.exp(2. * self.hyp[1])  # period
-        (n, D) = x.shape
         if mode == 'self_test':               # self covariances for the test cases
-            A = np.zeros((n, 1))
+        	nn, D = z.shape
+            A = np.zeros((nn, 1))
         elif mode == 'train':                 # compute covariance matix for dataset x
             A = spdist.cdist(x / ell, x / ell, 'sqeuclidean')
         elif mode == 'cross':                 # compute covariance between data sets x and z
@@ -346,9 +346,9 @@ class Gabor(Kernel):
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         ell = np.exp(self.hyp[0])  # characteristic length scale
         p = np.exp(2. * self.hyp[1])  # period
-        (n, D) = x.shape
         if mode == 'self_test':               # self covariances for the test cases
-            A = np.zeros((n, 1))
+	        nn, D = z.shape
+            A = np.zeros((nn, 1))
         elif mode == 'train':                 # compute covariance matix for dataset x
             A = spdist.cdist(x / ell, x / ell, 'sqeuclidean')
         elif mode == 'cross':                 # compute covariance between data sets x and z
