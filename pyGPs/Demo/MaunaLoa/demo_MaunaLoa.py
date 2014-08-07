@@ -31,7 +31,7 @@ import numpy as np
 if __name__ == '__main__':
 
     # LOAD data
-    infile = 'data_for_demo/mauna.txt'	# Note: Samples with value -99.99 were dropped.
+    infile = 'mauna.txt'	# Note: Samples with value -99.99 were dropped.
     f      = open(infile,'r')
     year   = []
     co2    = []

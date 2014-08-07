@@ -18,7 +18,7 @@ def save_data_regresssion():
     # test points evenly distributed in the interval [-2, 2.5]
     xstar = np.array(range(-200,250,4), dtype=np.float64, ndmin=2).T
     xstar /= 100
-    np.savez('regression_data', x=x, y=y, xstar=xstar) 
+    np.savez('Regression/regression_data', x=x, y=y, xstar=xstar) 
 
 def save_data_classification():
     # Synthetic data for binary classification: two partially overlapping 
@@ -168,7 +168,7 @@ def save_data_classification():
     S2i =  np.linalg.inv(S2)
     p2 = n2*np.exp( (-np.dot(tmm,S2i)*tmm/2).sum(axis=1) ) / np.sqrt(0.0975)
 
-    np.savez('classification_data', x=x, y=y, xstar=t, x1=x1,x2=x2,t1=t1,t2=t2,p1=p1,p2=p2) 
+    np.savez('Classification/classification_data', x=x, y=y, xstar=t, x1=x1,x2=x2,t1=t1,t2=t2,p1=p1,p2=p2) 
 
 
 if __name__=='__main__':

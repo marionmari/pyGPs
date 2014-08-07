@@ -26,7 +26,7 @@ print '---------------Cross-Validation DEMO------------------'
 #----------------------------------------------------------------------
 # Load raw data (ionosphere dataset from UCI)
 #----------------------------------------------------------------------
-data_source = "data_for_demo/ionosphere.data.txt"
+data_source = "ionosphere.data.txt"
 x = []
 y = []
 with open(data_source) as f:

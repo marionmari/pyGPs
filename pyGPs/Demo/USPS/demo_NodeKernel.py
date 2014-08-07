@@ -20,7 +20,7 @@ from pyGPs.Validation import valid
 
 
 def load_binary(D1,D2,reduce=False):
-    data = loadmat('data_for_demo/usps_resampled.mat')
+    data = loadmat('usps_resampled.mat')
     x = data['train_patterns'].T   # train patterns
     y = data['train_labels'].T     # train_labels
     xx = data['test_patterns'].T   # test patterns
