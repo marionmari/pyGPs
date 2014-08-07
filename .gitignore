@@ -1,0 +1,8 @@
+/.DS_Store
+.DS_Store
+.sass-cache/
+phantomjsdriver.log
+*.dat
+node_modules
+app/assets/compiled/stylesheets/sass/
+*.pyc

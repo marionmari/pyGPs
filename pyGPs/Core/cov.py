@@ -15,6 +15,8 @@
 #
 # simple cov functions:
 #
+# Gabor         - Gabor covariance function
+# SM            - Spectral Mixture covariance function
 # Poly          - Polynomial covariance function
 # PiecePoly     - Piecewise polynomial kernel with compact support.
 # RBF           - Squared Exponential kernel.
