@@ -1013,7 +1013,7 @@ class Matern(Kernel):
         elif d == 3:
             return t
         elif d == 5:
-            return t*(1+t/3.)
+            return t*(1+t)/3.
         else:
             raise Exception("Wrong value for d in Matern")
 
