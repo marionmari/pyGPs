@@ -62,3 +62,13 @@ structural updates:
 
 - made private for methods that users don't need to call
 
+
+August 9th 2014
+----------------
+
+
+structural updates:
+
+- added SM covariance and Gabor covariance
+- bug fixed in dfunc() in Matern covariance
+
