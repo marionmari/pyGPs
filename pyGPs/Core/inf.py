@@ -17,7 +17,7 @@
 #   infExact         Exact inference (only possible with Gaussian likelihood)
 #   infLaplace       Laplace's Approximation
 #   infEP            Expectation Propagation
-#   infVB            [NOT IMPLEMENTED!] Variational Bayes Approximation 
+#   infVB            [NOT IMPLEMENTED!] Variational Bayes Approximation
 #
 #   infFITC          Large scale regression with approximate covariance matrix
 #   infFITC_Laplace  Large scale inference  with approximate covariance matrix
@@ -34,11 +34,11 @@
 #               Leave-One-Out predictive probability and Least-Squares Approxim.
 #
 #
-# This is a object-oriented python implementation of gpml functionality 
+# This is a object-oriented python implementation of gpml functionality
 # (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
 # based on the functional-version of python implementation
 # (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)
-# 
+#
 # Copyright (c) by Marion Neumann and Shan Huang, 30/09/2013
 
 
@@ -53,7 +53,7 @@ class postStruct(object):
     '''
     Data structure for posterior
 
-    | post.alpha: 1d array containing inv(K)*m, 
+    | post.alpha: 1d array containing inv(K)*m,
     | where K is the prior covariance matrix and m the approx posterior mean
     | post.sW: 1d array containing diagonal of sqrt(W)
     | the approximate posterior covariance matrix is inv(inv(K)+W)
@@ -81,33 +81,33 @@ class dnlZStruct(object):
         if c.hyp:
             self.cov  = [0 for i in xrange(len(c.hyp))]
         if l.hyp:
-            self.lik  = [0 for i in xrange(len(l.hyp))]        
+            self.lik  = [0 for i in xrange(len(l.hyp))]
 
 class Inference(object):
     '''
-    Base class for inference. Defined several tool methods in it. 
+    Base class for inference. Defined several tool methods in it.
     '''
     def __init__(self):
         pass
 
-    def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
+    def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
         '''
         Inference computation based on inputs.
-        post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)
+        post, nlZ, dnlZ = inf.evaluate(mean, cov, lik, x, y)
 
             | INPUT:
             | cov: name of the covariance function (see covFunctions.m)
             | lik: name of the likelihood function (see likFunctions.m)
-            | x: n by D matrix of training inputs 
+            | x: n by D matrix of training inputs
             | y: 1d array (of size n) of targets
 
             | OUTPUT:
-            | post(postStruct): struct representation of the (approximate) posterior containing: 
+            | post(postStruct): struct representation of the (approximate) posterior containing:
             | nlZ: returned value of the negative log marginal likelihood
             | dnlZ(dnlZStruct): struct representation for derivatives of the negative log marginal likelihood
             | w.r.t. each hyperparameter.
 
-        Usually, the approximate posterior to be returned admits the form: 
+        Usually, the approximate posterior to be returned admits the form:
         N(m=K*alpha, V=inv(inv(K)+W)), where alpha is a vector and W is diagonal;
         if not, then L contains instead -inv(K+inv(W)), and sW is unused.
 
@@ -131,67 +131,70 @@ class Inference(object):
         V     = np.linalg.solve(L.T,np.tile(ssi,(1,n))*K)
         Sigma = K - np.dot(V.T,V)
         mu    = np.dot(Sigma,tnu)
-        Dsigma = np.reshape(np.diag(Sigma),(np.diag(Sigma).shape[0],1)) 
+        Dsigma = np.reshape(np.diag(Sigma),(np.diag(Sigma).shape[0],1))
         tau_n = 1/Dsigma - ttau               # compute the log marginal likelihood
         nu_n  = mu/Dsigma-tnu + m*tau_n       # vectors of cavity parameters
-        lZ    = likfunc.proceed(y, nu_n/tau_n, 1/tau_n, inffunc)
+        lZ    = likfunc.evaluate(y, nu_n/tau_n, 1/tau_n, inffunc)
         nlZ   = np.log(np.diag(L)).sum() - lZ.sum() - np.dot(tnu.T,np.dot(Sigma,tnu))/2  \
                 - np.dot((nu_n-m*tau_n).T,((ttau/tau_n*(nu_n-m*tau_n)-2*tnu) / (ttau+tau_n)))/2 \
                 + (tnu**2/(tau_n+ttau)).sum()/2.- np.log(1.+ttau/tau_n).sum()/2.
         return Sigma, mu, nlZ[0], L
-    
+
     def _logdetA(self,K,w,nargout):
         '''
         Compute the log determinant ldA and the inverse iA of a square nxn matrix
-        A = eye(n) + K*diag(w) from its LU decomposition; for negative definite A, we 
+        A = eye(n) + K*diag(w) from its LU decomposition; for negative definite A, we
         return ldA = Inf. We also return mwiA = -diag(w)*inv(A).
         [ldA,iA,mwiA] = _logdetA(K,w)'''
         n = K.shape[0]
         assert(K.shape[0] == K.shape[1])
         A = np.eye(n) + K*np.tile(w.T,(n,1))
         [L,U,P] = np.linalg.lu(A)    # compute LU decomposition, A = P'*L*U
-        u = np.diag(U)           
+        u = np.diag(U)
         signU = np.prod(np.sign(u))  # sign of U
         detP = 1                     # compute sign (and det) of the permutation matrix P
         p = np.dot(P,np.array(range(n)).T)
         for ii in range(n):
-            if ii != p[ii]: 
+            if ii != p[ii]:
                 detP = -detP
                 j= [jj for jj,val in enumerate(p) if val == ii]
-                p[ii,j[0]] = p[j[0],ii] 
+                p[ii,j[0]] = p[j[0],ii]
         if signU != detP:            # log becomes complex for negative values, encoded by infinity
             ldA = np.inf
         else:                        # det(L) = 1 and U triangular => det(A) = det(P)*prod(diag(U))
             ldA = np.log(np.abs(u)).sum()
         if nargout>1:
-            iA = inv(U)*inv(L)*P; 
-            if nargout>2: 
+            iA = inv(U)*inv(L)*P;
+            if nargout>2:
                 mwiA = -np.tile(w,(1,n))*iA
                 return ldA,iA,mwiA
             else:
                 return ldA,iA
         else:
-            return ldA  
-    
+            return ldA
+
     def _Psi_line(self,s,dalpha,alpha,K,m,likfunc,y,inffunc):
         '''Criterion Psi at alpha + s*dalpha for line search
-        [Psi,alpha,f,dlp,W] = _Psi_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)'''
+        [Psi,alpha,f,dlp,W] = _Psi_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)
+        '''
         alpha = alpha + s*dalpha
         f = np.dot(K,alpha) + m
-        [lp,dlp,d2lp] = likfunc.proceed(y,f,None,inffunc,None,3) 
+        [lp,dlp,d2lp] = likfunc.evaluate(y,f,None,inffunc,None,3)
         W = -d2lp
         Psi = np.dot(alpha.T,(f-m))/2. - lp.sum()
-        return Psi[0],alpha,f,dlp,W  
-    
+        return Psi[0],alpha,f,dlp,W
+
     def _epfitcZ(self,d,P,R,nn,gg,ttau,tnu,d0,R0,P0,y,likfunc,m,inffunc):
-        '''Compute the marginal likelihood approximation
-        effort is O(n*nu^2) provided that nu<n'''
+        '''
+        Compute the marginal likelihood approximation
+        effort is O(n*nu^2) provided that nu<n
+        '''
         T = np.dot(np.dot(R,R0),P)              # temporary variable
-        diag_sigma = d + np.array([(T*T).sum(axis=0)]).T 
+        diag_sigma = d + np.array([(T*T).sum(axis=0)]).T
         mu = nn + np.dot(P.T,gg)                # post moments O(n*nu^2)
         tau_n = 1./diag_sigma-ttau              # compute the log marginal likelihood
         nu_n  = mu/diag_sigma - tnu + m*tau_n   # vectors of cavity parameters
-        lZ = likfunc.proceed(y, nu_n/tau_n, 1/tau_n, inffunc, None, 1)
+        lZ = likfunc.evaluate(y, nu_n/tau_n, 1/tau_n, inffunc, None, 1)
         nu = gg.shape[0]
         U = np.dot(R0,P0).T*np.tile(1/np.sqrt(d0+1/ttau),(1,nu))
         L = np.linalg.cholesky(np.eye(nu)+np.dot(U.T,U)).T
@@ -201,12 +204,14 @@ class Inference(object):
             -np.dot((nu_n-m*tau_n).T,((ttau/tau_n*(nu_n-m*tau_n)-2.*tnu)/(ttau+tau_n)))/2. \
             + (tnu**2/(tau_n+ttau)).sum()/2. - (np.log(1+ttau/tau_n)).sum()/2.
         return nlZ,nu_n,tau_n
-    
+
     def _epfitcRefresh(self,d0,P0,R0,R0P0,w,b):
-        '''Refresh the representation of the posterior from initial and site parameters
+        '''
+        Refresh the representation of the posterior from initial and site parameters
         to prevent possible loss of numerical precision after many epfitcUpdates
         effort is O(n*nu^2) provided that nu<n
-        Sigma = inv(inv(K)+diag(W)) = diag(d) + P'*R0'*R'*R*R0*P.'''
+        Sigma = inv(inv(K)+diag(W)) = diag(d) + P'*R0'*R'*R*R0*P.
+        '''
         nu = R0.shape[0]                                 # number of inducing points
         rot180   = lambda A: np.rot90(np.rot90(A))       # little helper functions
         chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
@@ -218,7 +223,7 @@ class Inference(object):
         nn = d*b                                                  # O(n)
         gg = np.dot(R0.T,np.dot(R.T,np.dot(R,np.dot(R0P0,t*b))))  # O(n*nu)
         return d,P,R,nn,gg
-    
+
     def _epfitcUpdate(self,d,P_i,R,nn,gg,w,b,ii,w_i,b_i,m,d0,P0,R0):
         dwi = w_i-w[ii]
         dbi = b_i-b[ii]
@@ -240,32 +245,40 @@ class Inference(object):
         w[ii] = w_i; b[ii] = b_i;                          # update site parameters O(1)
         P_i = P_i/t                                        # O(nu)
         return d,P_i,R,nn,gg,w,b
-    
+
     def _mvmZ(self,x,RVdd,t):
-        '''Matrix vector multiplication with Z=inv(K+inv(W))'''
+        '''
+        Matrix vector multiplication with Z=inv(K+inv(W))
+        '''
         Zx = t*x - np.dot(RVdd.T,np.dot(RVdd,x))
         return Zx
 
     def _mvmK(self,al,V,d0):
-        '''Matrix vector multiplication with approximate covariance matrix'''
+        '''
+        Matrix vector multiplication with approximate covariance matrix
+        '''
         Kal = np.dot(V.T,np.dot(V,al)) + d0*al
         return Kal
 
     def _Psi_lineFITC(self,s,dalpha,alpha,V,d0,m,likfunc,y,inffunc):
-        '''Criterion Psi at alpha + s*dalpha for line search'''
+        '''
+        Criterion Psi at alpha + s*dalpha for line search
+        '''
         alpha = alpha + s*dalpha
         f = self._mvmK(alpha,V,d0) + m
-        vargout = likfunc.proceed(y,f,None,inffunc,None,3) 
-        lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2] 
+        vargout = likfunc.evaluate(y,f,None,inffunc,None,3)
+        lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]
         W = -d2lp
         Psi = np.dot(alpha.T,(f-m))/2. - lp.sum()
         return Psi[0],alpha,f,dlp,W
 
     def _fitcRefresh(self,d0,P0,R0,R0P0, w):
-        '''Refresh the representation of the posterior from initial and site parameters
+        '''
+        Refresh the representation of the posterior from initial and site parameters
         to prevent possible loss of numerical precision after many epfitcUpdates
         effort is O(n*nu^2) provided that nu<n
-        Sigma = inv(inv(K)+diag(W)) = diag(d) + P'*R0'*R'*R*R0*P.'''
+        Sigma = inv(inv(K)+diag(W)) = diag(d) + P'*R0'*R'*R*R0*P.
+        '''
         nu = R0.shape[0]                                  # number of inducing points
         rot180   = lambda A: np.rot90(np.rot90(A))        # little helper functions
         chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
@@ -285,13 +298,13 @@ class Exact(Inference):
     '''
     def __init__(self):
         self.name = "Exact inference"
-    def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
+    def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
         if not isinstance(likfunc, lik.Gauss):
             raise Exception ('Exact inference only possible with Gaussian likelihood')
         n, D = x.shape
         K = covfunc.getCovMatrix(x=x, mode='train')            # evaluate covariance matrix
         m = meanfunc.getMean(x)                                # evaluate mean vector
-        
+
         sn2   = np.exp(2*likfunc.hyp[0])                       # noise variance of likGauss
         L     = np.linalg.cholesky(K/sn2+np.eye(n)).T          # Cholesky factor of covariance with noise
         alpha = solve_chol(L,y-m)/sn2
@@ -310,7 +323,7 @@ class Exact(Inference):
                     for ii in range(len(covfunc.hyp)):
                         dnlZ.cov[ii] = (Q*covfunc.getDerMatrix(x=x, mode='train', der=ii)).sum()/2.
                 if meanfunc.hyp:
-                    for ii in range(len(meanfunc.hyp)): 
+                    for ii in range(len(meanfunc.hyp)):
                         dnlZ.mean[ii] = np.dot(-meanfunc.getDerMatrix(x, ii).T,alpha)
                         dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
                 return post, nlZ[0,0], dnlZ
@@ -322,14 +335,14 @@ class FITC_Exact(Inference):
     '''
     FITC approximation to the posterior Gaussian process. The function is
     equivalent to infExact with the covariance function:
-    Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Quu) * Ku; 
+    Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Quu) * Ku;
     where Ku and Kuu are covariances w.r.t. to inducing inputs xu, snu2 = sn2/1e6
     is the noise of the inducing inputs and Quu = Kuu + snu2*eye(nu).
     '''
     def __init__(self):
         self.name = 'FICT exact inference'
 
-    def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
+    def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
         if not isinstance(likfunc, lik.Gauss):                  # NOTE: no explicit call to likGauss
             raise Exception ('Exact inference only possible with Gaussian likelihood')
         if not isinstance(covfunc, cov.FITCOfKernel):
@@ -340,25 +353,25 @@ class FITC_Exact(Inference):
         n, D = x.shape
         nu = Kuu.shape[0]
 
-        sn2   = np.exp(2*likfunc.hyp[0])                        # noise variance of likGauss
-        snu2  = 1.e-6*sn2                                       # hard coded inducing inputs noise
-        Luu   = np.linalg.cholesky(Kuu+snu2*np.eye(nu)).T       # Kuu + snu2*I = Luu'*Luu
-        V     = np.linalg.solve(Luu.T,Ku)                       # V = inv(Luu')*Ku => V'*V = Q
-        g_sn2 = diagK + sn2 - np.array([(V*V).sum(axis=0)]).T   # g + sn2 = diag(K) + sn2 - diag(Q)
+        sn2   = np.exp(2*likfunc.hyp[0])                         # noise variance of likGauss
+        snu2  = 1.e-6*sn2                                        # hard coded inducing inputs noise
+        Luu   = np.linalg.cholesky(Kuu+snu2*np.eye(nu)).T        # Kuu + snu2*I = Luu'*Luu
+        V     = np.linalg.solve(Luu.T,Ku)                        # V = inv(Luu')*Ku => V'*V = Q
+        g_sn2 = diagK + sn2 - np.array([(V*V).sum(axis=0)]).T    # g + sn2 = diag(K) + sn2 - diag(Q)
         Lu    = np.linalg.cholesky(np.eye(nu) + np.dot(V/np.tile(g_sn2.T,(nu,1)),V.T)).T  # Lu'*Lu=I+V*diag(1/g_sn2)*V'
         r     = (y-m)/np.sqrt(g_sn2)
         be    = np.linalg.solve(Lu.T,np.dot(V,r/np.sqrt(g_sn2)))
-        iKuu  = solve_chol(Luu,np.eye(nu))                      # inv(Kuu + snu2*I) = iKuu
-        
-        post = postStruct()
-        post.alpha = np.linalg.solve(Luu,np.linalg.solve(Lu,be))# return the posterior parameters
-        post.L  = solve_chol(np.dot(Lu,Luu),np.eye(nu)) - iKuu  # Sigma-inv(Kuu)
-        post.sW = np.ones((n,1))/np.sqrt(sn2)                   # unused for FITC prediction  with gp.m
+        iKuu  = solve_chol(Luu,np.eye(nu))                       # inv(Kuu + snu2*I) = iKuu
 
-        if nargout>1:                                           # do we want the marginal likelihood
-            nlZ = np.log(np.diag(Lu)).sum() + (np.log(g_sn2).sum() + n*np.log(2*np.pi) + np.dot(r.T,r) - np.dot(be.T,be))/2. 
-            if nargout>2:                                       # do we want derivatives?
-                dnlZ = dnlZStruct(meanfunc, covfunc, likfunc)   # allocate space for derivatives
+        post = postStruct()
+        post.alpha = np.linalg.solve(Luu,np.linalg.solve(Lu,be)) # return the posterior parameters
+        post.L  = solve_chol(np.dot(Lu,Luu),np.eye(nu)) - iKuu   # Sigma-inv(Kuu)
+        post.sW = np.ones((n,1))/np.sqrt(sn2)                    # unused for FITC prediction  with gp.m
+
+        if nargout>1:                                            # do we want the marginal likelihood
+            nlZ = np.log(np.diag(Lu)).sum() + (np.log(g_sn2).sum() + n*np.log(2*np.pi) + np.dot(r.T,r) - np.dot(be.T,be))/2.
+            if nargout>2:                                        # do we want derivatives?
+                dnlZ = dnlZStruct(meanfunc, covfunc, likfunc)    # allocate space for derivatives
                 al = r/np.sqrt(g_sn2) - np.dot(V.T,np.linalg.solve(Lu,be))/g_sn2 # al = (Kt+sn2*eye(n))\y
                 B = np.dot(iKuu,Ku)
                 w = np.dot(B,al)
@@ -375,10 +388,10 @@ class FITC_Exact(Inference):
                 R = -dKuui*B
                 v = -np.array([(R*B).sum(axis=0)]).T     # diag part of cov deriv
                 dnlZ.lik += (np.dot(w.T,np.dot(dKuui,w)) -np.dot(al.T,(v*al)) \
-                                 - np.dot(np.array([(W*W).sum(axis=0)]),v) - (np.dot(R,W.T)*np.dot(B,W.T)).sum() )/2. 
+                                 - np.dot(np.array([(W*W).sum(axis=0)]),v) - (np.dot(R,W.T)*np.dot(B,W.T)).sum() )/2.
                 dnlZ.lik = list(dnlZ.lik[0])
                 for ii in range(len(meanfunc.hyp)):
-                    dnlZ.mean[ii] = np.dot(-meanfunc.getDerMatrix(x, ii).T, al) 
+                    dnlZ.mean[ii] = np.dot(-meanfunc.getDerMatrix(x, ii).T, al)
                     dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
 
                 return post, nlZ[0,0], dnlZ
@@ -387,14 +400,14 @@ class FITC_Exact(Inference):
 
 
 
-class Laplace(Inference): 
+class Laplace(Inference):
     '''
     Laplace's Approximation to the posterior Gaussian process.
     '''
     def __init__(self):
         self.last_alpha = None
 
-    def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
+    def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
         tol = 1e-6                           # tolerance for when to stop the Newton iterations
         smax = 2; Nline = 20; thr = 1e-4     # line search parameters
         maxit = 20                           # max number of Newton steps in f
@@ -405,24 +418,24 @@ class Laplace(Inference):
         Psi_old = np.inf                     # make sure while loop starts by the largest old objective val
         if self.last_alpha == None:          # find a good starting point for alpha and f
             alpha = np.zeros((n,1))
-            f = np.dot(K,alpha) + m          # start at mean if sizes not match 
-            vargout = likfunc.proceed(y, f, None, inffunc, None, 3)
+            f = np.dot(K,alpha) + m          # start at mean if sizes not match
+            vargout = likfunc.evaluate(y, f, None, inffunc, None, 3)
             lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]
             W= -d2lp
             Psi_new = -lp.sum()
         else:
             alpha = self.last_alpha
             f = np.dot(K,alpha) + m                       # try last one
-            vargout = likfunc.proceed(y, f, None, inffunc, None, 3)
+            vargout = likfunc.evaluate(y, f, None, inffunc, None, 3)
             lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]
             W= -d2lp
             Psi_new = np.dot(alpha.T,(f-m))/2. - lp.sum() # objective for last alpha
-            vargout = - likfunc.proceed(y, m, None, inffunc, None, 1)
+            vargout = - likfunc.evaluate(y, m, None, inffunc, None, 1)
             Psi_def =  vargout[0]                         # objective for default init f==m
             if Psi_def < Psi_new:                         # if default is better, we use it
                 alpha = np.zeros((n,1))
-                f = np.dot(K,alpha) + m 
-                vargout = likfunc.proceed(y, f, None, inffunc, None, 3)
+                f = np.dot(K,alpha) + m
+                vargout = likfunc.evaluate(y, f, None, inffunc, None, 3)
                 lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]
                 W=-d2lp; Psi_new = -lp.sum()
         isWneg = np.any(W<0)       # flag indicating whether we found negative values of W
@@ -434,7 +447,7 @@ class Laplace(Inference):
                 W = np.maximum(W,0)      # stabilise the Hessian to guarantee postive definiteness
                 tol = 1e-10              # increase accuracy to also get the derivatives right
             sW = np.sqrt(W); L = np.linalg.cholesky(np.eye(n) + np.dot(sW,sW.T)*K).T
-            b = W*(f-m) + dlp; 
+            b = W*(f-m) + dlp;
             dalpha = b - sW*solve_chol(L,sW*np.dot(K,b)) - alpha
             vargout = brentmin(0,smax,Nline,thr,self._Psi_line,4,dalpha,alpha,K,m,likfunc,y,inffunc)
             s = vargout[0]
@@ -446,8 +459,8 @@ class Laplace(Inference):
             W = vargout[6]
             isWneg = np.any(W<0)
         self.last_alpha = alpha                 # remember for next call
-        vargout = likfunc.proceed(y,f,None,inffunc,None,4) 
-        lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]; d3lp = vargout[3] 
+        vargout = likfunc.evaluate(y,f,None,inffunc,None,4)
+        lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]; d3lp = vargout[3]
         W = -d2lp; isWneg = np.any(W<0)
         post = postStruct()
         post.alpha = alpha                      # return the posterior parameters
@@ -455,10 +468,10 @@ class Laplace(Inference):
         if isWneg:
             [ldA,iA,post.L] = self._logdetA(K,W,3)
             nlZ = np.dot(alpha.T,(f-m))/2. - lp.sum() + ldA/2.
-            nlZ = nlZ[0] 
+            nlZ = nlZ[0]
         else:
             sW = post.sW
-            post.L = np.linalg.cholesky(np.eye(n)+np.dot(sW,sW.T)*K).T 
+            post.L = np.linalg.cholesky(np.eye(n)+np.dot(sW,sW.T)*K).T
             nlZ = np.dot(alpha.T,(f-m))/2. + (np.log(np.diag(post.L))-np.reshape(lp,(lp.shape[0],))).sum()
             nlZ = nlZ[0]
         if nargout>2:                                           # do we want derivatives?
@@ -478,7 +491,7 @@ class Laplace(Inference):
                 dnlZ.cov[ii] -= np.dot(dfhat.T,b-np.dot(K,np.dot(Z,b)))      # implicit part
                 dnlZ.cov[ii] = dnlZ.cov[ii][0,0]
             for ii in range(len(likfunc.hyp)):                               # likelihood hypers
-                [lp_dhyp,dlp_dhyp,d2lp_dhyp] = likfunc.proceed(y,f,None,inffunc,ii,3)
+                [lp_dhyp,dlp_dhyp,d2lp_dhyp] = likfunc.evaluate(y,f,None,inffunc,ii,3)
                 dnlZ.lik[ii] = -np.dot(g.T,d2lp_dhyp) - lp_dhyp.sum()        # explicit part
                 b = np.dot(K,dlp_dhyp)                                       # b-K*(Z*b) = inv(eye(n)+K*diag(W))*b
                 dnlZ.lik[ii] -= np.dot(dfhat.T,b-np.dot(K,np.dot(Z,b)))      # implicit part
@@ -501,16 +514,16 @@ class FITC_Laplace(Inference):
     Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Kuu + snu2 * eye(nu)) * Ku;
     where Ku and Kuu are covariances w.r.t. to inducing inputs xu and
     snu2 = sn2/1e6 is the noise of the inducing inputs. We fixed the standard
-    deviation of the inducing inputs snu to be a one per mil of the measurement 
+    deviation of the inducing inputs snu to be a one per mil of the measurement
     noise's standard deviation sn. In case of a likelihood without noise
     parameter sn2, we simply use snu2 = 1e-6.
     '''
     def __init__(self):
         self.last_alpha = None
 
-    def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
+    def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
         if not isinstance(covfunc, cov.FITCOfKernel):
-            raise Exception('Only covFITC supported.')            
+            raise Exception('Only covFITC supported.')
         tol = 1e-6                             # tolerance for when to stop the Newton iterations
         smax = 2; Nline = 100; thr = 1e-4      # line search parameters
         maxit = 20                             # max number of Newton steps in f
@@ -518,38 +531,38 @@ class FITC_Laplace(Inference):
         diagK,Kuu,Ku = covfunc.getCovMatrix(x=x, mode='train')      # evaluate the covariance matrix
         m = meanfunc.getMean(x)                # evaluate the mean vector
         if likfunc.hyp:                        # hard coded inducing inputs noise
-            sn2  = np.exp(2.*likfunc.hyp[-1]) 
+            sn2  = np.exp(2.*likfunc.hyp[-1])
             snu2 = 1.e-6*sn2                   # similar to infFITC
         else:
-            snu2 = 1.e-6        
-        
+            snu2 = 1.e-6
+
         n, D = x.shape
         nu = Kuu.shape[0]
         rot180   = lambda A: np.rot90(np.rot90(A))      # little helper functions
         chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
         R0 = chol_inv(Kuu+snu2*np.eye(nu))              # initial R, used for refresh O(nu^3)
         V  = np.dot(R0,Ku); d0 = diagK - np.array([(V*V).sum(axis=0)]).T     # initial d, needed
-    
+
         Psi_old = np.inf                    # make sure while loop starts by the largest old objective val
         if self.last_alpha == None:         # find a good starting point for alpha and f
             alpha = np.zeros((n,1))
-            f = self._mvmK(alpha,V,d0) + m   # start at mean if sizes not match 
-            vargout = likfunc.proceed(y, f, None, inffunc, None, 3)
+            f = self._mvmK(alpha,V,d0) + m   # start at mean if sizes not match
+            vargout = likfunc.evaluate(y, f, None, inffunc, None, 3)
             lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]
             W=-d2lp; Psi_new = -lp.sum()
         else:
             alpha = self.last_alpha
             f = self._mvmK(alpha,V,d0) + m                           # try last one
-            vargout = likfunc.proceed(y, f, None, inffunc, None, 3)
+            vargout = likfunc.evaluate(y, f, None, inffunc, None, 3)
             lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]
             W=-d2lp
             Psi_new = np.dot(alpha.T,(f-m))/2. - lp.sum()           # objective for last alpha
-            vargout = - likfunc.proceed(y, m, None, inffunc, None, 1)
+            vargout = - likfunc.evaluate(y, m, None, inffunc, None, 1)
             Psi_def =  vargout[0]                                   # objective for default init f==m
             if Psi_def < Psi_new:                                   # if default is better, we use it
                 alpha = np.zeros((n,1))
                 f = self._mvmK(alpha,V,d0) + m
-                vargout = likfunc.proceed(y, f, None, inffunc, None, 3)
+                vargout = likfunc.evaluate(y, f, None, inffunc, None, 3)
                 lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]
                 W=-d2lp; Psi_new = -lp.sum()
 
@@ -563,7 +576,7 @@ class FITC_Laplace(Inference):
                 W = np.maximum(W,0)         # stabilise the Hessian to guarantee postive definiteness
                 tol = 1e-8                  # increase accuracy to also get the derivatives right
             b = W*(f-m) + dlp; dd = 1/(1+W*d0)
-            RV = np.dot( chol_inv( np.eye(nu) + np.dot(V*np.tile((W*dd).T,(nu,1)),V.T)),V ) 
+            RV = np.dot( chol_inv( np.eye(nu) + np.dot(V*np.tile((W*dd).T,(nu,1)),V.T)),V )
             dalpha = dd*b - (W*dd)*np.dot(RV.T,np.dot(RV,(dd*b))) - alpha # Newt dir + line search
             vargout = brentmin(0,smax,Nline,thr,self._Psi_lineFITC,4,dalpha,alpha,V,d0,m,likfunc,y,inffunc)
             s = vargout[0]; Psi_new = vargout[1]; Nfun = vargout[2]; alpha = vargout[3]
@@ -571,8 +584,8 @@ class FITC_Laplace(Inference):
             isWneg = np.any(W<0)
 
         self.last_alpha = alpha                                     # remember for next call
-        vargout = likfunc.proceed(y,f,None,inffunc,None,4) 
-        lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]; d3lp = vargout[3]  
+        vargout = likfunc.evaluate(y,f,None,inffunc,None,4)
+        lp = vargout[0]; dlp = vargout[1]; d2lp = vargout[2]; d3lp = vargout[3]
 
         W=-d2lp; isWneg = np.any(W<0)
         post = postStruct()
@@ -596,7 +609,7 @@ class FITC_Laplace(Inference):
             [d,P,R] = self._fitcRefresh(d0,Ku,R0,V,W)                # g = diag(inv(inv(K)+W))/2
             g = d/2 + 0.5*np.atleast_2d((np.dot(np.dot(R,R0),P)**2).sum(axis=0)).T
             t = W/(1+W*d0)
-            
+
             dfhat = g*d3lp  # deriv. of nlZ wrt. fhat: dfhat=diag(inv(inv(K)+W)).*d3lp/2
             for ii in range(len(covfunc.hyp)):                      # covariance hypers
                 ddiagK,dKuu,dKu = covfunc.getDerMatrix(x=x, mode='train', der=ii)      # eval cov derivatives
@@ -610,10 +623,10 @@ class FITC_Laplace(Inference):
                 KZb = self._mvmK(self._mvmZ(b,RVdd,t),V,d0)
                 dnlZ.cov[ii] -= np.dot(dfhat.T,(b-KZb))             # implicit part
                 dnlZ.cov[ii] = dnlZ.cov[ii][0,0]
-                
+
             for ii in range(len(likfunc.hyp)):                      # likelihood hypers
-                vargout = likfunc.proceed(y,f,None,inffunc,ii,3)
-                lp_dhyp = vargout[0]; dlp_dhyp = vargout[1]; d2lp_dhyp = vargout[2] 
+                vargout = likfunc.evaluate(y,f,None,inffunc,ii,3)
+                lp_dhyp = vargout[0]; dlp_dhyp = vargout[1]; d2lp_dhyp = vargout[2]
                 dnlZ.lik[ii] = -np.dot(g.T,d2lp_dhyp) - lp_dhyp.sum() # explicit part
                 b = self._mvmK(dlp_dhyp,V,d0)                          # implicit part
                 dnlZ.lik[ii] -= np.dot(dfhat.T,b-self._mvmK(self._mvmZ(b,RVdd,t),V,d0))
@@ -621,9 +634,9 @@ class FITC_Laplace(Inference):
                     # since snu2 is a fixed fraction of sn2, there is a covariance-like term
                     # in the derivative as well
                     snu = np.sqrt(snu2);
-                    T = chol_inv(Kuu + snu2*np.eye(nu)); 
-                    T = np.dot(T.T,np.dot(T,snu*Ku)); 
-                    t = np.array([(T*T).sum(axis=0)]).T 
+                    T = chol_inv(Kuu + snu2*np.eye(nu));
+                    T = np.dot(T.T,np.dot(T,snu*Ku));
+                    t = np.array([(T*T).sum(axis=0)]).T
                     z = np.dot(alpha.T,np.dot(T.T,np.dot(T,alpha))-t*alpha) - np.dot(np.array([(RVdd*RVdd).sum(axis=0)]),t)
                     z += (np.dot(RVdd,T.T)**2).sum()
                     b = (t*dlp-np.dot(T.T,np.dot(T,dlp)))/2.
@@ -653,13 +666,13 @@ class EP(Inference):
         self.name = 'Expectation Propagation'
         self.last_ttau = None
         self.last_tnu = None
-    def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
+    def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
         tol = 1e-4; max_sweep = 10; min_sweep = 2 # tolerance to stop EP iterations
         n = x.shape[0]
         inffunc = self
         K = covfunc.getCovMatrix(x=x, mode='train') # evaluate the covariance matrix
         m = meanfunc.getMean(x)                   # evaluate the mean vector
-        nlZ0 = -likfunc.proceed(y, m, np.reshape(np.diag(K),(np.diag(K).shape[0],1)), inffunc).sum()
+        nlZ0 = -likfunc.evaluate(y, m, np.reshape(np.diag(K),(np.diag(K).shape[0],1)), inffunc).sum()
         if self.last_ttau == None:                # find starting point for tilde parameters
             ttau  = np.zeros((n,1))               # initialize to zero if we have no better guess
             tnu   = np.zeros((n,1))
@@ -672,7 +685,7 @@ class EP(Inference):
             Sigma, mu, nlZ, L = self._epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
             if nlZ > nlZ0:                        # if zero is better ..
                 ttau = np.zeros((n,1))            # .. then initialize with zero instead
-                tnu  = np.zeros((n,1)) 
+                tnu  = np.zeros((n,1))
                 Sigma = K                         # initialize Sigma and mu, the parameters of ..
                 mu = np.zeros((n,1))              # .. the Gaussian posterior approximation
                 nlZ = nlZ0
@@ -684,7 +697,7 @@ class EP(Inference):
                 tau_ni = 1/Sigma[ii,ii] - ttau[ii]#  first find the cavity distribution ..
                 nu_ni  = mu[ii]/Sigma[ii,ii] + m[ii]*tau_ni - tnu[ii]    # .. params tau_ni and nu_ni
                 # compute the desired derivatives of the indivdual log partition function
-                lZ,dlZ,d2lZ = likfunc.proceed(y[ii], nu_ni/tau_ni, 1/tau_ni, inffunc, None, 3)
+                lZ,dlZ,d2lZ = likfunc.evaluate(y[ii], nu_ni/tau_ni, 1/tau_ni, inffunc, None, 3)
                 ttau_old = copy(ttau[ii])         # then find the new tilde parameters, keep copy of old
                 ttau[ii] = -d2lZ  /(1.+d2lZ/tau_ni)
                 ttau[ii] = max(ttau[ii],0)        # enforce positivity i.e. lower bound ttau by zero
@@ -719,9 +732,9 @@ class EP(Inference):
                 dK = covfunc.getDerMatrix(x=x, mode='train', der=jj)
                 dnlZ.cov[jj] = -(F*dK).sum()/2.
             for ii in range(len(likfunc.hyp)):
-                dlik = likfunc.proceed(y, nu_n/tau_n, 1/tau_n, inffunc, ii)
-                dnlZ.lik[ii] = -dlik.sum()    
-            junk,dlZ = likfunc.proceed(y, nu_n/tau_n, 1/tau_n, inffunc, None, 2) # mean hyps
+                dlik = likfunc.evaluate(y, nu_n/tau_n, 1/tau_n, inffunc, ii)
+                dnlZ.lik[ii] = -dlik.sum()
+            junk,dlZ = likfunc.evaluate(y, nu_n/tau_n, 1/tau_n, inffunc, None, 2) # mean hyps
             for ii in range(len(meanfunc.hyp)):
                 dm = meanfunc.getDerMatrix(x, ii)
                 dnlZ.mean[ii] = -np.dot(dlZ.T,dm)
@@ -739,7 +752,7 @@ class FITC_EP(Inference):
     Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Kuu + snu2 * eye(nu)) * Ku;
     where Ku and Kuu are covariances w.r.t. to inducing inputs xu and
     snu2 = sn2/1e6 is the noise of the inducing inputs. We fixed the standard
-    deviation of the inducing inputs snu to be a one per mil of the measurement 
+    deviation of the inducing inputs snu to be a one per mil of the measurement
     noise's standard deviation sn. In case of a likelihood without noise
     parameter sn2, we simply use snu2 = 1e-6.
     For details, see The Generalized FITC Approximation, Andrew Naish-Guzman and
@@ -750,7 +763,7 @@ class FITC_EP(Inference):
         self.last_ttau = None
         self.last_tnu = None
 
-    def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
+    def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
         if not isinstance(covfunc, cov.FITCOfKernel):
             raise Exception('Only covFITC supported.')  # check cov
         tol = 1e-4; max_sweep = 10; min_sweep = 2       # tolerance to stop EP iterations
@@ -760,11 +773,11 @@ class FITC_EP(Inference):
         m = meanfunc.getMean(x)                         # evaluate the mean vector
 
         if likfunc.hyp:                                 # hard coded inducing inputs noise
-            sn2  = np.exp(2.*likfunc.hyp[-1]) 
+            sn2  = np.exp(2.*likfunc.hyp[-1])
             snu2 = 1.e-6*sn2                            # similar to infFITC
         else:
             snu2 = 1.e-6
-    
+
         n, D = x.shape; nu = Kuu.shape[0]
         rot180   = lambda A: np.rot90(np.rot90(A))      # little helper functions
         chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
@@ -772,14 +785,14 @@ class FITC_EP(Inference):
         R0 = chol_inv(Kuu+snu2*np.eye(nu))              # initial R, used for refresh O(nu^3)
         V  = np.dot(R0,Ku); d0 = diagK - np.array([(V*V).sum(axis=0)]).T # initial d, needed for refresh O(n*nu^2)
 
-        # A note on naming: variables are given short but descriptive names in 
+        # A note on naming: variables are given short but descriptive names in
         # accordance with Rasmussen & Williams "GPs for Machine Learning" (2006): mu
         # and s2 are mean and variance, nu and tau are natural parameters. A leading t
         # means tilde, a subscript _ni means "not i" (for cavity parameters), or _n
         # for a vector of cavity parameters.
 
         # marginal likelihood for ttau = tnu = zeros(n,1); equals n*log(2) for likCum*
-        nlZ0 = -1.* likfunc.proceed(y, m, np.reshape(diagK,(diagK.shape[0],1)), inffunc).sum()
+        nlZ0 = -1.* likfunc.evaluate(y, m, np.reshape(diagK,(diagK.shape[0],1)), inffunc).sum()
         if self.last_ttau == None:                      # find starting point for tilde parameters
             ttau  = np.zeros((n,1))                     # initialize to zero if we have no better guess
             tnu   = np.zeros((n,1))
@@ -804,24 +817,24 @@ class FITC_EP(Inference):
             for ii in rperm:                            # iterate EP updates (in random order) over examples
                 p_i = np.reshape(P[:,ii],(P.shape[0],1))
                 t = np.dot(R,np.dot(R0,p_i))            # temporary variables
-                sigma_i = d[ii] + np.dot(t.T,t); mu_i = nn[ii] + np.dot(p_i.T,gg) # post moments O(nu^2)    
+                sigma_i = d[ii] + np.dot(t.T,t); mu_i = nn[ii] + np.dot(p_i.T,gg) # post moments O(nu^2)
                 tau_ni = 1/sigma_i - ttau[ii]                   #  first find the cavity distribution ..
                 nu_ni  = mu_i/sigma_i + m[ii]*tau_ni - tnu[ii]  # .. params tau_ni and nu_ni
                 # compute the desired derivatives of the indivdual log partition function
-                vargout = likfunc.proceed(y[ii], nu_ni/tau_ni, 1/tau_ni, inffunc, None, 3)
+                vargout = likfunc.evaluate(y[ii], nu_ni/tau_ni, 1/tau_ni, inffunc, None, 3)
                 lZ = vargout[0]; dlZ = vargout[1]; d2lZ = vargout[2]
                 ttau_i = -d2lZ  /(1.+d2lZ/tau_ni)
                 ttau_i = max(ttau_i,0)                  # enforce positivity i.e. lower bound ttau by zero
                 tnu_i  = ( dlZ + (m[ii]-nu_ni/tau_ni)*d2lZ )/(1.+d2lZ/tau_ni)
                 [d,P[:,ii],R,nn,gg,ttau,tnu] = self._epfitcUpdate(d,P[:,ii],R,nn,gg,ttau,tnu,ii,ttau_i,tnu_i,m,d0,Ku,R0)# update representation
-      
+
             # recompute since repeated rank-one updates can destroy numerical precision
             [d,P,R,nn,gg] = self._epfitcRefresh(d0,Ku,R0,V,ttau,tnu)
             [nlZ,nu_n,tau_n] = self._epfitcZ(d,P,R,nn,gg,ttau,tnu,d0,R0,Ku,y,likfunc,m,inffunc)
         if sweep == max_sweep:
             pass
             # print '[warning] maximum number of sweeps reached in function infEP'
-        
+
         self.last_ttau = ttau
         self.last_tnu = tnu       # remember for next call
         post = postStruct()
@@ -848,8 +861,8 @@ class FITC_EP(Inference):
                 dnlZ.cov[ii] = (z - np.dot(alpha.T,(alpha*v)) - np.dot(np.dot(alpha.T,dA),np.dot(R0tV,alpha)))/2.
                 dnlZ.cov[ii] = dnlZ.cov[ii][0,0]
             for ii in range(len(likfunc.hyp)):                # likelihood hypers
-                dlik = likfunc.proceed(y, nu_n/tau_n+m, 1/tau_n, inffunc, ii, 1)
-                dnlZ.lik[ii] = -dlik.sum()                                 
+                dlik = likfunc.evaluate(y, nu_n/tau_n+m, 1/tau_n, inffunc, ii, 1)
+                dnlZ.lik[ii] = -dlik.sum()
                 if ii == len(likfunc.hyp)-1:
                     # since snu2 is a fixed fraction of sn2, there is a covariance-like term
                     # in the derivative as well
@@ -858,16 +871,15 @@ class FITC_EP(Inference):
                     z = z + np.dot(post.alpha.T,post.alpha) - np.dot(alpha.T,(v*alpha))
                     dnlZ.lik[ii] += snu2*z
                     dnlZ.lik[ii] = dnlZ.lik[ii][0,0]
-            [junk,dlZ] = likfunc.proceed(y, nu_n/tau_n, 1/tau_n, inffunc, None, 2) # mean hyps
+            [junk,dlZ] = likfunc.evaluate(y, nu_n/tau_n, 1/tau_n, inffunc, None, 2) # mean hyps
             for ii in range(len(meanfunc.hyp)):
                 dm = meanfunc.getDerMatrix(x, ii)
                 dnlZ.mean[ii] = -np.dot(dlZ.T,dm)
                 dnlZ.mean[ii] = dnlZ.mean[ii][0,0]
-        
+
             return post, nlZ[0,0], dnlZ
         else:
             return post, nlZ[0,0]
-    
 
 
 
@@ -875,10 +887,3 @@ if __name__ == '__main__':
     pass
 
 
-
-
-
-
-
-
-		

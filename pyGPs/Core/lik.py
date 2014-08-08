@@ -25,15 +25,15 @@
 #
 #   Mix         [NOT IMPLEMENTED!] (Mixture of individual covariance functions)
 #
-# See the documentation for the individual likelihood for the computations specific 
+# See the documentation for the individual likelihood for the computations specific
 # to each likelihood function.
 #
 #
-# This is a object-oriented python implementation of gpml functionality 
+# This is a object-oriented python implementation of gpml functionality
 # (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
 # based on the functional-version of python implementation
 # (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)
-# 
+#
 # Copyright (c) by Marion Neumann and Shan Huang, 30/09/2013
 
 
@@ -45,10 +45,10 @@ class Likelihood(object):
     """Base function for Likelihood function"""
     def __init__(self):
         self.hyp = []
-    def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
+    def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         '''
         The likelihood functions have two possible modes, the mode being selected
-        as follows (where "lik" stands for "proceed" method for any likelihood function):
+        as follows (where "lik" stands for "evaluate" method for any likelihood function):
 
 
         1) With two or three input arguments:                       [PREDICTION MODE]
@@ -63,7 +63,7 @@ class Likelihood(object):
 
             lp = log( q(y) ) for a particular value of y, if s2 is [] or 0, this
             corresponds to log( p(y|mu) ).
-            
+
             ymu and ys2 are the mean and variance of the predictive marginal q(y)
             note that these two numbers do not depend on a particular 
             value of y.
@@ -128,7 +128,7 @@ class Gauss(Likelihood):
     def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [log_sigma]
 
-    def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
+    def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn2 = np.exp(2. * self.hyp[0])
         if inffunc == None:              # prediction mode 
             if y == None:
@@ -141,7 +141,7 @@ class Gauss(Likelihood):
                 s2 = np.zeros_like(s2)
             else:
                 inf_func = inf.EP()   # prediction
-                lp = self.proceed(y, mu, s2, inf_func)
+                lp = self.evaluate(y, mu, s2, inf_func)
             if nargout>1:
                 ymu = mu                 # first y moment
                 if nargout>2:
@@ -238,7 +238,7 @@ class Erf(Likelihood):
     def __init__(self):
         self.hyp = []
 
-    def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
+    def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         if not y == None:
             y = np.sign(y)
             y[y==0] = 1
@@ -253,7 +253,7 @@ class Erf(Likelihood):
             if s2zero:                                   # log probability evaluation
                 p,lp = self.cumGauss(y,mu,2)
             else:                                        # prediction
-                lp = self.proceed(y, mu, s2, inf.EP())
+                lp = self.evaluate(y, mu, s2, inf.EP())
                 p = np.exp(lp)
             if nargout>1:
                 ymu = 2*p-1                              # first y moment
@@ -373,7 +373,7 @@ class Laplace(Likelihood):
     def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [ log_sigma ]
 
-    def proceed(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
+    def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn = np.exp(self.hyp); b = sn/np.sqrt(2);
         if y == None:
             y = np.zeros_like(mu) 
@@ -387,7 +387,7 @@ class Laplace(Likelihood):
             if s2zero:                                   # log probability evaluation
                 lp = -np.abs(y-mu)/b -np.log(2*b); s2 = 0
             else:                                        # prediction
-                lp = self.proceed(y, mu, s2, inf.EP())
+                lp = self.evaluate(y, mu, s2, inf.EP())
             if nargout>1:
                 ymu = mu                              # first y moment
                 if nargout>2:
@@ -440,11 +440,11 @@ class Laplace(Likelihood):
                     d2lZ = np.zeros((n,1))
                     if np.any(idlik):
                         l = Gauss(log_sigma=np.log(s2[idlik])/2)
-                        a = l.proceed(mu[idlik], y[idlik])
+                        a = l.evaluate(mu[idlik], y[idlik])
                         lZ[idlik] = a[0]; dlZ[idlik] = a[1]; d2lZ[idlik] = a[2]
                     if np.any(idgau):
                         l = Laplace(log_hyp=np.log(sn[idgau]))
-                        a = l.proceed(mu=mu[idgau], y=y[idgau])
+                        a = l.evaluate(mu=mu[idgau], y=y[idgau])
                         lZ[idgau] = a[0]; dlZ[idgau] = a[1]; d2lZ[idgau] = a[2] 
                     if np.any(id):
                         # substitution to obtain unit variance, zero mean Laplacian
@@ -486,7 +486,7 @@ class Laplace(Likelihood):
                         dlZhyp[idlik] = 0
                     if np.any(idgau):
                         l = Laplace(log_hyp=np.log(sn[idgau]))
-                        a =  l.proceed(mu=mu[idgau], y=y[idgau], inffunc='inf.Laplace', nargout=1)
+                        a =  l.evaluate(mu=mu[idgau], y=y[idgau], inffunc='inf.Laplace', nargout=1)
                         dlZhyp[idgau] = a[0]
 
                     if np.any(id):

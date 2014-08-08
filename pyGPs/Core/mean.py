@@ -20,7 +20,7 @@
 #   One       - one mean function
 #   Const     - constant mean function
 #   Linear    - linear mean function
-# 
+#
 # composite mean functions:
 #
 #   ScaleOfMean     - scaled version of a mean function
@@ -29,11 +29,11 @@
 #   SumOfMean       - sums of mean functions
 #
 #
-# This is a object-oriented python implementation of gpml functionality 
+# This is a object-oriented python implementation of gpml functionality
 # (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
 # based on the functional-version of python implementation
 # (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)
-# 
+#
 #
 # Copyright (c) by Marion Neumann and Shan Huang, Sep.2013
 
@@ -49,11 +49,11 @@ class Mean(object):
         self.hyp = []
         self.para = []
 
-    # overloading 
+    # overloading
     def __add__(self,mean):
         '''
         Overloading + operator.
-        
+
         :param mean: mean function
         :return: an instance of SumOfMean
         '''
@@ -65,7 +65,7 @@ class Mean(object):
         Overloading * operator.
         Using * for both multiplication with scalar and product of means
         depending on the type of the two objects.
-        
+
         :param other: mean function as product or int/float as scalar
         :return: an instance of ScaleOfMean or ProductOfMean
         '''
@@ -83,7 +83,7 @@ class Mean(object):
     def __pow__(self,number):
         '''
         Overloading ** operator.
-        
+
         :param int number: power of the mean function
         :return: an instance of PowerOfMean
         '''
@@ -108,7 +108,7 @@ class Mean(object):
         :return: the corresponding derivative matrix
         '''
         pass
-    
+
 
 
 class ProductOfMean(Mean):
@@ -125,13 +125,13 @@ class ProductOfMean(Mean):
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.mean1.hyp)
-        self._hyp = hyp 
+        self._hyp = hyp
         self.mean1.hyp = self._hyp[:len1]
         self.mean2.hyp = self._hyp[len1:]
     def _getHyp(self):
         return self._hyp
     hyp = property(_getHyp,_setHyp)
-    
+
     def getMean(self, x=None):
         A = self.mean1.getMean(x) * self.mean2.getMean(x)
         return A
@@ -141,7 +141,7 @@ class ProductOfMean(Mean):
             A = self.mean1.getDerMatrix(x, der) * self.mean2.getMean(x)
         elif der < len(self.hyp):
             der2 = der - len(self.mean1.hyp)
-            A = self.mean2.getDerMatrix(x, der2) * self.mean1.getMean(x) 
+            A = self.mean2.getDerMatrix(x, der2) * self.mean1.getMean(x)
         else:
             raise Exception("Error: der out of range for meanProduct")
         return A
@@ -162,7 +162,7 @@ class SumOfMean(Mean):
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.mean1.hyp)
-        self._hyp = hyp 
+        self._hyp = hyp
         self.mean1.hyp = self._hyp[:len1]
         self.mean2.hyp = self._hyp[len1:]
     def _getHyp(self):
@@ -178,7 +178,7 @@ class SumOfMean(Mean):
             A = self.mean1.getDerMatrix(x, der)
         elif der < len(self.hyp):
             der2 = der - len(self.mean1.hyp)
-            A = self.mean2.getDerMatrix(x, der2) 
+            A = self.mean2.getDerMatrix(x, der2)
         else:
             raise Exception("Error: der out of range for meanSum")
         return A
@@ -190,12 +190,12 @@ class ScaleOfMean(Mean):
     def __init__(self,mean,scalar):
         self.mean = mean
         if mean.hyp:
-            self._hyp = [scalar] + mean.hyp 
+            self._hyp = [scalar] + mean.hyp
         else:
             self._hyp = [scalar]
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
-        self._hyp = hyp 
+        self._hyp = hyp
         self.mean.hyp = self._hyp[1:]
     def _getHyp(self):
         return self._hyp
@@ -221,29 +221,29 @@ class PowerOfMean(Mean):
     def __init__(self, mean, d):
         self.mean = mean
         if mean.hyp:
-            self._hyp = [d] + mean.hyp 
+            self._hyp = [d] + mean.hyp
         else:
             self._hyp = [d]
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
-        self._hyp = hyp 
+        self._hyp = hyp
         self.mean.hyp = self._hyp[1:]
     def _getHyp(self):
         return self._hyp
     hyp = property(_getHyp,_setHyp)
 
     def getMean(self, x=None):
-        d = np.abs(np.floor(self.hyp[0])) 
+        d = np.abs(np.floor(self.hyp[0]))
         d = max(d,1)
         A = self.mean.getMean(x) **d              # accumulate means
         return A
 
     def getDerMatrix(self, x=None, der=None):
-        d = np.abs(np.floor(self.hyp[0])) 
+        d = np.abs(np.floor(self.hyp[0]))
         d = max(d,1)
         if der == 0:                             # compute derivative w.r.t. c
             a = self.mean.getMean(x)
-            A = a**d * np.log(a) 
+            A = a**d * np.log(a)
         else:
             A = d * self.mean.getMean(x) ** (d-1) * self.mean.getDerMatrix(x, der-1)
         return A
@@ -305,8 +305,8 @@ class Const(Mean):
         if der == 0:                  # compute derivative vector wrt c
             A = np.ones((n,1))
         else:
-            A = np.zeros((n,1)) 
-        return A          
+            A = np.zeros((n,1))
+        return A
 
 
 
@@ -319,7 +319,10 @@ class Linear(Mean):
     '''
     def __init__(self, D=None, alpha_list=None):
         if alpha_list == None:
-            self.hyp = [0.5 for i in xrange(D)]
+        	if D == None:
+        		self.hyp = [0.5]
+        	else:
+	            self.hyp = [0.5 for i in xrange(D)]
         else:
             self.hyp = alpha_list
 
@@ -335,9 +338,9 @@ class Linear(Mean):
         c = np.array(self.hyp)
         c = np.reshape(c,(len(c),1))
         if isinstance(der, int) and der < D:     # compute derivative vector wrt meanparameters
-            A = np.reshape(x[:,der], (len(x[:,der]),1) ) 
-        else:   
-            A = np.zeros((n,1)) 
+            A = np.reshape(x[:,der], (len(x[:,der]),1) )
+        else:
+            A = np.zeros((n,1))
         return A
 
 
@@ -346,7 +349,6 @@ class Linear(Mean):
 if __name__ == '__main__':
     pass
 
-    
 
 
 

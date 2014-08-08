@@ -31,7 +31,7 @@
 # RQ            - Rational Quadratic covariance function with isotropic distance measure.
 # RQard         - Rational Quadratic covariance function with ARD distance measure.
 # Pre           - Precomputed kernel matrix.
-# 
+#
 # composite covariance functions:
 #
 #   ScaleOfKernel     - scaled version of a covariance function
@@ -40,11 +40,11 @@
 #   FITCOfKernel      - Covariance function to be used together with the FITC approximation
 #
 #
-# This is a object-oriented python implementation of gpml functionality 
+# This is a object-oriented python implementation of gpml functionality
 # (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
 # based on the functional-version of python implementation
 # (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)
-# 
+#
 # Copyright (c) by Marion Neumann and Shan Huang, 30/09/2013
 
 
@@ -60,22 +60,22 @@ def initSMhypers(Q, x, y):
         are given by a random sample from a uniform distribution scaled by the max
         distance.
         """
-    
+
     x = np.atleast_2d(x)
     y = np.atleast_2d(y)
-    
+
     (n, D) = x.shape
     w = np.zeros(Q)
     m = np.zeros((D, Q))
     s = np.zeros((D, Q))
     w[:] = np.std(y) / Q
-    
+
     hypinit = np.zeros(Q + 2 * D * Q)
-    
+
     for i in range(D):
-        
+
         # Calculate distances
-        
+
         xslice = np.atleast_2d(x[:, i]).T
         d2 = spdist.cdist(xslice, xslice, 'sqeuclidean')
         if n > 1:
@@ -87,7 +87,7 @@ def initSMhypers(Q, x, y):
         m[i, :] = nyquist * np.random.ranf((1, Q))
         maxshift = np.max(np.max(np.sqrt(d2)))
         s[i, :] = 1. / np.abs(maxshift * np.random.ranf((1, Q)))
-    
+
     hypinit[:Q] = np.log(w)
     hypinit[Q + np.arange(0, Q * D)] = np.log(m[:]).T
     hypinit[Q + Q * D + np.arange(0, Q * D)] = np.log(s[:]).T
@@ -111,7 +111,7 @@ class Kernel(object):
 
         :param x: training data
         :param z: test data
-        :param str mode: 'self_test' return self covariance matrix of test data(test by 1). 
+        :param str mode: 'self_test' return self covariance matrix of test data(test by 1).
                          'train' return training covariance matrix(train by train).
                          'cross' return cross covariance matrix between x and z(train by test)
 
@@ -125,7 +125,7 @@ class Kernel(object):
 
         :param x: training data
         :param z: test data
-        :param str mode: 'self_test' return self derivative matrix of test data(test by 1). 
+        :param str mode: 'self_test' return self derivative matrix of test data(test by 1).
                          'train' return training derivative matrix(train by train).
                          'cross' return cross derivative matrix between x and z(train by test)
         :param int der: index of hyperparameter whose derivative to be computed
@@ -134,23 +134,23 @@ class Kernel(object):
         '''
         pass
 
-    # overloading 
+    # overloading
     def __add__(self,cov):
         '''
         Overloading + operator.
-        
+
         :param cov: covariance function
         :return: an instance of SumOfKernel
         '''
         return SumOfKernel(self,cov)
 
-    # overloading 
+    # overloading
     def __mul__(self,other):
         '''
         Overloading * operator.
         Using * for both multiplication with scalar and product of kernels
         depending on the type of the two objects.
-        
+
         :param other: covariance function as product or int/float as scalar
         :return: an instance of ScaleOfKernel or ProductOfKernel
         '''
@@ -161,7 +161,7 @@ class Kernel(object):
         else:
             print "only numbers and Kernels are supported operand types for *"
 
-    # overloading 
+    # overloading
     __rmul__ = __mul__
 
     def fitc(self,inducingInput):
@@ -172,7 +172,7 @@ class Kernel(object):
         :return: an instance of FITCOfKernel
         '''
         return FITCOfKernel(self,inducingInput)
-    
+
     # can be replaced by spdist from scipy
     def _sq_dist(self, a, b=None):
         '''Compute a matrix of all pairwise squared distances
@@ -180,7 +180,7 @@ class Kernel(object):
         a (of size n by D) and b (of size m by D).'''
         n = a.shape[0]
         D = a.shape[1]
-        m = n    
+        m = n
         if b == None:
             b = a.transpose()
         else:
@@ -192,11 +192,11 @@ class Kernel(object):
             tt  = tt.reshape(n,1)
             tem = np.kron(np.ones((1,m)), tt)
             tem = tem - np.kron(np.ones((n,1)), b[d,:])
-            C   = C + tem * tem 
+            C   = C + tem * tem
         return C
 
-              
-        
+
+
 class ProductOfKernel(Kernel):
     '''Product of two kernel function.'''
     def __init__(self,cov1,cov2):
@@ -207,7 +207,7 @@ class ProductOfKernel(Kernel):
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.cov1.hyp)
-        self._hyp = hyp 
+        self._hyp = hyp
         self.cov1.hyp = self._hyp[:len1]
         self.cov2.hyp = self._hyp[len1:]
     def _getHyp(self):
@@ -225,7 +225,7 @@ class ProductOfKernel(Kernel):
             der2 = der - len(self.cov1.hyp)
             A = self.cov2.getDerMatrix(x,z,mode,der2) * self.cov1.getCovMatrix(x,z,mode)
         else:
-            raise Exception("Error: der out of range for covProduct") 
+            raise Exception("Error: der out of range for covProduct")
         return A
 
 
@@ -239,7 +239,7 @@ class SumOfKernel(Kernel):
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.cov1.hyp)
-        self._hyp = hyp 
+        self._hyp = hyp
         self.cov1.hyp = self._hyp[:len1]
         self.cov2.hyp = self._hyp[len1:]
     def _getHyp(self):
@@ -252,12 +252,12 @@ class SumOfKernel(Kernel):
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         if der < len(self.cov1.hyp):
-            A = self.cov1.getDerMatrix(x,z,mode,der) 
+            A = self.cov1.getDerMatrix(x,z,mode,der)
         elif der < len(self.hyp):
             der2 = der - len(self.cov1.hyp)
-            A = self.cov2.getDerMatrix(x,z,mode,der2) 
+            A = self.cov2.getDerMatrix(x,z,mode,der2)
         else:
-            raise Exception("Error: der out of range for covSum") 
+            raise Exception("Error: der out of range for covSum")
         return A
 
 
@@ -267,37 +267,37 @@ class ScaleOfKernel(Kernel):
     def __init__(self,cov,scalar):
         self.cov = cov
         if cov.hyp:
-            self._hyp = [scalar] + cov.hyp 
+            self._hyp = [scalar] + cov.hyp
         else:
             self._hyp = [scalar]
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
-        self._hyp = hyp 
+        self._hyp = hyp
         self.cov.hyp = self._hyp[1:]
     def _getHyp(self):
         return self._hyp
     hyp = property(_getHyp,_setHyp)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
-        sf2 = np.exp(self.hyp[0])                     # scale parameter  
-        A = sf2 * self.cov.getCovMatrix(x,z,mode)     # accumulate cov 
+        sf2 = np.exp(self.hyp[0])                     # scale parameter
+        A = sf2 * self.cov.getCovMatrix(x,z,mode)     # accumulate cov
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
-        sf2 = np.exp(self.hyp[0])                     # scale parameter  
+        sf2 = np.exp(self.hyp[0])                     # scale parameter
         if der == 0:                                  # compute derivative w.r.t. sf2
             A = 2. * sf2 * self.cov.getCovMatrix(x,z,mode)
-        else:                                 
-            A = sf2 * self.cov.getDerMatrix(x,z,mode,der-1) 
+        else:
+            A = sf2 * self.cov.getDerMatrix(x,z,mode,der-1)
         return A
-     
+
 
 
 class FITCOfKernel(Kernel):
     '''
     Covariance function to be used together with the FITC approximation.
     The function allows for more than one output argument and does not respect the
-    interface of a proper covariance function. 
+    interface of a proper covariance function.
     Instead of outputing the full covariance, it returns cross-covariances between
     the inputs x, z and the inducing inputs xu as needed by infFITC
     '''
@@ -319,7 +319,7 @@ class FITCOfKernel(Kernel):
             try:
                 assert(xu.shape[1] == x.shape[1])
             except AssertionError:
-                raise Exception('Dimensionality of inducing inputs must match training inputs') 
+                raise Exception('Dimensionality of inducing inputs must match training inputs')
         if mode == 'self_test':           # self covariances for the test cases
             K = self.covfunc.getCovMatrix(z=z,mode='self_test')
             return K
@@ -328,9 +328,9 @@ class FITCOfKernel(Kernel):
             Kuu = self.covfunc.getCovMatrix(x=xu,mode='train')
             Ku  = self.covfunc.getCovMatrix(x=xu,z=x,mode='cross')
             return K, Kuu, Ku
-        elif mode == 'cross':             # compute covariance between data sets x and z 
+        elif mode == 'cross':             # compute covariance between data sets x and z
             K = self.covfunc.getCovMatrix(x=xu,z=z,mode='cross')
-            return K 
+            return K
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         xu = self.inducingInput
@@ -338,7 +338,7 @@ class FITCOfKernel(Kernel):
             try:
                 assert(xu.shape[1] == x.shape[1])
             except AssertionError:
-                raise Exception('Dimensionality of inducing inputs must match training inputs') 
+                raise Exception('Dimensionality of inducing inputs must match training inputs')
         if mode == 'self_test':           # self covariances for the test cases
             K = self.covfunc.getDerMatrix(z=z,mode='self_test',der=der)
             return K
@@ -347,32 +347,32 @@ class FITCOfKernel(Kernel):
             Kuu = self.covfunc.getDerMatrix(x=xu,mode='train',der=der)
             Ku  = self.covfunc.getDerMatrix(x=xu,z=x,mode='cross',der=der)
             return K, Kuu, Ku
-        elif mode == 'cross':             # compute covariance between data sets x and z 
+        elif mode == 'cross':             # compute covariance between data sets x and z
             K = self.covfunc.getDerMatrix(x=xu,z=z,mode='cross',der=der)
-            return K 
-        
+            return K
+
 class Gabor(Kernel):
     '''
     Gabor covariance function with length scale ell and period p. The
     covariance function is parameterized as:
- 
+
     k(x,z) = h( ||x-z|| ) with h(t) = exp(-t^2/(2*ell^2))*cos(2*pi*t/p).
- 
+
     The hyperparameters are:
- 
+
     hyp = [ log(ell)
             log(p)   ]
- 
+
     Note that covSM implements a weighted sum of Gabor covariance functions, but
     using an alternative (spectral) parameterization.
- 
+
     :param log_ell: characteristic length scale.
     :param log_p: period.
     '''
- 
+
     def __init__(self, log_ell=0., log_p=0.):
         self.hyp = [log_ell, log_p]
- 
+
     def getCovMatrix(self,x=None,z=None,mode=None):
         ell = np.exp(self.hyp[0])  # characteristic length scale
         p = np.exp(2. * self.hyp[1])  # period
@@ -409,25 +409,25 @@ class Gabor(Kernel):
             raise Exception("Wrong derivative entry in Gabor")
 
         return A
- 
- 
+
+
 
 class SM(Kernel):
     '''
     Gaussian Spectral Mixture covariance function. The
     covariance function is parameterized as:
- 
+
     k(x^p,x^q) = w'*prod( exp(-2*pi^2*d^2*v)*cos(2*pi*d*m), 2), d = |x^p,x^q|
- 
+
     where m(DxQ), v(DxQ) are the means and variances of the spectral mixture
     components and w are the mixture weights. The hyperparameters are:
- 
+
     hyp = [ log(w)
             log(m(:))
             log(sqrt(v(:))) ]
- 
+
     Copyright (c) by Andrew Gordon Wilson and Hannes Nickisch, 2013-10-09.
- 
+
     For more details, see
     1) Gaussian Process Kernels for Pattern Discovery and Extrapolation,
     ICML, 2013, by Andrew Gordon Wilson and Ryan Prescott Adams.
@@ -435,16 +435,16 @@ class SM(Kernel):
     Processes, arXiv 1310.5288, 2013, by Andrew Gordon Wilson, Elad Gilboa,
     Arye Nehorai and John P. Cunningham, and
     http://mlg.eng.cam.ac.uk/andrew/pattern
- 
+
     :param log_w: weight coefficients.
     :param log_m: spectral means (frequencies).
     :param log_v: spectral variances.
     '''
- 
+
     def __init__(self, Q=0, hyps=[]):
         self.hyp = hyps
         self.para = [Q]
-    
+
     def getCovMatrix(self,x=None,z=None,mode=None):
         Q = self.para[0]
         if mode == 'self_test':
@@ -452,7 +452,7 @@ class SM(Kernel):
         else:
             nn, D = x.shape
         assert Q == len(self.hyp) / (1 + 2 * D)
-        
+
         w = np.exp(self.hyp[:Q])
         m = np.exp(np.reshape(self.hyp[Q:Q + Q * D], (D, Q)))
         v = np.exp(2 * np.reshape(self.hyp[Q + Q * D:], (D, Q)))
@@ -485,7 +485,7 @@ class SM(Kernel):
                 C = C * k((d2[:, :, j] * v[j, q], d[:, :, j] * m[j, q]))
                 A = A + C
         return A
-            
+
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         Q = self.para[0]
         if mode == 'self_test':
@@ -493,11 +493,11 @@ class SM(Kernel):
         else:
             nn, D = x.shape
         assert Q == len(self.hyp) / (1 + 2 * D)
-    
+
         w = np.exp(self.hyp[:Q])
         m = np.exp(np.reshape(self.hyp[Q:Q + Q * D], (D, Q)))
         v = np.exp(2 * np.reshape(self.hyp[Q + Q * D:], (D, Q)))
-    
+
         if mode == 'self_test':               # self covariances for the test cases
             d2 = np.zeros((nn, 1, D))
         elif mode == 'train':                 # compute covariance matix for dataset x
@@ -512,11 +512,11 @@ class SM(Kernel):
                 zslice = np.atleast_2d(z[:, j]).T
                 d2[:, :, j] = spdist.cdist(xslice, zslice, 'sqeuclidean')
         d = np.sqrt(d2)
-    
+
         k = lambda (d2v, dm): np.exp(-2 * np.pi ** 2 * d2v) * np.cos(2* np.pi * dm)  # evaluation of the covariance
         km = lambda dm: -2 * np.pi * np.tan(2 * np.pi * dm) * dm  # remainder when differentiating w.r.t. m
         kv = lambda d2v: -d2v * (2 * np.pi) ** 2  # remainder when differentiating w.r.t. v
-        
+
         A = 0.
         c = 1.
         qq = range(Q)
@@ -535,7 +535,7 @@ class SM(Kernel):
             qq = [q]
         else:
             raise Exception("Wrong derivative entry in SM")
-                
+
         for q in qq:
             C = w[q] * c
             for j in range(D):
@@ -549,13 +549,13 @@ class Poly(Kernel):
     '''
     Polynomial covariance function. hyp = [ log_c, log_sigma ]
 
-    :param log_c: inhomogeneous offset. 
-    :param log_sigma: signal deviation. 
-    :param d: degree of polynomial (not treated as hyperparameter, i.e. will not be trained). 
+    :param log_c: inhomogeneous offset.
+    :param log_sigma: signal deviation.
+    :param d: degree of polynomial (not treated as hyperparameter, i.e. will not be trained).
     '''
     def __init__(self, log_c=0., d=2, log_sigma=0. ):
         self.hyp = [log_c, log_sigma]
-        self.para = [d] 
+        self.para = [d]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         c   = np.exp(self.hyp[0])             # inhomogeneous offset
@@ -564,14 +564,14 @@ class Poly(Kernel):
         if np.abs(ord-np.round(ord)) < 1e-8:  # remove numerical error from format of parameter
             ord = int(round(ord))
         assert(ord >= 1.)                     # only nonzero integers for ord
-        ord = int(ord) 
+        ord = int(ord)
         if mode == 'self_test':               # self covariances for the test cases
             nn,D = z.shape
             A = np.reshape(np.sum(z*z,1), (nn,1))
         elif mode == 'train':                 # compute covariance matix for dataset x
             A = np.dot(x,x.T)
-        elif mode == 'cross':                 # compute covariance between data sets x and z 
-            A = np.dot(x,z.T) 
+        elif mode == 'cross':                 # compute covariance between data sets x and z
+            A = np.dot(x,z.T)
         A = sf2 * (c + A)**ord
         return A
 
@@ -582,15 +582,15 @@ class Poly(Kernel):
         if np.abs(ord-np.round(ord)) < 1e-8:  # remove numerical error from format of parameter
             ord = int(round(ord))
         assert(ord >= 1.)                     # only nonzero integers for ord
-        ord = int(ord) 
+        ord = int(ord)
         if mode == 'self_test':               # self covariances for the test cases
             nn,D = z.shape
             A = np.reshape(np.sum(z*z,1), (nn,1))
         elif mode == 'train':                 # compute covariance matix for dataset x
             A = np.dot(x,x.T)
-        elif mode == 'cross':                 # compute covariance between data sets x and z 
-            A = np.dot(x,z.T) 
-        if der == 0:                          # compute derivative matrix wrt 1st parameter             
+        elif mode == 'cross':                 # compute covariance between data sets x and z
+            A = np.dot(x,z.T)
+        if der == 0:                          # compute derivative matrix wrt 1st parameter
             A = c * ord * sf2 * (c+A)**(ord-1)
         elif der == 1:                        # compute derivative matrix wrt 2nd parameter
             A = 2. * sf2 * (c + A)**ord
@@ -599,17 +599,17 @@ class Poly(Kernel):
         else:
             raise Exception("Wrong derivative entry in Poly")
         return A
-        
+
 
 
 class PiecePoly(Kernel):
     '''
-    Piecewise polynomial kernel with compact support. 
+    Piecewise polynomial kernel with compact support.
     hyp = [log_ell, log_sigma]
 
-    :param log_ell: characteristic length scale. 
-    :param log_sigma: signal deviation. 
-    :param v: degree v will be rounded to 0,1,2,or 3. (not treated as hyperparameter, i.e. will not be trained). 
+    :param log_ell: characteristic length scale.
+    :param log_sigma: signal deviation.
+    :param v: degree v will be rounded to 0,1,2,or 3. (not treated as hyperparameter, i.e. will not be trained).
     '''
     def __init__(self, log_ell=0., v=2, log_sigma=0. ):
         self.hyp = [log_ell, log_sigma]
@@ -666,7 +666,7 @@ class PiecePoly(Kernel):
             A = np.zeros((nn,1))
         elif mode == 'train':                # compute covariance matix for dataset x
             A = np.sqrt( spdist.cdist(x/ell, x/ell, 'sqeuclidean') )
-        elif mode == 'cross':                # compute covariance between data sets x and z 
+        elif mode == 'cross':                # compute covariance between data sets x and z
             A = np.sqrt( spdist.cdist(x/ell, z/ell, 'sqeuclidean') )
         A = sf2 * self.pp(A,j,v,self.func)
         return A
@@ -689,7 +689,7 @@ class PiecePoly(Kernel):
             A = np.zeros((nn,1))
         elif mode == 'train':                # compute covariance matix for dataset x
             A = np.sqrt( spdist.cdist(x/ell, x/ell, 'sqeuclidean') )
-        elif mode == 'cross':                # compute covariance between data sets x and z 
+        elif mode == 'cross':                # compute covariance between data sets x and z
             A = np.sqrt( spdist.cdist(x/ell, z/ell, 'sqeuclidean') )
         if der == 0:                            # compute derivative matrix wrt 1st parameter
             A = sf2 * self.dpp(A,j,v,self.func,self.dfunc)
@@ -707,8 +707,8 @@ class RBF(Kernel):
     '''
     Squared Exponential kernel with isotropic distance measure. hyp = [log_ell, log_sigma]
 
-    :param log_ell: characteristic length scale. 
-    :param log_sigma: signal deviation. 
+    :param log_ell: characteristic length scale.
+    :param log_sigma: signal deviation.
     '''
     def __init__(self, log_ell=0., log_sigma=0.):
         self.hyp = [log_ell, log_sigma]
@@ -721,8 +721,8 @@ class RBF(Kernel):
             A = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for training set
             A = spdist.cdist(x/ell,x/ell,'sqeuclidean')
-        elif mode == 'cross':             # compute covariance between data sets x and z 
-            A = spdist.cdist(x/ell,z/ell,'sqeuclidean') 
+        elif mode == 'cross':             # compute covariance between data sets x and z
+            A = spdist.cdist(x/ell,z/ell,'sqeuclidean')
         A = sf2 * np.exp(-0.5*A)
         return A
 
@@ -735,8 +735,8 @@ class RBF(Kernel):
             A = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
             A = spdist.cdist(x/ell,x/ell,'sqeuclidean')
-        elif mode == 'cross':             # compute covariance between data sets x and z 
-            A = spdist.cdist(x/ell,z/ell,'sqeuclidean') 
+        elif mode == 'cross':             # compute covariance between data sets x and z
+            A = spdist.cdist(x/ell,z/ell,'sqeuclidean')
         if der == 0:    # compute derivative matrix wrt 1st parameter
             A = sf2 * np.exp(-0.5*A) * A
         elif der == 1:  # compute derivative matrix wrt 2nd parameter
@@ -744,7 +744,7 @@ class RBF(Kernel):
         else:
             raise Exception("Calling for a derivative in RBF that does not exist")
         return A
-        
+
 
 
 class RBFunit(Kernel):
@@ -752,7 +752,7 @@ class RBFunit(Kernel):
     Squared Exponential kernel with isotropic distance measure with unit magnitude.
     i.e signal variance is always 1. hyp = [ log_ell ]
 
-    :param log_ell: characteristic length scale. 
+    :param log_ell: characteristic length scale.
     '''
     def __init__(self, log_ell=0.):
         self.hyp = [log_ell]
@@ -764,8 +764,8 @@ class RBFunit(Kernel):
             A = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
             A = spdist.cdist(x/ell,x/ell,'sqeuclidean')
-        elif mode == 'cross':             # compute covariance between data sets x and z 
-            A = spdist.cdist(x/ell,z/ell,'sqeuclidean') 
+        elif mode == 'cross':             # compute covariance between data sets x and z
+            A = spdist.cdist(x/ell,z/ell,'sqeuclidean')
         A = np.exp(-0.5*A)
         return A
 
@@ -776,8 +776,8 @@ class RBFunit(Kernel):
             A = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
             A = spdist.cdist(x/ell,x/ell,'sqeuclidean')
-        elif mode == 'cross':             # compute covariance between data sets x and z 
-            A = spdist.cdist(x/ell,z/ell,'sqeuclidean') 
+        elif mode == 'cross':             # compute covariance between data sets x and z
+            A = spdist.cdist(x/ell,z/ell,'sqeuclidean')
         if der == 0:           # compute derivative matrix wrt 1st parameter
             A = np.exp(-0.5*A) * A
         else:
@@ -814,7 +814,7 @@ class RBFard(Kernel):
         elif mode == 'train':             # compute covariance matix for dataset x
             tem = np.dot(np.diag(ell),x.T).T
             A = spdist.cdist(tem,tem,'sqeuclidean')
-        elif mode == 'cross':             # compute covariance between data sets x and z 
+        elif mode == 'cross':             # compute covariance between data sets x and z
             A = spdist.cdist(np.dot(np.diag(ell),x.T).T,np.dot(np.diag(ell),z.T).T,'sqeuclidean')
         A = sf2*np.exp(-0.5*A)
         return A
@@ -832,7 +832,7 @@ class RBFard(Kernel):
         elif mode == 'train':             # compute covariance matix for dataset x
             tem = np.dot(np.diag(ell),x.T).T
             A = spdist.cdist(tem,tem,'sqeuclidean')
-        elif mode == 'cross':             # compute covariance between data sets x and z 
+        elif mode == 'cross':             # compute covariance between data sets x and z
             A = spdist.cdist(np.dot(np.diag(ell),x.T).T,np.dot(np.diag(ell),z.T).T,'sqeuclidean')
         A = sf2*np.exp(-0.5*A)
         if der < D:                       # compute derivative matrix wrt length scale parameters
@@ -846,7 +846,7 @@ class RBFard(Kernel):
         elif der == D:                    # compute derivative matrix wrt magnitude parameter
             A = 2.*A
         else:
-            raise Exception("Wrong derivative index in RDFard") 
+            raise Exception("Wrong derivative index in RDFard")
         return A
 
 
@@ -868,7 +868,7 @@ class Const(Kernel):
         elif mode == 'train':             # compute covariance matix for dataset x
             n,D = x.shape
             A = sf2 * np.ones((n,n))
-        elif mode == 'cross':             # compute covariance between data sets x and z 
+        elif mode == 'cross':             # compute covariance between data sets x and z
             n,D  = x.shape
             nn,D = z.shape
             A = sf2 * np.ones((n,nn))
@@ -882,7 +882,7 @@ class Const(Kernel):
         elif mode == 'train':             # compute covariance matix for dataset x
             n,D = x.shape
             A = sf2 * np.ones((n,n))
-        elif mode == 'cross':             # compute covariance between data sets x and z 
+        elif mode == 'cross':             # compute covariance between data sets x and z
             n,D  = x.shape
             nn,D = z.shape
             A = sf2 * np.ones((n,nn))
@@ -891,7 +891,7 @@ class Const(Kernel):
         else:
             raise Exception("Wrong derivative entry in covConst")
         return A
-        
+
 
 
 class Linear(Kernel):
@@ -911,7 +911,7 @@ class Linear(Kernel):
         elif mode == 'train':             # compute covariance matix for dataset x
             n,D = x.shape
             A = np.dot(x,x.T) + np.eye(n)*1e-16    # required for numerical accuracy
-        elif mode == 'cross':             # compute covariance between data sets x and z 
+        elif mode == 'cross':             # compute covariance between data sets x and z
             A = np.dot(x,z.T)
         A = sf2 * A
         return A
@@ -925,7 +925,7 @@ class Linear(Kernel):
             elif mode == 'train':             # compute covariance matix for dataset x
                 n,D = x.shape
                 A = np.dot(x,x.T) + np.eye(n)*1e-16    # required for numerical accuracy
-            elif mode == 'cross':             # compute covariance between data sets x and z 
+            elif mode == 'cross':             # compute covariance between data sets x and z
                 A = np.dot(x,z.T)
             A = 2 * sf2 * A
         else:
@@ -937,7 +937,7 @@ class Linear(Kernel):
 class LINard(Kernel):
     '''
     Linear covariance function with Automatic Relevance Detemination.
-    hyp = log_ell_list 
+    hyp = log_ell_list
 
     :param D: dimension of training data. Set if you want default ell, which is 1 for each dimension.
     :param log_ell_list: characteristic length scale for each dimension.
@@ -954,10 +954,10 @@ class LINard(Kernel):
             nn,D = z.shape
             A = np.reshape(np.sum(z*z,1), (nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
-            A = np.dot(x,x.T) 
+            A = np.dot(x,x.T)
         elif mode == 'cross':             # compute covariance between data sets x and z
             z = np.dot(z,np.diag(1./ell))
-            A = np.dot(x,z.T) 
+            A = np.dot(x,z.T)
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
@@ -983,15 +983,15 @@ class LINard(Kernel):
 
 class Matern(Kernel):
     '''
-    Matern covariance function with nu = d/2 and isotropic distance measure. 
-    For d=1 the function is also known as the exponential covariance function 
+    Matern covariance function with nu = d/2 and isotropic distance measure.
+    For d=1 the function is also known as the exponential covariance function
     or the Ornstein-Uhlenbeck covariance in 1d.
-    d will be rounded to 1, 3, or 5.
+    d will be rounded to 1, 3, 5 or 7
     hyp = [ log_ell, log_sigma]
-    
-    :param d: d is 2 times nu. Can only be 1,3 or 5.
-    :param log_ell: characteristic length scale. 
-    :param log_sigma: signal deviation. 
+
+    :param d: d is 2 times nu. Can only be 1,3, 5, or 7
+    :param log_ell: characteristic length scale.
+    :param log_sigma: signal deviation.
     '''
     def __init__(self, log_ell=0., d=3, log_sigma=0. ):
         self.hyp = [ log_ell, log_sigma ]
@@ -1004,6 +1004,8 @@ class Matern(Kernel):
             return 1 + t
         elif d == 5:
             return 1 + t*(1+t/3.)
+        elif d == 7:
+            return 1 + 0.5*t*(1 + t/5.*(1. + t/12.) )
         else:
             raise Exception("Wrong value for d in Matern")
 
@@ -1013,7 +1015,9 @@ class Matern(Kernel):
         elif d == 3:
             return t
         elif d == 5:
-            return t*(1+t/3.)
+            return t*(1+t)/3.
+        elif d == 7:
+            return 1./(2.*t)*(1 + t/5.*(3. + 0.75*t + (t*t)/12.) )
         else:
             raise Exception("Wrong value for d in Matern")
 
@@ -1031,15 +1035,15 @@ class Matern(Kernel):
             d = int(round(d))
         d = int(d)
         try:
-            assert(d in [1,3,5])         # check for valid values of d
+            assert(d in [1,3,5,7])         # check for valid values of d
         except AssertionError:
-            print "Warning: You specified d to be neither 1,3 nor 5. We set to d=3. "
+            print "Warning: You specified d to be neither 1,3,5 nor 7. We set it to d=3. "
             d = 3
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
             A = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
-            x = np.sqrt(d)*x/ell   
+            x = np.sqrt(d)*x/ell
             A = np.sqrt(spdist.cdist(x, x, 'sqeuclidean'))
         elif mode == 'cross':             # compute covariance between data sets x and z
             x = np.sqrt(d)*x/ell
@@ -1056,15 +1060,15 @@ class Matern(Kernel):
             d = int(round(d))
         d = int(d)
         try:
-            assert(d in [1,3,5])         # check for valid values of d
+            assert(d in [1,3,5,7])         # check for valid values of d
         except AssertionError:
-            print "Warning: You specified d to be neither 1,3 nor 5. We set to d=3. "
+            print "Warning: You specified d to be neither 1,3,5 nor 7. We set to d=3. "
             d = 3
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
             A = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
-            x = np.sqrt(d)*x/ell   
+            x = np.sqrt(d)*x/ell
             A = np.sqrt(spdist.cdist(x, x, 'sqeuclidean'))
         elif mode == 'cross':             # compute covariance between data sets x and z
             x = np.sqrt(d)*x/ell
@@ -1080,19 +1084,19 @@ class Matern(Kernel):
         else:
             raise Exception("Wrong derivative value in Matern")
         return A
-        
+
 
 
 class Periodic(Kernel):
     '''
-    Stationary kernel for a smooth periodic function. 
+    Stationary kernel for a smooth periodic function.
     hyp = [ log_ell, log_p, log_sigma]
 
     :param log_p: period.
-    :param log_ell: characteristic length scale. 
-    :param log_sigma: signal deviation. 
+    :param log_ell: characteristic length scale.
+    :param log_sigma: signal deviation.
     '''
-    def __init__(self, log_ell=0., log_p=0., log_sigma=0. ): 
+    def __init__(self, log_ell=0., log_p=0., log_sigma=0. ):
         self.hyp = [ log_ell, log_p, log_sigma]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -1138,7 +1142,7 @@ class Periodic(Kernel):
         else:
             raise Exception("Wrong derivative index in covPeriodic")
         return A
-        
+
 
 
 class Noise(Kernel):
@@ -1147,7 +1151,7 @@ class Noise(Kernel):
     Normally NOT used anymore since noise is now added in liklihood.
     hyp = [ log_sigma ]
 
-    :param log_sigma: signal deviation. 
+    :param log_sigma: signal deviation.
     '''
     def __init__(self, log_sigma=0.):
         self.hyp = [log_sigma]
@@ -1186,15 +1190,15 @@ class Noise(Kernel):
         else:
             raise Exception("Wrong derivative index in covNoise")
         return A
-        
+
 
 
 class RQ(Kernel):
-    ''' 
+    '''
     Rational Quadratic covariance function with isotropic distance measure.
     hyp = [ log_ell, log_sigma, log_alpha ]
-    
-    :param log_ell: characteristic length scale. 
+
+    :param log_ell: characteristic length scale.
     :param log_sigma: signal deviation.
     :param log_alpha: shape parameter for the RQ covariance.
     '''
@@ -1247,7 +1251,7 @@ class RQard(Kernel):
 
     :param D: dimension of pattern. set if you want default ell, which is 0.5 for each dimension.
     :param log_ell_list: characteristic length scale for each dimension.
-    :param log_sigma: signal deviation. 
+    :param log_sigma: signal deviation.
     :param log_alpha: shape parameter for the RQ covariance.
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0., log_alpha=0.):
@@ -1305,18 +1309,18 @@ class RQard(Kernel):
             K = ( 1.0 + 0.5*D2/alpha )
             A = sf2 * K**(-alpha) * ( 0.5*D2/K - alpha*np.log(K) )
         else:
-            raise Exception("Wrong derivative index in covRQard") 
+            raise Exception("Wrong derivative index in covRQard")
         return A
-        
+
 
 
 class Pre(Kernel):
     '''
-    Precomputed kernel matrix. No hyperparameters and thus nothing will be optimised. 
+    Precomputed kernel matrix. No hyperparameters and thus nothing will be optimised.
 
     :param M1: cross covariances matrix(train+1 by test).
                last row is self covariances (diagonal of test by test)
-    :param M2: training set covariance matrix (train by train)   
+    :param M2: training set covariance matrix (train by train)
     '''
     def __init__(self,M1,M2):
         self.M1 = M1
@@ -1325,7 +1329,7 @@ class Pre(Kernel):
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         if mode == 'self_test':           # diagonal covariance between test_test
-            A = self.M1[-1,:]             # self covariances for the test cases (last row) 
+            A = self.M1[-1,:]             # self covariances for the test cases (last row)
             A = np.reshape(A, (A.shape[0],1))
         elif mode == 'train':             # covariance between train_train
             A = self.M2
@@ -1337,8 +1341,8 @@ class Pre(Kernel):
         if der != None:
             raise Exception("Error: NO optimization in precomputed kernel matrix")
         return 0
-        
-    
+
+
 
 if __name__ == '__main__':
     pass
