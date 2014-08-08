@@ -1,6 +1,6 @@
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
-#    Daniel Marthaler [marthaler at ge dot com]
+#    Daniel Marthaler [dan dot marthaler at gmail dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
 #    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 #
@@ -19,9 +19,9 @@ import numpy as np
 
 # You may want to read it before reading other models.
 # current possible models are:
-#     pyGPs.GPR          -> Regression 
+#     pyGPs.GPR          -> Regression
 #     pyGPs.GPC          -> Classification
-#     pyGPs.GPR_FITC     -> Sparse GP Regression 
+#     pyGPs.GPR_FITC     -> Sparse GP Regression
 #     pyGPs.GPC_FITC     -> Sparse GP Classification
 #     pyGPs.GPMC         -> Muli-class Classification
 
@@ -33,7 +33,7 @@ print '---------------------GPR DEMO-------------------------'
 #----------------------------------------------------------------------
 # Load demo data (generated from Gaussians)
 #----------------------------------------------------------------------
-demoData = np.load('data_for_demo/regression_data.npz')   
+demoData = np.load('regression_data.npz')
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
@@ -42,25 +42,22 @@ z = demoData['xstar']        # test data
 # A five-line example
 #----------------------------------------------------------------------
 print 'Basic Example'
-model = pyGPs.GPR()          # model 
+model = pyGPs.GPR()          # model
 model.optimize(x, y)         # optimize hyperparamters (default optimizer: single run minimize)
 model.predict(z)             # predict test cases
 model.plot()                 # and plot result
-
-
 
 #----------------------------------------------------------------------
 # Now lets do another example to get more insight to the toolbox
 #----------------------------------------------------------------------
 print 'More Advanced Example'
-model = pyGPs.GPR()           # start from a new model 
+model = pyGPs.GPR()           # start from a new model
 
-# Specify non-default mean and covariance functions 
+# Specify non-default mean and covariance functions
 # @SEE doc_kernel_mean for documentation of all kernels/means
-m = pyGPs.mean.Zero()   
-k = pyGPs.cov.RBF() 
-model.setPrior(kernel=k) 
-
+m = pyGPs.mean.Const() + pyGPs.mean.Linear()
+k = pyGPs.cov.Matern(d=7) # Approximates RBF kernel
+model.setPrior(mean=m, kernel=k)
 
 # Specify optimization method (single run "Minimize" by default)
 # @SEE doc_optimization for documentation of optimization methods
@@ -69,7 +66,7 @@ model.setOptimizer("Minimize", num_restarts=30)
 
 # Instead of fit(), which only fits data using given hyperparameters,
 # optimize() will optimize hyperparamters based on marginal likelihood
-# the deafult mean will be adapted to the average value of the training labels.. 
+# the deafult mean will be adapted to the average value of the training labels.
 # ..if you do not specify mean function by your own.
 model.optimize(x, y)
 model.plotData_1d()
@@ -99,10 +96,10 @@ print 'Optimized negative log marginal likelihood:', round(model.nlZ,3)
 ym, ys2, fmu, fs2, lp = model.predict(z)
 
 
-# Set range of axis for plotting 
+# Set range of axis for plotting
 # NOTE: plot() is a toy method only for 1-d data
-model.plot()   
-# model.plot(axisvals=[-1.9, 1.9, -0.9, 3.9])) 
+model.plot()
+# model.plot(axisvals=[-1.9, 1.9, -0.9, 3.9]))
 
 
 #----------------------------------------------------------------------
@@ -114,7 +111,7 @@ post = model.posterior    # already known before
 
 
 ym, ys2, fmu, fs2, lp = model.predict_with_posterior(post,z)
-# ...other than model.predict(z) 
+# ...other than model.predict(z)
 
 
 # [Only for Regresstion] Specify noise of data (sigma=0.1 by default)

@@ -1,6 +1,6 @@
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
-#    Daniel Marthaler [marthaler at ge dot com]
+#    Daniel Marthaler [dan dot marthaler at gmail dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
 #    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 #
@@ -20,7 +20,7 @@ from pyGPs.Validation import valid
 
 
 def load_binary(D1,D2,reduce=False):
-    data = loadmat('data_for_demo/usps_resampled.mat')
+    data = loadmat('usps_resampled.mat')
     x = data['train_patterns'].T   # train patterns
     y = data['train_labels'].T     # train_labels
     xx = data['test_patterns'].T   # test patterns

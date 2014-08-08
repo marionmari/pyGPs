@@ -1,6 +1,6 @@
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
-#    Daniel Marthaler [marthaler at ge dot com]
+#    Daniel Marthaler [dan dot marthaler at gmail dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
 #    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 #
@@ -31,7 +31,7 @@ import numpy as np
 if __name__ == '__main__':
 
     # LOAD data
-    infile = 'data_for_demo/mauna.txt'	# Note: Samples with value -99.99 were dropped.
+    infile = 'mauna.txt'	# Note: Samples with value -99.99 were dropped.
     f      = open(infile,'r')
     year   = []
     co2    = []

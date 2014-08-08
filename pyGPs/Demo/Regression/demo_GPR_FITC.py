@@ -1,6 +1,6 @@
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
-#    Daniel Marthaler [marthaler at ge dot com]
+#    Daniel Marthaler [dan dot marthaler at gmail dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
 #    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 #
@@ -24,7 +24,7 @@ print '-------------------GPR_FITC DEMO----------------------'
 #----------------------------------------------------------------------
 # Load demo data (generated from Gaussians)
 #----------------------------------------------------------------------
-demoData = np.load('data_for_demo/regression_data.npz') 
+demoData = np.load('regression_data.npz') 
 
 x = demoData['x']            # training data
 y = demoData['y']            # training target

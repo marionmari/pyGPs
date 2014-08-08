@@ -1,6 +1,6 @@
 #===============================================================================
-#   SCG  Scaled conjugate gradient optimization. 
-#   
+#   SCG  Scaled conjugate gradient optimization.
+#
 #   Copyright (c) Ian T Nabney (1996-2001)
 #   updates by Shan Huang 2013
 #
@@ -14,7 +14,7 @@
 #   purposes only, they have not been tested to the degree that would be
 #   advisable in any important application.  All use of these programs is
 #   entirely at the user's own risk."
-#=============================================================================== 
+#===============================================================================
 
 
 from math import sqrt

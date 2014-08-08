@@ -1,6 +1,6 @@
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
-#    Daniel Marthaler [marthaler at ge dot com]
+#    Daniel Marthaler [dan dot marthaler at gmail dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
 #    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 #
@@ -14,19 +14,18 @@
 import pyGPs
 import numpy as np
 
-# To have a gerneral idea, 
+# To have a gerneral idea,
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
-# Here, the focus is on the difference of FITC classification.
+# Here, the focus is on the difference of classification model.
 
 print ''
-print '-------------------GPC_FITC DEMO----------------------'
+print '---------------------GPC DEMO-------------------------'
 
 #----------------------------------------------------------------------
 # Load demo data (generated from Gaussians)
 #----------------------------------------------------------------------
-
-# GPC_FITC target class are +1 and -1
-demoData = np.load('data_for_demo/classification_data.npz')
+# GPC target class are +1 and -1
+demoData = np.load('classification_data.npz')
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
@@ -41,63 +40,42 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 
 
 
+#----------------------------------------------------------------------
+# First example -> state default values
+#----------------------------------------------------------------------
+print 'Basic Example'
+model = pyGPs.GPC()          # binary classification (default inference method: EP)
+model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
+model.optimize(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
+model.predict(z)             # predict test cases
+
+
 
 #----------------------------------------------------------------------
-# Sparse GP classification (FITC) example
+# GP classification example
 #----------------------------------------------------------------------
-
-print "Example 1: default inducing points"
-
+print 'More Advanced Example'
 # Start from a new model 
-model = pyGPs.GPC_FITC()            
+model = pyGPs.GPC()    
 
-# Notice if you want to use default inducing points:
-# You MUST call setData(x,y) FIRST!
-# The default inducing points is a grid(hypercube in higher dimension), where
-# each dimension has 5 values in same step between min and max value of data by default.
-model.setData(x, y)
+# Analogously to GPR
+k = pyGPs.cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
+model.setPrior(kernel=k) 
 
-# To set value per dimension use:
-# model.setData(x, y, value_per_axis=10)
+model.plotData_2d(x1,x2,t1,t2,p1,p2)
 
-model.optimize()
+model.fit(x, y)
+print "Negative log marginal liklihood before:", round(model.nlZ,3)
+model.optimize(x, y)
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
 # Prediction
-n = z.shape[0]              
-model.predict(z, ys=np.ones((n,1)))
-# Again, plot() is a toy method for 2-d data
-model.plot(x1,x2,t1,t2)
-
-
-
-print '------------------------------------------------------'
-print "Example 2: user-defined inducing points"
-
-model = pyGPs.GPC_FITC() 
-
-# You can define inducing points yourself.
-# u = np.array([])
-u1,u2 = np.meshgrid(np.linspace(-2,2,5),np.linspace(-2,2,5))
-u = np.array(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),)))) 
-
-# and specify inducing point when seting prior
-m = pyGPs.mean.Zero()
-k = pyGPs.cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
-model.setPrior(mean=m, kernel=k, inducing_points=u) 
-
-# The rest is analogous to what we have done before.
-model.setData(x, y)
-model.fit()
-print "Negative log marginal liklihood before optimization:", round(model.nlZ,3)
-model.optimize()
-print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
-
-# predict
-n = z.shape[0]              
+n = z.shape[0]
 ymu, ys2, fmu, fs2, lp = model.predict(z, ys=np.ones((n,1)))
-model.plot(x1,x2,t1,t2)
 
+# GPC.plot() is a toy method for 2-d data
+# plot log probability distribution for class +1
+model.plot(x1,x2,t1,t2)
 
 
 
