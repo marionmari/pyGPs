@@ -1,6 +1,6 @@
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
-#    Daniel Marthaler [marthaler at ge dot com]
+#    Daniel Marthaler [dan dot marthaler at gmail dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
 #    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 #
@@ -12,8 +12,8 @@
 #================================================================================
 
 #   MEANING OF NOTATION:
-#  
-#   inffunc      function specifying the inference method 
+#
+#   inffunc      function specifying the inference method
 #   covfunc      prior covariance function (see below)
 #   meanfunc     prior mean function
 #   likfunc      likelihood function
@@ -32,11 +32,11 @@
 #   post         struct representation of the (approximate) posterior
 #                post consists of post.alpha, post.L, post.sW
 #
-# This is a object-oriented python implementation of gpml functionality 
+# This is a object-oriented python implementation of gpml functionality
 # (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2011-02-18).
 # based on the functional-version of python implementation
 # (Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013)
-# 
+#
 # Copyright (c) by Marion Neumann and Shan Huang, 30/09/2013
 
 import itertools

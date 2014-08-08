@@ -1,6 +1,6 @@
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
-#    Daniel Marthaler [marthaler at ge dot com]
+#    Daniel Marthaler [dan dot marthaler at gmail dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
 #    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 #
@@ -62,31 +62,31 @@ class CovarianceTests(unittest.TestCase):
 
     def test_covRBFunit(self):
         print "testing covRBFunit..."
-        k = pyGPs.cov.RBFunit() 
+        k = pyGPs.cov.RBFunit()
         self.checkCovariance(k)
 
 
     def test_covRBFard(self):
         print "testing covRBFard..."
-        k = pyGPs.cov.RBFard(D=self.x.shape[1]) 
+        k = pyGPs.cov.RBFard(D=self.x.shape[1])
         self.checkCovariance(k)
-        
+
 
     def test_covConst(self):
         print "testing covConst..."
-        k = pyGPs.cov.Const() 
+        k = pyGPs.cov.Const()
         self.checkCovariance(k)
- 
+
 
     def test_covLinear(self):
         print "testing covLinear..."
-        k = pyGPs.cov.Linear() 
+        k = pyGPs.cov.Linear()
         self.checkCovariance(k)
 
 
     def test_covLINard(self):
         print "testing covLINard..."
-        k = pyGPs.cov.LINard(D=self.x.shape[1]) 
+        k = pyGPs.cov.LINard(D=self.x.shape[1])
         self.checkCovariance(k)
 
 

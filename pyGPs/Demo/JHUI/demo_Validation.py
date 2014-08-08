@@ -1,6 +1,6 @@
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
-#    Daniel Marthaler [marthaler at ge dot com]
+#    Daniel Marthaler [dan dot marthaler at gmail dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
 #    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 #
@@ -15,7 +15,7 @@ import pyGPs
 from pyGPs.Validation import valid
 import numpy as np
 
-# To have a gerneral idea, 
+# To have a gerneral idea,
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
 
 # This example shows the process of cross-validation using real dataset.

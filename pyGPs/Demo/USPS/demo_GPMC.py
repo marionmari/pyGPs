@@ -1,6 +1,6 @@
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
-#    Daniel Marthaler [marthaler at ge dot com]
+#    Daniel Marthaler [dan dot marthaler at gmail dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
 #    Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 #
@@ -17,7 +17,7 @@ import numpy as np
 from scipy.io import loadmat
 
 
-# To have a gerneral idea, 
+# To have a gerneral idea,
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
 # Here, the focus is on multi-class classification.
 
