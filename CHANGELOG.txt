@@ -71,4 +71,6 @@ structural updates:
 
 - added SM covariance and Gabor covariance
 - bug fixed in dfunc() in Matern covariance
+- change proceed() to evaluate() for inference and likelihood classes
+- added unit test module for SM covariance and Gabor covariance
 
