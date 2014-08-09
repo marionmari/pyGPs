@@ -20,7 +20,7 @@ class LikTests(unittest.TestCase):
     def setUp(self):
         # random data for testing
         self.y = np.random.normal(loc=0.0, scale=1.0, size=(1,1))    # tiled target
-        self.mu = np.random.normal(loc=0.0, scale=1.0, size=(1,1))   # tiled conditional mean 
+        self.mu = np.random.normal(loc=0.0, scale=1.0, size=(1,1))   # tiled conditional mean
         self.s2 = np.random.normal(loc=0.0, scale=1.0, size=(1,1))   # tiled conditional variance
 
 
@@ -59,21 +59,21 @@ class LikTests(unittest.TestCase):
 
     def checkLikelihood(self, likelihood):
         print "predictive mode"
-        lp, ymu, ys2 = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, nargout=3)
+        lp, ymu, ys2 = likelihood.evaluate(y=self.y, mu=self.mu, s2=self.s2, nargout=3)
         self.checkPrediction(lp, ymu, ys2)
 
         print "inference mode(Laplace inference)"
-        lp,dlp,d2lp,d3lp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.Laplace(), nargout=4)
+        lp,dlp,d2lp,d3lp = likelihood.evaluate(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.Laplace(), nargout=4)
         self.checkInferenceLaplace(lp,dlp,d2lp,d3lp)
         for der in xrange(len(likelihood.hyp)):
-            lp_dhyp,dlp_dhyp,d2lp_dhyp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.Laplace(), der=der, nargout=4)
+            lp_dhyp,dlp_dhyp,d2lp_dhyp = likelihood.evaluate(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.Laplace(), der=der, nargout=4)
             self.checkDerivativeLaplace(lp_dhyp,dlp_dhyp,d2lp_dhyp)
 
         print "inference mode(EP inference)"
-        lp,dlp,d2lp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.EP(), nargout=3)
+        lp,dlp,d2lp = likelihood.evaluate(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.EP(), nargout=3)
         self.checkInferenceEP(lp,dlp,d2lp)
         for der in xrange(len(likelihood.hyp)):
-            dlZhyp = likelihood.proceed(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.EP(), der=der, nargout=3)
+            dlZhyp = likelihood.evaluate(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.EP(), der=der, nargout=3)
             self.checkDerivativeEP(dlZhyp)
 
 

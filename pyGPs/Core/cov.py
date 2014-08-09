@@ -441,9 +441,12 @@ class SM(Kernel):
     :param log_v: spectral variances.
     '''
 
-    def __init__(self, Q=0, hyps=[]):
-        self.hyp = hyps
-        self.para = [Q]
+    def __init__(self, Q=0, hyps=[], D=None):
+        if D:
+            self.hyp = np.random.random(Q*(1+2*D))
+        else:
+	        self.hyp = hyps
+    	self.para = [Q]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         Q = self.para[0]
@@ -1016,11 +1019,8 @@ class Matern(Kernel):
             return t
         elif d == 5:
             return t*(1+t)/3.
-<<<<<<< HEAD
-=======
         elif d == 7:
             return 1./(2.*t)*(1 + t/5.*(3. + 0.75*t + (t*t)/12.) )
->>>>>>> e4d4ba68b7a40c08350137c07ccc98d6f2d0282a
         else:
             raise Exception("Wrong value for d in Matern")
 
