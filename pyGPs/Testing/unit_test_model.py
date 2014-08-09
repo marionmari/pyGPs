@@ -24,13 +24,13 @@ class ModelTests(unittest.TestCase):
 
     def setUp(self):
 
-        regData = np.load('../Demo/data_for_demo/regression_data.npz')   
+        regData = np.load('../Demo/Regression/regression_data.npz')
         self.xr = regData['x']            # training data
         self.yr = regData['y']            # training target
         self.zr = regData['xstar']        # test data
         self.ur = np.array([[-1], [-0.8], [-0.5], [0.3],[1.]]) # inducing points
 
-        clsData = np.load('../Demo/data_for_demo/classification_data.npz')
+        clsData = np.load('../Demo/Classification/classification_data.npz')
         self.xc = clsData['x']            # training data
         self.yc = clsData['y']            # training target
         self.zc = clsData['xstar']        # test data

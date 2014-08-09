@@ -61,7 +61,7 @@ class InfTests(unittest.TestCase):
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF()
         likfunc = pyGPs.lik.Gauss()
-        post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
+        post, nlZ, dnlZ = inffunc.evaluate(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
         self.checkInferenceOutput(post, nlZ, dnlZ)
 
 
@@ -71,7 +71,7 @@ class InfTests(unittest.TestCase):
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF().fitc(self.u)
         likfunc = pyGPs.lik.Gauss()
-        post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
+        post, nlZ, dnlZ = inffunc.evaluate(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
         self.checkFITCOutput(post, nlZ, dnlZ)
 
 
@@ -81,7 +81,7 @@ class InfTests(unittest.TestCase):
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF()
         likfunc = pyGPs.lik.Gauss()
-        post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
+        post, nlZ, dnlZ = inffunc.evaluate(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
         self.checkInferenceOutput(post, nlZ, dnlZ)
 
 
@@ -91,7 +91,7 @@ class InfTests(unittest.TestCase):
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF().fitc(self.u)
         likfunc = pyGPs.lik.Gauss()
-        post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
+        post, nlZ, dnlZ = inffunc.evaluate(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
         self.checkFITCOutput(post, nlZ, dnlZ)
 
 
@@ -101,7 +101,7 @@ class InfTests(unittest.TestCase):
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF()
         likfunc = pyGPs.lik.Gauss()
-        post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
+        post, nlZ, dnlZ = inffunc.evaluate(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
         self.checkInferenceOutput(post, nlZ, dnlZ)
 
 
@@ -111,7 +111,7 @@ class InfTests(unittest.TestCase):
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF().fitc(self.u)
         likfunc = pyGPs.lik.Gauss()
-        post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
+        post, nlZ, dnlZ = inffunc.evaluate(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
         self.checkFITCOutput(post, nlZ, dnlZ)
     
     # Test your customized inference function
@@ -119,7 +119,7 @@ class InfTests(unittest.TestCase):
     def test_inf_new(self):
         # specify your inf function
         # set mean/cov/lik functions
-        post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
+        post, nlZ, dnlZ = inffunc.evaluate(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
         self.checkFITCOutput(post, nlZ, dnlZ)
     '''
 
