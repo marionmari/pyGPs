@@ -65,7 +65,7 @@ class Likelihood(object):
             corresponds to log( p(y|mu) ).
 
             ymu and ys2 are the mean and variance of the predictive marginal q(y)
-            note that these two numbers do not depend on a particular 
+            note that these two numbers do not depend on a particular
             value of y.
             All vectors have the same size.
 
@@ -74,37 +74,37 @@ class Likelihood(object):
 
          lik(y, mu, s2, inf) OR lik(y, mu, s2, inf, i)
 
-         There are two cases for inf, namely a) infLaplace, b) infEP 
-         The last input i, refers to derivatives w.r.t. the ith hyperparameter. 
+         There are two cases for inf, namely a) infLaplace, b) infEP
+         The last input i, refers to derivatives w.r.t. the ith hyperparameter.
 
-         | a1) 
-         | lp,dlp,d2lp,d3lp = lik(y, f, [], 'infLaplace'). 
-         | lp, dlp, d2lp and d3lp correspond to derivatives of the log likelihood. 
+         | a1)
+         | lp,dlp,d2lp,d3lp = lik(y, f, [], 'infLaplace').
+         | lp, dlp, d2lp and d3lp correspond to derivatives of the log likelihood.
          | log(p(y|f)) w.r.t. to the latent location f.
-         | lp = log( p(y|f) ) 
-         | dlp = d log( p(y|f) ) / df 
+         | lp = log( p(y|f) )
+         | dlp = d log( p(y|f) ) / df
          | d2lp = d^2 log( p(y|f) ) / df^2
-         | d3lp = d^3 log( p(y|f) ) / df^3 
+         | d3lp = d^3 log( p(y|f) ) / df^3
 
          | a2)
-         | lp_dhyp,dlp_dhyp,d2lp_dhyp = lik(y, f, [], 'infLaplace', i) 
-         | returns derivatives w.r.t. to the ith hyperparameter 
-         | lp_dhyp = d log( p(y|f) ) / (dhyp_i) 
-         | dlp_dhyp = d^2 log( p(y|f) ) / (df   dhyp_i) 
-         | d2lp_dhyp = d^3 log( p(y|f) ) / (df^2 dhyp_i) 
+         | lp_dhyp,dlp_dhyp,d2lp_dhyp = lik(y, f, [], 'infLaplace', i)
+         | returns derivatives w.r.t. to the ith hyperparameter
+         | lp_dhyp = d log( p(y|f) ) / (dhyp_i)
+         | dlp_dhyp = d^2 log( p(y|f) ) / (df   dhyp_i)
+         | d2lp_dhyp = d^3 log( p(y|f) ) / (df^2 dhyp_i)
 
 
          | b1)
-         | lZ,dlZ,d2lZ = lik(y, mu, s2, 'infEP') 
-         | let Z = \int p(y|f) N(f|mu,s2) df then 
-         | lZ = log(Z) 
-         | dlZ = d log(Z) / dmu 
-         | d2lZ = d^2 log(Z) / dmu^2 
+         | lZ,dlZ,d2lZ = lik(y, mu, s2, 'infEP')
+         | let Z = \int p(y|f) N(f|mu,s2) df then
+         | lZ = log(Z)
+         | dlZ = d log(Z) / dmu
+         | d2lZ = d^2 log(Z) / dmu^2
 
          | b2)
          | dlZhyp = lik(y, mu, s2, 'infEP', i)
-         | returns derivatives w.r.t. to the ith hyperparameter 
-         | dlZhyp = d log(Z) / dhyp_i 
+         | returns derivatives w.r.t. to the ith hyperparameter
+         | dlZhyp = d log(Z) / dhyp_i
 
         Cumulative likelihoods are designed for binary classification. Therefore, they
         only look at the sign of the targets y; zero values are treated as +1.
@@ -118,7 +118,7 @@ class Likelihood(object):
 
 class Gauss(Likelihood):
     '''
-    Gaussian likelihood function for regression. 
+    Gaussian likelihood function for regression.
 
     :math:`Gauss(t)=\\frac{1}{\\sqrt{2\\pi\\sigma^2}}e^{-\\frac{(t-y)^2}{2\\sigma^2}}`,
     where :math:`y` is the mean and :math:`\\sigma` is the standard deviation.
@@ -130,14 +130,14 @@ class Gauss(Likelihood):
 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn2 = np.exp(2. * self.hyp[0])
-        if inffunc == None:              # prediction mode 
+        if inffunc == None:              # prediction mode
             if y == None:
                 y = np.zeros_like(mu)
             s2zero = True
             if (not s2==None) and np.linalg.norm(s2) > 0:
-                s2zero = False     
+                s2zero = False
             if s2zero:                   # log probability
-                lp = -(y-mu)**2 /sn2/2 - np.log(2.*np.pi*sn2)/2. 
+                lp = -(y-mu)**2 /sn2/2 - np.log(2.*np.pi*sn2)/2.
                 s2 = np.zeros_like(s2)
             else:
                 inf_func = inf.EP()   # prediction
@@ -150,7 +150,7 @@ class Gauss(Likelihood):
                 else:
                     return lp,ymu
             else:
-                return lp  
+                return lp
         else:
             if isinstance(inffunc, inf.EP):
                 if der == None:                                  # no derivative mode
@@ -169,10 +169,10 @@ class Gauss(Likelihood):
                     return dlZhyp
             elif isinstance(inffunc, inf.Laplace):
                 if der == None:                                  # no derivative mode
-                    if y == None: 
-                        y=0 
+                    if y == None:
+                        y=0
                     ymmu = y-mu
-                    lp = -ymmu**2/(2*sn2) - np.log(2*np.pi*sn2)/2. 
+                    lp = -ymmu**2/(2*sn2) - np.log(2*np.pi*sn2)/2.
                     if nargout>1:
                         dlp = ymmu/sn2                           # dlp, derivative of log likelihood
                         if nargout>2:                            # d2lp, 2nd derivative of log likelihood
@@ -231,7 +231,7 @@ class Gauss(Likelihood):
 class Erf(Likelihood):
     '''
     Error function or cumulative Gaussian likelihood function for binary
-    classification or probit regression. 
+    classification or probit regression.
 
     :math:`Erf(t)=\\frac{1}{2}(1+erf(\\frac{t}{\\sqrt{2}}))=normcdf(t)`
     '''
@@ -246,10 +246,10 @@ class Erf(Likelihood):
             y = 1                                        # allow only +/- 1 values
         if inffunc == None:                              # prediction mode if inf is not present
             y = y*np.ones_like(mu)                       # make y a vector
-            s2zero = True; 
-            if not s2 == None: 
+            s2zero = True;
+            if not s2 == None:
                 if np.linalg.norm(s2)>0:
-                    s2zero = False                       # s2==0?       
+                    s2zero = False                       # s2==0?
             if s2zero:                                   # log probability evaluation
                 p,lp = self.cumGauss(y,mu,2)
             else:                                        # prediction
@@ -275,7 +275,7 @@ class Erf(Likelihood):
                         if nargout>2:                    # 2nd derivative of log likelihood
                             d2lp = -n_p**2 - yf*n_p
                             if nargout>3:                # 3rd derivative of log likelihood
-                                d3lp = 2*y*n_p**3 + 3*f*n_p**2 + y*(f**2-1)*n_p 
+                                d3lp = 2*y*n_p**3 + 3*f*n_p**2 + y*(f**2-1)*n_p
                                 return lp,dlp,d2lp,d3lp
                             else:
                                 return lp,dlp,d2lp
@@ -288,7 +288,7 @@ class Erf(Likelihood):
 
             elif isinstance(inffunc, inf.EP):
                 if der == None:                          # no derivative mode
-                    z = mu/np.sqrt(1+s2) 
+                    z = mu/np.sqrt(1+s2)
                     junk,lZ = self.cumGauss(y,z,2)       # log part function
                     if not y == None:
                          z = z*y
@@ -313,7 +313,7 @@ class Erf(Likelihood):
                 d =  0.158482605320942;
                 c = -1.785873318175113;
                 ga = s2; n = len(ga); b = d*y*np.ones((n,1)); db = np.zeros((n,1)); d2b = db
-                h = -2.*c*np.ones((n,1)); h[ga>1] = np.inf; dh = np.zeros((n,1)); d2h = dh   
+                h = -2.*c*np.ones((n,1)); h[ga>1] = np.inf; dh = np.zeros((n,1)); d2h = dh
                 varargout = [h,b,dh,db,d2h,d2b]
             else:                                        # derivative mode
                 varargout = []                           # deriv. wrt hyp.lik
@@ -321,14 +321,14 @@ class Erf(Likelihood):
 
     def cumGauss(self, y=None, f=None, nargout=1):
         # return [p,lp] = cumGauss(y,f)
-        if not y == None: 
-            yf = y*f 
+        if not y == None:
+            yf = y*f
         else:
-            yf = f 
+            yf = f
         p = (1. + erf(yf/np.sqrt(2.)))/2. # likelihood
-        if nargout>1: 
+        if nargout>1:
             lp = self.logphi(yf,p)
-            return p,lp 
+            return p,lp
         else:
             return p
 
@@ -336,7 +336,7 @@ class Erf(Likelihood):
         # return n_p = gauOverCumGauss(f,p)
         n_p = np.zeros_like(f)       # safely compute Gaussian over cumulative Gaussian
         ok = f>-5                    # naive evaluation for large values of f
-        n_p[ok] = (np.exp(-f[ok]**2/2)/np.sqrt(2*np.pi)) / p[ok] 
+        n_p[ok] = (np.exp(-f[ok]**2/2)/np.sqrt(2*np.pi)) / p[ok]
         bd = f<-6                    # tight upper bound evaluation
         n_p[bd] = np.sqrt(f[bd]**2/4+1)-f[bd]/2
         interp = np.logical_and(np.logical_not(ok),np.logical_not(bd)) # linearly interpolate between both of them
@@ -362,7 +362,7 @@ class Erf(Likelihood):
 
 
 class Laplace(Likelihood):
-    ''' 
+    '''
     Laplacian likelihood function for regression. ONLY works with EP inference!
 
     :math:`Laplace(t) = \\frac{1}{2b}e^{-\\frac{|t-y|}{b}}` where :math:`b=\\frac{\\sigma}{\\sqrt{2}}`,
@@ -376,14 +376,14 @@ class Laplace(Likelihood):
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn = np.exp(self.hyp); b = sn/np.sqrt(2);
         if y == None:
-            y = np.zeros_like(mu) 
+            y = np.zeros_like(mu)
         if inffunc == None:                              # prediction mode if inf is not present
             if y == None:
                 y = np.zeros_like(mu)
-            s2zero = True; 
-            if not s2 == None: 
+            s2zero = True;
+            if not s2 == None:
                 if np.linalg.norm(s2)>0:
-                    s2zero = False                       # s2==0?       
+                    s2zero = False                       # s2==0?
             if s2zero:                                   # log probability evaluation
                 lp = -np.abs(y-mu)/b -np.log(2*b); s2 = 0
             else:                                        # prediction
@@ -401,7 +401,7 @@ class Laplace(Likelihood):
             if isinstance(inffunc, inf.Laplace):
                 if der == None:                          # no derivative mode
                     if y == None:
-                        y = np.zeros_like(mu) 
+                        y = np.zeros_like(mu)
                     ymmu = y-mu
                     lp = np.abs(ymmu)/b - np.log(2*b)
                     if nargout>1:                        # derivative of log likelihood
@@ -421,17 +421,17 @@ class Laplace(Likelihood):
                     lp_dhyp = np.abs(y-mu)/b - 1           # derivative of log likelihood w.r.t. hypers
                     dlp_dhyp = np.sign(mu-y)/b              # first derivative,
                     d2lp_dhyp = np.zeros(mu.shape)         # and also of the second mu derivative
-                    return lp_dhyp, dlp_dhyp, d2lp_dhyp     
+                    return lp_dhyp, dlp_dhyp, d2lp_dhyp
             elif isinstance(inffunc, inf.EP):
                 n = np.max([len(y.flatten()),len(mu.flatten()),len(s2.flatten()),len(sn.flatten())])
                 on = np.ones((n,1))
-                y = y*on; mu = mu*on; s2 = s2*on; sn = sn*on; 
+                y = y*on; mu = mu*on; s2 = s2*on; sn = sn*on;
                 fac = 1e3;          # factor between the widths of the two distributions ...
                                     # ... from when one considered a delta peak, we use 3 orders of magnitude
                 #idlik = np.reshape( (fac*sn) < np.sqrt(s2) , (sn.shape[0],) ) # Likelihood is a delta peak
                 #idgau = np.reshape( (fac*np.sqrt(s2)) < sn , (sn.shape[0],) ) # Gaussian is a delta peak
-                idlik = (fac*sn) < np.sqrt(s2) 
-                idgau = (fac*np.sqrt(s2)) < sn 
+                idlik = (fac*sn) < np.sqrt(s2)
+                idgau = (fac*np.sqrt(s2)) < sn
                 id    = np.logical_and(np.logical_not(idgau),np.logical_not(idlik)) # interesting case in between
 
                 if der == None:                          # no derivative mode
@@ -445,7 +445,7 @@ class Laplace(Likelihood):
                     if np.any(idgau):
                         l = Laplace(log_hyp=np.log(sn[idgau]))
                         a = l.evaluate(mu=mu[idgau], y=y[idgau])
-                        lZ[idgau] = a[0]; dlZ[idgau] = a[1]; d2lZ[idgau] = a[2] 
+                        lZ[idgau] = a[0]; dlZ[idgau] = a[1]; d2lZ[idgau] = a[2]
                     if np.any(id):
                         # substitution to obtain unit variance, zero mean Laplacian
                         tvar = s2[id]/(sn[id]**2+1e-16)
@@ -504,8 +504,8 @@ class Laplace(Likelihood):
                         ep  = np.exp(vp+lezp-vmax)
                         em  = np.exp(vm+lezm-vmax)
                         dap = ep*(dvp - 2/np.sqrt(np.pi)*np.exp(-zp**2-lezp)*dzp)
-                        dam = em*(dvm - 2/np.sqrt(np.pi)*np.exp(-zm**2-lezm)*dzm)        
-                        dlZhyp[id] = (dap+dam)/(ep+em) - 1;       
+                        dam = em*(dvm - 2/np.sqrt(np.pi)*np.exp(-zm**2-lezm)*dzm)
+                        dlZhyp[id] = (dap+dam)/(ep+em) - 1;
                     return dlZhyp               # deriv. wrt hyp.lik
             elif isinstance(inffunc, inf.VB):
                 n = len(s2.flatten()); b = np.zeros((n,1)); y = y*np.ones((n,1)); z = y
@@ -527,7 +527,7 @@ class Laplace(Likelihood):
         return f
 
     def _expABz_expAx(self,A,x,B,z):
-        ''' 
+        '''
         Computes y = ( (exp(A).*B)*z ) ./ ( exp(A)*x ) in a numerically safe way
         The function is not general in the sense that it yields correct values for
         all types of inputs. We assume that the values are close together.
@@ -556,8 +556,8 @@ class Laplace(Likelihood):
         return lp
 
     def _logsum2exp(self,logx):
-        '''computes y = log( sum(exp(x),2) ) in a numerically safe way 
-        by subtracting the row maximum to avoid cancelation after taking 
+        '''computes y = log( sum(exp(x),2) ) in a numerically safe way
+        by subtracting the row maximum to avoid cancelation after taking
         the exp the sum is done along the rows'''
         N = logx.shape[1]
         max_logx = logx.max(1)
@@ -568,7 +568,6 @@ class Laplace(Likelihood):
         return list(y.flatten())
 
 
- 
 
 if __name__ == '__main__':
     pass

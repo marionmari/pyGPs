@@ -22,7 +22,10 @@ import numpy as np
 import gp
 from scipy.optimize import fmin_bfgs as bfgs
 from scipy.optimize import fmin_cg as cg
-from pyGPs.Optimization import minimize, scg
+from scipy.optimize import fmin_cobyla as cobyla
+from scipy.optimize import fmin_l_bfgs_b as lbfgsb
+import pyGPs
+from pyGPs.Optimization import minimize, scg, rt_minimize
 from copy import deepcopy
 
 class Optimizer(object):
@@ -40,7 +43,7 @@ class Optimizer(object):
         of the hyparameters to achieve such value.
 
         You can achieve advanced search strategy by initializing Optimizer with searchConfig, 
-        which is an instance of pyGPs.Optimization.conf. 
+        which is an instance of pyGPs.Optimization.conf.
         See more in pyGPs.Optimization.conf and pyGPs.Core.gp.GP.setOptimizer,
         as well as in online documentation of section Optimizers.
         '''
@@ -80,7 +83,6 @@ class Optimizer(object):
         self.model.covfunc.hyp   = hypInList[Lm:(Lm+Lc)]
         self.model.likfunc.hyp   = hypInList[(Lm+Lc):]
 
-       
 
 class CG(Optimizer):
     '''Conjugent gradient'''
@@ -309,6 +311,64 @@ class SCG(Optimizer):
                     print "[SCG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue 
 
+        return optimalHyp, funcValue
+
+
+class RTMinimize(Optimizer):
+    def __init__(self, model, searchConfig=None):
+        super(RTMinimize, self).__init__()
+        self.model = model
+        self.searchConfig = searchConfig
+        self.trailsCounter = 0
+        self.errorCounter = 0
+
+    def findMin(self, x, y):
+        meanfunc   = self.model.meanfunc
+        covfunc    = self.model.covfunc
+        likfunc    = self.model.likfunc
+        inffunc    = self.model.inffunc
+        hypInArray = self._convert_to_array()
+
+        if isinstance(covfunc, pyGPs.cov.SM):
+            Lm = len(meanfunc.hyp)
+            Lc = len(covfunc.hyp)
+
+        opt = rt_minimize.rt_minimize(hypInArray, self._nlzAnddnlz, length=-40)
+        optimalHyp = deepcopy(opt[0])
+        funcValue = opt[1][-1]
+
+        if self.searchConfig:
+            searchRange = self.searchConfig.meanRange + \
+                self.searchConfig.covRange + self.searchConfig.likRange
+            if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
+                raise Exception('Specify at least one of the stop conditions')
+            while True:
+                self.trailsCounter += 1                 # increase counter
+                # TODO Replace with better initialization
+                for i in xrange(hypInArray.shape[0]):   # random init of hyp
+                    hypInArray[i] = np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
+                if isinstance(self.model.covfunc, pyGPs.cov.SM):
+                    hyps = cov.initSMhypers(self.model.covfunc.para[0], x, y)
+                    hypInArray[Lm:Lm + Lc] = hyps[:]
+                # value this time is better than optimal min value
+                try:
+                    thisopt = rt_minimize.rt_minimize(hypInArray, self._nlzAnddnlz, length=-40)
+                    if thisopt[1][-1] < funcValue:
+						funcValue = thisopt[1][-1]
+						optimalHyp = thisopt[0]
+                except:
+                    self.errorCounter += 1
+                if self.searchConfig.num_restarts and self.errorCounter > self.searchConfig.num_restarts / 2:
+                    print "[RTMinimize] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
+                    raise Exception("Over half of the trails failed for minimize")
+                # if exceed num_restarts
+                if self.searchConfig.num_restarts and self.trailsCounter > self.searchConfig.num_restarts - 1:
+                    print "[RTMinimize] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
+                    return optimalHyp, funcValue
+                # reach provided mininal
+                if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:
+                    print "[RTMinimize] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
+                    return optimalHyp, funcValue
         return optimalHyp, funcValue
 
 

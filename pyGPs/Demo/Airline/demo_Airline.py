@@ -39,13 +39,13 @@ if __name__ == '__main__':
     m = pyGPs.mean.Zero()
 
     hyps = pyGPs.cov.initSMhypers(Q, x, y)
-    k = pyGPs.cov.SM(Q, hyps)
+    k = pyGPs.cov.SM(Q, D=x.shape[0], hyps)
     model.setPrior(kernel=k)
 
     # Noise std. deviation
     sn = 0.1
     model.setNoise(log_sigma=np.log(sn))
-
+    model.setScalePrior([1.0, 1.0])
     # Instead of fit(), which only fits data using given hyperparameters,
     # optimize() will optimize hyperparamters based on marginal likelihood
     # the deafult mean will be adapted to the average value of the training labels..

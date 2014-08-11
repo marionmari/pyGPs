@@ -58,18 +58,19 @@ model = pyGPs.GPR()           # start from a new model
 m = pyGPs.mean.Const() + pyGPs.mean.Linear()
 k = pyGPs.cov.Matern(d=7) # Approximates RBF kernel
 model.setPrior(mean=m, kernel=k)
-
+#model.setScalePrior([1.0, 1.0])
 # Specify optimization method (single run "Minimize" by default)
 # @SEE doc_optimization for documentation of optimization methods
-model.setOptimizer("Minimize", num_restarts=30)
-
+#model.setOptimizer("RTMinimize", num_restarts=30)
+#model.setOptimizer("CG", num_restarts=30)
+#model.setOptimizer("LBFGSB", num_restarts=30)
 
 # Instead of fit(), which only fits data using given hyperparameters,
 # optimize() will optimize hyperparamters based on marginal likelihood
 # the deafult mean will be adapted to the average value of the training labels.
 # ..if you do not specify mean function by your own.
 model.optimize(x, y)
-model.plotData_1d()
+#model.plotData_1d()
 
 # There are several propertys you can get from the model
 # For example:

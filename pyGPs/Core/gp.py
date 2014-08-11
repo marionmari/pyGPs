@@ -142,6 +142,13 @@ class GP(object):
                         "BFGS"       -> quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)
 
                         "SCG"        -> scaled conjugent gradient (faster than CG)
+
+                        "COBYLA"     -> Constrained Optimization by Linear Approximation method of Powell
+
+                        "LBFGSB"     -> A Limited Memory Algorithm for Bound Constrained Optimization
+
+                        "RTMinimize" -> a refactored minimize by Carl Rasmussen and Ryan Turner
+
         :param num_restarts: Set if you want to run mulitiple times of optimization with different initial guess.
                              It specifys the maximum number of runs/restarts/trials.
         :param min_threshold: Set if you want to run mulitiple times of optimization with different initial guess.
@@ -180,7 +187,7 @@ class GP(object):
 
         # optimize
         optimalHyp, optimalNlZ = self.optimizer.findMin(self.x, self.y)
-        self.nlZ= optimalNlZ
+        self.nlZ = optimalNlZ
 
         # apply optimal hyp to all mean/cov/lik functions here
         self.optimizer._apply_in_objects(optimalHyp)
@@ -207,7 +214,7 @@ class GP(object):
             self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
         # call inference method
         if isinstance(self.likfunc, lik.Erf): #or is instance(self.likfunc, lik.Logistic):
-            uy = unique(self.y)
+            uy  = unique(self.y)
             ind = ( uy != 1 )
             if any( uy[ind] != -1):
                 raise Exception('You attempt classification using labels different from {+1,-1}')
@@ -217,9 +224,14 @@ class GP(object):
             self.posterior = deepcopy(post)
             return nlZ, post
         else:
-            post, nlZ, dnlZ = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, 3)
-            self.nlZ = nlZ
-            self.dnlZ = deepcopy(dnlZ)
+            if self.ScalePrior:
+                post, nlZ, dnlZ, dscale = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, self.ScalePrior, 3)
+            else:
+                post, nlZ, dnlZ = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, self.ScalePrior, 3)
+                dscale = None
+            self.nlZ       = nlZ
+            self.dnlZ      = deepcopy(dnlZ)
+            self.dscale    = dscale
             self.posterior = deepcopy(post)
             return nlZ, dnlZ, post
 
@@ -239,9 +251,9 @@ class GP(object):
         :return: ym, ys2, fm, fs2, lp
         '''
         meanfunc = self.meanfunc
-        covfunc = self.covfunc
-        likfunc = self.likfunc
-        inffunc = self.inffunc
+        covfunc  = self.covfunc
+        likfunc  = self.likfunc
+        inffunc  = self.inffunc
         x = self.x
         y = self.y
         if xs.ndim == 1:
@@ -323,9 +335,9 @@ class GP(object):
         :return: ym, ys2, fm, fs2, lp
         '''
         meanfunc = self.meanfunc
-        covfunc = self.covfunc
-        likfunc = self.likfunc
-        inffunc = self.inffunc
+        covfunc  = self.covfunc
+        likfunc  = self.likfunc
+        inffunc  = self.inffunc
         x = self.x
         y = self.y
         if xs.ndim == 1:
@@ -377,10 +389,10 @@ class GP(object):
             ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
             ys2[id] = np.reshape( np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1)/N , (len(id),1) ) # .. variance
             nact = id[-1]+1                  # set counter to index of next data point
-        self.ym = ymu
+        self.ym  = ymu
         self.ys2 = ys2
-        self.lp = lp
-        self.fm = fmu
+        self.lp  = lp
+        self.fm  = fmu
         self.fs2 = fs2
         if ys == None:
             return ymu, ys2, fmu, fs2, None
@@ -424,6 +436,14 @@ class GPR(GP):
             self.optimizer = opt.CG(self,conf)
         elif method == "BFGS":
             self.optimizer = opt.BFGS(self,conf)
+        elif method == "LBFGSB":
+            self.optimizer = opt.LBFGSB(self, conf)
+        elif method == "COBYLA":
+            self.optimizer = opt.COBYLA(self, conf)
+        elif method == "RTMinimize":
+            self.optimizer = opt.RTMinimize(self, conf)
+        else:
+            raise Error('Optimization method is not set correctly in setOptimizer')
 
     def plot(self,axisvals=None):
         '''Plot 1d GP regression.'''
