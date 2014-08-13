@@ -1008,7 +1008,7 @@ class Matern(Kernel):
         elif d == 5:
             return 1 + t*(1+t/3.)
         elif d == 7:
-            return 1 + 0.5*t*(1 + t/5.*(1. + t/12.) )
+            return 1 + t*(1 + 2.*t/5.*(1. + t/6.) )
         else:
             raise Exception("Wrong value for d in Matern")
 
@@ -1020,7 +1020,7 @@ class Matern(Kernel):
         elif d == 5:
             return t*(1+t)/3.
         elif d == 7:
-            return 1./(2.*t)*(1 + t/5.*(3. + 0.75*t + (t*t)/12.) )
+            return (t/5.)*(1 + t + (t*t)/3.)
         else:
             raise Exception("Wrong value for d in Matern")
 

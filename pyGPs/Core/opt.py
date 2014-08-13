@@ -221,13 +221,13 @@ class Minimize(Optimizer):
         inffunc = self.model.inffunc
         hypInArray = self._convert_to_array()
 
-        try: 
+        try:
             opt = minimize.run(self._nlzAnddnlz, hypInArray, length=-40)
             optimalHyp = deepcopy(opt[0])
-            funcValue  = opt[1][-1]  
+            funcValue  = opt[1][-1]
         except:
             self.errorCounter += 1
-            if not self.searchConfig:         
+            if not self.searchConfig:
                 raise Exception("Can not use minimize. Try other hyparameters")
         self.trailsCounter += 1
 

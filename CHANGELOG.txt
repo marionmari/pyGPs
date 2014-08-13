@@ -70,6 +70,7 @@ August 9th 2014
 structural updates:
 
 - added SM covariance and Gabor covariance
+- added nu=(7/2) Matern covariance (approximates RBF Covariance)
 - bug fixed in dfunc() in Matern covariance
 - change proceed() to evaluate() for inference and likelihood classes
 - added unit test module for SM covariance and Gabor covariance

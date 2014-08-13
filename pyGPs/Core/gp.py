@@ -224,14 +224,9 @@ class GP(object):
             self.posterior = deepcopy(post)
             return nlZ, post
         else:
-            if self.ScalePrior:
-                post, nlZ, dnlZ, dscale = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, self.ScalePrior, 3)
-            else:
-                post, nlZ, dnlZ = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, self.ScalePrior, 3)
-                dscale = None
+            post, nlZ, dnlZ = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, 3)
             self.nlZ       = nlZ
             self.dnlZ      = deepcopy(dnlZ)
-            self.dscale    = dscale
             self.posterior = deepcopy(post)
             return nlZ, dnlZ, post
 
