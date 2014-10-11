@@ -224,10 +224,10 @@ class GP(object):
             self.posterior = deepcopy(post)
             return nlZ, post
         else:
-            if self.ScalePrior:
+            try:
                 post, nlZ, dnlZ, dscale = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, self.ScalePrior, 3)
-            else:
-                post, nlZ, dnlZ = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, self.ScalePrior, 3)
+            except AttributeError as e:
+                post, nlZ, dnlZ = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y,  3)
                 dscale = None
             self.nlZ       = nlZ
             self.dnlZ      = deepcopy(dnlZ)
