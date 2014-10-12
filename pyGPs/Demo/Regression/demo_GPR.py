@@ -58,7 +58,6 @@ model = pyGPs.GPR()           # start from a new model
 m = pyGPs.mean.Const() + pyGPs.mean.Linear()
 k = pyGPs.cov.Matern(d=7) # Approximates RBF kernel
 model.setPrior(mean=m, kernel=k)
-#model.setScalePrior([1.0, 1.0])
 # Specify optimization method (single run "Minimize" by default)
 # @SEE doc_optimization for documentation of optimization methods
 #model.setOptimizer("RTMinimize", num_restarts=30)
@@ -72,7 +71,7 @@ model.setPrior(mean=m, kernel=k)
 model.optimize(x, y)
 #model.plotData_1d()
 
-# There are several propertys you can get from the model
+# There are several properties you can get from the model
 # For example:
 #   model.nlZ
 #   model.dnlZ.cov

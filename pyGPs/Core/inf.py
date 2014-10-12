@@ -416,7 +416,7 @@ class Laplace(Inference):
         m = meanfunc.getMean(x)              # evaluate the mean vector
         n, D = x.shape
         Psi_old = np.inf                     # make sure while loop starts by the largest old objective val
-        if self.last_alpha == None:          # find a good starting point for alpha and f
+        if self.last_alpha is None:          # find a good starting point for alpha and f
             alpha = np.zeros((n,1))
             f = np.dot(K,alpha) + m          # start at mean if sizes not match
             vargout = likfunc.evaluate(y, f, None, inffunc, None, 3)
@@ -544,7 +544,7 @@ class FITC_Laplace(Inference):
         V  = np.dot(R0,Ku); d0 = diagK - np.array([(V*V).sum(axis=0)]).T     # initial d, needed
 
         Psi_old = np.inf                    # make sure while loop starts by the largest old objective val
-        if self.last_alpha == None:         # find a good starting point for alpha and f
+        if self.last_alpha is None:         # find a good starting point for alpha and f
             alpha = np.zeros((n,1))
             f = self._mvmK(alpha,V,d0) + m   # start at mean if sizes not match
             vargout = likfunc.evaluate(y, f, None, inffunc, None, 3)
@@ -673,7 +673,7 @@ class EP(Inference):
         K = covfunc.getCovMatrix(x=x, mode='train') # evaluate the covariance matrix
         m = meanfunc.getMean(x)                   # evaluate the mean vector
         nlZ0 = -likfunc.evaluate(y, m, np.reshape(np.diag(K),(np.diag(K).shape[0],1)), inffunc).sum()
-        if self.last_ttau == None:                # find starting point for tilde parameters
+        if self.last_ttau is None:                # find starting point for tilde parameters
             ttau  = np.zeros((n,1))               # initialize to zero if we have no better guess
             tnu   = np.zeros((n,1))
             Sigma = K                             # initialize Sigma and mu, the parameters of ..
@@ -793,7 +793,7 @@ class FITC_EP(Inference):
 
         # marginal likelihood for ttau = tnu = zeros(n,1); equals n*log(2) for likCum*
         nlZ0 = -1.* likfunc.evaluate(y, m, np.reshape(diagK,(diagK.shape[0],1)), inffunc).sum()
-        if self.last_ttau == None:                      # find starting point for tilde parameters
+        if self.last_ttau is None:                      # find starting point for tilde parameters
             ttau  = np.zeros((n,1))                     # initialize to zero if we have no better guess
             tnu   = np.zeros((n,1))
             [d,P,R,nn,gg] = self._epfitcRefresh(d0,Ku,R0,V,ttau,tnu)   # compute initial repres.

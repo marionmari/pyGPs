@@ -130,11 +130,11 @@ class Gauss(Likelihood):
 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn2 = np.exp(2. * self.hyp[0])
-        if inffunc == None:              # prediction mode
-            if y == None:
+        if inffunc is None:              # prediction mode
+            if y is None:
                 y = np.zeros_like(mu)
             s2zero = True
-            if (not s2==None) and np.linalg.norm(s2) > 0:
+            if (not s2 is None) and np.linalg.norm(s2) > 0:
                 s2zero = False
             if s2zero:                   # log probability
                 lp = -(y-mu)**2 /sn2/2 - np.log(2.*np.pi*sn2)/2.
@@ -153,7 +153,7 @@ class Gauss(Likelihood):
                 return lp
         else:
             if isinstance(inffunc, inf.EP):
-                if der == None:                                  # no derivative mode
+                if der is None:                                  # no derivative mode
                     lZ = -(y-mu)**2/(sn2+s2)/2. - np.log(2*np.pi*(sn2+s2))/2. # log part function
                     if nargout>1:
                         dlZ  = (y-mu)/(sn2+s2)                   # 1st derivative w.r.t. mean
@@ -168,8 +168,8 @@ class Gauss(Likelihood):
                     dlZhyp = ((y-mu)**2/(sn2+s2)-1) / (1+s2/sn2) # deriv. w.r.t. hyp.lik
                     return dlZhyp
             elif isinstance(inffunc, inf.Laplace):
-                if der == None:                                  # no derivative mode
-                    if y == None:
+                if der is None:                                  # no derivative mode
+                    if y is None:
                         y=0
                     ymmu = y-mu
                     lp = -ymmu**2/(2*sn2) - np.log(2*np.pi*sn2)/2.
@@ -193,7 +193,7 @@ class Gauss(Likelihood):
                     return lp_dhyp,dlp_dhyp,d2lp_dhyp
             '''
             elif isinstance(inffunc, infVB):
-                if der == None:
+                if der is None:
                     # variational lower site bound
                     # t(s) = exp(-(y-s)^2/2sn2)/sqrt(2*pi*sn2)
                     # the bound has the form: b*s - s.^2/(2*ga) - h(ga)/2 with b=y/ga
@@ -239,15 +239,15 @@ class Erf(Likelihood):
         self.hyp = []
 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
-        if not y == None:
+        if not y is None:
             y = np.sign(y)
             y[y==0] = 1
         else:
             y = 1                                        # allow only +/- 1 values
-        if inffunc == None:                              # prediction mode if inf is not present
+        if inffunc is None:                              # prediction mode if inf is not present
             y = y*np.ones_like(mu)                       # make y a vector
             s2zero = True;
-            if not s2 == None:
+            if not s2 is None:
                 if np.linalg.norm(s2)>0:
                     s2zero = False                       # s2==0?
             if s2zero:                                   # log probability evaluation
@@ -266,7 +266,7 @@ class Erf(Likelihood):
                 return lp
         else:                                            # inference mode
             if isinstance(inffunc, inf.Laplace):
-                if der == None:                          # no derivative mode
+                if der is None:                          # no derivative mode
                     f = mu; yf = y*f                     # product latents and labels
                     p,lp = self.cumGauss(y,f,2)
                     if nargout>1:                        # derivative of log likelihood
@@ -287,13 +287,13 @@ class Erf(Likelihood):
                     return []                            # derivative w.r.t. hypers
 
             elif isinstance(inffunc, inf.EP):
-                if der == None:                          # no derivative mode
+                if der is None:                          # no derivative mode
                     z = mu/np.sqrt(1+s2)
                     junk,lZ = self.cumGauss(y,z,2)       # log part function
-                    if not y == None:
+                    if not y is None:
                          z = z*y
                     if nargout>1:
-                        if y == None: y = 1
+                        if y is None: y = 1
                         n_p = self.gauOverCumGauss(z,np.exp(lZ))
                         dlZ = y*n_p/np.sqrt(1.+s2)       # 1st derivative wrt mean
                         if nargout>2:
@@ -307,7 +307,7 @@ class Erf(Likelihood):
                     return []                       # deriv. wrt hyp.lik
         '''
         if inffunc == 'inf.infVB':
-            if der == None:                              # no derivative mode
+            if der is None:                              # no derivative mode
                 # naive variational lower bound based on asymptotical properties of lik
                 # normcdf(t) -> -(t*A_hat^2-2dt+c)/2 for t->-np.inf (tight lower bound)
                 d =  0.158482605320942;
@@ -321,7 +321,7 @@ class Erf(Likelihood):
 
     def cumGauss(self, y=None, f=None, nargout=1):
         # return [p,lp] = cumGauss(y,f)
-        if not y == None:
+        if not y is None:
             yf = y*f
         else:
             yf = f
@@ -375,13 +375,13 @@ class Laplace(Likelihood):
 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn = np.exp(self.hyp); b = sn/np.sqrt(2);
-        if y == None:
+        if y is None:
             y = np.zeros_like(mu)
-        if inffunc == None:                              # prediction mode if inf is not present
-            if y == None:
+        if inffunc is None:                              # prediction mode if inf is not present
+            if y is None:
                 y = np.zeros_like(mu)
             s2zero = True;
-            if not s2 == None:
+            if not s2 is None:
                 if np.linalg.norm(s2)>0:
                     s2zero = False                       # s2==0?
             if s2zero:                                   # log probability evaluation
@@ -399,8 +399,8 @@ class Laplace(Likelihood):
                 return lp
         else:                                            # inference mode
             if isinstance(inffunc, inf.Laplace):
-                if der == None:                          # no derivative mode
-                    if y == None:
+                if der is None:                          # no derivative mode
+                    if y is None:
                         y = np.zeros_like(mu)
                     ymmu = y-mu
                     lp = np.abs(ymmu)/b - np.log(2*b)
@@ -434,7 +434,7 @@ class Laplace(Likelihood):
                 idgau = (fac*np.sqrt(s2)) < sn
                 id    = np.logical_and(np.logical_not(idgau),np.logical_not(idlik)) # interesting case in between
 
-                if der == None:                          # no derivative mode
+                if der is None:                          # no derivative mode
                     lZ = np.zeros((n,1))
                     dlZ = np.zeros((n,1))
                     d2lZ = np.zeros((n,1))

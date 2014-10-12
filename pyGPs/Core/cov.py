@@ -315,7 +315,7 @@ class FITCOfKernel(Kernel):
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         xu = self.inducingInput
-        if x != None:
+        if not x is None:
             try:
                 assert(xu.shape[1] == x.shape[1])
             except AssertionError:
@@ -334,7 +334,7 @@ class FITCOfKernel(Kernel):
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         xu = self.inducingInput
-        if x!= None:
+        if not x is None:
             try:
                 assert(xu.shape[1] == x.shape[1])
             except AssertionError:
@@ -652,9 +652,9 @@ class PiecePoly(Kernel):
         return self.ppmax(1-r,0)**(j+v-1) * r * ( (j+v)*self.func(v,r,j) - self.ppmax(1-r,0) * self.dfunc(v,r,j) )
 
     def getCovMatrix(self,x=None,z=None,mode=None):
-        if x != None:
+        if not x is None:
             n, D = x.shape
-        if z != None:
+        if not z is None:
             nn, D = z.shape
         ell = np.exp(self.hyp[0])            # characteristic length scale
         sf2 = np.exp(2.*self.hyp[1])         # signal variance
@@ -675,9 +675,9 @@ class PiecePoly(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
-        if x != None:
+        if not x is None:
             n, D = x.shape
-        if z != None:
+        if not z is None:
             nn, D = z.shape
         ell = np.exp(self.hyp[0])            # characteristic length scale
         sf2 = np.exp(2.*self.hyp[1])         # signal variance
@@ -805,9 +805,9 @@ class RBFard(Kernel):
             self.hyp = log_ell_list + [log_sigma]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
-        if x != None:
+        if not x is None:
             n, D = x.shape
-        if z != None:
+        if not z is None:
             nn, D = z.shape
         ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
@@ -823,9 +823,9 @@ class RBFard(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
-        if x != None:
+        if not x is None:
             n, D = x.shape
-        if z != None:
+        if not z is None:
             nn, D = z.shape
         ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
@@ -965,9 +965,9 @@ class LINard(Kernel):
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         ell = np.exp(self.hyp)            # ARD parameters
-        if x != None:
+        if not x is None:
             n, D = x.shape
-        if z != None:
+        if not z is None:
             nn, D = z.shape
         if der < D:
             if mode == 'self_test':
@@ -1264,9 +1264,9 @@ class RQard(Kernel):
             self.hyp = log_ell_list + [ log_sigma, log_alpha ]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
-        if x != None:
+        if not x is None:
             n, D = x.shape
-        if z != None:
+        if not z is None:
             nn, D = z.shape
         ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
@@ -1283,9 +1283,9 @@ class RQard(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
-        if x != None:
+        if not x is None:
             n, D = x.shape
-        if z != None:
+        if not z is None:
             nn, D = z.shape
         ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
@@ -1341,7 +1341,7 @@ class Pre(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
-        if der != None:
+        if not der is None:
             raise Exception("Error: NO optimization in precomputed kernel matrix")
         return 0
 
