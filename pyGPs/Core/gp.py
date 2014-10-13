@@ -121,10 +121,10 @@ class GP(object):
         '''
         Set prior mean and cov
         '''
-        if mean != None:
+        if not mean is None:
             self.meanfunc = mean
             self.usingDefaultMean = False
-        if kernel != None:
+        if not kernel is None:
             self.covfunc = kernel
             if type(kernel) is cov.Pre:
                 self.usingDefaultMean = False
@@ -171,17 +171,17 @@ class GP(object):
         Train optimal hyperparameters based on training data,
         adjust new hyperparameters to all mean/cov/lik functions
         '''
-        if x != None:
+        if not x is None:
             if x.ndim == 1:
                 x = np.reshape(x, (x.shape[0],1))
             self.x = x
 
-        if y != None:
+        if not y is None:
             if y.ndim == 1:
                 y = np.reshape(y, (y.shape[0],1))
             self.y = y
 
-        if self.usingDefaultMean and self.meanfunc == None:
+        if self.usingDefaultMean and self.meanfunc is None:
             c = np.mean(y)
             self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
 
@@ -201,15 +201,15 @@ class GP(object):
         and struct representation of the (approximate) posterior(post),
         which consists of post.alpha, post.L, post.sW.
         '''
-        if x != None:
+        if not x is None:
             if x.ndim == 1:
                 x = np.reshape(x, (x.shape[0],1))
             self.x = x
-        if y != None:
+        if not y is None:
             if y.ndim == 1:
                 y = np.reshape(y, (y.shape[0],1))
             self.y = y
-        if self.usingDefaultMean and self.meanfunc == None:
+        if self.usingDefaultMean and self.meanfunc is None:
             c = np.mean(y)
             self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
         # call inference method
@@ -231,7 +231,6 @@ class GP(object):
                 dscale = None
             self.nlZ       = nlZ
             self.dnlZ      = deepcopy(dnlZ)
-            self.dscale    = dscale
             self.posterior = deepcopy(post)
             return nlZ, dnlZ, post
 
@@ -259,12 +258,12 @@ class GP(object):
         if xs.ndim == 1:
             xs = np.reshape(xs, (xs.shape[0],1))
         self.xs = xs
-        if ys != None:
+        if not ys is None:
             if ys.ndim == 1:
                 ys = np.reshape(ys, (ys.shape[0],1))
             self.ys = ys
 
-        if self.posterior == None:
+        if self.posterior is None:
             self.fit()
 
         alpha = self.posterior.alpha
@@ -299,9 +298,10 @@ class GP(object):
                 fs2[id] = kss + np.array([(Ks*np.dot(L,Ks)).sum(axis=0)]).T # predictive variances
             fs2[id] = np.maximum(fs2[id],0)            # remove numerical noise i.e. negative variances
             Fs2 = np.tile(fs2[id],(1,N))               # we have multiple values in case of sampling
-            if ys == None:
+            if ys is None:
                 [Lp, Ymu, Ys2] = likfunc.evaluate(None,Fmu[:],Fs2[:],None,None,3)
             else:
+                print np.tile(ys[id],(1,N))
                 [Lp, Ymu, Ys2] = likfunc.evaluate(np.tile(ys[id],(1,N)), Fmu[:], Fs2[:],None,None,3)
             lp[id]  = np.reshape( np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1)/N , (len(id),1) )   # log probability; sample averaging
             ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
@@ -312,7 +312,7 @@ class GP(object):
         self.lp = lp
         self.fm = fmu
         self.fs2 = fs2
-        if ys == None:
+        if ys is None:
             return ymu, ys2, fmu, fs2, None
         else:
             return ymu, ys2, fmu, fs2, lp
@@ -343,7 +343,7 @@ class GP(object):
         if xs.ndim == 1:
             xs = np.reshape(xs, (xs.shape[0],1))
         self.xs = xs
-        if ys != None:
+        if not ys is None:
             if ys.ndim == 1:
                 ys = np.reshape(ys, (ys.shape[0],1))
             self.ys = ys
@@ -381,7 +381,7 @@ class GP(object):
                 fs2[id] = kss + np.array([(Ks*np.dot(L,Ks)).sum(axis=0)]).T # predictive variances
             fs2[id] = np.maximum(fs2[id],0)            # remove numerical noise i.e. negative variances
             Fs2 = np.tile(fs2[id],(1,N))               # we have multiple values in case of sampling
-            if ys == None:
+            if ys is None:
                 [Lp, Ymu, Ys2] = likfunc.evaluate(None,Fmu[:],Fs2[:],None,None,3)
             else:
                 [Lp, Ymu, Ys2] = likfunc.evaluate(np.tile(ys[id],(1,N)), Fmu[:], Fs2[:],None,None,3)
@@ -394,7 +394,7 @@ class GP(object):
         self.lp  = lp
         self.fm  = fmu
         self.fs2 = fs2
-        if ys == None:
+        if ys is None:
             return ymu, ys2, fmu, fs2, None
         else:
             return ymu, ys2, fmu, fs2, lp
@@ -422,11 +422,11 @@ class GPR(GP):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
             conf.num_restarts = num_restarts
             conf.min_threshold = min_threshold
-            if meanRange != None:
+            if not meanRange is None:
                 conf.meanRange = meanRange
-            if covRange != None:
+            if not covRange is None:
                 conf.covRange = covRange
-            if likRange != None:
+            if not likRange is None:
                 conf.likRange = likRange
         if method == "Minimize":
             self.optimizer = opt.Minimize(self,conf)
@@ -460,7 +460,7 @@ class GPR(GP):
         plt.plot(xs, ym, color=MEANCOLOR, ls='-', lw=3.)
         plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=SHADEDCOLOR,linewidths=0.0)
         plt.grid()
-        if axisvals != None:
+        if not axisvals is None:
             plt.axis(axisvals)
         plt.xlabel('input x')
         plt.ylabel('target y')
@@ -506,11 +506,11 @@ class GPC(GP):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
             conf.num_restarts = num_restarts
             conf.min_threshold = min_threshold
-            if meanRange != None:
+            if not meanRange is None:
                 conf.meanRange = meanRange
-            if covRange != None:
+            if not covRange is None:
                 conf.covRange = covRange
-            if likRange != None:
+            if not likRange is None:
                 conf.likRange = likRange
         if method == "Minimize":
             self.optimizer = opt.Minimize(self,conf)
@@ -529,7 +529,7 @@ class GPC(GP):
         pc = plt.contour(t1, t2, np.reshape(np.exp(self.lp), (t1.shape[0],t1.shape[1]) ))
         fig.colorbar(pc)
         plt.grid()
-        if axisvals != None:
+        if not axisvals is None:
             plt.axis(axisvals)
         plt.show()
 
@@ -574,9 +574,9 @@ class GPMC(object):
 
     def setPrior(self, mean=None, kernel=None):
         '''set prior mean function and covariance function'''
-        if mean != None:
+        if not mean is None:
             self.meanfunc = mean
-        if kernel != None:
+        if not kernel is None:
             self.covfunc = kernel
             if type(kernel) is cov.Pre:
                 self.usingDefaultMean = False
@@ -722,25 +722,25 @@ class GP_FITC(GP):
             axis = np.linspace(mini,maxi,value_per_axis)
             gridAxis.append(axis)
         # default inducing points-> a grid
-        if self.u == None:
+        if self.u is None:
             self.u = np.array(list(itertools.product(*gridAxis)))
             self.covfunc = self.covfunc.fitc(self.u)
 
     # overriding
     def setPrior(self, mean=None, kernel=None, inducing_points=None):
         '''Set GP prior and inducing points'''
-        if kernel != None:
-            if inducing_points != None:
+        if not kernel is None:
+            if not inducing_points is None:
                 self.covfunc = kernel.fitc(inducing_points)
                 self.u = inducing_points
             else:
-                if self.u != None:
+                if not self.u is None:
                     self.covfunc = kernel.fitc(self.u)
                 else:
                     raise error("To use default inducing points, please call setData() first!")
             if type(kernel) is cov.Pre:
                 self.usingDefaultMean = False
-        if mean != None:
+        if not mean is None:
             self.meanfunc = mean
             self.usingDefaultMean = False
 
@@ -769,11 +769,11 @@ class GPR_FITC(GP_FITC):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
             conf.num_restarts = num_restarts
             conf.min_threshold = min_threshold
-            if meanRange != None:
+            if not meanRange is None:
                 conf.meanRange = meanRange
-            if covRange != None:
+            if not covRange is None:
                 conf.covRange = covRange
-            if likRange != None:
+            if not likRange is None:
                 conf.likRange = likRange
         if method == "Minimize":
             self.optimizer = opt.Minimize(self,conf)
@@ -794,7 +794,7 @@ class GPR_FITC(GP_FITC):
         plt.plot(self.xs, self.ym, color=MEANCOLOR, ls='-', lw=3.)
         plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=SHADEDCOLOR,linewidths=0.0)
         plt.grid()
-        if axisvals != None:
+        if not axisvals is None:
             plt.axis(axisvals)
         plt.xlabel('input x')
         plt.ylabel('output y')
@@ -847,11 +847,11 @@ class GPC_FITC(GP_FITC):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
             conf.num_restarts = num_restarts
             conf.min_threshold = min_threshold
-            if meanRange != None:
+            if not meanRange is None:
                 conf.meanRange = meanRange
-            if covRange != None:
+            if not covRange is None:
                 conf.covRange = covRange
-            if likRange != None:
+            if not likRange is None:
                 conf.likRange = likRange
         if method == "Minimize":
             self.optimizer = opt.Minimize(self,conf)
@@ -871,7 +871,7 @@ class GPC_FITC(GP_FITC):
         pc = plt.contour(t1, t2, np.reshape(np.exp(self.lp), (t1.shape[0],t1.shape[1]) ))
         fig.colorbar(pc)
         plt.grid()
-        if axisvals != None:
+        if not axisvals is None:
             plt.axis(axisvals)
         plt.show()
 

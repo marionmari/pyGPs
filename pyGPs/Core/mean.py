@@ -318,8 +318,8 @@ class Linear(Mean):
     :alpha_list: scalar alpha for each dimension
     '''
     def __init__(self, D=None, alpha_list=None):
-        if alpha_list == None:
-        	if D == None:
+        if alpha_list is None:
+        	if D is None:
         		self.hyp = [0.5]
         	else:
 	            self.hyp = [0.5 for i in xrange(D)]
