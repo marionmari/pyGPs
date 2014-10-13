@@ -23,6 +23,27 @@ import matplotlib.pyplot as plt
 import sys
 from math import sqrt
 
+def jitchol(A,max_tries=5):
+    '''Taken from Gpy jitchol'''
+    A = np.asfortranarray(A)
+    L, info = lapack.dpotrf(A, lower=1)
+    if info == 0:
+        return L
+    else:
+        diagA = np.diag(A)
+        if np.any(diagA <= 0.):
+            raise linalg.LinAlgError, "not pd: non-positive diagonal elements"
+        jitter = diagA.mean() * 1e-6
+        while maxtries > 0 and np.isfinite(jitter):
+            print 'Warning: adding jitter of {:.10e}'.format(jitter)
+            try:
+                return np.linalg.cholesky(A + np.eye(A.shape[0]).T * jitter, lower=True)
+            except:
+                jitter *= 10
+            finally:
+                maxtries -= 1
+        raise linalg.LinAlgError, "not positive definite, even with jitter."
+
 def solve_chol(L, B):
     '''
     Solve linear equations from the Cholesky factorization.
@@ -189,7 +210,7 @@ def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
                 v = x; fv = fu
         xm = 0.5*(a+b)
         tol1 = seps*abs(xf) + tol/3.0; tol2 = 2.0*tol1
-        if funccount >= Nitmax:        
+        if funccount >= Nitmax:
             # typically we should not get here
             # print 'Warning: Specified number of function evaluation reached (brentmin)'
             break
@@ -218,7 +239,7 @@ def cholupdate(R,x,sgn='+'):
         R1 = A - np.dot(x,x.T)
     else:
         raise Exception('Sign needs to be + or - in cholupdate')
-    return np.linalg.cholesky(R1).T
+    return jitchol(R1).T
 
 
 
