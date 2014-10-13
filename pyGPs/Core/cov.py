@@ -1006,21 +1006,21 @@ class Matern(Kernel):
         elif d == 3:
             return 1 + t
         elif d == 5:
-            return 1 + t*(1+t/3.)
+            return 1 + t + t*t/3.
         elif d == 7:
-            return 1 + 0.5*t*(1 + t/5.*(1. + t/12.) )
+            return 1 + t + 2.*t*t/5. + t*t*t/15.
         else:
             raise Exception("Wrong value for d in Matern")
 
-    def dfunc(self,d,t):
+    def dfunc(self,d,t): # Note, this is func - d func/dt
         if d == 1:
             return 1
         elif d == 3:
             return t
         elif d == 5:
-            return t*(1+t)/3.
+            return (1./3.)*(t + t*t)
         elif d == 7:
-            return 1./(2.*t)*(1 + t/5.*(3. + 0.75*t + (t*t)/12.) )
+            return (1./15.)*(t + 3.*t*t + t*t*t)
         else:
             raise Exception("Wrong value for d in Matern")
 
