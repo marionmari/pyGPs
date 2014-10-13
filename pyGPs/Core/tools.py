@@ -22,6 +22,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 from math import sqrt
+import scipy.linalg.lapack as lapack
 
 def jitchol(A,max_tries=5):
     '''Taken from Gpy jitchol'''
