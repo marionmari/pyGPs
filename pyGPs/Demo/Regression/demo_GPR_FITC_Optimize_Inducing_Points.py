@@ -39,6 +39,12 @@ u = np.asarray(random.sample(x,num_u))
 
 # Currently only random initialization (should add cluster based and others...)
 
+# Number of information pivots
+num_info_pivots =  5
+
+# Number of discrete swaps per pass
+num_discrete_swaps_per_pass = 2
+
 # and specify inducing point when seting prior
 k = pyGPs.cov.RBF()
 model.setPrior(kernel=k, inducing_points=u)
