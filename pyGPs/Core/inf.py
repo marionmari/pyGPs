@@ -44,8 +44,8 @@
 
 import numpy as np
 import lik, cov
-from copy import copy,deepcopy
-from tools import solve_chol,brentmin,cholupdate
+from copy import copy, deepcopy
+from tools import solve_chol, brentmin, cholupdate, jitchol
 
 np.seterr(all='ignore')
 
@@ -127,7 +127,8 @@ class Inference(object):
     def _epComputeParams(self, K, y, ttau, tnu, likfunc, m, inffunc):
         n     = len(y)                                                # number of training cases
         ssi   = np.sqrt(ttau)                                         # compute Sigma and mu
-        L     = np.linalg.cholesky(np.eye(n)+np.dot(ssi,ssi.T)*K).T   # L'*L=B=eye(n)+sW*K*sW
+        #L     = np.linalg.cholesky(np.eye(n)+np.dot(ssi,ssi.T)*K).T   # L'*L=B=eye(n)+sW*K*sW
+        L     = jitchol(np.eye(n)+np.dot(ssi,ssi.T)*K).T   # L'*L=B=eye(n)+sW*K*sW
         V     = np.linalg.solve(L.T,np.tile(ssi,(1,n))*K)
         Sigma = K - np.dot(V.T,V)
         mu    = np.dot(Sigma,tnu)
@@ -197,7 +198,8 @@ class Inference(object):
         lZ = likfunc.evaluate(y, nu_n/tau_n, 1/tau_n, inffunc, None, 1)
         nu = gg.shape[0]
         U = np.dot(R0,P0).T*np.tile(1/np.sqrt(d0+1/ttau),(1,nu))
-        L = np.linalg.cholesky(np.eye(nu)+np.dot(U.T,U)).T
+        #L = np.linalg.cholesky(np.eye(nu)+np.dot(U.T,U)).T
+        L = jitchol(np.eye(nu)+np.dot(U.T,U)).T
         ld = 2.*np.log(np.diag(L)).sum() + (np.log(d0+1/ttau)).sum() + (np.log(ttau)).sum()
         t = np.dot(T,tnu); tnu_Sigma_tnu = np.dot(tnu.T,(d*tnu)) + np.dot(t.T,t)
         nlZ = ld/2. - lZ.sum() -tnu_Sigma_tnu/2. \
@@ -214,7 +216,8 @@ class Inference(object):
         '''
         nu = R0.shape[0]                                 # number of inducing points
         rot180   = lambda A: np.rot90(np.rot90(A))       # little helper functions
-        chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        #chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
         t  = 1/(1+d0*w)                                  # temporary variable O(n)
         d  = d0*t                                        # O(n)
         P  = np.tile(t.T,(nu,1))*P0                      # O(n*nu)
@@ -281,7 +284,8 @@ class Inference(object):
         '''
         nu = R0.shape[0]                                  # number of inducing points
         rot180   = lambda A: np.rot90(np.rot90(A))        # little helper functions
-        chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        #chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
         t  = 1/(1+d0*w)                                   # temporary variable O(n)
         d  = d0*t                                         # O(n)
         P  = np.tile(t.T,(nu,1))*P0;                      # O(n*nu)
@@ -306,7 +310,8 @@ class Exact(Inference):
         m = meanfunc.getMean(x)                                # evaluate mean vector
 
         sn2   = np.exp(2*likfunc.hyp[0])                       # noise variance of likGauss
-        L     = np.linalg.cholesky(K/sn2+np.eye(n)).T          # Cholesky factor of covariance with noise
+        #L     = np.linalg.cholesky(K/sn2+np.eye(n)).T          # Cholesky factor of covariance with noise
+        L     = jitchol(K/sn2+np.eye(n)).T          # Cholesky factor of covariance with noise
         alpha = solve_chol(L,y-m)/sn2
         post = postStruct()
         post.alpha = alpha                                     # return the posterior parameters
@@ -355,10 +360,12 @@ class FITC_Exact(Inference):
 
         sn2   = np.exp(2*likfunc.hyp[0])                         # noise variance of likGauss
         snu2  = 1.e-6*sn2                                        # hard coded inducing inputs noise
-        Luu   = np.linalg.cholesky(Kuu+snu2*np.eye(nu)).T        # Kuu + snu2*I = Luu'*Luu
+        #Luu   = np.linalg.cholesky(Kuu+snu2*np.eye(nu)).T        # Kuu + snu2*I = Luu'*Luu
+        Luu   = jitchol(Kuu+snu2*np.eye(nu)).T        # Kuu + snu2*I = Luu'*Luu
         V     = np.linalg.solve(Luu.T,Ku)                        # V = inv(Luu')*Ku => V'*V = Q
         g_sn2 = diagK + sn2 - np.array([(V*V).sum(axis=0)]).T    # g + sn2 = diag(K) + sn2 - diag(Q)
-        Lu    = np.linalg.cholesky(np.eye(nu) + np.dot(V/np.tile(g_sn2.T,(nu,1)),V.T)).T  # Lu'*Lu=I+V*diag(1/g_sn2)*V'
+        #Lu    = np.linalg.cholesky(np.eye(nu) + np.dot(V/np.tile(g_sn2.T,(nu,1)),V.T)).T  # Lu'*Lu=I+V*diag(1/g_sn2)*V'
+        Lu    = jitchol(np.eye(nu) + np.dot(V/np.tile(g_sn2.T,(nu,1)),V.T)).T  # Lu'*Lu=I+V*diag(1/g_sn2)*V'
         r     = (y-m)/np.sqrt(g_sn2)
         be    = np.linalg.solve(Lu.T,np.dot(V,r/np.sqrt(g_sn2)))
         iKuu  = solve_chol(Luu,np.eye(nu))                       # inv(Kuu + snu2*I) = iKuu
@@ -446,7 +453,8 @@ class Laplace(Inference):
             if isWneg:                   # stabilise the Newton direction in case W has negative values
                 W = np.maximum(W,0)      # stabilise the Hessian to guarantee postive definiteness
                 tol = 1e-10              # increase accuracy to also get the derivatives right
-            sW = np.sqrt(W); L = np.linalg.cholesky(np.eye(n) + np.dot(sW,sW.T)*K).T
+            #sW = np.sqrt(W); L = np.linalg.cholesky(np.eye(n) + np.dot(sW,sW.T)*K).T
+            sW = np.sqrt(W); L = jitchol(np.eye(n) + np.dot(sW,sW.T)*K).T
             b = W*(f-m) + dlp;
             dalpha = b - sW*solve_chol(L,sW*np.dot(K,b)) - alpha
             vargout = brentmin(0,smax,Nline,thr,self._Psi_line,4,dalpha,alpha,K,m,likfunc,y,inffunc)
@@ -471,7 +479,8 @@ class Laplace(Inference):
             nlZ = nlZ[0]
         else:
             sW = post.sW
-            post.L = np.linalg.cholesky(np.eye(n)+np.dot(sW,sW.T)*K).T
+            #post.L = np.linalg.cholesky(np.eye(n)+np.dot(sW,sW.T)*K).T
+            post.L = jitchol(np.eye(n)+np.dot(sW,sW.T)*K).T
             nlZ = np.dot(alpha.T,(f-m))/2. + (np.log(np.diag(post.L))-np.reshape(lp,(lp.shape[0],))).sum()
             nlZ = nlZ[0]
         if nargout>2:                                           # do we want derivatives?
@@ -539,7 +548,8 @@ class FITC_Laplace(Inference):
         n, D = x.shape
         nu = Kuu.shape[0]
         rot180   = lambda A: np.rot90(np.rot90(A))      # little helper functions
-        chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        #chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
         R0 = chol_inv(Kuu+snu2*np.eye(nu))              # initial R, used for refresh O(nu^3)
         V  = np.dot(R0,Ku); d0 = diagK - np.array([(V*V).sum(axis=0)]).T     # initial d, needed
 
@@ -597,8 +607,10 @@ class FITC_Laplace(Inference):
         post.L = -np.dot(B,R0tV.T)                                  # L = -R0'*V*inv(Kt+diag(1./ttau))*V'*R0, first part
         if np.any(1+d0*W<0):
             raise Exception('W is too negative; nlZ and dnlZ cannot be computed.')
+        #nlZ = np.dot(alpha.T,(f-m))/2. - lp.sum() - np.log(dd).sum()/2. + \
+        #    np.log(np.diag(np.linalg.cholesky(A).T)).sum()
         nlZ = np.dot(alpha.T,(f-m))/2. - lp.sum() - np.log(dd).sum()/2. + \
-            np.log(np.diag(np.linalg.cholesky(A).T)).sum()
+            np.log(np.diag(jitchol(A).T)).sum()
         RV = np.dot(chol_inv(A),V)
         RVdd = RV * np.tile((W*dd).T,(nu,1))                        # RVdd needed for dnlZ
         B = np.dot(B,RV.T)
@@ -780,7 +792,8 @@ class FITC_EP(Inference):
 
         n, D = x.shape; nu = Kuu.shape[0]
         rot180   = lambda A: np.rot90(np.rot90(A))      # little helper functions
-        chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        #chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
 
         R0 = chol_inv(Kuu+snu2*np.eye(nu))              # initial R, used for refresh O(nu^3)
         V  = np.dot(R0,Ku); d0 = diagK - np.array([(V*V).sum(axis=0)]).T # initial d, needed for refresh O(n*nu^2)
