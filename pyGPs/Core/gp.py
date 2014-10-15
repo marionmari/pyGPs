@@ -226,11 +226,7 @@ class GP(object):
             self.posterior = deepcopy(post)
             return nlZ, post
         else:
-            try:
-                post, nlZ, dnlZ, dscale = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, self.ScalePrior, 3)
-            except AttributeError as e:
-                post, nlZ, dnlZ = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y,  3)
-                dscale = None
+            post, nlZ, dnlZ = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y,  3)
             self.nlZ       = nlZ
             self.dnlZ      = deepcopy(dnlZ)
             self.posterior = deepcopy(post)
@@ -750,13 +746,15 @@ class GP_FITC(GP):
     def optimizeInducingSet(self,num_u=None):
         if self.x is None or self.y is None:
             raise error("Need training data before optimizing inducing variables")
-        if self.u is None:
-            if num_u is None:
-                raise error("optimizeInducingSet either needs an initial inducing set or the number of inducing variables to use")
-            else:
-                # Initialize inducing inputs to be a subset of self.x
-                u_indices = random.sample(xrange(self.x.shape[0]),num_u)
-        else:
+        N, D = self.x.shape
+
+        if not num_u is None:
+            # Initialize inducing inputs to be a subset of self.x
+            u_indices = random.sample(xrange(self.x.shape[0]),num_u)
+            self.u = self.x[u_indices]
+            u = self.u
+
+        elif not self.u is None:
             # Check that inducing inputs are a subset of the training set
             u_indices = []
             for i,a in enumerate(self.u):
@@ -764,14 +762,17 @@ class GP_FITC(GP):
                     raise error("Inducing set MUST be a subset of training data")
                 else:
                     u_indices.append(np.where(self.x==a)[0][0])
+            u = self.u
+
+        else:
+            raise error("optimizeInducingSet either needs an initial inducing set or the number of inducing variables to use")
 
         # Now u_indices are the indices of self.x that denote the inducing points
-        u = self.u
         unchecked_indices = u_indices[:]
         checked_indices   = []
         remaining_pool    = list( set(range(self.x.shape[0])) - set(unchecked_indices) )
 
-        self.setPrior(inducing_points = self.u)
+        self.setPrior(kernel = self.covfunc.covfunc, inducing_points = u)
         self.optimizeHyperparameters() # optimize hyperparameters with this inducing set
         nlml = self.nlZ
 
@@ -790,13 +791,13 @@ class GP_FITC(GP):
             i = random.choice(remaining_pool)  # Need to choose which one to check better than random
             remaining_pool.remove(i)
             u_indices.append(i)
-            u = np.append(u,np.atleast_2d(self.x[i]).T,axis=0)
-
+            u = np.append(u,np.reshape(self.x[i,:],(1,D)),axis=0)
             #set the prior with this new inducing set
-            self.setPrior(inducing_points = self.u)
+            self.setPrior(kernel = self.covfunc.covfunc, inducing_points = u)
 
             self.optimizeHyperparameters() # optimize hyperparameters with this inducing set
             nlml_new = self.nlZ
+            print "nlml_new = ", nlml_new
 
             if nlml_new > nlml:
                 # put j back in
@@ -804,7 +805,8 @@ class GP_FITC(GP):
                 u_indices.append(j)
                 u_index = np.where(u==self.x[i])[0][0]
                 u = np.delete(u,u_index,axis=0)
-                u = np.append(u,np.atleast_2d(self.x[j]).T,axis=0)
+                u = np.append(u,np.reshape(self.x[j,:],(1,D)),axis=0)
+                self.setPrior(kernel = self.covfunc.covfunc, inducing_points = u)
             else:
                 nlml = nlml_new
         self.u = u

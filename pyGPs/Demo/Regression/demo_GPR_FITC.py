@@ -13,6 +13,7 @@
 
 import pyGPs
 import numpy as np
+import random
 
 # To have a gerneral idea,
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
@@ -34,7 +35,6 @@ z = demoData['xstar']        # test data
 #----------------------------------------------------------------------
 # Sparse GP regression (FITC) example
 #----------------------------------------------------------------------
-
 print "Example 1: default inducing points"
 
 # Start from a new model
@@ -74,7 +74,6 @@ num_u = np.fix(x.shape[0]/2)
 u = np.linspace(-1.3,1.3,num_u).T
 u = np.reshape(u,(num_u,1))
 
-
 # and specify inducing point when seting prior
 m = pyGPs.mean.Linear( D=x.shape[1] ) + pyGPs.mean.Const()
 k = pyGPs.cov.RBF()
@@ -86,6 +85,64 @@ model.fit()
 print "Negative log marginal liklihood before optimization:", round(model.nlZ,3)
 model.optimizeHyperparameters()
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
+
+# Prediction
+ymu, ys2, fmu, fs2, lp = model.predict(z)
+# Again, plot() is a toy method for 1-d data
+model.plot()
+
+
+print '------------------------------------------------------'
+print "Example 3: optimize inducing points (with no initial guess)"
+
+# Start from a new model
+model = pyGPs.GPR_FITC()
+model.setData(x, y)
+model.setPrior(mean=m, kernel=k)
+model.u = None
+
+# You can define the number of inducing points
+num_u = int(np.fix(x.shape[0]/2))
+
+m = pyGPs.mean.Linear( D=x.shape[1] ) + pyGPs.mean.Const()
+k = pyGPs.cov.RBF()
+
+model.optimizeInducingSet(num_u)
+nlml = model.nlZ
+print "Negative log marginal liklihood optimized (inducing):", nlml
+
+# Prediction
+ymu, ys2, fmu, fs2, lp = model.predict(z)
+# Again, plot() is a toy method for 1-d data
+model.plot()
+
+print '------------------------------------------------------'
+print "Example 4: optimized inducing points (with initial guess)"
+
+# Start from a new model
+model = pyGPs.GPR_FITC()
+
+# You can choose inducing points yourself, but they must be a subset of the training data
+num_u = int(np.fix(x.shape[0]/2))
+u = x[random.sample(xrange(x.shape[0]),num_u)]
+
+# and specify inducing point when seting prior
+m = pyGPs.mean.Linear( D=x.shape[1] ) + pyGPs.mean.Const()
+k = pyGPs.cov.RBF()
+model.setPrior(mean=m, kernel=k, inducing_points=u)
+
+# The rest is analogous to what we have done before
+model.setData(x, y)
+model.fit()
+print "Negative log marginal liklihood before optimization:", round(model.nlZ,3)
+
+model.optimizeHyperparameters()
+print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
+
+print "About to call optimizeInducingSet\n"
+model.optimizeInducingSet()
+nlml = model.nlZ
+print "Negative log marginal liklihood optimized (inducing):", nlml
 
 # Prediction
 ymu, ys2, fmu, fs2, lp = model.predict(z)

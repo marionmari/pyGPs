@@ -13,6 +13,7 @@
 
 import pyGPs
 import numpy as np
+import random
 
 # To have a gerneral idea,
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
@@ -44,7 +45,7 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 #----------------------------------------------------------------------
 # Sparse GP classification (FITC) example
 #----------------------------------------------------------------------
-
+'''
 print "Example 1: default inducing points"
 
 # Start from a new model
@@ -94,10 +95,39 @@ print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
 # predict
 n = z.shape[0]
-print z.shape
 ymu, ys2, fmu, fs2, lp = model.predict(z, ys=np.ones((n,1)))
 model.plot(x1,x2,t1,t2)
 
+'''
+
+print '------------------------------------------------------'
+print "Example 3: optimized inducing points"
+
+model = pyGPs.GPC_FITC()
+
+# You can define inducing points yourself.
+num_u = 25
+u_index = random.sample(xrange(x.shape[0]),num_u)
+u = x[u_index]
+
+# and specify inducing point when seting prior
+m = pyGPs.mean.Zero()
+k = pyGPs.cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
+model.setData(x, y)
+model.setPrior(mean=m, kernel=k, inducing_points=u)
+
+model.fit()
+print "Negative log marginal liklihood before optimization:", round(model.nlZ,3)
+model.optimizeHyperparameters()
+print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
+
+model.optimizeInducingSet()
+print "Negative log marginal liklihood optimized (inducing) :", round(model.nlZ,3)
+
+# predict
+n = z.shape[0]
+ymu, ys2, fmu, fs2, lp = model.predict(z, ys=np.ones((n,1)))
+model.plot(x1,x2,t1,t2)
 
 
 

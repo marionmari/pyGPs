@@ -58,17 +58,17 @@ def jitchol(A,max_tries=5):
     else:
         diagA = np.diag(A)
         if np.any(diagA <= 0.):
-            raise linalg.LinAlgError, "not pd: non-positive diagonal elements"
+            raise np.linalg.LinAlgError, "not pd: non-positive diagonal elements"
         jitter = diagA.mean() * 1e-6
-        while maxtries > 0 and np.isfinite(jitter):
+        while max_tries > 0 and np.isfinite(jitter):
             print 'Warning: adding jitter of {:.10e}'.format(jitter)
             try:
                 return np.linalg.cholesky(A + np.eye(A.shape[0]).T * jitter, lower=True)
             except:
                 jitter *= 10
             finally:
-                maxtries -= 1
-        raise linalg.LinAlgError, "not positive definite, even with jitter."
+                max_tries -= 1
+        raise np.linalg.LinAlgError, "not positive definite, even with jitter."
 
 def solve_chol(L, B):
     '''

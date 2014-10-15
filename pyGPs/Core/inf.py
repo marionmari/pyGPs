@@ -353,8 +353,8 @@ class FITC_Exact(Inference):
         if not isinstance(covfunc, cov.FITCOfKernel):
             raise Exception('Only covFITC supported.')          # check cov
 
-        diagK,Kuu,Ku = covfunc.getCovMatrix(x=x, mode='train')  # evaluate covariance matrix
-        m  = meanfunc.getMean(x)                                # evaluate mean vector
+        diagK, Kuu, Ku = covfunc.getCovMatrix(x=x, mode='train')  # evaluate covariance matrix
+        m  = meanfunc.getMean(x)                                  # evaluate mean vector
         n, D = x.shape
         nu = Kuu.shape[0]
 
