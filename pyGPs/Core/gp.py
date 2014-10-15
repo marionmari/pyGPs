@@ -552,7 +552,7 @@ class GPC(GP):
         :param str newLik: 'Logistic'
         '''
         if newLik == "Logistic":
-            pass
+            raise Exception('Logistic not implemented.')
             #self.likfunc = lik.Logistic()
         else:
             raise Exception('Possible lik values are "Logistic".')

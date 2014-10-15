@@ -25,7 +25,6 @@ demoData = np.load('Snelson_1D_data.npz')
 x = demoData['xtrain']       # training data
 y = demoData['ytrain']       # training target
 z = demoData['xstar']        # test data
-
 print '------------------------------------------------------'
 print "Example : optimize inducing points"
 

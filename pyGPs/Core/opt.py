@@ -110,7 +110,7 @@ class CG(Optimizer):
                 print "Gradient and/or function calls not changing."
         except:
             self.errorCounter += 1
-            if not self.searchConfig:         
+            if not self.searchConfig:
                 raise Exception("Can not use conjugate gradient. Try other hyparameters")
         self.trailsCounter += 1
 
@@ -170,7 +170,7 @@ class BFGS(Optimizer):
                 print "Gradient and/or function calls not changing."
         except:
             self.errorCounter += 1
-            if not self.searchConfig:         
+            if not self.searchConfig:
                 raise Exception("Can not use BFGS. Try other hyparameters")
         self.trailsCounter += 1
 
@@ -224,10 +224,10 @@ class Minimize(Optimizer):
         try: 
             opt = minimize.run(self._nlzAnddnlz, hypInArray, length=-40)
             optimalHyp = deepcopy(opt[0])
-            funcValue  = opt[1][-1]  
+            funcValue  = opt[1][-1]
         except:
             self.errorCounter += 1
-            if not self.searchConfig:         
+            if not self.searchConfig:
                 raise Exception("Can not use minimize. Try other hyparameters")
         self.trailsCounter += 1
 
@@ -255,7 +255,7 @@ class Minimize(Optimizer):
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
                     print "[Minimize] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
-                    return optimalHyp, funcValue                   
+                    return optimalHyp, funcValue
         return optimalHyp, funcValue
 
 
@@ -281,7 +281,7 @@ class SCG(Optimizer):
             funcValue  = opt[1][-1]
         except:
             self.errorCounter += 1
-            if not self.searchConfig:         
+            if not self.searchConfig:
                 raise Exception("Can not use Scaled conjugate gradient. Try other hyparameters")
         self.trailsCounter += 1
 
