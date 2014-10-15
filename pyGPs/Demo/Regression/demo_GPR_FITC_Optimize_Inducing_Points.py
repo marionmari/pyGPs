@@ -56,43 +56,22 @@ model.setPrior(kernel=k, inducing_points=u)
 
 # The rest is analogous to what we have done before
 model.setData(x, y)
-print inducing_indices
-model.optimizeInducingSet()
-'''model.fit()
+#print inducing_indices
+#model.optimizeInducingSet()
+model.fit()
 print "Negative log marginal liklihood before optimization:", model.nlZ
 model.optimize() # optimize hyperparameters with this inducing set
 nlml = model.nlZ
 print "Negative log marginal liklihood optimized:", nlml
-'''
-# Loop over inducing points to find the best set
-'''while unchecked_indices:
 
-    # pick a random inducing variable (that hasn't been checked) to replace
-    j = random.choice(unchecked_indices)
-    # Delete this element from the list
-    inducing_indices.remove(j) # removes the element = j
-    unchecked_indices.remove(j) # removes the element = j
-    # Add a new element from the remaining pool
-    i = random.choice(remaining_pool)  # Need to choose which one to check better than random
-    remaining_pool.remove(i)
-    inducing_indices.append(i)
+model.optimizeInducingSet()
+nlml = model.nlZ
+print "Negative log marginal liklihood optimized (inducing):", nlml
 
-    #set the prior with this new inducing set
-    model.setPrior(kernel=k, inducing_points=u)
-
-    model.optimize() # optimize hyperparameters with this inducing set
-    nlml_new = model.nlZ
-
-    print "Negative log marginal liklihood optimized (new set):", nlml_new
-    if nlml_new > nlml:
-        # put j back in
-        inducing_points.remove(i)
-        inducing_points.append(j)
-'''
 # Prediction
-#ymu, ys2, fmu, fs2, lp = model.predict(z)
+ymu, ys2, fmu, fs2, lp = model.predict(z)
 # Again, plot() is a toy method for 1-d data
-#model.plot()
+model.plot()
 
 
 print '--------------------END OF DEMO-----------------------'

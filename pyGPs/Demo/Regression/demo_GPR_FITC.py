@@ -14,7 +14,7 @@
 import pyGPs
 import numpy as np
 
-# To have a gerneral idea, 
+# To have a gerneral idea,
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
 # Here, the focus is on the difference of FITC model.
 
@@ -24,12 +24,12 @@ print '-------------------GPR_FITC DEMO----------------------'
 #----------------------------------------------------------------------
 # Load demo data (generated from Gaussians)
 #----------------------------------------------------------------------
-demoData = np.load('regression_data.npz') 
+demoData = np.load('regression_data.npz')
 
 x = demoData['x']            # training data
 y = demoData['y']            # training target
 z = demoData['xstar']        # test data
- 
+
 
 #----------------------------------------------------------------------
 # Sparse GP regression (FITC) example
@@ -37,7 +37,7 @@ z = demoData['xstar']        # test data
 
 print "Example 1: default inducing points"
 
-# Start from a new model 
+# Start from a new model
 model = pyGPs.GPR_FITC()
 
 # Notice if you want to use default inducing points:
@@ -52,7 +52,7 @@ model.setData(x, y)
 model.optimize()
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
-# Prediction             
+# Prediction
 model.predict(z)
 # Again, plot() is a toy method for 1-d data
 model.plot()
@@ -62,10 +62,10 @@ model.plot()
 print '------------------------------------------------------'
 print "Example 2: user-defined inducing points"
 
-# Start from a new model 
-model = pyGPs.GPR_FITC()            
+# Start from a new model
+model = pyGPs.GPR_FITC()
 
-# You can define inducing points yourself. 
+# You can define inducing points yourself.
 # You can pick some points by hand
 u = np.array([[-1], [-0.8], [-0.5], [0.3],[1.]])
 
@@ -76,9 +76,9 @@ u = np.reshape(u,(num_u,1))
 
 
 # and specify inducing point when seting prior
-m = pyGPs.mean.Linear( D=x.shape[1] ) + pyGPs.mean.Const()  
+m = pyGPs.mean.Linear( D=x.shape[1] ) + pyGPs.mean.Const()
 k = pyGPs.cov.RBF()
-model.setPrior(mean=m, kernel=k, inducing_points=u) 
+model.setPrior(mean=m, kernel=k, inducing_points=u)
 
 # The rest is analogous to what we have done before
 model.setData(x, y)

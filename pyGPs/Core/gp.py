@@ -46,6 +46,8 @@ import inf, mean, lik, cov, opt
 from tools import unique, jitchol
 from copy import deepcopy
 import pyGPs
+import random
+
 
 SHADEDCOLOR = [0.7539, 0.89453125, 0.62890625, 1.0]
 MEANCOLOR = [ 0.2109375, 0.63385, 0.1796875, 1.0]
@@ -302,7 +304,6 @@ class GP(object):
             if ys is None:
                 [Lp, Ymu, Ys2] = likfunc.evaluate(None,Fmu[:],Fs2[:],None,None,3)
             else:
-                print np.tile(ys[id],(1,N))
                 [Lp, Ymu, Ys2] = likfunc.evaluate(np.tile(ys[id],(1,N)), Fmu[:], Fs2[:],None,None,3)
             lp[id]  = np.reshape( np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1)/N , (len(id),1) )   # log probability; sample averaging
             ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
@@ -746,22 +747,67 @@ class GP_FITC(GP):
             self.meanfunc = mean
             self.usingDefaultMean = False
 
-    def optimizeInducingSet(self):
-        if self.u is None:
-            raise error("Need to call setPrior with an inducing set (which is a subset of self.x) before attempting to optimize the set")
+    def optimizeInducingSet(self,num_u=None):
         if self.x is None or self.y is None:
             raise error("Need training data before optimizing inducing variables")
-
-        u_indices = []
-        for i,a in enumerate(self.u):
-            if not a in self.x:
-                raise error("Inducing set MUST be a subset of training data")
+        if self.u is None:
+            if num_u is None:
+                raise error("optimizeInducingSet either needs an initial inducing set or the number of inducing variables to use")
             else:
-              u_indices.append(np.where(self.x==a)[0][0])
+                # Initialize inducing inputs to be a subset of self.x
+                u_indices = random.sample(xrange(self.x.shape[0]),num_u)
+        else:
+            # Check that inducing inputs are a subset of the training set
+            u_indices = []
+            for i,a in enumerate(self.u):
+                if not a in self.x:
+                    raise error("Inducing set MUST be a subset of training data")
+                else:
+                    u_indices.append(np.where(self.x==a)[0][0])
+
         # Now u_indices are the indices of self.x that denote the inducing points
+        u = self.u
+        unchecked_indices = u_indices[:]
+        checked_indices   = []
+        remaining_pool    = list( set(range(self.x.shape[0])) - set(unchecked_indices) )
 
+        self.setPrior(inducing_points = self.u)
+        self.optimize() # optimize hyperparameters with this inducing set
+        nlml = self.nlZ
 
-        self.setPrior(self,inducing_points = self.u)
+        while unchecked_indices:
+
+            # pick a random inducing variable (that hasn't been checked) to replace
+            j = random.choice(unchecked_indices)
+
+            # Delete this element from the list
+            u_indices.remove(j) # removes the element = j
+            unchecked_indices.remove(j) # removes the element = j
+            u_index = np.where(u==self.x[j])[0][0]
+            u = np.delete(u,u_index,axis=0)
+
+            # Add a new element from the remaining pool
+            i = random.choice(remaining_pool)  # Need to choose which one to check better than random
+            remaining_pool.remove(i)
+            u_indices.append(i)
+            u = np.append(u,np.atleast_2d(self.x[i]).T,axis=0)
+
+            #set the prior with this new inducing set
+            self.setPrior(inducing_points = self.u)
+
+            self.optimize() # optimize hyperparameters with this inducing set
+            nlml_new = self.nlZ
+
+            if nlml_new > nlml:
+                # put j back in
+                u_indices.remove(i)
+                u_indices.append(j)
+                u_index = np.where(u==self.x[i])[0][0]
+                u = np.delete(u,u_index,axis=0)
+                u = np.append(u,np.atleast_2d(self.x[j]).T,axis=0)
+            else:
+                nlml = nlml_new
+        self.u = u
 
 class GPR_FITC(GP_FITC):
     '''Gaussian Process Regression FITC'''
