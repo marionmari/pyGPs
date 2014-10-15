@@ -746,8 +746,22 @@ class GP_FITC(GP):
             self.meanfunc = mean
             self.usingDefaultMean = False
 
+    def optimizeInducingSet(self):
+        if self.u is None:
+            raise error("Need to call setPrior with an inducing set (which is a subset of self.x) before attempting to optimize the set")
+        if self.x is None or self.y is None:
+            raise error("Need training data before optimizing inducing variables")
+
+        u_indices = []
+        for i,a in enumerate(self.u):
+            if not a in self.x:
+                raise error("Inducing set MUST be a subset of training data")
+            else:
+              u_indices.append(np.where(self.x==a)[0][0])
+        # Now u_indices are the indices of self.x that denote the inducing points
 
 
+        self.setPrior(self,inducing_points = self.u)
 
 class GPR_FITC(GP_FITC):
     '''Gaussian Process Regression FITC'''

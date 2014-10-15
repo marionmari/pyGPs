@@ -34,7 +34,13 @@ model = pyGPs.GPR_FITC()
 # Initialize inducing points
 # Pick a random subset of the training inputs.
 num_u = 10
-u = np.asarray(random.sample(x,num_u))
+# Get num_u random indices of the training set
+inducing_indices = random.sample(xrange(x.shape[0]),num_u)
+unchecked_indices = inducing_indices[:]
+checked_indices = []
+remaining_pool = list( set(range(x.shape[0])) - set(unchecked_indices) )
+
+u = x[inducing_indices]
 
 # Currently only random initialization (should add cluster based and others...)
 
@@ -50,15 +56,43 @@ model.setPrior(kernel=k, inducing_points=u)
 
 # The rest is analogous to what we have done before
 model.setData(x, y)
-model.fit()
-print "Negative log marginal liklihood before optimization:", round(model.nlZ,3)
-model.optimize()
-print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
+print inducing_indices
+model.optimizeInducingSet()
+'''model.fit()
+print "Negative log marginal liklihood before optimization:", model.nlZ
+model.optimize() # optimize hyperparameters with this inducing set
+nlml = model.nlZ
+print "Negative log marginal liklihood optimized:", nlml
+'''
+# Loop over inducing points to find the best set
+'''while unchecked_indices:
 
+    # pick a random inducing variable (that hasn't been checked) to replace
+    j = random.choice(unchecked_indices)
+    # Delete this element from the list
+    inducing_indices.remove(j) # removes the element = j
+    unchecked_indices.remove(j) # removes the element = j
+    # Add a new element from the remaining pool
+    i = random.choice(remaining_pool)  # Need to choose which one to check better than random
+    remaining_pool.remove(i)
+    inducing_indices.append(i)
+
+    #set the prior with this new inducing set
+    model.setPrior(kernel=k, inducing_points=u)
+
+    model.optimize() # optimize hyperparameters with this inducing set
+    nlml_new = model.nlZ
+
+    print "Negative log marginal liklihood optimized (new set):", nlml_new
+    if nlml_new > nlml:
+        # put j back in
+        inducing_points.remove(i)
+        inducing_points.append(j)
+'''
 # Prediction
-ymu, ys2, fmu, fs2, lp = model.predict(z)
+#ymu, ys2, fmu, fs2, lp = model.predict(z)
 # Again, plot() is a toy method for 1-d data
-model.plot()
+#model.plot()
 
 
 print '--------------------END OF DEMO-----------------------'
