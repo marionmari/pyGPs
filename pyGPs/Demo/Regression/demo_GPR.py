@@ -43,7 +43,7 @@ z = demoData['xstar']        # test data
 #----------------------------------------------------------------------
 print 'Basic Example'
 model = pyGPs.GPR()          # model
-model.optimize(x, y)         # optimize hyperparamters (default optimizer: single run minimize)
+model.optimizeHyperparameters(x, y)         # optimize hyperparamters (default optimizer: single run minimize)
 model.predict(z)             # predict test cases
 model.plot()                 # and plot result
 
@@ -65,10 +65,10 @@ model.setPrior(mean=m, kernel=k)
 #model.setOptimizer("LBFGSB", num_restarts=30)
 
 # Instead of fit(), which only fits data using given hyperparameters,
-# optimize() will optimize hyperparamters based on marginal likelihood
+# optimizeHyperparameters() will optimize hyperparamters based on marginal likelihood
 # the deafult mean will be adapted to the average value of the training labels.
 # ..if you do not specify mean function by your own.
-model.optimize(x, y)
+model.optimizeHyperparameters(x, y)
 #model.plotData_1d()
 
 # There are several properties you can get from the model

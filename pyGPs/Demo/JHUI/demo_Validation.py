@@ -69,7 +69,7 @@ for x_train, x_test, y_train, y_test in valid.k_fold_validation(x, y, K):
     # This is a binary classification problem
     model = pyGPs.GPC()
     # Since no prior knowldege, leave everything default 
-    model.optimize(x_train, y_train)
+    model.optimizeHyperparameters(x_train, y_train)
     # Predit 
     ymu, ys2, fmu, fs2, lp = model.predict(x_test, ys=y_test)
 

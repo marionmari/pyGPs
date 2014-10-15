@@ -46,10 +46,10 @@ if __name__ == '__main__':
     sn = 0.1
     model.setNoise(log_sigma=np.log(sn))
     # Instead of fit(), which only fits data using given hyperparameters,
-    # optimize() will optimize hyperparamters based on marginal likelihood
+    # optimizeHyperparameters() will optimize hyperparamters based on marginal likelihood
     # the deafult mean will be adapted to the average value of the training labels..
     # ..if you do not specify mean function by your own.
-    model.optimize(x, y)
+    model.optimizeHyperparameters(x, y)
     model.plotData_1d()
 
     print 'Optimized negative log marginal likelihood:', round(model.nlZ, 3)

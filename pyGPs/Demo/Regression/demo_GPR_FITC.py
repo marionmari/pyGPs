@@ -49,7 +49,7 @@ model.setData(x, y)
 # To set value per dimension use:
 # model.setData(x, y, value_per_axis=10)
 
-model.optimize()
+model.optimizeHyperparameters()
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
 # Prediction
@@ -84,7 +84,7 @@ model.setPrior(mean=m, kernel=k, inducing_points=u)
 model.setData(x, y)
 model.fit()
 print "Negative log marginal liklihood before optimization:", round(model.nlZ,3)
-model.optimize()
+model.optimizeHyperparameters()
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
 # Prediction

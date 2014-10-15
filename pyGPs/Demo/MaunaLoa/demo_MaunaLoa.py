@@ -77,7 +77,7 @@ if __name__ == '__main__':
     # STANDARD GP (training)
     from time import clock
     t0 = clock()
-    model.optimize(x,y)
+    model.optimizeHyperparameters(x,y)
     t1 = clock()
     model.predict(xs)
 

@@ -112,7 +112,7 @@ if __name__ == "__main__":
     y_test = y[index_test,:]
     
     # gp
-    model.optimize(x_train, y_train)
+    model.optimizeHyperparameters(x_train, y_train)
     model.predict(x_test)
     
     # evaluation 
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     x_train = np.zeros((n,1))
 
     # gp
-    model.optimize(x_train, y_train)
+    model.optimizeHyperparameters(x_train, y_train)
     model.predict(x_test)
     
     # evaluation 
@@ -151,7 +151,7 @@ if __name__ == "__main__":
     # you can pass traning data in the normal way: x_train = x[index_train,:]
     x_train = x[index_train,:]
     # gp
-    model.optimize(x_train, y_train)
+    model.optimizeHyperparameters(x_train, y_train)
     model.predict(x_test)
     
     # evaluation 

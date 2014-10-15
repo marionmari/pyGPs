@@ -61,7 +61,7 @@ class ModelTests(unittest.TestCase):
         k = pyGPs.cov.RBF()
         model.setPrior(mean=m, kernel=k)
         model.setOptimizer("Minimize", num_restarts=10)
-        model.optimize(self.xr, self.yr)
+        model.optimizeHyperparameters(self.xr, self.yr)
         model.predict(self.zr)
         self.checkRegressionOutput(model)
 
@@ -72,7 +72,7 @@ class ModelTests(unittest.TestCase):
         m = pyGPs.mean.Zero()
         k = pyGPs.cov.RBF()
         model.setPrior(mean=m, kernel=k)
-        model.optimize(self.xc, self.yc)
+        model.optimizeHyperparameters(self.xc, self.yc)
         model.predict(self.zc)
         self.checkClassificationOutput(model)
 
@@ -81,7 +81,7 @@ class ModelTests(unittest.TestCase):
         k = pyGPs.cov.RBF()
         model.setPrior(mean=m, kernel=k)
         model.useInference("Laplace")
-        model.optimize(self.xc, self.yc)
+        model.optimizeHyperparameters(self.xc, self.yc)
         model.predict(self.zc)
         self.checkClassificationOutput(model)
         
@@ -94,7 +94,7 @@ class ModelTests(unittest.TestCase):
         k = pyGPs.cov.RBF()
         model.setPrior(mean=m, kernel=k, inducing_points=self.ur)
         model.setOptimizer("Minimize", num_restarts=10)
-        model.optimize(self.xr, self.yr)
+        model.optimizeHyperparameters(self.xr, self.yr)
         model.predict(self.zr)
         self.checkRegressionOutput(model)
 
@@ -106,7 +106,7 @@ class ModelTests(unittest.TestCase):
         k = pyGPs.cov.RBF()
         model.setPrior(mean=m, kernel=k, inducing_points=self.uc)
         model.setOptimizer("Minimize", num_restarts=10)
-        model.optimize(self.xc, self.yc)
+        model.optimizeHyperparameters(self.xc, self.yc)
         model.predict(self.zc)
         self.checkClassificationOutput(model)
 
@@ -116,7 +116,7 @@ class ModelTests(unittest.TestCase):
         model.setPrior(mean=m, kernel=k, inducing_points=self.uc)
         model.setOptimizer("Minimize", num_restarts=10)
         model.useInference("Laplace")
-        model.optimize(self.xc, self.yc)
+        model.optimizeHyperparameters(self.xc, self.yc)
         model.predict(self.zc)
         self.checkClassificationOutput(model)
 

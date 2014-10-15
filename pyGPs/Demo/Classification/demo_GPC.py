@@ -46,7 +46,7 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 print 'Basic Example'
 model = pyGPs.GPC()          # binary classification (default inference method: EP)
 model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
-model.optimize(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
+model.optimizeHyperparameters(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
 model.predict(z)             # predict test cases
 
 
@@ -66,7 +66,7 @@ model.plotData_2d(x1,x2,t1,t2,p1,p2)
 
 model.fit(x, y)
 print "Negative log marginal liklihood before:", round(model.nlZ,3)
-model.optimize(x, y)
+model.optimizeHyperparameters(x, y)
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
 # Prediction

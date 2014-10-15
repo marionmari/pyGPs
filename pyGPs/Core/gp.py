@@ -168,7 +168,7 @@ class GP(object):
         pass
 
 
-    def optimize(self, x=None, y=None):
+    def optimizeHyperparameters(self, x=None, y=None):
         '''
         Train optimal hyperparameters based on training data,
         adjust new hyperparameters to all mean/cov/lik functions
@@ -659,7 +659,7 @@ class GPMC(object):
                     model.useInference(self.newInf)
                 if self.newLik:
                     model.useLikelihood(self.newLik)
-                model.optimize(x,y)               # training
+                model.optimizeHyperparameters(x,y)               # training
                 ym = model.predict(xs)[0]
                 ym += 1     # now scale into 0 to 2,  ym=0 is class j, ym=2 is class i
                 vote_i = np.zeros((xs.shape[0],self.n_class))
@@ -772,7 +772,7 @@ class GP_FITC(GP):
         remaining_pool    = list( set(range(self.x.shape[0])) - set(unchecked_indices) )
 
         self.setPrior(inducing_points = self.u)
-        self.optimize() # optimize hyperparameters with this inducing set
+        self.optimizeHyperparameters() # optimize hyperparameters with this inducing set
         nlml = self.nlZ
 
         while unchecked_indices:
@@ -795,7 +795,7 @@ class GP_FITC(GP):
             #set the prior with this new inducing set
             self.setPrior(inducing_points = self.u)
 
-            self.optimize() # optimize hyperparameters with this inducing set
+            self.optimizeHyperparameters() # optimize hyperparameters with this inducing set
             nlml_new = self.nlZ
 
             if nlml_new > nlml:

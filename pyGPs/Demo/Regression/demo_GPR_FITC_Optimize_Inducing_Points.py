@@ -56,11 +56,10 @@ model.setPrior(kernel=k, inducing_points=u)
 
 # The rest is analogous to what we have done before
 model.setData(x, y)
-#print inducing_indices
-#model.optimizeInducingSet()
+
 model.fit()
 print "Negative log marginal liklihood before optimization:", model.nlZ
-model.optimize() # optimize hyperparameters with this inducing set
+model.optimizeHyperparameters() # optimize hyperparameters with this inducing set
 nlml = model.nlZ
 print "Negative log marginal liklihood optimized:", nlml
 

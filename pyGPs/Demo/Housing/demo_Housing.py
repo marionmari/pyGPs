@@ -42,7 +42,7 @@ if __name__ == '__main__':
     # train and predict
     from time import clock
     t0 = clock()
-    model.optimize(x,y)
+    model.optimizeHyperparameters(x,y)
     t1 = clock()
     ym, ys2, fm, fs2, lp = model.predict(xs)
     xa  = np.concatenate((data[:,:4],data[:,5:-1]),axis=1)
