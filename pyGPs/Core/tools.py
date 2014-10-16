@@ -24,7 +24,7 @@ import sys
 from math import sqrt
 import scipy.linalg.lapack as lapack
 
-def jitchol(A,max_tries=5):
+def jitchol(A,maxtries=5):
     ''' Copyright (c) 2012, GPy authors (James Hensman, Nicolo Fusi, Ricardo Andrade,
         Nicolas Durrande, Alan Saul, Max Zwiessele, Neil D. Lawrence).
     All rights reserved
