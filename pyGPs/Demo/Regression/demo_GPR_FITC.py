@@ -52,13 +52,17 @@ model.setData(x, y)
 model.optimizeHyperparameters()
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
+M = model.posterior.Lxx
+print np.linalg.cond(M,-2)
+
+
 # Prediction
-model.predict(z)
+#model.predict(z)
 # Again, plot() is a toy method for 1-d data
-model.plot()
+#model.plot()
 
 
-
+'''
 print '------------------------------------------------------'
 print "Example 2: user-defined inducing points"
 
@@ -86,10 +90,13 @@ print "Negative log marginal liklihood before optimization:", round(model.nlZ,3)
 model.optimizeHyperparameters()
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
 
+print model.posterior.alpha.shape
+
+
 # Prediction
-ymu, ys2, fmu, fs2, lp = model.predict(z)
+#ymu, ys2, fmu, fs2, lp = model.predict(z)
 # Again, plot() is a toy method for 1-d data
-model.plot()
+#model.plot()
 
 
 print '------------------------------------------------------'
@@ -155,3 +162,4 @@ print '--------------------END OF DEMO-----------------------'
 
 
 
+'''

@@ -58,11 +58,13 @@ class postStruct(object):
     | post.sW: 1d array containing diagonal of sqrt(W)
     | the approximate posterior covariance matrix is inv(inv(K)+W)
     | post.L : 2d array, L = chol(sW*K*sW+identity(n))
+    | post.Lxx : 2d array, Lxx = chol(Kxu*inv(Kuu)*Kux)
     '''
     def __init__(self):
         self.alpha = np.array([])
         self.L     = np.array([])
         self.sW    = np.array([])
+        self.Lxx   = np.array([])
 
 class dnlZStruct(object):
     '''
@@ -353,11 +355,11 @@ class FITC_Exact(Inference):
         n, D = x.shape
         nu = Kuu.shape[0]
 
-        sn2   = np.exp(2*likfunc.hyp[0])                         # noise variance of likGauss
-        snu2  = 1.e-6*sn2                                        # hard coded inducing inputs noise
-        Luu   = jitchol(Kuu+snu2*np.eye(nu)).T        # Kuu + snu2*I = Luu'*Luu
-        V     = np.linalg.solve(Luu.T,Ku)                        # V = inv(Luu')*Ku => V'*V = Q
-        g_sn2 = diagK + sn2 - np.array([(V*V).sum(axis=0)]).T    # g + sn2 = diag(K) + sn2 - diag(Q)
+        sn2   = np.exp(2*likfunc.hyp[0])                                       # noise variance of likGauss
+        snu2  = 1.e-6*sn2                                                      # hard coded inducing inputs noise
+        Luu   = jitchol(Kuu+snu2*np.eye(nu)).T                                 # Kuu + snu2*I = Luu'*Luu
+        V     = np.linalg.solve(Luu.T,Ku)                                      # V = inv(Luu')*Ku => V'*V = Q
+        g_sn2 = diagK + sn2 - np.array([(V*V).sum(axis=0)]).T                  # g + sn2 = diag(K) + sn2 - diag(Q)
         Lu    = jitchol(np.eye(nu) + np.dot(V/np.tile(g_sn2.T,(nu,1)),V.T)).T  # Lu'*Lu=I+V*diag(1/g_sn2)*V'
         r     = (y-m)/np.sqrt(g_sn2)
         be    = np.linalg.solve(Lu.T,np.dot(V,r/np.sqrt(g_sn2)))
@@ -366,7 +368,8 @@ class FITC_Exact(Inference):
         post = postStruct()
         post.alpha = np.linalg.solve(Luu,np.linalg.solve(Lu,be)) # return the posterior parameters
         post.L  = solve_chol(np.dot(Lu,Luu),np.eye(nu)) - iKuu   # Sigma-inv(Kuu)
-        post.sW = np.ones((n,1))/np.sqrt(sn2)                    # unused for FITC prediction  with gp.m
+        post.sW = np.ones((n,1))/np.sqrt(sn2)                    # unused for FITC prediction
+        post.Lxx = (np.dot(Ku.T,np.dot(iKuu,Ku)))         # used for inducing set optimization
 
         if nargout>1:                                            # do we want the marginal likelihood
             nlZ = np.log(np.diag(Lu)).sum() + (np.log(g_sn2).sum() + n*np.log(2*np.pi) + np.dot(r.T,r) - np.dot(be.T,be))/2.
@@ -838,7 +841,7 @@ class FITC_EP(Inference):
         self.last_ttau = ttau
         self.last_tnu = tnu       # remember for next call
         post = postStruct()
-        post.sW = np.sqrt(ttau)   # unused for FITC_EP prediction with gp.m
+        post.sW = np.sqrt(ttau)   # unused for FITC_EP prediction
         dd = 1/(d0+1/ttau)
         alpha = tnu/ttau*dd
         RV = np.dot(R,V)
