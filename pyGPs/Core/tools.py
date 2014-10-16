@@ -50,7 +50,6 @@ def jitchol(A,maxtries=5):
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     '''
-
     A = np.asfortranarray(A)
     L, info = lapack.dpotrf(A, lower=1)
     if info == 0:
@@ -58,7 +57,7 @@ def jitchol(A,maxtries=5):
     else:
         diagA = np.diag(A)
         if np.any(diagA <= 0.):
-            raise linalg.LinAlgError, "not pd: non-positive diagonal elements"
+            raise np.linalg.LinAlgError, "kernel matrix not positive definite: non-positive diagonal elements"
         jitter = diagA.mean() * 1e-6
         while maxtries > 0 and np.isfinite(jitter):
             print 'Warning: adding jitter of {:.10e}'.format(jitter)
@@ -68,7 +67,7 @@ def jitchol(A,maxtries=5):
                 jitter *= 10
             finally:
                 maxtries -= 1
-        raise linalg.LinAlgError, "not positive definite, even with jitter."
+        raise np.linalg.LinAlgError, "kernel matrix not positive definite, even with jitter."
 
 def solve_chol(L, B):
     '''
