@@ -65,14 +65,17 @@ class postStruct(object):
         self.L     = np.array([])
         self.sW    = np.array([])
         self.Lxx   = np.array([])
+        # Probably need a few other terms here if we want to optimize inducing inputs
 
 class dnlZStruct(object):
     '''
     Data structure for the derivatives of mean, cov and lik functions.
 
-    |dnlZ.mean: list of derivatives for each hyperparameters in mean function
-    |dnlZ.cov: list of derivatives for each hyperparameters in covariance function
-    |dnlZ.lik: list of derivatives for each hyperparameters in likelihood function
+    |dnlZ.mean  : list of derivatives for each hyperparameter in mean function
+    |dnlZ.cov   : list of derivatives for each hyperparameter in covariance function
+    |dnlZ.covvar: list of derivatives for each hyperparameter in variational term (for optimizing inducing inputs)
+    |dnlZ.lik   : list of derivatives for each hyperparameter in likelihood function
+    |dnlZ.likvar: list of derivatives for each hyperparameter in variational term (for optimizing inducing inputs)
     '''
     def __init__(self, m, c, l):
         self.mean = []
@@ -81,9 +84,11 @@ class dnlZStruct(object):
         if m.hyp:
             self.mean = [0 for i in xrange(len(m.hyp))]
         if c.hyp:
-            self.cov  = [0 for i in xrange(len(c.hyp))]
+            self.cov    = [0 for i in xrange(len(c.hyp))]
+            self.covvar = [0 for i in xrange(len(c.hyp))]
         if l.hyp:
-            self.lik  = [0 for i in xrange(len(l.hyp))]
+            self.lik     = [0 for i in xrange(len(l.hyp))]
+            self.likvar  = [0 for i in xrange(len(l.hyp))]
 
 class Inference(object):
     '''
@@ -342,7 +347,7 @@ class FITC_Exact(Inference):
     is the noise of the inducing inputs and Quu = Kuu + snu2*eye(nu).
     '''
     def __init__(self):
-        self.name = 'FICT exact inference'
+        self.name = 'FITC exact inference'
 
     def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
         if not isinstance(likfunc, lik.Gauss):                  # NOTE: no explicit call to likGauss
@@ -373,6 +378,8 @@ class FITC_Exact(Inference):
 
         if nargout>1:                                            # do we want the marginal likelihood
             nlZ = np.log(np.diag(Lu)).sum() + (np.log(g_sn2).sum() + n*np.log(2*np.pi) + np.dot(r.T,r) - np.dot(be.T,be))/2.
+            # if we are optimizing inducing points need additional term for variational free energy
+            # trvar = 0.5 * (sum(diagK) - sum(V*V)) / sn2
             if nargout>2:                                        # do we want derivatives?
                 dnlZ = dnlZStruct(meanfunc, covfunc, likfunc)    # allocate space for derivatives
                 al = r/np.sqrt(g_sn2) - np.dot(V.T,np.linalg.solve(Lu,be))/g_sn2 # al = (Kt+sn2*eye(n))\y
@@ -386,7 +393,10 @@ class FITC_Exact(Inference):
                     dnlZ.cov[ii] = ( np.dot(ddiagKi.T,1./g_sn2) + np.dot(w.T,(np.dot(dKuui,w)-2.*np.dot(dKui,al))) \
                                    - np.dot(al.T,(v*al)) - np.dot(np.array([(W*W).sum(axis=0)]),v) - (np.dot(R,W.T)*np.dot(B,W.T)).sum() )/2.
                     dnlZ.cov[ii] = dnlZ.cov[ii][0,0]
+                    #dnlZ.covvar[ii] = ???
+
                 dnlZ.lik = sn2*((1./g_sn2).sum() - (np.array([(W*W).sum(axis=0)])).sum() - np.dot(al.T,al))
+                #dnlZ.likvar = -trvar / sn2
                 dKuui = 2*snu2
                 R = -dKuui*B
                 v = -np.array([(R*B).sum(axis=0)]).T     # diag part of cov deriv
