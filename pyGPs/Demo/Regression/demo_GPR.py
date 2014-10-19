@@ -64,7 +64,7 @@ model.setPrior(mean=m, kernel=k)
 #model.setOptimizer("CG", num_restarts=30)
 #model.setOptimizer("LBFGSB", num_restarts=30)
 
-# Instead of fit(), which only fits data using given hyperparameters,
+# Instead of getPosterior(), which only fits data using given hyperparameters,
 # optimize() will optimize hyperparamters based on marginal likelihood
 # the deafult mean will be adapted to the average value of the training labels.
 # ..if you do not specify mean function by your own.

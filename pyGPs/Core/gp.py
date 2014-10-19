@@ -191,10 +191,10 @@ class GP(object):
 
         # apply optimal hyp to all mean/cov/lik functions here
         self.optimizer._apply_in_objects(optimalHyp)
-        self.fit()
+        self.getPosterior()
 
 
-    def fit(self, x=None, y=None, der=True):
+    def getPosterior(self, x=None, y=None, der=True):
         '''
         Fit the training data. Update negative log marginal likelihood(nlZ),
         partial derivatives of nlZ w.r.t. each hyperparameter(dnlZ),
@@ -261,7 +261,7 @@ class GP(object):
             self.ys = ys
 
         if self.posterior is None:
-            self.fit()
+            self.getPosterior()
 
         alpha = self.posterior.alpha
         L     = self.posterior.L
@@ -297,10 +297,9 @@ class GP(object):
             fs2[id] = np.maximum(fs2[id],0)            # remove numerical noise i.e. negative variances
             Fs2 = np.tile(fs2[id],(1,N))               # we have multiple values in case of sampling
             if ys is None:
-                [Lp, Ymu, Ys2] = likfunc.evaluate(None,Fmu[:],Fs2[:],None,None,3)
+                Lp, Ymu, Ys2 = likfunc.evaluate(None,Fmu[:],Fs2[:],None,None,3)
             else:
-                print np.tile(ys[id],(1,N))
-                [Lp, Ymu, Ys2] = likfunc.evaluate(np.tile(ys[id],(1,N)), Fmu[:], Fs2[:],None,None,3)
+                Lp, Ymu, Ys2 = likfunc.evaluate(np.tile(ys[id],(1,N)), Fmu[:], Fs2[:],None,None,3)
             lp[id]  = np.reshape( np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1)/N , (len(id),1) )   # log probability; sample averaging
             ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
             ys2[id] = np.reshape( np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1)/N , (len(id),1) ) # .. variance
@@ -620,7 +619,7 @@ class GPMC(object):
                     model.useInference(self.newInf)
                 if self.newLik:
                     model.useLikelihood(self.newLik)
-                model.fit(x,y)               # fitting
+                model.getPosterior(x,y)               # fitting
                 ym = model.predict(xs)[0]
                 ym += 1     # now scale into 0 to 2,  ym=0 is class j, ym=2 is class i
                 vote_i = np.zeros((xs.shape[0],self.n_class))

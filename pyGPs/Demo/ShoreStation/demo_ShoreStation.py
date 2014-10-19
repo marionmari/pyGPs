@@ -54,7 +54,7 @@ if __name__ == '__main__':
     # @SEE doc_optimization for documentation of optimization methods
     model.setOptimizer("Minimize", num_restarts=nItr)
 
-    # Instead of fit(), which only fits data using given hyperparameters,
+    # Instead of getPosterior(), which only fits data using given hyperparameters,
     # optimize() will optimize hyperparamters based on marginal likelihood
     # the deafult mean will be adapted to the average value of the training labels.. 
     # ..if you do not specify mean function by your own.

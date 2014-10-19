@@ -77,7 +77,7 @@ for t in xrange(num_Iteration+1):
         # gp
         x_train = np.zeros((n1,1)) 
         x_test = np.zeros((n2,1))       
-        model.fit(x_train, y_train)
+        model.getPosterior(x_train, y_train)
         model.predict(x_test)
         predictive_class = np.sign(model.ym)
 

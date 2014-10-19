@@ -36,7 +36,7 @@ if __name__ == '__main__':
     N,D = x.shape
     
     model = pyGPs.GPR()
-    model.fit(x, y)
+    model.getPosterior(x, y)
     print 'Initial negative log marginal likelihood = ', round(model.nlZ,3)
     
     # train and predict

@@ -87,7 +87,7 @@ model.setPrior(mean=m, kernel=k, inducing_points=u)
 
 # The rest is analogous to what we have done before.
 model.setData(x, y)
-model.fit()
+model.getPosterior()
 print "Negative log marginal liklihood before optimization:", round(model.nlZ,3)
 model.optimize()
 print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
