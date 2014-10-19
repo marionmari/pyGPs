@@ -100,6 +100,24 @@
 <li>made private for methods that users don&#8217;t need to call</li>
 </ul>
 </div>
+<div class="section" id="october-19th-2014">
+<h2>October 19th 2014<a class="headerlink" href="#october-19th-2014" title="Permalink to this headline">¶</a></h2>
+<p>documentation updates:</p>
+<ul class="simple">
+<li>DOC: model.fit() is now named model.getPosterior</li>
+<li>DOC: typo fixed: cov.LIN changed to cov.Linear</li>
+<li>DOC: removed cov.Periodic() in demos because its limited in 1-d data.</li>
+<li>API file updated accordingly</li>
+</ul>
+<p>structural updates:</p>
+<ul class="simple">
+<li>removed unused ScalePrior attribute in most inference method</li>
+<li>added function jitchol, which added a small jitter(instead of doing Cholesky decomposition directly) to the diagonal when the kernel matrix is ill conditioned.</li>
+<li>thrown error when using periodic covariance functions for non-1d data. We also removed cov.Periodic() in demos because its limited usage.</li>
+<li>combined equally spaced positions of inputs as test positions as well in plot methods to get a more accurate plotting.</li>
+<li>rename model.fit() to model.getPosterior(), while model.optimize() stays the same. (since it is confusing for some users that the name fit() is not doing optimizing.)</li>
+</ul>
+</div>
 </div>
 
 
@@ -114,6 +132,7 @@
 <li><a class="reference internal" href="#june-30th-2014">June 30th 2014</a></li>
 <li><a class="reference internal" href="#july-8th-2014">July 8th 2014</a></li>
 <li><a class="reference internal" href="#july-14th-2014">July 14th 2014</a></li>
+<li><a class="reference internal" href="#october-19th-2014">October 19th 2014</a></li>
 </ul>
 </li>
 </ul>

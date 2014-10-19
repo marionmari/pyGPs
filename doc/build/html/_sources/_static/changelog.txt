@@ -60,3 +60,22 @@ documentation updates:
 structural updates:
 
 - made private for methods that users don't need to call
+
+
+October 19th 2014
+----------------
+
+documentation updates:
+
+- DOC: model.fit() is now named model.getPosterior
+- DOC: typo fixed: cov.LIN changed to cov.Linear
+- DOC: removed cov.Periodic() in demos because its limited in 1-d data.
+- API file updated accordingly
+
+structural updates:
+
+- removed unused ScalePrior attribute in most inference method
+- added function jitchol, which added a small jitter(instead of doing Cholesky decomposition directly) to the diagonal when the kernel matrix is ill conditioned.
+- thrown error when using periodic covariance functions for non-1d data. We also removed cov.Periodic() in demos because its limited usage.
+- combined equally spaced positions of inputs as test positions as well in plot methods to get a more accurate plotting.
+- rename model.fit() to model.getPosterior(), while model.optimize() stays the same. (since it is confusing for some users that the name fit() is not doing optimizing.)
