@@ -1103,6 +1103,10 @@ class Periodic(Kernel):
         self.hyp = [ log_ell, log_p, log_sigma]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        if x != None:
+            assert x.shape[1]==1, 'periodic covariance can only be used for 1d data'
+        if z != None:
+            assert z.shape[1]==1, 'periodic covariance can only be used for 1d data'
         ell = np.exp(self.hyp[0])        # characteristic length scale
         p   = np.exp(self.hyp[1])        # period
         sf2 = np.exp(2.*self.hyp[2])     # signal variance
@@ -1120,6 +1124,10 @@ class Periodic(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        if x != None:
+            assert x.shape[1]==1, 'periodic covariance can only be used for 1d data'
+        if z != None:
+            assert z.shape[1]==1, 'periodic covariance can only be used for 1d data'
         ell = np.exp(self.hyp[0])        # characteristic length scale
         p   = np.exp(self.hyp[1])        # period
         sf2 = np.exp(2.*self.hyp[2])     # signal variance
