@@ -1,7 +1,7 @@
 ================================================================================
     Marion Neumann [marion dot neumann at uni-bonn dot de]
     Daniel Marthaler [dan dot marthaler at gmail dot com]
-    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
+    Shan Huang [schan dot huang at gmail dot com]
     Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
 
     This file is part of pyGPs.
