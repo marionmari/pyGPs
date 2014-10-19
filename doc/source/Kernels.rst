@@ -54,8 +54,8 @@ Composite Kernels & Meams
 ----------------------------
 Adding and muliplying Kernels(Means) is really simple: ::
 
-	k = pyGPs.cov.Periodic() * pyGPs.cov.RBF()
-	k = 0.5*pyGPs.cov.LIN() + pyGPs.cov.Periodic()
+	k = pyGPs.cov.Linear() * pyGPs.cov.RBF()
+	k = 0.5 * pyGPs.cov.Linear() + pyGPs.cov.RBF()
 
 Scalar will also be treated as a hyperparameter. For example, k = s1 * k1 + s2 * k2, 
 then the list of hyperparameters is hyp = [s1, k1.hyp, s2, k2.hyp]. Scalar is passed in logorithm domain such that it will always be positive during optimization.
