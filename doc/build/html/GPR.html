@@ -81,11 +81,11 @@
 <h2>A five-line toy example<a class="headerlink" href="#a-five-line-toy-example" title="Permalink to this headline">¶</a></h2>
 <p>Now lets do regression with Gaussian processes.
 Using pyGPs for regression is really simple; here is the most basic example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">GPR</span><span class="p">()</span>    <span class="c"># specify model (GP regression)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>        <span class="c"># fit default model (mean zero &amp; rbf kernel) with data</span>
-<span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>   <span class="c"># optimize hyperparamters (default optimizer: single run minimize)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>       <span class="c"># predict test cases</span>
-<span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>           <span class="c"># and plot result</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">GPR</span><span class="p">()</span>      <span class="c"># specify model (GP regression)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">getPosterior</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="c"># fit default model (mean zero &amp; rbf kernel) with data</span>
+<span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>     <span class="c"># optimize hyperparamters (default optimizer: single run minimize)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>         <span class="c"># predict test cases</span>
+<span class="n">model</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>             <span class="c"># and plot result</span>
 </pre></div>
 </div>
 <p>By default, GPR uses a zero mean, the rbf kernel and a Gaussian likelihood. Default optimizer is a single run of Rasmussen&#8217;s minimize. You will see below how to set non-default values in another example.</p>
@@ -106,7 +106,7 @@ Here, <em>pyGPs.GPR().plot()</em> works for 1-d data only, while <em>pyGPs.GPC()
 </pre></div>
 </div>
 <p>Here, we use a composite mean as the sum of a linear and a constant function, and an rbf kernel. The initial hyperparameters are left to their default values. See <a class="reference external" href="Kernels.html">Kernels &amp; Means</a> for a complete documentation of kernel/mean specification and custom kernel/mean construction. Once kernel and mean are specified, they are passed to the prior using <em>setPrior()</em>.</p>
-<p>You can add the traning data to the model explicitly by using <em>setData()</em>. So, you avoid passing them into <em>fit()</em> or <em>optimize()</em> each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> (if you do not specify mean function by your own).</p>
+<p>You can add the traning data to the model explicitly by using <em>setData()</em>. So, you avoid passing them into <em>getPosterior()</em> or <em>optimize()</em> each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> (if you do not specify mean function by your own).</p>
 <p>Further, you can plot the data in the 1-d case:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">plotData_1d</span><span class="p">()</span>
 </pre></div>
@@ -121,7 +121,7 @@ several times with different random initializations:</p>
 </div>
 <p>The optimized hyperparameters returned by <em>optimize()</em> are then set to be the ones obtained from the run with the best result.
 The whole functionality for optimization is introduced in detail in the documentation <a class="reference external" href="Opts.html">Optimizers</a>.</p>
-<p>Instead of <em>fit()</em>, which only fits data using given hyperparameters, <em>optimize()</em> will optimize hyperparamters based on marginal likelihood:</p>
+<p>Instead of <em>getPosterior()</em>, which only fits data using given hyperparameters, <em>optimize()</em> will optimize hyperparamters based on marginal likelihood:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
 </pre></div>
 </div>

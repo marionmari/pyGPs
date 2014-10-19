@@ -51,7 +51,7 @@ The following is the standard way to do GP classification ::
 
         model = pyGPs.GPC()
         model.setPrior(kernel=k)      
-        model.fit(x_train, y_train)
+        model.getPosterior(x_train, y_train)
         model.predict(x_test)
 
 

@@ -31,10 +31,10 @@ First example :math:`\rightarrow` state default values
 ----------------------------------------------------------------
 Again, lets see the simplest use of gp classification at first ::
 
-	model = pyGPs.gp.GPC()             # binary classification (default inference method: EP)
-	model.fit(x, y)              # fit default model (mean zero & rbf kernel) with data
+	model = pyGPs.gp.GPC()          # binary classification (default inference method: EP)
+	model.getPosterior(x, y)        # fit default model (mean zero & rbf kernel) with data
 	model.optimize(x, y)            # optimize hyperparamters (default optimizer: single run minimize)
-	model.predict(z)             # predict test cases
+	model.predict(z)                # predict test cases
 
 Note, that inference is done via expectation propagation (EP) approximation by deault. How to set inference to Laplace approximation, see :ref:`more_on_GPC`.
 
@@ -53,7 +53,7 @@ The rest is similar to GPR::
 	model.setData(x, y)
 	model.plotData_2d(x1,x2,t1,t2,p1,p2)
 
-	model.fit()
+	model.getPosterior()
 	model.optimize()
 	model.predict(z, ys=np.ones((z.shape[0],1)))
 

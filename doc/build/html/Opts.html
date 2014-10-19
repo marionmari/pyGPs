@@ -71,12 +71,15 @@
 <p>&#8220;CG&#8221;         -&gt; conjugent gradient</p>
 <p>&#8220;BFGS&#8221;       -&gt; quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)</p>
 <p>&#8220;SCG&#8221;        -&gt; scaled conjugent gradient (faster than CG)</p>
+<p>&#8220;COBYLA&#8221;     -&gt; Constrained Optimization by Linear Approximation method of Powell</p>
+<p>&#8220;LBFGSB&#8221;     -&gt; A Limited Memory Algorithm for Bound Constrained Optimization</p>
+<p>&#8220;RTMinimize&#8221; -&gt; a refactored minimize by Carl Rasmussen and Ryan Turner</p>
 </li>
-<li><strong>num_restarts</strong> &#8211; Set if you want to run mulitiple times of optimization with different initial guess. 
+<li><strong>num_restarts</strong> &#8211; Set if you want to run mulitiple times of optimization with different initial guess.
 It specifys the maximum number of runs/restarts/trials.</li>
-<li><strong>min_threshold</strong> &#8211; Set if you want to run mulitiple times of optimization with different initial guess. 
+<li><strong>min_threshold</strong> &#8211; Set if you want to run mulitiple times of optimization with different initial guess.
 It specifys the threshold of objective function value. Stop optimization when this value is reached.</li>
-<li><strong>meanRange</strong> &#8211; <p>The range of initial guess for mean hyperparameters. 
+<li><strong>meanRange</strong> &#8211; <p>The range of initial guess for mean hyperparameters.
 e.g. meanRange = [(-2,2), (-5,5), (0,1)].
 Each tuple specifys the range (low, high) of this hyperparameter,
 This is only the range of initial guess, during optimization process, optimal hyperparameters may go out of this range.</p>

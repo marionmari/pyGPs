@@ -28,11 +28,11 @@ A five-line toy example
 Now lets do regression with Gaussian processes. 
 Using pyGPs for regression is really simple; here is the most basic example: ::
 
-    model = pyGPs.GPR()    # specify model (GP regression)
-    model.fit(x, y)        # fit default model (mean zero & rbf kernel) with data
-    model.optimize(x, y)   # optimize hyperparamters (default optimizer: single run minimize)
-    model.predict(z)       # predict test cases
-    model.plot()           # and plot result
+    model = pyGPs.GPR()      # specify model (GP regression)
+    model.getPosterior(x, y) # fit default model (mean zero & rbf kernel) with data
+    model.optimize(x, y)     # optimize hyperparamters (default optimizer: single run minimize)
+    model.predict(z)         # predict test cases
+    model.plot()             # and plot result
 
 By default, GPR uses a zero mean, the rbf kernel and a Gaussian likelihood. Default optimizer is a single run of Rasmussen's minimize. You will see below how to set non-default values in another example.
 
@@ -60,7 +60,7 @@ Here, we use a composite mean as the sum of a linear and a constant function, an
 
 .. _Kernels & Means: Kernels.html
 
-You can add the traning data to the model explicitly by using *setData()*. So, you avoid passing them into *fit()* or *optimize()* each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels :math:`y` (if you do not specify mean function by your own).
+You can add the traning data to the model explicitly by using *setData()*. So, you avoid passing them into *getPosterior()* or *optimize()* each time used. More importantly, the deafult mean will be adapted to the average value of the trainging labels :math:`y` (if you do not specify mean function by your own).
 
 Further, you can plot the data in the 1-d case: ::
 
@@ -82,7 +82,7 @@ The whole functionality for optimization is introduced in detail in the document
 
 .. _Optimizers: Opts.html
 
-Instead of *fit()*, which only fits data using given hyperparameters, *optimize()* will optimize hyperparamters based on marginal likelihood: ::
+Instead of *getPosterior()*, which only fits data using given hyperparameters, *optimize()* will optimize hyperparamters based on marginal likelihood: ::
 
     model.optimize()
 
