@@ -49,7 +49,7 @@ def jitchol(A,maxtries=5):
     ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-    '''
+    '''    
     A = np.asfortranarray(A)
     L, info = lapack.dpotrf(A, lower=1)
     if info == 0:
