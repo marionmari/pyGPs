@@ -451,23 +451,12 @@ class GPR(GP):
         ym = self.ym    # predictive test mean
         ys2 = self.ys2  # predictive test variance
         plt.figure()
-        x_mini = np.min(x)
-        x_maxi = np.max(x)
-        equalSpacedPoint = np.linspace(x_mini,x_maxi,20)   # select 20 equal spaced points of input
-        equalSpacedPoint = np.reshape(equalSpacedPoint, (equalSpacedPoint.shape[0],1))
-        esp_ymu, esp_ys2, esp_fmu, esp_fs2, esp_lp = self.predict(equalSpacedPoint)  # also do prediction on these points to have an accurate ploting
-        xs = np.concatenate((xs,equalSpacedPoint)).flatten().tolist()  # xs to be test points combined with these equal spaced points
-        ym = np.concatenate((ym,esp_ymu)).flatten().tolist()           # same for ym 
-        ys2 = np.concatenate((ys2,esp_ys2)).flatten().tolist()         # and ys2
-        xs = [x for x,y,z in sorted(zip(xs,ym,ys2))] 
-        ym = [y for x,y,z in sorted(zip(xs,ym,ys2))] 
-        ys2 = [z for x,y,z in sorted(zip(xs,ym,ys2))] 
-        xs = np.array(xs)
-        ym = np.array(ym)
-        ys2 = np.array(ys2)
+        xss  = np.reshape(xs,(xs.shape[0],))
+        ymm  = np.reshape(ym,(ym.shape[0],))
+        ys22 = np.reshape(ys2,(ys2.shape[0],))
         plt.plot(x, y, color=DATACOLOR, ls='None', marker='+',ms=12, mew=2)
         plt.plot(xs, ym, color=MEANCOLOR, ls='-', lw=3.)
-        plt.fill_between(xs,ym + 2.*np.sqrt(ys2), ym - 2.*np.sqrt(ys2), facecolor=SHADEDCOLOR,linewidths=0.0)
+        plt.fill_between(xss,ymm + 2.*np.sqrt(ys22), ymm - 2.*np.sqrt(ys22), facecolor=SHADEDCOLOR,linewidths=0.0)
         plt.grid()
         if not axisvals is None:
             plt.axis(axisvals)

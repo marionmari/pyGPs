@@ -120,4 +120,3 @@ model.setNoise( log_sigma=np.log(0.1) )
 
 print '--------------------END OF DEMO-----------------------'
 
-
