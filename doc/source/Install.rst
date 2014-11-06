@@ -16,7 +16,7 @@ Installation
 Requirements
 ------------
 * `python 2.6 or 2.7`_
-* `scipy`_, `numpy`_, and `matplotlib`_: open-source packages for scientific computing in Python. 
+* `scipy`_ (v0.13.0 or later), `numpy`_, and `matplotlib`_: open-source packages for scientific computing in Python. 
 
 .. _python 2.6 or 2.7: http://www.python.org/
 .. _scipy: http://www.scipy.org/
