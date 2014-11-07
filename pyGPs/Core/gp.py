@@ -743,17 +743,30 @@ class GP_FITC(GP):
             self.meanfunc = mean
             self.usingDefaultMean = False
 
-    def optimizeInducingSet(self,num_u=None):
+    def optimizeInducingSet(self,num_u=None,initType='random',max_epochs = 150, threshold = 0.01):
         if self.x is None or self.y is None:
             raise error("Need training data before optimizing inducing variables")
         N, D = self.x.shape
 
         if not num_u is None:
-            # Initialize inducing inputs to be a subset of self.x
-            u_indices = random.sample(xrange(self.x.shape[0]),num_u)
-            self.u = self.x[u_indices]
-            u = self.u
+            if initType == 'random':
+              # Initialize inducing inputs to be a subset of self.x
+              u_indices = random.sample(xrange(self.x.shape[0]),num_u)
+              self.u = self.x[u_indices]
+              u = self.u
+            elif initType == 'cluster':
+              from tools import find_centers
+              u, c = find_centers(self.x,num_u)
+              self.u = u
 
+              u_indices = []
+              for i,a in enumerate(self.u):
+                  if not a in self.x:
+                      raise error("Inducing set MUST be a subset of training data")
+                  else:
+                      u_indices.append(np.where(self.x==a)[0][0])
+            else:
+              raise Error('inducing input initializations are only implemented for random sample of training set.') 
         elif not self.u is None:
             # Check that inducing inputs are a subset of the training set
             u_indices = []
@@ -768,8 +781,8 @@ class GP_FITC(GP):
             raise error("optimizeInducingSet either needs an initial inducing set or the number of inducing variables to use")
 
         # Now u_indices are the indices of self.x that denote the inducing points
-        unchecked_indices = u_indices[:]
-        checked_indices   = []
+        unchecked_indices = u_indices[:]  # The indices of the initial inducing points that haven't been checked
+        checked_indices   = []            # The indices of the initial inducing points that have been checked
         remaining_pool    = list( set(range(self.x.shape[0])) - set(unchecked_indices) )
 
         self.setPrior(kernel = self.covfunc.covfunc, inducing_points = u)
@@ -777,39 +790,43 @@ class GP_FITC(GP):
         nlml = self.nlZ
 
         while unchecked_indices:
-
-            # pick a random inducing variable (that hasn't been checked) to replace
+            # pick a random inducing variable (that hasn't been checked) to (maybe) replace
             j = random.choice(unchecked_indices)
 
-            # Delete this element from the list
+            # Delete this element from the list of inducing inputs
             u_indices.remove(j) # removes the element = j
             unchecked_indices.remove(j) # removes the element = j
             u_index = np.where(u==self.x[j])[0][0]
             u = np.delete(u,u_index,axis=0)
 
-            # Add a new element from the remaining pool
-            i = random.choice(remaining_pool)  # Need to choose which one to check better than random
-            remaining_pool.remove(i)
-            u_indices.append(i)
-            u = np.append(u,np.reshape(self.x[i,:],(1,D)),axis=0)
-            #set the prior with this new inducing set
-            self.setPrior(kernel = self.covfunc.covfunc, inducing_points = u)
-
-            self.optimizeHyperparameters() # optimize hyperparameters with this inducing set
-            nlml_new = self.nlZ
-            print "nlml_new = ", nlml_new
-
-            if nlml_new > nlml:
-                # put j back in
-                u_indices.remove(i)
-                u_indices.append(j)
-                u_index = np.where(u==self.x[i])[0][0]
-                u = np.delete(u,u_index,axis=0)
-                u = np.append(u,np.reshape(self.x[j,:],(1,D)),axis=0)
+            # Add a new element from the remaining pool (Do this up to 10 times)
+            for i in range(10):
+              try:
+                i = random.choice(remaining_pool)  # Need to choose which one to check better than random
+                remaining_pool.remove(i)
+                u_indices.append(i)
+                u = np.append(u,np.reshape(self.x[i,:],(1,D)),axis=0)
+                #set the prior with this new inducing set
                 self.setPrior(kernel = self.covfunc.covfunc, inducing_points = u)
-            else:
-                nlml = nlml_new
-        self.u = u
+                self.optimizeHyperparameters() # optimize hyperparameters with this inducing set
+                nlml_new = self.nlZ
+
+                if nlml_new > nlml:
+                    # put j back in since it was better than i
+                    u_indices.remove(i)
+                    u_indices.append(j)
+                    u_index = np.where(u==self.x[i])[0][0]
+                    u = np.delete(u,u_index,axis=0)
+                    u = np.append(u,np.reshape(self.x[j,:],(1,D)),axis=0)
+                    self.setPrior(kernel = self.covfunc.covfunc, inducing_points = u)
+                    self.nlZ = nlml
+                else:
+                    nlml = nlml_new
+              except IndexError:
+                # No more remaining pool to choose from
+                unchecked_indices = []
+                break
+            return
 
 class GPR_FITC(GP_FITC):
     '''Gaussian Process Regression FITC'''
@@ -889,8 +906,6 @@ class GPR_FITC(GP_FITC):
             self.inffunc = inf.FITC_EP()
         else:
             raise Exception('Possible lik values are "Laplace".')
-
-
 
 
 class GPC_FITC(GP_FITC):

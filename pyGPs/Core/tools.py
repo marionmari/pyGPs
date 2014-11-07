@@ -127,14 +127,14 @@ def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
     #    Numerical Recipes in C, Cambridge University Press, 2002
     #
     # [xmin,fmin,funccout,varargout] = BRENTMIN(xlow,xupp,Nit,tol,f,nout,varargin)
-    #    Given a function f, and given a search interval this routine isolates 
+    #    Given a function f, and given a search interval this routine isolates
     #    the minimum of fractional precision of about tol using Brent's method.
-    # 
+    #
     # INPUT
     # -----
     # xlow,xupp:  search interval such that xlow<=xmin<=xupp
     # Nitmax:     maximum number of function evaluations made by the routine
-    # tol:        fractional precision 
+    # tol:        fractional precision
     # f:          [y,varargout{:}] = f(x,varargin{:}) is the function
     # nout:       no. of outputs of f (in varargout) in addition to the y value
     #
@@ -147,7 +147,6 @@ def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
     #
     # This is a python implementation of gpml functionality (Copyright (c) by
     # Hannes Nickisch 2010-01-10).
-    
 
     if nout == None:
         nout = 0
@@ -267,5 +266,44 @@ def cholupdate(R,x,sgn='+'):
         raise Exception('Sign needs to be + or - in cholupdate')
     return jitchol(R1).T
 
+def _cluster_points(X, mu):
+  clusters  = {}
+  for x in X:
+    bestmukey = min([(i[0], np.linalg.norm(x-mu[i[0]])) \
+        for i in enumerate(mu)], key=lambda t:t[1])[0]
+    try:
+      clusters[bestmukey].append(x)
+    except KeyError:
+      clusters[bestmukey] = [x]
+  return clusters
 
+def _reevaluate_centers(mu, clusters):
+  newmu = []
+  keys = sorted(clusters.keys())
+  for k in keys:
+    newmu.append(np.mean(clusters[k], axis = 0))
+  return newmu
+
+def _has_converged(mu, oldmu):
+  return ( set([tuple(a) for a in mu]) == set([ tuple(a) for a in oldmu ] ) )
+
+def find_centers(X, K):
+  # https://datasciencelab.wordpress.com/2014/01/15/improved-seeding-for-clustering-with-k-means/
+  import random
+  # Initialize to K random centers
+  oldmu = random.sample(X, K)
+  mu = random.sample(X, K)
+  while not _has_converged(mu, oldmu):
+    oldmu = mu
+    # Assign all points in X to clusters
+    clusters = _cluster_points(X, mu)
+    # Reevaluate centers
+    mu = _reevaluate_centers(oldmu, clusters)
+    #find the closest point in each cluster to mu (so centers are actual points)
+    for i in range(len(mu)):
+      y = np.asarray(clusters[i])
+      d = ((mu[i]-y)**2).sum(axis=1)
+      ndx = d.argsort()
+      mu[i] = y[ndx[0]]
+  return(np.asarray(mu), clusters)
 

@@ -36,21 +36,9 @@ model = pyGPs.GPR_FITC()
 num_u = 10
 # Get num_u random indices of the training set
 inducing_indices = random.sample(xrange(x.shape[0]),num_u)
-unchecked_indices = inducing_indices[:]
-checked_indices = []
-remaining_pool = list( set(range(x.shape[0])) - set(unchecked_indices) )
 
 u = x[inducing_indices]
 
-# Currently only random initialization (should add cluster based and others...)
-
-# Number of information pivots
-num_info_pivots =  5
-
-# Number of discrete swaps per pass
-num_discrete_swaps_per_pass = 2
-
-# and specify inducing point when seting prior
 k = pyGPs.cov.RBF()
 model.setPrior(kernel=k, inducing_points=u)
 
@@ -63,9 +51,17 @@ model.optimizeHyperparameters() # optimize hyperparameters with this inducing se
 nlml = model.nlZ
 print "Negative log marginal liklihood optimized:", nlml
 
-model.optimizeInducingSet()
+k = pyGPs.cov.RBF()
+model.setPrior(kernel=k, inducing_points=u)
+model.optimizeInducingSet(num_u,'random')
 nlml = model.nlZ
-print "Negative log marginal liklihood optimized (inducing):", nlml
+print "Negative log marginal liklihood optimized (random initialization) (inducing):", nlml
+
+k = pyGPs.cov.RBF()
+model.setPrior(kernel=k, inducing_points=u)
+model.optimizeInducingSet(num_u,'cluster')
+nlml = model.nlZ
+print "Negative log marginal liklihood optimized (cluster initialization) (inducing):", nlml
 
 # Prediction
 ymu, ys2, fmu, fs2, lp = model.predict(z)
@@ -74,7 +70,3 @@ model.plot()
 
 
 print '--------------------END OF DEMO-----------------------'
-
-
-
-

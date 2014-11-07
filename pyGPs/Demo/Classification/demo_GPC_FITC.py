@@ -105,12 +105,12 @@ print "Example 3: optimized inducing points"
 
 model = pyGPs.GPC_FITC()
 
-# You can define inducing points yourself.
+# You can define inducing points yourself (must be a subset of the training data)
 num_u = 25
 u_index = random.sample(xrange(x.shape[0]),num_u)
 u = x[u_index]
 
-# and specify inducing point when seting prior
+# and pass them in while specifying inducing point when setting prior
 m = pyGPs.mean.Zero()
 k = pyGPs.cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
 model.setData(x, y)
@@ -129,10 +129,4 @@ n = z.shape[0]
 ymu, ys2, fmu, fs2, lp = model.predict(z, ys=np.ones((n,1)))
 model.plot(x1,x2,t1,t2)
 
-
-
 print '--------------------END OF DEMO-----------------------'
-
-
-
-
