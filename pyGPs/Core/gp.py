@@ -271,7 +271,7 @@ class GP(object):
         if L == []:                         # in case L is not provided, we compute it
             K = covfunc.getCovMatrix(x=x[nz,:], mode='train')
             #L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
-            L = jitchol( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
+            L = jitchol( (np.eye(len(nz)) + np.dot(sW,sW.T)*K).T )
         Ltril     = np.all( np.tril(L,-1) == 0 ) # is L an upper triangular matrix?
         ns        = xs.shape[0]                  # number of data points
         nperbatch = 1000                         # number of data points per mini batch
@@ -354,7 +354,7 @@ class GP(object):
         if L == []:                         # in case L is not provided, we compute it
             K = covfunc.getCovMatrix(x=x[nz,:], mode='train')
             #L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
-            L = jitchol( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
+            L = jitchol( (np.eye(len(nz)) + np.dot(sW,sW.T)*K).T )
         Ltril     = np.all( np.tril(L,-1) == 0 ) # is L an upper triangular matrix?
         ns        = xs.shape[0]                  # number of data points
         nperbatch = 1000                         # number of data points per mini batch
