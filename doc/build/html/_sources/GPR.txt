@@ -52,7 +52,7 @@ Now lets do another example to get insight into more advanced features of the to
 
 You can specify non-default mean and covariance functions: ::
 
-    m = pyGPs.mean.Linear( D=x.shape[1] ) + mean.Const()   
+    m = pyGPs.mean.Linear( D=x.shape[1] ) + pyGPs.mean.Const()   
     k = pyGPs.cov.RBF()
     model.setPrior(mean=m, kernel=k) 
 

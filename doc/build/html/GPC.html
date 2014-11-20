@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -14,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     'v1.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -68,9 +67,9 @@
 <span class="n">z</span> <span class="o">=</span> <span class="n">demoData</span><span class="p">[</span><span class="s">&#39;xstar&#39;</span><span class="p">]</span>        <span class="c"># test data</span>
 </pre></div>
 </div>
-<p>The <img class="math" src="_images/math/aaa4de95cc6371d125d5cf773cdd9f9913dd1d8e.png" alt="120"/> data points were generated from two Gaussians with different means and covariances. One Gaussian is isotropic and contains
-<img class="math" src="_images/math/38bd36e353df831303c0de895a9ec614cf3e7202.png" alt="2/3"/> of the data (blue), the other is highly correlated and contains <img class="math" src="_images/math/217aedbdc339bacc8ba075a2ec16902b098194e3.png" alt="1/3"/> of the points (red).
-Note, that the labels for the targets are specified to be <img class="math" src="_images/math/7cfbd35086ffefb83637d42166582b43c8a1ff4a.png" alt="\pm 1"/> (and not <img class="math" src="_images/math/e15d84dfcdccf6b0d8fb485020852b5b0f4ea097.png" alt="0/1"/>).</p>
+<p>The <img class="math" src="_images/math/1c1fc25eb56b788647384456e0e1a8dade41a0c1.png" alt="120"/> data points were generated from two Gaussians with different means and covariances. One Gaussian is isotropic and contains
+<img class="math" src="_images/math/62cfeebb5ed187b89fa9e16c9413edbb3509ae74.png" alt="2/3"/> of the data (blue), the other is highly correlated and contains <img class="math" src="_images/math/6ce2356fc9366d51aa33bf8c380f04bdda621a67.png" alt="1/3"/> of the points (red).
+Note, that the labels for the targets are specified to be <img class="math" src="_images/math/5afef8883a1e1142173e76df8d16e764b2779782.png" alt="\pm 1"/> (and not <img class="math" src="_images/math/26b1a580c36b3c8ff2d4b4419ad8a7d054213501.png" alt="0/1"/>).</p>
 <p>In the plot, we superimpose the data points with the posterior equi-probability contour lines for the probability of the second class
 given complete information about the generating mechanism.</p>
 <div class="figure align-center">
@@ -78,7 +77,7 @@ given complete information about the generating mechanism.</p>
 </div>
 </div>
 <div class="section" id="first-example-state-default-values">
-<h2>First example <img class="math" src="_images/math/e12b6767375342ed57d27678e3ea1cdb97f47e15.png" alt="\rightarrow"/> state default values<a class="headerlink" href="#first-example-state-default-values" title="Permalink to this headline">¶</a></h2>
+<h2>First example <img class="math" src="_images/math/a9c4c6156d25f42923975ce449aadad9848ed7dc.png" alt="\rightarrow"/> state default values<a class="headerlink" href="#first-example-state-default-values" title="Permalink to this headline">¶</a></h2>
 <p>Again, lets see the simplest use of gp classification at first</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">gp</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>          <span class="c"># binary classification (default inference method: EP)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">getPosterior</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>        <span class="c"># fit default model (mean zero &amp; rbf kernel) with data</span>
@@ -89,8 +88,8 @@ given complete information about the generating mechanism.</p>
 <p>Note, that inference is done via expectation propagation (EP) approximation by deault. How to set inference to Laplace approximation, see <a class="reference internal" href="#more-on-gpc"><em>A bit more things you can do</em></a>.</p>
 </div>
 <div class="section" id="second-example-gp-classification">
-<h2>Second example <img class="math" src="_images/math/e12b6767375342ed57d27678e3ea1cdb97f47e15.png" alt="\rightarrow"/> GP classification<a class="headerlink" href="#second-example-gp-classification" title="Permalink to this headline">¶</a></h2>
-<p>So we first state the model to be <img class="math" src="_images/math/192d69ed9c7bd67b3f34486786531bae08ba2d88.png" alt="GP"/> classification now:</p>
+<h2>Second example <img class="math" src="_images/math/a9c4c6156d25f42923975ce449aadad9848ed7dc.png" alt="\rightarrow"/> GP classification<a class="headerlink" href="#second-example-gp-classification" title="Permalink to this headline">¶</a></h2>
+<p>So we first state the model to be <img class="math" src="_images/math/bc008ec23119a8f24d723e0616fee9a6f9a87cd2.png" alt="GP"/> classification now:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">GPC</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -108,8 +107,8 @@ given complete information about the generating mechanism.</p>
 </div>
 <p><strong>[Theory]</strong>
 In this example, we used an RBF kernel (squared exponential covariance function) with automatic relevance determination (ARD). This covariance function has one
-characteristic length-scale parameter for each dimension of the input space (here <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/> in total), and a signal magnitude parameter, resulting in
-a total of <img class="math" src="_images/math/7cde695f2e4542fd01f860a89189f47a27143b66.png" alt="3"/> hyperparameters. ARD with separate length-scales for each input dimension is a very powerful tool to learn which
+characteristic length-scale parameter for each dimension of the input space (here <img class="math" src="_images/math/15c663954a3e059d1f876bc8a4621de376038c96.png" alt="2"/> in total), and a signal magnitude parameter, resulting in
+a total of <img class="math" src="_images/math/b9b358d9bbdf54c3d9aef7554638822d996c21ea.png" alt="3"/> hyperparameters. ARD with separate length-scales for each input dimension is a very powerful tool to learn which
 inputs are important for the predictions: if length-scales are short, input dimensions are very important, and when they grow very large
 (compared to the spread of the data), the corresponding input dimensions will be mostly ignored.</p>
 <p>Note, <em>pyGPs.GPC().plot()</em> is a toy method for 2-d data:</p>
@@ -118,7 +117,7 @@ inputs are important for the predictions: if length-scales are short, input dime
 </div>
 <p>The contour plot for the predictive distribution is shown below. Note, that the predictive
 probability is fairly close to the probabilities of the generating process in regions of high data density. Note also, that as you move
-away from the data, the probability approaches <img class="math" src="_images/math/217aedbdc339bacc8ba075a2ec16902b098194e3.png" alt="1/3"/>, the overall class probability.</p>
+away from the data, the probability approaches <img class="math" src="_images/math/6ce2356fc9366d51aa33bf8c380f04bdda621a67.png" alt="1/3"/>, the overall class probability.</p>
 <div class="figure align-center">
 <a class="reference internal image-reference" href="_images/d2_2.png"><img alt="_images/d2_2.png" src="_images/d2_2.png" style="width: 560.0px; height: 420.0px;" /></a>
 </div>
@@ -144,8 +143,8 @@ that for this data set, both input dimensions are important.</p>
   <ul>
 <li><a class="reference internal" href="#">Basic Classification</a><ul>
 <li><a class="reference internal" href="#load-data">Load data</a></li>
-<li><a class="reference internal" href="#first-example-state-default-values">First example <img class="math" src="_images/math/e12b6767375342ed57d27678e3ea1cdb97f47e15.png" alt="\rightarrow"/> state default values</a></li>
-<li><a class="reference internal" href="#second-example-gp-classification">Second example <img class="math" src="_images/math/e12b6767375342ed57d27678e3ea1cdb97f47e15.png" alt="\rightarrow"/> GP classification</a></li>
+<li><a class="reference internal" href="#first-example-state-default-values">First example <img class="math" src="_images/math/a9c4c6156d25f42923975ce449aadad9848ed7dc.png" alt="\rightarrow"/> state default values</a></li>
+<li><a class="reference internal" href="#second-example-gp-classification">Second example <img class="math" src="_images/math/a9c4c6156d25f42923975ce449aadad9848ed7dc.png" alt="\rightarrow"/> GP classification</a></li>
 <li><a class="reference internal" href="#a-bit-more-things-you-can-do">A bit more things you can do</a></li>
 </ul>
 </li>
@@ -200,7 +199,7 @@ that for this data set, both input dimensions are important.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>
