@@ -14,23 +14,23 @@
 # Inference methods: Compute the (approximate) posterior for a Gaussian process.
 # Methods currently implemented include:
 #
-#   infExact         Exact inference (only possible with Gaussian likelihood)
-#   infLaplace       Laplace's Approximation
-#   infEP            Expectation Propagation
-#   infVB            [NOT IMPLEMENTED!] Variational Bayes Approximation
+#   Exact         Exact inference (only possible with Gaussian likelihood)
+#   Laplace       Laplace's Approximation
+#   EP            Expectation Propagation
+#   VB            [NOT IMPLEMENTED!] Variational Bayes Approximation
 #
-#   infFITC          Large scale regression with approximate covariance matrix
-#   infFITC_Laplace  Large scale inference  with approximate covariance matrix
-#   infFITC_EP       Large scale inference  with approximate covariance matrix
+#   FITC          Large scale regression with approximate covariance matrix
+#   FITC_Laplace  Large scale inference  with approximate covariance matrix
+#   FITC_EP       Large scale inference  with approximate covariance matrix
 #
-#   infMCMC     [NOT IMPLEMENTED!]
+#   MCMC     [NOT IMPLEMENTED!]
 #               Markov Chain Monte Carlo and Annealed Importance Sampling
 #               We offer two samplers.
 #                 - hmc: Hybrid Monte Carlo
 #                 - ess: Elliptical Slice Sampling
 #               No derivatives w.r.t. to hyperparameters are provided.
 #
-#   infLOO      [NOT IMPLEMENTED!]
+#   LOO      [NOT IMPLEMENTED!]
 #               Leave-One-Out predictive probability and Least-Squares Approxim.
 #
 #
@@ -519,7 +519,7 @@ class Laplace(Inference):
 class FITC_Laplace(Inference):
     '''
     FITC-Laplace approximation to the posterior Gaussian process. The function is
-    equivalent to infLaplace with the covariance function:
+    equivalent to Laplace with the covariance function:
     Kt = Q + G; G = diag(g); g = diag(K-Q);  Q = Ku' * inv(Kuu + snu2 * eye(nu)) * Ku;
     where Ku and Kuu are covariances w.r.t. to inducing inputs xu and
     snu2 = sn2/1e6 is the noise of the inducing inputs. We fixed the standard
