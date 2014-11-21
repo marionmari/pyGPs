@@ -181,7 +181,7 @@ class Kernel(object):
         n = a.shape[0]
         D = a.shape[1]
         m = n
-        if b == None:
+        if b is None:
             b = a.transpose()
         else:
             m = b.shape[0]
@@ -799,7 +799,7 @@ class RBFard(Kernel):
     :param log_sigma: signal deviation. 
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0.):
-        if log_ell_list == None:
+        if log_ell_list is None:
             self.hyp = [0. for i in xrange(D)] + [log_sigma]
         else:
             self.hyp = log_ell_list + [log_sigma]
@@ -946,7 +946,7 @@ class LINard(Kernel):
     :param log_ell_list: characteristic length scale for each dimension.
     '''
     def __init__(self, D=None, log_ell_list=None):
-        if log_ell_list == None:
+        if log_ell_list is None:
             self.hyp = [0. for i in xrange(D)]
         else:
             self.hyp = log_ell_list
@@ -1103,9 +1103,9 @@ class Periodic(Kernel):
         self.hyp = [ log_ell, log_p, log_sigma]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
-        if x != None:
+        if not x is None:
             assert x.shape[1]==1, 'periodic covariance can only be used for 1d data'
-        if z != None:
+        if not z is None:
             assert z.shape[1]==1, 'periodic covariance can only be used for 1d data'
         ell = np.exp(self.hyp[0])        # characteristic length scale
         p   = np.exp(self.hyp[1])        # period
@@ -1124,9 +1124,9 @@ class Periodic(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
-        if x != None:
+        if not x is None:
             assert x.shape[1]==1, 'periodic covariance can only be used for 1d data'
-        if z != None:
+        if not z is None:
             assert z.shape[1]==1, 'periodic covariance can only be used for 1d data'
         ell = np.exp(self.hyp[0])        # characteristic length scale
         p   = np.exp(self.hyp[1])        # period
@@ -1266,7 +1266,7 @@ class RQard(Kernel):
     :param log_alpha: shape parameter for the RQ covariance.
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0., log_alpha=0.):
-        if log_ell_list == None:
+        if log_ell_list is None:
             self.hyp = [0. for i in xrange(D)] + [ log_sigma, log_alpha ]
         else:
             self.hyp = log_ell_list + [ log_sigma, log_alpha ]

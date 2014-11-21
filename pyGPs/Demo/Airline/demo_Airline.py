@@ -30,7 +30,6 @@ if __name__ == '__main__':
 
     # Set some parameters
     Q = 10
-    nItr = 10
 
     model = pyGPs.GPR()           # start from a new model
 
@@ -38,20 +37,25 @@ if __name__ == '__main__':
     # @SEE doc_kernel_mean for documentation of all kernels/means
     m = pyGPs.mean.Zero()
 
-    #hyps = pyGPs.cov.initSMhypers(Q, x, y)
-    #k = pyGPs.cov.SM(Q, hyps, D=x.shape[0])
-    #model.setPrior(kernel=k)
+    for _ in range(10):
+      hyps = pyGPs.cov.initSMhypers(Q, x, y)
+      k = pyGPs.cov.SM(Q, hyps)
+      model.setPrior(kernel=k)
 
-    # Noise std. deviation
-    sn = 0.1
-    model.setNoise(log_sigma=np.log(sn))
-    # Instead of getPosterior(), which only fits data using given hyperparameters,
-    # optimize() will optimize hyperparamters based on marginal likelihood
-    # the deafult mean will be adapted to the average value of the training labels..
-    # ..if you do not specify mean function by your own.
-    model.optimize(x, y)
-    model.plotData_1d()
+      # Noise std. deviation
+      sn = 0.1
 
+      model.setNoise(log_sigma=np.log(sn))
+      # Instead of getPosterior(), which only fits data using given hyperparameters,
+      # optimize() will optimize hyperparamters based on marginal likelihood
+      # the deafult mean will be adapted to the average value of the training labels..
+      # ..if you do not specify mean function by your own.
+      model.optimize(x, y)
+      print _, model.nlZ
+      model.predict(xt)
+      model.plot()
+
+    '''
     print 'Optimized negative log marginal likelihood:', round(model.nlZ, 3)
     # Predict test data
     # output mean(ymu)/variance(ys2), latent mean(fmu)/variance(fs2), and log
@@ -72,3 +76,4 @@ if __name__ == '__main__':
              label='95% confidence interval')
 
     plt.show()
+   '''
