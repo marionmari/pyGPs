@@ -60,7 +60,7 @@ model.setData(x, y)
 # model.setData(x, y, value_per_axis=10)
 
 model.optimize()
-print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
+print "Negative log marginal likelihood optimized:", round(model.nlZ,3)
 
 # Prediction
 n = z.shape[0]
@@ -88,13 +88,12 @@ model.setPrior(mean=m, kernel=k, inducing_points=u)
 # The rest is analogous to what we have done before.
 model.setData(x, y)
 model.getPosterior()
-print "Negative log marginal liklihood before optimization:", round(model.nlZ,3)
+print "Negative log marginal likelihood before optimization:", round(model.nlZ,3)
 model.optimize()
-print "Negative log marginal liklihood optimized:", round(model.nlZ,3)
+print "Negative log marginal likelihood optimized:", round(model.nlZ,3)
 
 # predict
 n = z.shape[0]
-print z.shape
 ymu, ys2, fmu, fs2, lp = model.predict(z, ys=np.ones((n,1)))
 model.plot(x1,x2,t1,t2)
 

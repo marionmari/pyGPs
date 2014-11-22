@@ -166,7 +166,7 @@ class GP(object):
         pass
 
 
-    def optimize(self, x=None, y=None):
+    def optimize(self, x=None, y=None, numIterations = 40):
         '''
         Train optimal hyperparameters based on training data,
         adjust new hyperparameters to all mean/cov/lik functions
@@ -186,7 +186,7 @@ class GP(object):
             self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
 
         # optimize
-        optimalHyp, optimalNlZ = self.optimizer.findMin(self.x, self.y)
+        optimalHyp, optimalNlZ = self.optimizer.findMin(self.x, self.y, numIters = numIterations)
         self.nlZ = optimalNlZ
 
         # apply optimal hyp to all mean/cov/lik functions here

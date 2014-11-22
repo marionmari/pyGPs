@@ -32,17 +32,17 @@ class Optimizer(object):
     def __init__(self, model=None, searchConfig = None):
         self.model = model
 
-    def findMin(self, x, y):
+    def findMin(self, x, y, numIters):
         '''
-        Find minimal value based on negative-log-marginal-likelihood. 
-        optimalHyp, funcValue = findMin(x, y)
+        Find minimal value based on negative-log-marginal-likelihood.
+        optimalHyp, funcValue = findMin(x, y, numIters)
 
         where funcValue is the minimal negative-log-marginal-likelihood during optimization,
-        and optimalHyp is a flattened numpy array 
-        (in sequence of meanfunc.hyp, covfunc.hyp, likfunc.hyp) 
+        and optimalHyp is a flattened numpy array
+        (in sequence of meanfunc.hyp, covfunc.hyp, likfunc.hyp)
         of the hyparameters to achieve such value.
 
-        You can achieve advanced search strategy by initializing Optimizer with searchConfig, 
+        You can achieve advanced search strategy by initializing Optimizer with searchConfig,
         which is an instance of pyGPs.Optimization.conf.
         See more in pyGPs.Optimization.conf and pyGPs.Core.gp.GP.setOptimizer,
         as well as in online documentation of section Optimizers.
@@ -93,14 +93,14 @@ class CG(Optimizer):
         self.trailsCounter = 0
         self.errorCounter = 0
 
-    def findMin(self, x, y):
+    def findMin(self, x, y, numIters = 100):
         meanfunc = self.model.meanfunc
         covfunc = self.model.covfunc
         likfunc = self.model.likfunc
         inffunc = self.model.inffunc
         hypInArray = self._convert_to_array()
         try:
-            opt = cg(self._nlml, hypInArray, self._dnlml, maxiter=100, disp=False, full_output=True)
+            opt = cg(self._nlml, hypInArray, self._dnlml, maxiter=numIters, disp=False, full_output=True)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1]
             warnFlag   = opt[4]
@@ -152,7 +152,7 @@ class BFGS(Optimizer):
         self.trailsCounter = 0
         self.errorCounter = 0
 
-    def findMin(self, x, y):
+    def findMin(self, x, y, numIters = 100):
         meanfunc = self.model.meanfunc
         covfunc = self.model.covfunc
         likfunc = self.model.likfunc
@@ -160,7 +160,7 @@ class BFGS(Optimizer):
         hypInArray = self._convert_to_array()
 
         try:
-            opt = bfgs(self._nlml, hypInArray, self._dnlml, maxiter=100, disp=False, full_output=True)
+            opt = bfgs(self._nlml, hypInArray, self._dnlml, maxiter=numIters, disp=False, full_output=True)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1]
             warnFlag   = opt[6]
@@ -199,7 +199,7 @@ class BFGS(Optimizer):
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
                     print "[BFGS] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
-                    return optimalHyp, funcValue 
+                    return optimalHyp, funcValue
 
         return optimalHyp, funcValue
 
@@ -214,25 +214,25 @@ class Minimize(Optimizer):
         self.trailsCounter = 0
         self.errorCounter = 0
 
-    def findMin(self, x, y):
+    def findMin(self, x, y, numIters = 100):
         meanfunc = self.model.meanfunc
         covfunc = self.model.covfunc
         likfunc = self.model.likfunc
         inffunc = self.model.inffunc
         hypInArray = self._convert_to_array()
 
-        try: 
-            opt = minimize.run(self._nlzAnddnlz, hypInArray, length=-40)
+        try:
+            opt = minimize.run(self._nlzAnddnlz, hypInArray, length=-numIters)
             optimalHyp = deepcopy(opt[0])
-            funcValue  = opt[1][-1]  
+            funcValue  = opt[1][-1]
         except:
             self.errorCounter += 1
-            if not self.searchConfig:         
+            if not self.searchConfig:
                 raise Exception("Can not use minimize. Try other optimization methods")
         self.trailsCounter += 1
 
         if self.searchConfig:
-            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
+            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange
             if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
@@ -255,7 +255,7 @@ class Minimize(Optimizer):
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
                     print "[Minimize] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
-                    return optimalHyp, funcValue                   
+                    return optimalHyp, funcValue
         return optimalHyp, funcValue
 
 
@@ -269,24 +269,24 @@ class SCG(Optimizer):
         self.trailsCounter = 0
         self.errorCounter = 0
 
-    def findMin(self, x, y):
+    def findMin(self, x, y, numIters = 100):
         meanfunc = self.model.meanfunc
         covfunc = self.model.covfunc
         likfunc = self.model.likfunc
         inffunc = self.model.inffunc
         hypInArray = self._convert_to_array()
         try:
-            opt = scg.run(self._nlzAnddnlz, hypInArray)
+            opt = scg.run(self._nlzAnddnlz, hypInArray, niters = numIters)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1][-1]
         except:
             self.errorCounter += 1
-            if not self.searchConfig:         
+            if not self.searchConfig:
                 raise Exception("Can not use Scaled conjugate gradient. Try other optimization methods")
         self.trailsCounter += 1
 
         if self.searchConfig:
-            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
+            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange
             if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
