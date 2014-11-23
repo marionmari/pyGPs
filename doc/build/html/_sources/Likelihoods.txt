@@ -37,15 +37,15 @@ We also support the development of new likelihood/inference classes, your custom
 
     # Your inference class needs to inherit base class Inference, 
     # which is in the module of Core.inf
-    class MyKernel(Kernel):
+    class MyInference(Kernel):
 
       def __init__(self):
           pass
 
-      def proceed(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
+      def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
           '''
           Inference computation based on inputs.
-          post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)
+          post, nlZ, dnlZ = inffunc.evaluate(mean, cov, lik, x, y)
 
           INPUT:
           cov: name of the covariance function (see covFunctions.m)
@@ -109,7 +109,7 @@ To test your customized inference function, uncomment the following method in *p
     def test_inf_new(self):
         # specify your inf function
         # set mean/cov/lik functions
-        post, nlZ, dnlZ = inffunc.proceed(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
+        post, nlZ, dnlZ = inffunc.evaluate(meanfunc, covfunc, likfunc, self.x, self.y, nargout=3)
         self.checkFITCOutput(post, nlZ, dnlZ)
 
 and test customized likelihood function in *pyGPs.Testing.unit_test_lik.py* ::

@@ -94,15 +94,15 @@ Please note the differences.</p>
 <p>We also support the development of new likelihood/inference classes, your customized inference class need to follow the template as below:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Your inference class needs to inherit base class Inference,</span>
 <span class="c"># which is in the module of Core.inf</span>
-<span class="k">class</span> <span class="nc">MyKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MyInference</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
 
   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
       <span class="k">pass</span>
 
-  <span class="k">def</span> <span class="nf">proceed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meanfunc</span><span class="p">,</span> <span class="n">covfunc</span><span class="p">,</span> <span class="n">likfunc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meanfunc</span><span class="p">,</span> <span class="n">covfunc</span><span class="p">,</span> <span class="n">likfunc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
       <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">      Inference computation based on inputs.</span>
-<span class="sd">      post, nlZ, dnlZ = inf.proceed(mean, cov, lik, x, y)</span>
+<span class="sd">      post, nlZ, dnlZ = inffunc.evaluate(mean, cov, lik, x, y)</span>
 
 <span class="sd">      INPUT:</span>
 <span class="sd">      cov: name of the covariance function (see covFunctions.m)</span>
@@ -164,7 +164,7 @@ To test your customized inference function, uncomment the following method in <e
 <span class="k">def</span> <span class="nf">test_inf_new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="c"># specify your inf function</span>
     <span class="c"># set mean/cov/lik functions</span>
-    <span class="n">post</span><span class="p">,</span> <span class="n">nlZ</span><span class="p">,</span> <span class="n">dnlZ</span> <span class="o">=</span> <span class="n">inffunc</span><span class="o">.</span><span class="n">proceed</span><span class="p">(</span><span class="n">meanfunc</span><span class="p">,</span> <span class="n">covfunc</span><span class="p">,</span> <span class="n">likfunc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">post</span><span class="p">,</span> <span class="n">nlZ</span><span class="p">,</span> <span class="n">dnlZ</span> <span class="o">=</span> <span class="n">inffunc</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">meanfunc</span><span class="p">,</span> <span class="n">covfunc</span><span class="p">,</span> <span class="n">likfunc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">checkFITCOutput</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="n">nlZ</span><span class="p">,</span> <span class="n">dnlZ</span><span class="p">)</span>
 </pre></div>
 </div>

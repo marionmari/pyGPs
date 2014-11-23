@@ -133,21 +133,11 @@ class GP(object):
         '''
         This method is used to sepecify optimization configuration. By default, gp uses a single run "minimize".
 
-        :param method: Optimization methods. Possible values are:
-
-                        "Minimize"   -> minimize by Carl Rasmussen (python implementation of "minimize" in GPML)
-
-                        "CG"         -> conjugent gradient
-
-                        "BFGS"       -> quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)
-
-                        "SCG"        -> scaled conjugent gradient (faster than CG)
-
-                        "COBYLA"     -> Constrained Optimization by Linear Approximation method of Powell
-
-                        "LBFGSB"     -> A Limited Memory Algorithm for Bound Constrained Optimization
-
-                        "RTMinimize" -> a refactored minimize by Carl Rasmussen and Ryan Turner
+        :param method: Optimization methods. Possible values are:\n
+                       "Minimize"   -> minimize by Carl Rasmussen (python implementation of "minimize" in GPML)\n
+                       "CG"         -> conjugent gradient\n
+                       "BFGS"       -> quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)\n
+                       "SCG"        -> scaled conjugent gradient (faster than CG)\n
 
         :param num_restarts: Set if you want to run mulitiple times of optimization with different initial guess.
                              It specifys the maximum number of runs/restarts/trials.

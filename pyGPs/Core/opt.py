@@ -19,12 +19,10 @@
 # Copyright (c) by Marion Neumann and Shan Huang, 30/09/2013
 
 import numpy as np
+import pyGPs
 import gp
 from scipy.optimize import fmin_bfgs as bfgs
 from scipy.optimize import fmin_cg as cg
-from scipy.optimize import fmin_cobyla as cobyla
-from scipy.optimize import fmin_l_bfgs_b as lbfgsb
-import pyGPs
 from pyGPs.Optimization import minimize, scg
 from copy import deepcopy
 
