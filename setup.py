@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pyGPs',
-    version='1.2',
+    version='1.3',
     author=['Marion Neumann',  'Shan Huang','Daniel Marthaler', 'Kristian Kersting'],
     author_email=['marion.neumann@uni-bonn.de.com', 'shan.huang@iais.fraunhofer.de', 'dan.marthaler@gmail.com', 'kristian.kersting@cs.tu-dortmund.de'],
     packages=find_packages(),
