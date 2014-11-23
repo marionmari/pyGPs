@@ -64,6 +64,12 @@ class postStruct(object):
         self.L     = np.array([])
         self.sW    = np.array([])
 
+    def __str__(self):
+        value = "posterior distribution described by alpha, sW and L.\nSee documentation and gpml book chapter 2.3 for these parameters\n"\
+                 +"alpha:\n"+str(self.alpha)+"\n"+"L:\n"+str(self.L)+"\nsW:\n"+str(self.sW)
+        return value
+
+
 
 class dnlZStruct(object):
     '''
@@ -83,6 +89,15 @@ class dnlZStruct(object):
             self.cov  = [0 for i in xrange(len(c.hyp))]
         if l.hyp:
             self.lik  = [0 for i in xrange(len(l.hyp))]
+
+    def __str__(self):
+        value = "Derivatives of mean, cov and lik functions:\n" +\
+                "mean:"+str(self.mean)+"\n"+\
+                "cov:"+str(self.cov)+"\n"+\
+                "lik:"+str(self.lik)
+        return value
+
+
 
 class Inference(object):
     '''
@@ -311,8 +326,8 @@ class Exact(Inference):
         m = meanfunc.getMean(x)                                # evaluate mean vector
 
         sn2   = np.exp(2*likfunc.hyp[0])                       # noise variance of likGauss
-        #L     = np.linalg.cholesky(K/sn2+np.eye(n)).T          # Cholesky factor of covariance with noise
-        L     = jitchol(K/sn2+np.eye(n)).T          # Cholesky factor of covariance with noise
+        #L     = np.linalg.cholesky(K/sn2+np.eye(n)).T         # Cholesky factor of covariance with noise
+        L     = jitchol(K/sn2+np.eye(n)).T                     # Cholesky factor of covariance with noise
         alpha = solve_chol(L,y-m)/sn2
         post = postStruct()
         post.alpha = alpha                                     # return the posterior parameters

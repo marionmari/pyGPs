@@ -224,8 +224,7 @@ class GP(object):
             self.posterior = deepcopy(post)
             return nlZ, post
         else:
-            post, nlZ, dnlZ = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y,  3)
-            dscale = None
+            post, nlZ, dnlZ = self.inffunc.evaluate(self.meanfunc, self.covfunc, self.likfunc, self.x, self.y, 3)
             self.nlZ       = nlZ
             self.dnlZ      = deepcopy(dnlZ)
             self.posterior = deepcopy(post)
@@ -323,7 +322,7 @@ class GP(object):
         predictive output variances(ys2),
         predictive latent means(fm),
         predictive latent variances(fs2),
-        log predictive probabilities(lp).
+        and log predictive probabilities(lp).
 
         :param post: struct representation of posterior
         :param xs: test input
@@ -484,6 +483,8 @@ class GPR(GP):
             self.inffunc = inf.EP()
         else:
             raise Exception('Possible lik values are "Laplace".')
+
+
 
 
 
