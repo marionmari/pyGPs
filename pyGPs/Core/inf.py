@@ -53,11 +53,16 @@ class postStruct(object):
     '''
     Data structure for posterior
 
-    | post.alpha: 1d array containing inv(K)*m,
-    | where K is the prior covariance matrix and m the approx posterior mean
+    | post.alpha: 1d array containing inv(K)*(mu-m), 
+    |             where K is the prior covariance matrix, m the prior mean, 
+    |             and mu the approx posterior mean
     | post.sW: 1d array containing diagonal of sqrt(W)
-    | the approximate posterior covariance matrix is inv(inv(K)+W)
+    |          the approximate posterior covariance matrix is inv(inv(K)+W)
     | post.L : 2d array, L = chol(sW*K*sW+identity(n))
+
+    Usually, the approximate posterior to be returned admits the form
+    N(mu=m+K*alpha, V=inv(inv(K)+W)), where alpha is a vector and W is diagonal;
+    if not, then L contains instead -inv(K+inv(W)), and sW is unused.
     '''
     def __init__(self):
         self.alpha = np.array([])
@@ -65,8 +70,9 @@ class postStruct(object):
         self.sW    = np.array([])
 
     def __str__(self):
-        value = "posterior distribution described by alpha, sW and L.\nSee documentation and gpml book chapter 2.3 for these parameters\n"\
-                 +"alpha:\n"+str(self.alpha)+"\n"+"L:\n"+str(self.L)+"\nsW:\n"+str(self.sW)
+        value = "posterior distribution described by alpha, sW and L.\n"+\
+                "See documentation and gpml book chapter 2.3 and chapter 3.4.3 for these parameters\n"\
+                +"alpha:\n"+str(self.alpha)+"\n"+"L:\n"+str(self.L)+"\nsW:\n"+str(self.sW)
         return value
 
 
