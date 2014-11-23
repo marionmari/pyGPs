@@ -60,11 +60,11 @@
 categorical attribute.  The goal is to determine median home values, based on various census attributes. This dataset is available at the <a class="reference external" href="http://archive.ics.uci.edu/ml/datasets/Housing">UCI
 Repository</a>.</p>
 <p>The demo follows that in <a class="footnote-reference" href="#id2" id="id1">[1]</a>.  The data set was preprocessed as follows: each continuous feature was transformed to zero mean and
-unit variance (The categorical variable was dropped).  The data was partitioned into <img class="math" src="_images/math/f4703e401f31449990f514be0993ee6c02e87339.png" alt="481"/> points for training and <img class="math" src="_images/math/affbb728286d083ae0e07e0dc8616d0fb5a99728.png" alt="25"/> points for testing.</p>
+unit variance (The categorical variable was dropped).  The data was partitioned into <img class="math" src="_images/math/345dbf954faac3f2b0fc03c3452911fdc24b4645.png" alt="481"/> points for training and <img class="math" src="_images/math/66644fd9f411299c3c1eabf151b5f601c9ef6c21.png" alt="25"/> points for testing.</p>
 <p>The mean function used was <tt class="xref py py-func docutils literal"><span class="pre">src.Core.means.meanZero()</span></tt> and the covariance (using the <tt class="xref py py-func docutils literal"><span class="pre">src.Core.kernels.covSum()</span></tt> function) was a composite of
 <tt class="xref py py-func docutils literal"><span class="pre">src.Core.kernels.covSEiso()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">src.Core.kernels.covNoise()</span></tt>.  The initial values of the hyperparameters were selected randomly from a zero-mean,
-unit-variance normal distribtion.  The actual values were: <img class="math" src="_images/math/862be0eb79365a63344cb101cf2a1621e160cebb.png" alt="[ -0.75, \; 0.59, \; -0.45 ]"/>. The initial likelihood hyperparameter
-was <img class="math" src="_images/math/9ba6ec445cd16549c4d0590e76575ca96d0f7cab.png" alt="-2.30"/>.  The regression started with initial negative log marginal likelihood of :math:` 752.46`.  Note the initial zero mean and the
+unit-variance normal distribtion.  The actual values were: <img class="math" src="_images/math/4c77368f5f60bf912774082413617fddbada46fb.png" alt="[ -0.75, \; 0.59, \; -0.45 ]"/>. The initial likelihood hyperparameter
+was <img class="math" src="_images/math/805a1831466dffa28e7f6eb7a8827c18e9ecbb7a.png" alt="-2.30"/>.  The regression started with initial negative log marginal likelihood of :math:` 752.46`.  Note the initial zero mean and the
 variance that is uniform over the test set.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pyGPs</span><span class="o">.</span><span class="n">GPR</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
@@ -77,8 +77,8 @@ variance that is uniform over the test set.</p>
 <div class="figure align-center">
 <a class="reference internal image-reference" href="_images/demoH1.png"><img alt="_images/demoH1.png" src="_images/demoH1.png" style="width: 600pt; height: 300pt;" /></a>
 </div>
-<p>After hyperparameter optimization, the covariance hyperparameters were <img class="math" src="_images/math/83a8c7c2c06a697fdb1416a663565b5415d04840.png" alt="[ 1.17, \;  0.45, \; -1.41 ]"/> and the likelihood
-hyperparameter was <img class="math" src="_images/math/79519d954ee47d0322405fba619765f44babeb8a.png" alt="-2.27"/>.  The final negative log marginal likelihood (optimized) was  <img class="math" src="_images/math/fcadc2c56457a7ce1be5501f803e929ff66272b9.png" alt="214.46"/>.</p>
+<p>After hyperparameter optimization, the covariance hyperparameters were <img class="math" src="_images/math/16e81cd555507b5a68c3eacf25c112ac0aaf01fe.png" alt="[ 1.17, \;  0.45, \; -1.41 ]"/> and the likelihood
+hyperparameter was <img class="math" src="_images/math/81af9819e88e47e1411802a5b809aed7ae7cf997.png" alt="-2.27"/>.  The final negative log marginal likelihood (optimized) was  <img class="math" src="_images/math/ddb50c6b4fbf8badd4eae76e526c4c087fc3d58a.png" alt="214.46"/>.</p>
 <div class="figure align-center">
 <a class="reference internal image-reference" href="_images/demoH2.png"><img alt="_images/demoH2.png" src="_images/demoH2.png" style="width: 600pt; height: 300pt;" /></a>
 </div>
@@ -148,7 +148,7 @@ hyperparameter was <img class="math" src="_images/math/79519d954ee47d0322405fba6
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
