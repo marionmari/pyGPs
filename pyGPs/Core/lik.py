@@ -48,12 +48,12 @@ class Likelihood(object):
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         '''
         The likelihood functions have two possible modes, the mode being selected
-        as follows (where "lik" stands for "evaluate" method for any likelihood function):
+        as follows:
 
 
         1) With two or three input arguments:                       [PREDICTION MODE]
 
-         lp = lik(y, mu) OR lp, ymu, ys2 = lik(y, mu, s2)
+         lp = evaluate(y, mu) OR lp, ymu, ys2 = evaluate(y, mu, s2)
 
             This allows to evaluate the predictive distribution. Let p(y_*|f_*) be the
             likelihood of a test point and N(f_*|mu,s2) an approximation to the posterior
@@ -72,13 +72,13 @@ class Likelihood(object):
 
         2) With four or five input arguments, the fouth being an object of class "Inference" [INFERENCE MODE]
 
-         lik(y, mu, s2, inf) OR lik(y, mu, s2, inf, i)
+         evaluate(y, mu, s2, inf.EP()) OR evaluate(y, mu, s2, inf.Laplace(), i)
 
          There are two cases for inf, namely a) infLaplace, b) infEP
          The last input i, refers to derivatives w.r.t. the ith hyperparameter.
 
          | a1)
-         | lp,dlp,d2lp,d3lp = lik(y, f, [], 'infLaplace').
+         | lp,dlp,d2lp,d3lp = evaluate(y, f, [], inf.Laplace()).
          | lp, dlp, d2lp and d3lp correspond to derivatives of the log likelihood.
          | log(p(y|f)) w.r.t. to the latent location f.
          | lp = log( p(y|f) )
@@ -87,7 +87,7 @@ class Likelihood(object):
          | d3lp = d^3 log( p(y|f) ) / df^3
 
          | a2)
-         | lp_dhyp,dlp_dhyp,d2lp_dhyp = lik(y, f, [], 'infLaplace', i)
+         | lp_dhyp,dlp_dhyp,d2lp_dhyp = evaluate(y, f, [], inf.Laplace(), i)
          | returns derivatives w.r.t. to the ith hyperparameter
          | lp_dhyp = d log( p(y|f) ) / (dhyp_i)
          | dlp_dhyp = d^2 log( p(y|f) ) / (df   dhyp_i)
@@ -95,14 +95,14 @@ class Likelihood(object):
 
 
          | b1)
-         | lZ,dlZ,d2lZ = lik(y, mu, s2, 'infEP')
+         | lZ,dlZ,d2lZ = evaluate(y, mu, s2, inf.EP())
          | let Z = \int p(y|f) N(f|mu,s2) df then
          | lZ = log(Z)
          | dlZ = d log(Z) / dmu
          | d2lZ = d^2 log(Z) / dmu^2
 
          | b2)
-         | dlZhyp = lik(y, mu, s2, 'infEP', i)
+         | dlZhyp = evaluate(y, mu, s2, inf.EP(), i)
          | returns derivatives w.r.t. to the ith hyperparameter
          | dlZhyp = d log(Z) / dhyp_i
 
@@ -110,8 +110,8 @@ class Likelihood(object):
         only look at the sign of the targets y; zero values are treated as +1.
 
         Some examples for valid likelihood functions:
-         | lik = likGauss([0.1])
-         | lik = likErf()
+         | lik = Gauss([0.1])
+         | lik = Erf()
         '''
         pass
 

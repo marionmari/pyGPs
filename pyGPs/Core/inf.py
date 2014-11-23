@@ -46,8 +46,8 @@ import numpy as np
 import lik, cov
 from copy import copy, deepcopy
 from tools import solve_chol, brentmin, cholupdate, jitchol
-
 np.seterr(all='ignore')
+
 
 class postStruct(object):
     '''
@@ -63,6 +63,7 @@ class postStruct(object):
         self.alpha = np.array([])
         self.L     = np.array([])
         self.sW    = np.array([])
+
 
 class dnlZStruct(object):
     '''
