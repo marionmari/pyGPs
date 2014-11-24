@@ -58,7 +58,7 @@ def jitchol(A,maxtries=5):
         diagA = np.diag(A)
         if np.any(diagA <= 0.):
             raise np.linalg.LinAlgError, "kernel matrix not positive definite: non-positive diagonal elements"
-        jitter = diagA.mean() * 1e-6
+        jitter = diagA.mean() * 1e-9
         while maxtries > 0 and np.isfinite(jitter):
             print 'Warning: adding jitter of {:.10e}'.format(jitter)
             try:

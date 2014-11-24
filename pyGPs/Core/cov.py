@@ -527,7 +527,8 @@ class Poly(Kernel):
             nn,D = z.shape
             A = np.reshape(np.sum(z*z,1), (nn,1))
         elif mode == 'train':                 # compute covariance matix for dataset x
-            A = np.dot(x,x.T)
+            n,D = x.shape
+            A = np.dot(x,x.T)  + np.eye(n)*1e-10
         elif mode == 'cross':                 # compute covariance between data sets x and z
             A = np.dot(x,z.T)
         A = sf2 * (c + A)**ord
@@ -621,7 +622,7 @@ class PiecePoly(Kernel):
         j = np.floor(0.5*D) + v + 1
         if mode == 'self_test':              # self covariances for the test cases
             nn,D = z.shape
-            A = np.zeros((nn,1))
+            A = np.zeros((nn,1)) 
         elif mode == 'train':                # compute covariance matix for dataset x
             A = np.sqrt( spdist.cdist(x/ell, x/ell, 'sqeuclidean') )
         elif mode == 'cross':                # compute covariance between data sets x and z
@@ -825,7 +826,7 @@ class Const(Kernel):
             A = sf2 * np.ones((nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
             n,D = x.shape
-            A = sf2 * np.ones((n,n))
+            A = sf2 * np.ones((n,n)) + np.eye(n)*1e-10
         elif mode == 'cross':             # compute covariance between data sets x and z
             n,D  = x.shape
             nn,D = z.shape
@@ -868,7 +869,7 @@ class Linear(Kernel):
             A = np.reshape(np.sum(z*z,1), (nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
             n,D = x.shape
-            A = np.dot(x,x.T) + np.eye(n)*1e-16    # required for numerical accuracy
+            A = np.dot(x,x.T) + np.eye(n)*1e-10    # required for numerical accuracy
         elif mode == 'cross':             # compute covariance between data sets x and z
             A = np.dot(x,z.T)
         A = sf2 * A
@@ -912,7 +913,8 @@ class LINard(Kernel):
             nn,D = z.shape
             A = np.reshape(np.sum(z*z,1), (nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
-            A = np.dot(x,x.T)
+            n, D = x.shape           
+            A = np.dot(x,x.T)+ np.eye(n)*1e-10
         elif mode == 'cross':             # compute covariance between data sets x and z
             z = np.dot(z,np.diag(1./ell))
             A = np.dot(x,z.T)

@@ -14,16 +14,19 @@
 import unittest
 import numpy as np
 import pyGPs
+from pyGPs.Core.tools import jitchol
 
 class CovarianceTests(unittest.TestCase):
 
     def setUp(self):
+        # fix random seed
+        np.random.seed(0)
         # random data for testing
         n = 20          # number of training inputs
         nn = 10         # number of test inputs
-        D = 1           # dimension of inputs (Note Periodic covariance can only use 1d data)
-        self.x = np.random.normal(loc=0.0, scale=1.0, size=(n,D))
-        self.z = np.random.normal(loc=0.0, scale=1.0, size=(nn,D))
+        D = 2           # dimension of inputs 
+        self.x = np.random.normal(loc=0.0, scale=20.0, size=(n,D))
+        self.z = np.random.normal(loc=0.0, scale=20.0, size=(nn,D))
         # random precomputed kernel matrix
         self.M1 = np.random.random(size=(21,10))
         self.M2 = np.random.random(size=(20,20))
@@ -35,6 +38,25 @@ class CovarianceTests(unittest.TestCase):
         self.assertTrue(train_train.shape == (n,n))
         self.assertTrue(train_test.shape == (n,nn))
         self.assertTrue(self_test.shape == (nn,1))
+
+        # check eigenvalues of kernele matrix
+        self.assertTrue(self.is_positive_semi_definite(train_train))   
+
+        # check Cholesky decomposition of kernel matrix
+        # with jitter added to the diagnal for numerical if necessary
+        # if the kernel matrixes can compute Cholesky decomposition withour errors,
+        # it is positive definite up to numerical precision (up to the added jitters). 
+        jitchol(train_train)
+
+
+    def is_positive_semi_definite(self, K):
+        v = np.linalg.eig(K)[0]
+        if any(v.real<=-1e-9):
+            print v.real.min()
+            return False
+        else:
+            return True
+
 
 
     def checkDerOutput(self, train_train, train_test, self_test):
@@ -128,7 +150,23 @@ class CovarianceTests(unittest.TestCase):
     def test_covPeriodic(self):
         print "testing covPeriodic..."
         k = pyGPs.cov.Periodic()
-        self.checkCovariance(k)
+        n = 20          # number of training inputs
+        nn = 10         # number of test inputs
+        D = 1           # Note Periodic covariance can only use 1d data
+        x = np.random.normal(loc=0.0, scale=20.0, size=(n,D))
+        z = np.random.normal(loc=0.0, scale=20.0, size=(nn,D))
+        k1 = k.getCovMatrix(x=x, mode='train')           # test train by train covariance
+        k2 = k.getCovMatrix(x=x, z=z, mode='cross') # test train by test covariance
+        k3 = k.getCovMatrix(z=z, mode='self_test')       # test test by test self covariance
+        self.assertTrue(k1.shape == (n,n))
+        self.assertTrue(k2.shape == (n,nn))
+        self.assertTrue(k3.shape == (nn,1))
+        for der in xrange(len(k.hyp)):                        # checking derivatives for each hyperparameter
+            kd1 = k.getDerMatrix(x=x, mode='train',der=der)           # test train by train derivative
+            kd2 = k.getDerMatrix(x=x, z=z, mode='cross',der=der) # test train by test derivative
+            kd3 = k.getDerMatrix(z=z, mode='self_test',der=der)       # test test by test self derivative
+            self.checkDerOutput(kd1, kd2, kd3)
+
 
 
     def test_covNoise(self):
@@ -152,7 +190,19 @@ class CovarianceTests(unittest.TestCase):
     def test_covPre(self):
         print "testing covPre..."
         k = pyGPs.cov.Pre(self.M1, self.M2)                   # load precomputed kernel matrix
-        self.checkCovariance(k)
+        k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
+        k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
+        k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
+        n,D = self.x.shape
+        nn, D = self.z.shape
+        self.assertTrue(k1.shape == (n,n))
+        self.assertTrue(k2.shape == (n,nn))
+        self.assertTrue(k3.shape == (nn,1))
+        for der in xrange(len(k.hyp)):                        # checking derivatives for each hyperparameter
+            kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative
+            kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative
+            kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
+            self.checkDerOutput(kd1, kd2, kd3)
 
 
     def test_covPiecePoly(self):
