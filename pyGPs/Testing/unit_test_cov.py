@@ -58,7 +58,6 @@ class CovarianceTests(unittest.TestCase):
             return True
 
 
-
     def checkDerOutput(self, train_train, train_test, self_test):
         n,D = self.x.shape
         nn, D = self.z.shape
