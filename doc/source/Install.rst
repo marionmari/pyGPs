@@ -35,3 +35,9 @@ Example installation on Mac via Macports (requires XCode and MacPorts)::
 
 
 For other systems please check the installation instructions on the respective package web sites. 
+
+
+Testing
+---------------
+After everything installed, you can check whether they have been installed correctly using pyGPs unit tests by
+running the scripts under pyGPs/Testing.

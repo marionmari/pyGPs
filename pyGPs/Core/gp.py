@@ -43,7 +43,7 @@ import itertools
 import numpy as np
 import matplotlib.pyplot as plt
 import inf, mean, lik, cov, opt
-from tools import unique, jitchol
+from tools import unique, jitchol, solve_chol
 from copy import deepcopy
 import pyGPs
 
