@@ -59,7 +59,10 @@ Getting started
    Kernels
    Likelihoods
    Opts
+   Develop
    Graph
+   Default
+
 
 
 

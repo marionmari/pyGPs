@@ -89,7 +89,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
-<div class="viewcode-block" id="Mean"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.Mean">[docs]</a><span class="k">class</span> <span class="nc">Mean</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Mean"><a class="viewcode-back" href="../../../Default.html#pyGPs.Core.mean.Mean">[docs]</a><span class="k">class</span> <span class="nc">Mean</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The base function for mean function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -141,13 +141,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">print</span> <span class="s">&quot;only non-zero integers are supported for **&quot;</span>
 
-<div class="viewcode-block" id="Mean.getMean"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.Mean.getMean">[docs]</a>    <span class="k">def</span> <span class="nf">getMean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Mean.getMean"><a class="viewcode-back" href="../../../Default.html#pyGPs.Core.mean.Mean.getMean">[docs]</a>    <span class="k">def</span> <span class="nf">getMean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Get the mean vector.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">pass</span>
 </div>
-<div class="viewcode-block" id="Mean.getDerMatrix"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.Mean.getDerMatrix">[docs]</a>    <span class="k">def</span> <span class="nf">getDerMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Mean.getDerMatrix"><a class="viewcode-back" href="../../../Default.html#pyGPs.Core.mean.Mean.getDerMatrix">[docs]</a>    <span class="k">def</span> <span class="nf">getDerMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Compute derivatives wrt. hyperparameters.</span>
 
@@ -160,7 +160,7 @@
     
 
 </div></div>
-<div class="viewcode-block" id="ProductOfMean"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.ProductOfMean">[docs]</a><span class="k">class</span> <span class="nc">ProductOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+<div class="viewcode-block" id="ProductOfMean"><a class="viewcode-back" href="../../../Default.html#pyGPs.Core.mean.ProductOfMean">[docs]</a><span class="k">class</span> <span class="nc">ProductOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Product of two mean fucntions.&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean1</span><span class="p">,</span><span class="n">mean2</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span> <span class="o">=</span> <span class="n">mean1</span>
@@ -197,7 +197,7 @@
 
 
 </div>
-<div class="viewcode-block" id="SumOfMean"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.SumOfMean">[docs]</a><span class="k">class</span> <span class="nc">SumOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+<div class="viewcode-block" id="SumOfMean"><a class="viewcode-back" href="../../../Default.html#pyGPs.Core.mean.SumOfMean">[docs]</a><span class="k">class</span> <span class="nc">SumOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Sum of two mean functions.&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean1</span><span class="p">,</span><span class="n">mean2</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mean1</span> <span class="o">=</span> <span class="n">mean1</span>
@@ -234,7 +234,7 @@
 
 
 </div>
-<div class="viewcode-block" id="ScaleOfMean"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.ScaleOfMean">[docs]</a><span class="k">class</span> <span class="nc">ScaleOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+<div class="viewcode-block" id="ScaleOfMean"><a class="viewcode-back" href="../../../Default.html#pyGPs.Core.mean.ScaleOfMean">[docs]</a><span class="k">class</span> <span class="nc">ScaleOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Scale of a mean function.&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mean</span><span class="p">,</span><span class="n">scalar</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span>
@@ -265,7 +265,7 @@
 
 
 </div>
-<div class="viewcode-block" id="PowerOfMean"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.PowerOfMean">[docs]</a><span class="k">class</span> <span class="nc">PowerOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+<div class="viewcode-block" id="PowerOfMean"><a class="viewcode-back" href="../../../Default.html#pyGPs.Core.mean.PowerOfMean">[docs]</a><span class="k">class</span> <span class="nc">PowerOfMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Power of a mean fucntion.&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span>
@@ -299,7 +299,7 @@
 
 
 </div>
-<div class="viewcode-block" id="Zero"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.Zero">[docs]</a><span class="k">class</span> <span class="nc">Zero</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+<div class="viewcode-block" id="Zero"><a class="viewcode-back" href="../../../Default.html#pyGPs.Core.mean.Zero">[docs]</a><span class="k">class</span> <span class="nc">Zero</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Zero mean.&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[]</span>
@@ -317,7 +317,7 @@
 
 
 </div>
-<div class="viewcode-block" id="One"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.One">[docs]</a><span class="k">class</span> <span class="nc">One</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+<div class="viewcode-block" id="One"><a class="viewcode-back" href="../../../Default.html#pyGPs.Core.mean.One">[docs]</a><span class="k">class</span> <span class="nc">One</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; One mean.&#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="p">[]</span>
@@ -335,7 +335,7 @@
 
 
 </div>
-<div class="viewcode-block" id="Const"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.Const">[docs]</a><span class="k">class</span> <span class="nc">Const</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+<div class="viewcode-block" id="Const"><a class="viewcode-back" href="../../../Default.html#pyGPs.Core.mean.Const">[docs]</a><span class="k">class</span> <span class="nc">Const</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Constant mean function. hyp = [c]</span>
 
@@ -359,7 +359,7 @@
 
 
 </div>
-<div class="viewcode-block" id="Linear"><a class="viewcode-back" href="../../../Kernels.html#pyGPs.Core.mean.Linear">[docs]</a><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+<div class="viewcode-block" id="Linear"><a class="viewcode-back" href="../../../Default.html#pyGPs.Core.mean.Linear">[docs]</a><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Linear mean function. self.hyp = alpha_list</span>
 

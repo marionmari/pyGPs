@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pyGPs v1.3 documentation" href="index.html" />
-    <link rel="next" title="Kernels for Graph Data" href="Graph.html" />
+    <link rel="next" title="Developing Customized Functions" href="Develop.html" />
     <link rel="prev" title="Likelihoods &amp; Inference" href="Likelihoods.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Graph.html" title="Kernels for Graph Data"
+          <a href="Develop.html" title="Developing Customized Functions"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="Likelihoods.html" title="Likelihoods &amp; Inference"
@@ -92,34 +92,6 @@ This is only the range of initial guess, during optimization process, optimal hy
 </dd></dl>
 
 </div>
-<div class="section" id="developing-optimization-methods">
-<h2>Developing Optimization Methods<a class="headerlink" href="#developing-optimization-methods" title="Permalink to this headline">¶</a></h2>
-<p>We also support the development of new optimizers.</p>
-<p>Your own optimizer should inherent base class Optimizer in <em>pyGPs.Core.opt</em>
-and follow the template as below:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyOptimizer</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">searchConfig</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
-
-    <span class="k">def</span> <span class="nf">findMin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Find minimal value based on negative-log-marginal-likelihood.</span>
-<span class="sd">        optimalHyp, funcValue = findMin(x, y)</span>
-
-<span class="sd">        where funcValue is the minimal negative-log-marginal-likelihood during optimization,</span>
-<span class="sd">        and optimalHyp is a flattened numpy array</span>
-<span class="sd">        (in sequence of meanfunc.hyp, covfunc.hyp, likfunc.hyp)</span>
-<span class="sd">        of the hyparameters to achieve such value.</span>
-
-<span class="sd">        You can achieve advanced search strategy by initializing Optimizer with searchConfig,</span>
-<span class="sd">        which is an instance of pyGPs.Optimization.conf.</span>
-<span class="sd">        See more in pyGPs.Optimization.conf and pyGPs.Core.gp.GP.setOptimizer,</span>
-<span class="sd">        as well as in online documentation of section Optimizers.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">pass</span>
-</pre></div>
-</div>
-</div>
 </div>
 
 
@@ -132,7 +104,6 @@ and follow the template as below:</p>
   <ul>
 <li><a class="reference internal" href="#">Optimizers</a><ul>
 <li><a class="reference internal" href="#optimization-methods">Optimization Methods</a></li>
-<li><a class="reference internal" href="#developing-optimization-methods">Developing Optimization Methods</a></li>
 </ul>
 </li>
 </ul>
@@ -141,8 +112,8 @@ and follow the template as below:</p>
   <p class="topless"><a href="Likelihoods.html"
                         title="previous chapter">Likelihoods &amp; Inference</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="Graph.html"
-                        title="next chapter">Kernels for Graph Data</a></p>
+  <p class="topless"><a href="Develop.html"
+                        title="next chapter">Developing Customized Functions</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/Opts.txt"
@@ -175,7 +146,7 @@ and follow the template as below:</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Graph.html" title="Kernels for Graph Data"
+          <a href="Develop.html" title="Developing Customized Functions"
              >next</a> |</li>
         <li class="right" >
           <a href="Likelihoods.html" title="Likelihoods &amp; Inference"

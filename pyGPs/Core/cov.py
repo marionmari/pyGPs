@@ -52,48 +52,6 @@ import numpy as np
 import math
 import scipy.spatial.distance as spdist
 
-def initSMhypers(Q, x, y):
-    """
-        Initialize hyperparameters for the spectral-mixture kernel. Weights are
-        all set to be uniformly distributed, means are given by a random sample
-        from a uniform distribution scaled by the Nyquist frequency, and variances
-        are given by a random sample from a uniform distribution scaled by the max
-        distance.
-        """
-
-    x = np.atleast_2d(x)
-    y = np.atleast_2d(y)
-
-    (n, D) = x.shape
-    w = np.zeros(Q)
-    m = np.zeros((D, Q))
-    s = np.zeros((D, Q))
-    w[:] = np.std(y) / Q
-
-    hypinit = np.zeros(Q + 2 * D * Q)
-
-    for i in range(D):
-
-        # Calculate distances
-
-        xslice = np.atleast_2d(x[:, i]).T
-        d2 = spdist.cdist(xslice, xslice, 'sqeuclidean')
-        if n > 1:
-            d2[d2 == 0] = d2[0, 1]
-        else:
-            d2[d2 == 0] = 1
-        minshift = np.min(np.min(np.sqrt(d2)))
-        nyquist = 0.5 / minshift
-        m[i, :] = nyquist * np.random.ranf((1, Q))
-        maxshift = np.max(np.max(np.sqrt(d2)))
-        s[i, :] = 1. / np.abs(maxshift * np.random.ranf((1, Q)))
-
-    hypinit[:Q] = np.log(w)
-    hypinit[Q + np.arange(0, Q * D)] = np.log(m[:]).T
-    hypinit[Q + Q * D + np.arange(0, Q * D)] = np.log(s[:]).T
-    return list(hypinit)
-
-
 
 class Kernel(object):
     """
@@ -360,10 +318,9 @@ class Gabor(Kernel):
 
     The hyperparameters are:
 
-    hyp = [ log(ell)
-            log(p)   ]
+    hyp = [log(ell), log(p)]
 
-    Note that covSM implements a weighted sum of Gabor covariance functions, but
+    Note that SM covariance implements a weighted sum of Gabor covariance functions, but
     using an alternative (spectral) parameterization.
 
     :param log_ell: characteristic length scale.
@@ -422,9 +379,7 @@ class SM(Kernel):
     where m(DxQ), v(DxQ) are the means and variances of the spectral mixture
     components and w are the mixture weights. The hyperparameters are:
 
-    hyp = [ log(w)
-            log(m(:))
-            log(sqrt(v(:))) ]
+    hyp = [ log(w), log(m(:)), log(sqrt(v(:))) ]
 
     Copyright (c) by Andrew Gordon Wilson and Hannes Nickisch, 2013-10-09.
 

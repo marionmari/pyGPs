@@ -1,0 +1,330 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Developing Customized Functions &mdash; pyGPs v1.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v1.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pyGPs v1.3 documentation" href="index.html" />
+    <link rel="next" title="Kernels for Graph Data" href="Graph.html" />
+    <link rel="prev" title="Optimizers" href="Opts.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Graph.html" title="Kernels for Graph Data"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Opts.html" title="Optimizers"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="developing-customized-functions">
+<h1>Developing Customized Functions<a class="headerlink" href="#developing-customized-functions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="developing-new-kernel-mean-functions">
+<h2>Developing New Kernel &amp; Mean Functions<a class="headerlink" href="#developing-new-kernel-mean-functions" title="Permalink to this headline">¶</a></h2>
+<p>We also support the development of new kernel/mean classes, your customized kernel class need to follow the template as below:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Your kernel class needs to inherit base class Kernel,</span>
+<span class="c"># which is in the module of Core.cov</span>
+<span class="k">class</span> <span class="nc">MyKernel</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyp</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Intialize hyperparameters for MyKernel.</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="n">hyp</span>
+
+  <span class="k">def</span> <span class="nf">getCovMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Return the specific covariance matrix according to input mode</span>
+
+<span class="sd">      :param x: training data</span>
+<span class="sd">      :param z: test data</span>
+<span class="sd">      :param str mode: &#39;self_test&#39; return self covariance matrix of test data(test by 1).</span>
+<span class="sd">                       &#39;train&#39; return training covariance matrix(train by train).</span>
+<span class="sd">                       &#39;cross&#39; return cross covariance matrix between x and z(train by test)</span>
+
+<span class="sd">      :return: the corresponding covariance matrix</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="k">pass</span>
+
+  <span class="k">def</span> <span class="nf">getDerMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Compute derivatives wrt. hyperparameters according to input mode</span>
+
+<span class="sd">      :param x: training data</span>
+<span class="sd">      :param z: test data</span>
+<span class="sd">      :param str mode: &#39;self_test&#39; return self derivative matrix of test data(test by 1).</span>
+<span class="sd">                       &#39;train&#39; return training derivative matrix(train by train).</span>
+<span class="sd">                       &#39;cross&#39; return cross derivative matrix between x and z(train by test)</span>
+<span class="sd">      :param int der: index of hyperparameter whose derivative to be computed</span>
+
+<span class="sd">      :return: the corresponding derivative matrix</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="k">pass</span>
+</pre></div>
+</div>
+<p>and for customized mean class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Your mean class needs to inherit base class Mean,</span>
+<span class="c"># which is in the module of Core.mean</span>
+<span class="k">class</span> <span class="nc">MyMean</span><span class="p">(</span><span class="n">Mean</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyp</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Intialize hyperparameters for MyMean.</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">hyp</span> <span class="o">=</span> <span class="n">hyp</span>
+
+  <span class="k">def</span> <span class="nf">getMean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Get the mean vector.</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="k">pass</span>
+
+  <span class="k">def</span> <span class="nf">getDerMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Compute derivatives wrt. hyperparameters.</span>
+
+<span class="sd">      :param x: training data</span>
+<span class="sd">      :param int der: index of hyperparameter whose derivative to be computed</span>
+
+<span class="sd">      :return: the corresponding derivative matrix</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="k">pass</span>
+</pre></div>
+</div>
+<p>You can test your customized mean/kernel function using our framework of unit test.
+Taking kernel test as an example, you can uncomment method <em>test_cov_new</em> in
+<em>pyGPs.Testing.unit_test_cov.py</em> to check the outputs of your kernel function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Test your customized covariance function</span>
+<span class="k">def</span> <span class="nf">test_cov_new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">myKernel</span><span class="p">()</span>     <span class="c"># specify your covariance function</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">checkCovariance</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and testing mean function in <em>pyGPs.Testing.unit_test_mean.py</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Test your customized mean function</span>
+<span class="k">def</span> <span class="nf">test_mean_new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">myMean</span>         <span class="c"># specify your mean function</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">checkMean</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="developing-new-likelihood-inference-functions">
+<h2>Developing New Likelihood &amp; Inference Functions<a class="headerlink" href="#developing-new-likelihood-inference-functions" title="Permalink to this headline">¶</a></h2>
+<p>We also support the development of new likelihood/inference classes, your customized inference class need to follow the template as below:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Your inference class needs to inherit base class Inference,</span>
+<span class="c"># which is in the module of Core.inf</span>
+<span class="k">class</span> <span class="nc">MyInference</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">pass</span>
+
+  <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meanfunc</span><span class="p">,</span> <span class="n">covfunc</span><span class="p">,</span> <span class="n">likfunc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+      <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">      Inference computation based on inputs.</span>
+<span class="sd">      post, nlZ, dnlZ = inffunc.evaluate(mean, cov, lik, x, y)</span>
+
+<span class="sd">      INPUT:</span>
+<span class="sd">      cov: name of the covariance function (see covFunctions.m)</span>
+<span class="sd">      lik: name of the likelihood function (see likFunctions.m)</span>
+<span class="sd">      x: n by D matrix of training inputs</span>
+<span class="sd">      y: 1d array (of size n) of targets</span>
+
+<span class="sd">      OUTPUT:</span>
+<span class="sd">      post(instance of postStruct): struct representation of the (approximate) posterior containing:</span>
+<span class="sd">      nlZ: returned value of the negative log marginal likelihood</span>
+<span class="sd">      dnlZ(instance of dnlZStruct): struct representation for derivatives of the negative log marginal likelihood</span>
+<span class="sd">      w.r.t. each hyperparameter.</span>
+
+<span class="sd">      Usually, the approximate posterior to be returned admits the form:</span>
+<span class="sd">      N(m=K*alpha, V=inv(inv(K)+W)), where alpha is a vector and W is diagonal;</span>
+<span class="sd">      if not, then L contains instead -inv(K+inv(W)), and sW is unused.</span>
+
+<span class="sd">      For more information on the individual approximation methods and their</span>
+<span class="sd">      implementations, see the respective inference function below. See also gp.py</span>
+
+<span class="sd">      :param meanfunc: mean function</span>
+<span class="sd">      :param covfunc: covariance function</span>
+<span class="sd">      :param likfunc: likelihood function</span>
+<span class="sd">      :param x: training data</span>
+<span class="sd">      :param y: training labels</span>
+<span class="sd">      :param nargout: specify the number of output(1,2 or 3)</span>
+<span class="sd">      :return: posterior, negative-log-marginal-likelihood, derivative for negative-log-marginal-likelihood-likelihood</span>
+<span class="sd">      &#39;&#39;&#39;</span>
+      <span class="k">pass</span>
+</pre></div>
+</div>
+<p>where <strong>postStruct</strong> and <strong>dnlZStruct</strong> is also defined in <em>Core.inf</em>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">postStruct</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Data structure for posterior</span>
+
+<span class="sd">    post.alpha -&gt;  1d array containing inv(K)*m,</span>
+<span class="sd">                   where K is the prior covariance matrix and m the approx posterior mean</span>
+<span class="sd">    post.sW:   -&gt;  1d array containing diagonal of sqrt(W)</span>
+<span class="sd">                   the approximate posterior covariance matrix is inv(inv(K)+W)</span>
+<span class="sd">    post.L     -&gt;  2d array, L = chol(sW*K*sW+identity(n))</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<span class="k">class</span> <span class="nc">dnlZStruct</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Data structure for the derivatives of mean, cov and lik functions.</span>
+
+<span class="sd">    dnlZ.mean  -&gt;  list of derivatives for each hyperparameters in mean function</span>
+<span class="sd">    dnlZ.cov   -&gt;  list of derivatives for each hyperparameters in covariance function</span>
+<span class="sd">    dnlZ.lik   -&gt;  list of derivatives for each hyperparameters in likelihood function</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+</pre></div>
+</div>
+<p>Customizing likelihood function is more complicated. We will omit it here to keep this this page not too long.
+However, you can find detailed explaination either in the <strong>source code</strong> <em>Core.lik</em> or in coresponding section of <strong>manual</strong>.</p>
+<p>Just like testing kernel/mean fucntions, you can also find unit test module for likelihood and inference functions.
+To test your customized inference function, uncomment the following method in <em>pyGPs.Testing.unit_test_inf.py</em>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Test your customized inference function</span>
+<span class="k">def</span> <span class="nf">test_inf_new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c"># specify your inf function</span>
+    <span class="c"># set mean/cov/lik functions</span>
+    <span class="n">post</span><span class="p">,</span> <span class="n">nlZ</span><span class="p">,</span> <span class="n">dnlZ</span> <span class="o">=</span> <span class="n">inffunc</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">meanfunc</span><span class="p">,</span> <span class="n">covfunc</span><span class="p">,</span> <span class="n">likfunc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">checkFITCOutput</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="n">nlZ</span><span class="p">,</span> <span class="n">dnlZ</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and test customized likelihood function in <em>pyGPs.Testing.unit_test_lik.py</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Test your customized likelihood function</span>
+<span class="k">def</span> <span class="nf">test_cov_new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">likelihood</span> <span class="o">=</span> <span class="n">myLikelihood</span><span class="p">()</span>     <span class="c"># specify your likelihood function</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">checkLikelihood</span><span class="p">(</span><span class="n">likelihood</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="developing-optimization-methods">
+<h2>Developing Optimization Methods<a class="headerlink" href="#developing-optimization-methods" title="Permalink to this headline">¶</a></h2>
+<p>We also support the development of new optimizers.</p>
+<p>Your own optimizer should inherent base class Optimizer in <em>pyGPs.Core.opt</em>
+and follow the template as below:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyOptimizer</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">searchConfig</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="k">def</span> <span class="nf">findMin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Find minimal value based on negative-log-marginal-likelihood.</span>
+<span class="sd">        optimalHyp, funcValue = findMin(x, y)</span>
+
+<span class="sd">        where funcValue is the minimal negative-log-marginal-likelihood during optimization,</span>
+<span class="sd">        and optimalHyp is a flattened numpy array</span>
+<span class="sd">        (in sequence of meanfunc.hyp, covfunc.hyp, likfunc.hyp)</span>
+<span class="sd">        of the hyparameters to achieve such value.</span>
+
+<span class="sd">        You can achieve advanced search strategy by initializing Optimizer with searchConfig,</span>
+<span class="sd">        which is an instance of pyGPs.Optimization.conf.</span>
+<span class="sd">        See more in pyGPs.Optimization.conf and pyGPs.Core.gp.GP.setOptimizer,</span>
+<span class="sd">        as well as in online documentation of section Optimizers.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Developing Customized Functions</a><ul>
+<li><a class="reference internal" href="#developing-new-kernel-mean-functions">Developing New Kernel &amp; Mean Functions</a></li>
+<li><a class="reference internal" href="#developing-new-likelihood-inference-functions">Developing New Likelihood &amp; Inference Functions</a></li>
+<li><a class="reference internal" href="#developing-optimization-methods">Developing Optimization Methods</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Opts.html"
+                        title="previous chapter">Optimizers</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Graph.html"
+                        title="next chapter">Kernels for Graph Data</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/Develop.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Graph.html" title="Kernels for Graph Data"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Opts.html" title="Optimizers"
+             >previous</a> |</li>
+        <li><a href="index.html">pyGPs v1.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>
