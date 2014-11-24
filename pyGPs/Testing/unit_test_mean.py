@@ -18,8 +18,10 @@ import pyGPs
 class MeanTests(unittest.TestCase):
 
     def setUp(self):
-        # random 2d data for testing
-        self.x = np.random.normal(loc=0.0, scale=1.0, size=(20,2))
+        # random data for testing
+        n = 20     # number of inputs
+        D = 3      # dimension of inputs
+        self.x = np.random.normal(loc=0.0, scale=1.0, size=(n,D))
 
 
     def checkMeanOutput(self, mean):

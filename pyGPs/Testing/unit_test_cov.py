@@ -18,9 +18,12 @@ import pyGPs
 class CovarianceTests(unittest.TestCase):
 
     def setUp(self):
-        # random 2d data for testing
-        self.x = np.random.normal(loc=0.0, scale=1.0, size=(20,2))
-        self.z = np.random.normal(loc=0.0, scale=1.0, size=(10,2))
+        # random data for testing
+        n = 20          # number of training inputs
+        nn = 10         # number of test inputs
+        D = 1           # dimension of inputs (Note Periodic covariance can only use 1d data)
+        self.x = np.random.normal(loc=0.0, scale=1.0, size=(n,D))
+        self.z = np.random.normal(loc=0.0, scale=1.0, size=(nn,D))
         # random precomputed kernel matrix
         self.M1 = np.random.random(size=(21,10))
         self.M2 = np.random.random(size=(20,20))
@@ -47,7 +50,7 @@ class CovarianceTests(unittest.TestCase):
         k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
         k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
         self.checkCovOutput(k1,k2,k3)
-        for der in xrange(len(k.hyp)):
+        for der in xrange(len(k.hyp)):                        # checking derivatives for each hyperparameter
             kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative
             kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative
             kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
@@ -186,8 +189,9 @@ class CovarianceTests(unittest.TestCase):
         print "testing FITC kernel to be used with sparse GP..."
         n,D  = self.x.shape
         nn,D = self.z.shape
-        u = np.random.random(size=(5,2))                      # random inducing points
-        nu,D = u.shape
+        nu = 5        # number of inducing points
+        u = np.random.random(size=(nu,D))                      # random inducing points
+        
         k = pyGPs.cov.RBF().fitc(u)
 
         K, Kuu, Ku = k.getCovMatrix(x=self.x, mode='train')   # test train by train covariance
