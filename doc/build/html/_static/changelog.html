@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Changelog pyGPs v1.2 &mdash; pyGPs v1.3 documentation</title>
+    <title>Changelog pyGPs v1.3 &mdash; pyGPs v1.3 documentation</title>
     
     <link rel="stylesheet" href="nature.css" type="text/css" />
     <link rel="stylesheet" href="pygments.css" type="text/css" />
@@ -44,8 +44,84 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="changelog-pygps-v1-2">
+  <div class="section" id="changelog-pygps-v1-3">
+<h1>Changelog pyGPs v1.3<a class="headerlink" href="#changelog-pygps-v1-3" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="november-25th-2014">
+<h2>November 25th 2014<a class="headerlink" href="#november-25th-2014" title="Permalink to this headline">¶</a></h2>
+<p>structural updates:</p>
+<ul class="simple">
+<li>full inline documentation with input parameter and output specified</li>
+<li>check for the inputs and provide diagnostic messages for some inputs</li>
+<li>consistant naming in inline and online documentation</li>
+<li>string representation for dnlZStruct and postStruct
+- Now you can do sth like,
+- nlZ, dnlZ, post = model.getPosterior(x,y)
+- print post
+- instead of a python object, we provide now a more informative description.</li>
+<li>add optimization into unit test routines. Also add checking for cholesky decomposition and checking positive-definite property of kernel matrix.</li>
+<li>fix several minor problems in unit test framework</li>
+<li>hierachically rearranged for online documentation</li>
+<li>add several supplementary instruction in online documentation</li>
+</ul>
+</div>
+<div class="section" id="october-19th-2014">
+<h2>October 19th 2014<a class="headerlink" href="#october-19th-2014" title="Permalink to this headline">¶</a></h2>
+<p>documentation updates:</p>
+<ul class="simple">
+<li>DOC: model.fit() is now named model.getPosterior</li>
+<li>DOC: typo fixed: cov.LIN changed to cov.Linear</li>
+<li>DOC: removed cov.Periodic() in demos because its limited in 1-d data.</li>
+<li>API file updated accordingly</li>
+</ul>
+<p>structural updates:</p>
+<ul class="simple">
+<li>removed unused ScalePrior attribute in most inference method</li>
+<li>added function jitchol, which added a small jitter(instead of doing Cholesky decomposition directly) to the diagonal when the kernel matrix is ill conditioned.</li>
+<li>thrown error when using periodic covariance functions for non-1d data. We also removed cov.Periodic() in demos because its limited usage.</li>
+<li>combined equally spaced positions of inputs as test positions as well in plot methods to get a more accurate plotting.</li>
+<li>rename model.fit() to model.getPosterior(), while model.optimize() stays the same. (since it is confusing for some users that the name fit() is not doing optimizing.)</li>
+</ul>
+</div>
+<div class="section" id="august-9th-2014">
+<h2>August 9th 2014<a class="headerlink" href="#august-9th-2014" title="Permalink to this headline">¶</a></h2>
+<p>structural updates:</p>
+<ul class="simple">
+<li>added SM covariance and Gabor covariance</li>
+<li>bug fixed in dfunc() in Matern covariance</li>
+<li>change proceed() to evaluate() for inference and likelihood classes</li>
+<li>added unit test module for SM covariance and Gabor covariance</li>
+</ul>
+</div>
+</div>
+<div class="section" id="changelog-pygps-v1-2">
 <h1>Changelog pyGPs v1.2<a class="headerlink" href="#changelog-pygps-v1-2" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="july-14th-2014">
+<h2>July 14th 2014<a class="headerlink" href="#july-14th-2014" title="Permalink to this headline">¶</a></h2>
+<p>documentation updates:</p>
+<ul class="simple">
+<li>online docs updated</li>
+<li>API file updated</li>
+</ul>
+<p>structural updates:</p>
+<ul class="simple">
+<li>made private for methods that users don&#8217;t need to call</li>
+</ul>
+</div>
+<div class="section" id="july-8th-2014">
+<h2>July 8th 2014<a class="headerlink" href="#july-8th-2014" title="Permalink to this headline">¶</a></h2>
+<p>structural updates:</p>
+<ul class="simple">
+<li>add hyperparameter(signal variance s2) for linear covariance</li>
+<li>add unit testing for inference,likelihood functions as well as models</li>
+<li>NOT show(print) &#8220;maximum number of sweep warning in inference EP&#8221; any more</li>
+<li>documentation updated</li>
+</ul>
+<p>bug fixes:</p>
+<ul class="simple">
+<li>typos in lik.Laplace</li>
+<li>derivative in lik.Laplace</li>
+</ul>
+</div>
 <div class="section" id="june-30th-2014">
 <h2>June 30th 2014<a class="headerlink" href="#june-30th-2014" title="Permalink to this headline">¶</a></h2>
 <p>structural updates:</p>
@@ -73,51 +149,6 @@
 <li>demo_GPR_FITC.py missing pyGPs.mean</li>
 </ul>
 </div>
-<div class="section" id="july-8th-2014">
-<h2>July 8th 2014<a class="headerlink" href="#july-8th-2014" title="Permalink to this headline">¶</a></h2>
-<p>structural updates:</p>
-<ul class="simple">
-<li>add hyperparameter(signal variance s2) for linear covariance</li>
-<li>add unit testing for inference,likelihood functions as well as models</li>
-<li>NOT show(print) &#8220;maximum number of sweep warning in inference EP&#8221; any more</li>
-<li>documentation updated</li>
-</ul>
-<p>bug fixes:</p>
-<ul class="simple">
-<li>typos in lik.Laplace</li>
-<li>derivative in lik.Laplace</li>
-</ul>
-</div>
-<div class="section" id="july-14th-2014">
-<h2>July 14th 2014<a class="headerlink" href="#july-14th-2014" title="Permalink to this headline">¶</a></h2>
-<p>documentation updates:</p>
-<ul class="simple">
-<li>online docs updated</li>
-<li>API file updated</li>
-</ul>
-<p>structural updates:</p>
-<ul class="simple">
-<li>made private for methods that users don&#8217;t need to call</li>
-</ul>
-</div>
-<div class="section" id="october-19th-2014">
-<h2>October 19th 2014<a class="headerlink" href="#october-19th-2014" title="Permalink to this headline">¶</a></h2>
-<p>documentation updates:</p>
-<ul class="simple">
-<li>DOC: model.fit() is now named model.getPosterior</li>
-<li>DOC: typo fixed: cov.LIN changed to cov.Linear</li>
-<li>DOC: removed cov.Periodic() in demos because its limited in 1-d data.</li>
-<li>API file updated accordingly</li>
-</ul>
-<p>structural updates:</p>
-<ul class="simple">
-<li>removed unused ScalePrior attribute in most inference method</li>
-<li>added function jitchol, which added a small jitter(instead of doing Cholesky decomposition directly) to the diagonal when the kernel matrix is ill conditioned.</li>
-<li>thrown error when using periodic covariance functions for non-1d data. We also removed cov.Periodic() in demos because its limited usage.</li>
-<li>combined equally spaced positions of inputs as test positions as well in plot methods to get a more accurate plotting.</li>
-<li>rename model.fit() to model.getPosterior(), while model.optimize() stays the same. (since it is confusing for some users that the name fit() is not doing optimizing.)</li>
-</ul>
-</div>
 </div>
 
 
@@ -128,11 +159,16 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Changelog pyGPs v1.2</a><ul>
-<li><a class="reference internal" href="#june-30th-2014">June 30th 2014</a></li>
-<li><a class="reference internal" href="#july-8th-2014">July 8th 2014</a></li>
-<li><a class="reference internal" href="#july-14th-2014">July 14th 2014</a></li>
+<li><a class="reference internal" href="#">Changelog pyGPs v1.3</a><ul>
+<li><a class="reference internal" href="#november-25th-2014">November 25th 2014</a></li>
 <li><a class="reference internal" href="#october-19th-2014">October 19th 2014</a></li>
+<li><a class="reference internal" href="#august-9th-2014">August 9th 2014</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#changelog-pygps-v1-2">Changelog pyGPs v1.2</a><ul>
+<li><a class="reference internal" href="#july-14th-2014">July 14th 2014</a></li>
+<li><a class="reference internal" href="#july-8th-2014">July 8th 2014</a></li>
+<li><a class="reference internal" href="#june-30th-2014">June 30th 2014</a></li>
 </ul>
 </li>
 </ul>

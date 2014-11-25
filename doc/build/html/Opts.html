@@ -76,12 +76,11 @@
 It specifys the maximum number of runs/restarts/trials.</li>
 <li><strong>min_threshold</strong> &#8211; Set if you want to run mulitiple times of optimization with different initial guess.
 It specifys the threshold of objective function value. Stop optimization when this value is reached.</li>
-<li><strong>meanRange</strong> &#8211; <p>The range of initial guess for mean hyperparameters.
+<li><strong>meanRange</strong> &#8211; The range of initial guess for mean hyperparameters.
 e.g. meanRange = [(-2,2), (-5,5), (0,1)].
 Each tuple specifys the range (low, high) of this hyperparameter,
-This is only the range of initial guess, during optimization process, optimal hyperparameters may go out of this range.</p>
-<p>(-5,5) for each hyperparameter by default.</p>
-</li>
+This is only the range of initial guess, during optimization process, optimal hyperparameters may go out of this range.
+(-5,5) for each hyperparameter by default.</li>
 <li><strong>covRange</strong> &#8211; The range of initial guess for kernel hyperparameters. Usage see meanRange</li>
 <li><strong>likRange</strong> &#8211; The range of initial guess for likelihood hyperparameters. Usage see meanRange</li>
 </ul>

@@ -690,7 +690,7 @@ class GPMC(object):
 
 
     def setPrior(self, mean=None, kernel=None):
-                '''
+        '''
         Set prior mean and covariance other than the default setting of current model.
 
         :param mean: instance of mean class. (e.g. mean.Linear())

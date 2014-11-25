@@ -513,7 +513,7 @@ Arye Nehorai and John P. Cunningham, and
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> &#8211; training data</li>
+<li><strong>x</strong> &#8211; training inputs</li>
 <li><strong>der</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index of hyperparameter whose derivative to be computed</li>
 </ul>
 </td>
@@ -528,7 +528,15 @@ Arye Nehorai and John P. Cunningham, and
 <dl class="method">
 <dt id="pyGPs.Core.mean.Mean.getMean">
 <tt class="descname">getMean</tt><big>(</big><em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/mean.html#Mean.getMean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.mean.Mean.getMean" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the mean vector.</p>
+<dd><p>Get the mean vector based on the inputs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; training data</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

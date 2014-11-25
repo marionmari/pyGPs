@@ -1,6 +1,28 @@
 Changelog pyGPs v1.3
 =====================
 
+
+November 25th 2014
+----------------------------
+
+structural updates:
+
+- full inline documentation with input parameter and output specified
+- check for the inputs and provide diagnostic messages for some inputs
+- consistant naming in inline and online documentation
+- string representation for dnlZStruct and postStruct 
+  - Now you can do sth like,
+  - nlZ, dnlZ, post = model.getPosterior(x,y)
+  - print post
+  - instead of a python object, we provide now a more informative description.
+- add optimization into unit test routines. Also add checking for cholesky decomposition and checking positive-definite property of kernel matrix.
+- add jitter to the digonal of linear, linARD, and poly covariance for numerical stability.
+- fix several minor problems in unit test framework
+- hierachically rearranged for online documentation
+- add several supplementary instruction in online documentation
+
+
+
 October 19th 2014
 ----------------
 
@@ -101,7 +123,6 @@ bug fixes:
 - derivatives for cov.LINard
 - derivative of the scalar for cov.covScale
 - demo_GPR_FITC.py missing pyGPs.mean
-
 
 
 
