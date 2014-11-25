@@ -50,6 +50,13 @@ class Mean(object):
         self.para = []
 
 
+    def __repr__(self):
+        strvalue =str(type(self))+': to get the mean vector or mean derviatives use: \n'+\
+	    	  'model.meanfunc.getMean()\n'+\
+		  'model.meanfunc.getDerMatrix()'
+        return strvalue
+
+
 
     # overloading
     def __add__(self,mean):
