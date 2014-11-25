@@ -16,6 +16,7 @@ structural updates:
   - print post
   - instead of a python object, we provide now a more informative description.
 - add optimization into unit test routines. Also add checking for cholesky decomposition and checking positive-definite property of kernel matrix.
+- add jitter to the digonal of linear, linARD, and poly covariance for numerical stability.
 - fix several minor problems in unit test framework
 - hierachically rearranged for online documentation
 - add several supplementary instruction in online documentation

@@ -18,7 +18,7 @@ First, load the data for this demo. The data consists of :math:`n=20` 1-d data p
 
 Note that target vector :math:`y` can be in 2d matrix with shape (nn,1) or 1d vector with shape (nn,) where :math:`nn` is number of test inputs. pyGPs can work with either format. ::
 
-    demoData = np.load('data_for_demo/regression_data.npz')
+    demoData = np.load('regression_data.npz')
     x = demoData['x']      # training data
     y = demoData['y']      # training target
     z = demoData['xstar']  # test data
