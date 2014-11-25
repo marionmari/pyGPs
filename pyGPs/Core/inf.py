@@ -69,8 +69,14 @@ class postStruct(object):
         self.L     = np.array([])
         self.sW    = np.array([])
 
+    def __repr__(self):
+        value = "posterior: to get the parameters of the posterior distribution use:\n"+\
+                "model.posterior.alpha\n"+"model.posterior.L\n"+"model.posterior.sW\n"+\
+		"See documentation and gpml book chapter 2.3 and chapter 3.4.3 for these parameters."
+        return value
+
     def __str__(self):
-        value = "posterior distribution described by alpha, sW and L.\n"+\
+        value = "posterior distribution described by alpha, sW and L\n"+\
                 "See documentation and gpml book chapter 2.3 and chapter 3.4.3 for these parameters\n"\
                 +"alpha:\n"+str(self.alpha)+"\n"+"L:\n"+str(self.L)+"\nsW:\n"+str(self.sW)
         return value
@@ -101,6 +107,11 @@ class dnlZStruct(object):
                 "mean:"+str(self.mean)+"\n"+\
                 "cov:"+str(self.cov)+"\n"+\
                 "lik:"+str(self.lik)
+        return value
+
+    def __repr__(self):
+        value = "dnlZ: to get the derivatives of mean, cov and lik functions use:\n" +\
+                "model.dnlZ.mean\n"+"model.dnlZ.cov\n"+"model.dnlZ.lik"
         return value
 
 
