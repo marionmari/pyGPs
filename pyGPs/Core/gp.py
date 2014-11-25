@@ -79,6 +79,46 @@ class GP(object):
 
 
 
+    def __str__(self):
+       strvalue = 'To get the properties of the model use:\n'+\
+                  'model.nlZ          # negative log marginal likelihood\n'+\
+                  'model.dnlZ.cov     # derivatives of cov func of negative log marginal likelihood\n'+\
+                  'model.dnlZ.lik     # derivatives of lik func of negative log marginal likelihood\n'+\
+                  'model.dnlZ.mean    # derivatives of mean func of negative log marginal likelihood\n'+\
+                  'model.posterior    # posterior structure\n'+\
+                  'model.covfunc.hyp  # hyperparameters of cov func\n'+\
+                  'model.meanfunc.hyp # hyperparameters of mean func\n'+\
+                  'model.likfunc.hyp  # hyperparameters of lik func\n'+\
+                  'model.fm           # latent mean\n'+\
+                  'model.fs2          # latent variance\n'+\
+                  'model.ym           # predictive mean\n'+\
+                  'model.ys2          # predictive variance\n'+\
+                  'model.lp           # log predictive probability'
+       return strvalue
+
+
+
+    def __repr__(self):
+       strvalue = str(type(self))+': '+\
+                  'to get the properties of the model use:\n'+\
+                  'model.nlZ          # negative log marginal likelihood\n'+\
+                  'model.dnlZ.cov     # derivatives of cov func of negative log marginal likelihood\n'+\
+                  'model.dnlZ.lik     # derivatives of lik func of negative log marginal likelihood\n'+\
+                  'model.dnlZ.mean    # derivatives of mean func of negative log marginal likelihood\n'+\
+                  'model.posterior    # posterior structure\n'+\
+                  'model.covfunc.hyp  # hyperparameters of cov func\n'+\
+                  'model.meanfunc.hyp # hyperparameters of mean func\n'+\
+                  'model.likfunc.hyp  # hyperparameters of lik func\n'+\
+                  'model.fm           # latent mean\n'+\
+                  'model.fs2          # latent variance\n'+\
+                  'model.ym           # predictive mean\n'+\
+                  'model.ys2          # predictive variance\n'+\
+                  'model.lp           # log predictive probability'
+       return strvalue
+
+
+
+
     def setData(self, x, y):
         '''
         Set training inputs and traning labels to model.
@@ -476,6 +516,7 @@ class GPR(GP):
         self.likfunc = lik.Gauss()                         # likihood with default noise variance 0.1
         self.inffunc = inf.Exact()                         # inference method
         self.optimizer = opt.Minimize(self)                # default optimizer
+
 
 
     def setNoise(self,log_sigma):
