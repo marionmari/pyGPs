@@ -64,6 +64,14 @@ class Kernel(object):
 
 
 
+    def __repr__(self):
+        strvalue =str(type(self))+': to get the kernel matrix or kernel derviatives use: \n'+\
+	    	  'model.covfunc.getCovMatrix()\n'+\
+		  'model.covfunc.getDerMatrix()'
+        return strvalue
+
+
+
     def getCovMatrix(self,x=None,z=None,mode=None):
         '''
         Return the specific covariance matrix according to input mode
@@ -96,6 +104,50 @@ class Kernel(object):
         pass
 
 
+    
+    def checkInputGetCovMatrix(self,x,z,mode):
+        '''
+        Check validity of inputs for the method getCovMatrix()
+        
+        :param x: training data
+        :param z: test data
+        :param str mode: 'self_test' return self derivative matrix of test data(test by 1).
+                         'train' return training derivative matrix(train by train).
+                         'cross' return cross derivative matrix between x and z(train by test)
+        '''
+        if mode is None:
+            raise Exception("Specify the mode: 'train' or 'cross'")
+        if x is None and z is None:
+            raise Exception("Specify at least one: training input (x) or test input (z) or both.")
+        if mode == 'cross':
+            if x is None or z is None:
+                raise Exception("Specify both: training input (x) and test input (z) for cross covariance.")    
+            
+
+
+    def checkInputGetDerMatrix(self,x,z,mode,der):
+        '''
+        Check validity of inputs for the method getDerMatrix()
+        
+        :param x: training data
+        :param z: test data
+        :param str mode: 'self_test' return self derivative matrix of test data(test by 1).
+                         'train' return training derivative matrix(train by train).
+                         'cross' return cross derivative matrix between x and z(train by test)
+        :param int der: index of hyperparameter whose derivative to be computed
+        '''
+        if mode is None:
+            raise Exception("Specify the mode: 'train' or 'cross'")
+        if x is None and z is None:
+            raise Exception("Specify at least one: training input (x) or test input (z) or both.")
+        if mode == 'cross':
+            if x is None or z is None:
+                raise Exception("Specify both: training input (x) and test input (z) for cross covariance.")
+        if der is None:
+            raise Exception("Specify the index of parameters of the derivatives.")
+            
+            
+            
 
     # overloading
     def __add__(self,cov):
@@ -186,10 +238,12 @@ class ProductOfKernel(Kernel):
     hyp = property(_getHyp,_setHyp)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         A = self.cov1.getCovMatrix(x,z,mode) * self.cov2.getCovMatrix(x,z,mode)
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         if der < len(self.cov1.hyp):
             A = self.cov1.getDerMatrix(x,z,mode,der) * self.cov2.getCovMatrix(x,z,mode)
         elif der < len(self.hyp):
@@ -218,10 +272,12 @@ class SumOfKernel(Kernel):
     hyp = property(_getHyp,_setHyp)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         A = self.cov1.getCovMatrix(x,z,mode) + self.cov2.getCovMatrix(x,z,mode)
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         if der < len(self.cov1.hyp):
             A = self.cov1.getDerMatrix(x,z,mode,der)
         elif der < len(self.hyp):
@@ -250,11 +306,13 @@ class ScaleOfKernel(Kernel):
     hyp = property(_getHyp,_setHyp)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         sf2 = np.exp(self.hyp[0])                     # scale parameter
         A = sf2 * self.cov.getCovMatrix(x,z,mode)     # accumulate cov
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         sf2 = np.exp(self.hyp[0])                     # scale parameter
         if der == 0:                                  # compute derivative w.r.t. sf2
             A = 2. * sf2 * self.cov.getCovMatrix(x,z,mode)
@@ -285,6 +343,7 @@ class FITCOfKernel(Kernel):
     hyp = property(_getHyp,_setHyp)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         xu = self.inducingInput
         if not x is None:
             try:
@@ -304,6 +363,7 @@ class FITCOfKernel(Kernel):
             return K
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         xu = self.inducingInput
         if not x is None:
             try:
@@ -344,6 +404,7 @@ class Gabor(Kernel):
         self.hyp = [log_ell, log_p]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         ell = np.exp(self.hyp[0])  # characteristic length scale
         p = np.exp(2. * self.hyp[1])  # period
         if mode == 'self_test':               # self covariances for the test cases
@@ -358,6 +419,7 @@ class Gabor(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         ell = np.exp(self.hyp[0])  # characteristic length scale
         p = np.exp(2. * self.hyp[1])  # period
         if mode == 'self_test':               # self covariances for the test cases
@@ -417,6 +479,7 @@ class SM(Kernel):
     	self.para = [Q]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         Q = self.para[0]
         if mode == 'self_test':
             nn, D = z.shape
@@ -458,6 +521,7 @@ class SM(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         Q = self.para[0]
         if mode == 'self_test':
             nn, D = z.shape
@@ -529,6 +593,7 @@ class Poly(Kernel):
         self.para = [d]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         c   = np.exp(self.hyp[0])             # inhomogeneous offset
         sf2 = np.exp(2.*self.hyp[1])          # signal variance
         ord = self.para[0]                    # order of polynomial
@@ -548,6 +613,7 @@ class Poly(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         c   = np.exp(self.hyp[0])             # inhomogeneous offset
         sf2 = np.exp(2.*self.hyp[1])          # signal variance
         ord = self.para[0]                    # order of polynomial
@@ -621,6 +687,7 @@ class PiecePoly(Kernel):
         return self.ppmax(1-r,0)**(j+v-1) * r * ( (j+v)*self.func(v,r,j) - self.ppmax(1-r,0) * self.dfunc(v,r,j) )
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         if not x is None:
             n, D = x.shape
         if not z is None:
@@ -644,6 +711,7 @@ class PiecePoly(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         if not x is None:
             n, D = x.shape
         if not z is None:
@@ -686,6 +754,7 @@ class RBF(Kernel):
         self.hyp = [log_ell, log_sigma]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         ell = np.exp(self.hyp[0])         # characteristic length scale
         sf2 = np.exp(2.*self.hyp[1])      # signal variance
         if mode == 'self_test':           # self covariances for the test cases
@@ -700,6 +769,7 @@ class RBF(Kernel):
 
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         ell = np.exp(self.hyp[0])         # characteristic length scale
         sf2 = np.exp(2.*self.hyp[1])      # signal variance
         if mode == 'self_test':           # self covariances for the test cases
@@ -730,6 +800,7 @@ class RBFunit(Kernel):
         self.hyp = [log_ell]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         ell = np.exp(self.hyp[0])         # characteristic length scale
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -742,6 +813,7 @@ class RBFunit(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         ell = np.exp(self.hyp[0])         # characteristic length scale
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -774,6 +846,7 @@ class RBFard(Kernel):
             self.hyp = log_ell_list + [log_sigma]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         if not x is None:
             n, D = x.shape
         if not z is None:
@@ -792,6 +865,7 @@ class RBFard(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         if not x is None:
             n, D = x.shape
         if not z is None:
@@ -833,6 +907,7 @@ class Const(Kernel):
         self.hyp = [log_sigma]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         sf2 = np.exp(self.hyp[0])         # s2
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -847,6 +922,7 @@ class Const(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         sf2 = np.exp(self.hyp[0])         # s2
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -876,6 +952,7 @@ class Linear(Kernel):
         self.hyp = [ log_sigma ]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         sf2 = np.exp(self.hyp[0])         # s2
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -889,6 +966,7 @@ class Linear(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         sf2 = np.exp(self.hyp[0])         # s2
         if der == 0:
             if mode == 'self_test':           # self covariances for the test cases
@@ -921,6 +999,7 @@ class LINard(Kernel):
             self.hyp = log_ell_list
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         ell = np.exp(self.hyp)            # ARD parameters
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -934,6 +1013,7 @@ class LINard(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         ell = np.exp(self.hyp)            # ARD parameters
         if not x is None:
             n, D = x.shape
@@ -1001,6 +1081,7 @@ class Matern(Kernel):
         return self.dfunc(d,t)*t*np.exp(-1.*t)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         ell = np.exp(self.hyp[0])        # characteristic length scale
         sf2 = np.exp(2.* self.hyp[1])    # signal variance
         d   = self.para[0]               # 2 times nu
@@ -1026,6 +1107,7 @@ class Matern(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         ell = np.exp(self.hyp[0])        # characteristic length scale
         sf2 = np.exp(2.* self.hyp[1])    # signal variance
         d   = self.para[0]               # 2 times nu
@@ -1073,6 +1155,7 @@ class Periodic(Kernel):
         self.hyp = [ log_ell, log_p, log_sigma]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         if not x is None:
             assert x.shape[1]==1, 'periodic covariance can only be used for 1d data'
         if not z is None:
@@ -1094,6 +1177,7 @@ class Periodic(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         if not x is None:
             assert x.shape[1]==1, 'periodic covariance can only be used for 1d data'
         if not z is None:
@@ -1138,6 +1222,7 @@ class Noise(Kernel):
         self.hyp = [log_sigma]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         tol = 1.e-9                       # Tolerance for declaring two vectors "equal"
         s2 = np.exp(2.*self.hyp[0])       # noise variance
         if mode == 'self_test':           # self covariances for the test cases
@@ -1154,6 +1239,7 @@ class Noise(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         tol = 1.e-9                       # Tolerance for declaring two vectors "equal"
         s2 = np.exp(2.*self.hyp[0])       # noise variance
         if mode == 'self_test':           # self covariances for the test cases
@@ -1187,6 +1273,7 @@ class RQ(Kernel):
         self.hyp = [ log_ell, log_sigma, log_alpha ]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         ell   = np.exp(self.hyp[0])       # characteristic length scale
         sf2   = np.exp(2.*self.hyp[1])    # signal variance
         alpha = np.exp(self.hyp[2])
@@ -1201,6 +1288,7 @@ class RQ(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         ell   = np.exp(self.hyp[0])       # characteristic length scale
         sf2   = np.exp(2.*self.hyp[1])    # signal variance
         alpha = np.exp(self.hyp[2])
@@ -1242,6 +1330,7 @@ class RQard(Kernel):
             self.hyp = log_ell_list + [ log_sigma, log_alpha ]
 
     def getCovMatrix(self,x=None,z=None,mode=None):
+        self.checkInputGetCovMatrix(x,z,mode)
         if not x is None:
             n, D = x.shape
         if not z is None:
@@ -1261,6 +1350,7 @@ class RQard(Kernel):
         return A
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
+        self.checkInputGetDerMatrix(x,z,mode,der)
         if not x is None:
             n, D = x.shape
         if not z is None:
