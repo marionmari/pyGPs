@@ -41,13 +41,15 @@ import numpy as np
 import math
 
 class Mean(object):
-    """
+    '''
     The base function for mean function
-    """
+    '''
     def __init__(self):
         super(Mean, self).__init__()
         self.hyp = []
         self.para = []
+
+
 
     # overloading
     def __add__(self,mean):
@@ -58,6 +60,8 @@ class Mean(object):
         :return: an instance of SumOfMean
         '''
         return SumOfMean(self,mean)
+
+
 
     # overloading
     def __mul__(self,other):
@@ -76,8 +80,12 @@ class Mean(object):
         else:
             print "only numbers and Means are allowed for *"
 
+
+
     # overloading
     __rmul__ = __mul__
+
+
 
     # overloading
     def __pow__(self,number):
@@ -92,17 +100,23 @@ class Mean(object):
         else:
             print "only non-zero integers are supported for **"
 
+
+
     def getMean(self, x=None):
         '''
-        Get the mean vector.
+        Get the mean vector based on the inputs.
+
+        :param x: training data
         '''
         pass
+
+
 
     def getDerMatrix(self, x=None, der=None):
         '''
         Compute derivatives wrt. hyperparameters.
 
-        :param x: training data
+        :param x: training inputs
         :param int der: index of hyperparameter whose derivative to be computed
 
         :return: the corresponding derivative matrix

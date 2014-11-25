@@ -52,7 +52,6 @@ import numpy as np
 import math
 import scipy.spatial.distance as spdist
 
-
 class Kernel(object):
     """
     This is a base class of Kernel functions
@@ -62,6 +61,8 @@ class Kernel(object):
     def __init__(self):
         self.hyp = []
         self.para = []
+
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         '''
@@ -76,6 +77,8 @@ class Kernel(object):
         :return: the corresponding covariance matrix
         '''
         pass
+
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         '''
@@ -92,6 +95,8 @@ class Kernel(object):
         '''
         pass
 
+
+
     # overloading
     def __add__(self,cov):
         '''
@@ -101,6 +106,8 @@ class Kernel(object):
         :return: an instance of SumOfKernel
         '''
         return SumOfKernel(self,cov)
+
+
 
     # overloading
     def __mul__(self,other):
@@ -119,8 +126,12 @@ class Kernel(object):
         else:
             print "only numbers and Kernels are supported operand types for *"
 
+
+
     # overloading
     __rmul__ = __mul__
+
+
 
     def fitc(self,inducingInput):
         '''
@@ -130,6 +141,8 @@ class Kernel(object):
         :return: an instance of FITCOfKernel
         '''
         return FITCOfKernel(self,inducingInput)
+
+
 
     # can be replaced by spdist from scipy
     def _sq_dist(self, a, b=None):

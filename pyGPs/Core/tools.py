@@ -49,6 +49,9 @@ def jitchol(A,maxtries=5):
     ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+    :param A: the matrixed to be decomposited
+    :param int maxtries: number of iterations of adding jitters
     '''    
     A = np.asfortranarray(A)
     L, info = lapack.dpotrf(A, lower=1)
@@ -69,12 +72,18 @@ def jitchol(A,maxtries=5):
                 maxtries -= 1
         raise np.linalg.LinAlgError, "kernel matrix not positive definite, even with jitter."
 
+
+
 def solve_chol(L, B):
     '''
     Solve linear equations from the Cholesky factorization.
     Solve A*X = B for X, where A is square, symmetric, positive definite. The
-    input to the function is R the Cholesky decomposition of A and the matrix B.
-    Example: X = solve_chol(chol(A),B);
+    input to the function is L the Cholesky decomposition of A and the matrix B.
+    Example: X = solve_chol(chol(A),B)
+
+    :param L: low trigular matrix (cholesky decomposition of A)
+    :param B: matrix have the same first dimension of L
+    :return: X = A \ B
     '''
     try:
         assert(L.shape[0] == L.shape[1] and L.shape[0] == B.shape[0])
@@ -83,9 +92,14 @@ def solve_chol(L, B):
     X = np.linalg.solve(L,np.linalg.solve(L.T,B))
     return X
 
+
+
 def unique(x):
     '''
     Return a list with unique elements.
+
+    :param x: any matrix x
+    :return: a list of unique elements in x
     '''
     # First flatten x
     y = [item for sublist in x for item in sublist]
@@ -97,6 +111,8 @@ def unique(x):
     else:
         y = list(set(y))
     return y
+
+
 
 def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
     '''
@@ -251,8 +267,12 @@ def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
         vargout.append(vv)
     return vargout
 
+
+
 def cholupdate(R,x,sgn='+'):
-    '''Placeholder for a python version of MATLAB's cholupdate.  Now it is O(n^3)'''
+    '''
+    Placeholder for a python version of MATLAB's cholupdate.  Now it is O(n^3)
+    '''
     if len(x.shape) == 1:
         # Reshape x so that the dot product below is correct
         x = np.reshape(x,(x.shape[0],1))

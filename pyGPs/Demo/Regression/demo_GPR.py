@@ -64,6 +64,8 @@ m = pyGPs.mean.Const() + pyGPs.mean.Linear()
 k = pyGPs.cov.Matern(d=7) # Approximates RBF kernel
 model.setPrior(mean=m, kernel=k)
 
+
+
 # Specify optimization method (single run "Minimize" by default)
 # @SEE doc_optimization for documentation of optimization methods
 #model.setOptimizer("RTMinimize", num_restarts=30)

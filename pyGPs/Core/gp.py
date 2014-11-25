@@ -52,15 +52,17 @@ MEANCOLOR = [ 0.2109375, 0.63385, 0.1796875, 1.0]
 DATACOLOR = [0.12109375, 0.46875, 1., 1.0]
 
 class GP(object):
-    '''Base class for GP model'''
+    '''
+    Base class for GP model.
+    '''
     def __init__(self):
         super(GP, self).__init__()
         self.usingDefaultMean = True  # was using default mean function now?
-        self.meanfunc = None
-        self.covfunc = None
-        self.likfunc = None
-        self.inffunc = None
-        self.optimizer = None
+        self.meanfunc = None      # mean function
+        self.covfunc = None       # covariance function
+        self.likfunc = None       # likelihood function
+        self.inffunc = None       # inference function
+        self.optimizer = None     # optimizer object
         self.nlZ = None           # negative log marginal likelihood
         self.dnlZ = None          # column vector of partial derivatives of the negative
                                   # log marginal likelihood w.r.t. each hyperparameter
@@ -76,23 +78,40 @@ class GP(object):
         self.lp = None            # column vector (of length ns) of log predictive probabilities
 
 
+
     def setData(self, x, y):
         '''
-        Pass training data and traning labels to model.
+        Set training inputs and traning labels to model.
+
+        :param x: training inputs in shape (n,D)
+        :param y: training labels in shape (n,1)
+
+        Note this method will transform x, y to correct shape
+        if x, y is given in 1d array. 
         '''
+        # check wether the number of inputs and labels match
+        assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
+
+        # check the shape of inputs
+        # transform to the correct shape
         if x.ndim == 1:
             x = np.reshape(x, (x.shape[0],1))
         if y.ndim == 1:
             y = np.reshape(y, (y.shape[0],1))
+
         self.x = x
         self.y = y
         if self.usingDefaultMean:
             c = np.mean(y)
             self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
 
+
+
     def plotData_1d(self, axisvals=None):
         '''
-        Plot 1d data.
+        Toy Method for ploting 1d data of the model.
+
+        :param list axisvals: [min_x, max_x, min_y, max_y] setting the plot range
         '''
         plt.figure()
         plt.plot(self.x, self.y, ls='None', marker='+', color=DATACOLOR, ms=12, mew=2)
@@ -103,9 +122,23 @@ class GP(object):
         plt.ylabel('target y')
         plt.show()
 
+
+
     def plotData_2d(self,x1,x2,t1,t2,p1,p2,axisvals=None):
         '''
-        Plot 2d data.
+        Toy Method for ploting 2d data of the model. \n
+        For plotting, we superimpose the data points with the posterior equi-probability contour 
+        lines for the probability of class two given complete information about the generating mechanism.
+
+        :param x1: inputs for class +1
+        :param x2: inputs for class -1
+        :param t1: meshgrid array for the first axis
+        :param t2: meshgrid array for the second axis
+        :param p1,p2: contour lines contains p2/(p1+p2)
+        :param list axisvals: [min_x, max_x, min_y, max_y] setting the plot range
+
+        That is to say, the contour is ploted by plt.contour(t1, t2, p2/(p1+p2) )
+        Note these parameters are (only) used for our hard-coded data for classification demo.
         '''
         fig = plt.figure()
         plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
@@ -117,17 +150,28 @@ class GP(object):
             plt.axis(axisvals)
         plt.show()
 
+
+
     def setPrior(self, mean=None, kernel=None):
         '''
-        Set prior mean and cov
+        Set prior mean and covariance other than the default setting of current model.
+
+        :param mean: instance of mean class. (e.g. mean.Linear())
+        :param kernel: instance of covariance class. (e.g. cov.RBF())
         '''
+        # check the type of inputs
+        # ensure they are the right class before setting prior
         if not mean is None:
+            assert isinstance(mean, pyGPs.mean.Mean), "mean function is not an instance of pyGPs.mean.Mean"
             self.meanfunc = mean
             self.usingDefaultMean = False
         if not kernel is None:
+            assert isinstance(kernel, pyGPs.cov.Kernel), "cov function is not an instance of pyGPs.cov.Kernel"
             self.covfunc = kernel
             if type(kernel) is cov.Pre:
                 self.usingDefaultMean = False
+
+
 
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
         '''
@@ -138,7 +182,6 @@ class GP(object):
                        "CG"         -> conjugent gradient\n
                        "BFGS"       -> quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)\n
                        "SCG"        -> scaled conjugent gradient (faster than CG)\n
-
         :param num_restarts: Set if you want to run mulitiple times of optimization with different initial guess.
                              It specifys the maximum number of runs/restarts/trials.
         :param min_threshold: Set if you want to run mulitiple times of optimization with different initial guess.
@@ -147,20 +190,27 @@ class GP(object):
                           e.g. meanRange = [(-2,2), (-5,5), (0,1)].
                           Each tuple specifys the range (low, high) of this hyperparameter,
                           This is only the range of initial guess, during optimization process, optimal hyperparameters may go out of this range.
-
                           (-5,5) for each hyperparameter by default.
         :param covRange: The range of initial guess for kernel hyperparameters. Usage see meanRange
         :param likRange: The range of initial guess for likelihood hyperparameters. Usage see meanRange
-
         '''
         pass
 
 
-    def optimize(self, x=None, y=None, numIterations = 40):
+
+    def optimize(self, x=None, y=None, numIterations=40):
         '''
         Train optimal hyperparameters based on training data,
-        adjust new hyperparameters to all mean/cov/lik functions
+        adjust new hyperparameters to all mean/cov/lik functions.
+
+        :param x: training inputs in shape (n,D)
+        :param y: training labels in shape (n,1)
         '''
+        # check wether the number of inputs and labels match
+        assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
+
+        # check the shape of inputs
+        # transform to the correct shape
         if not x is None:
             if x.ndim == 1:
                 x = np.reshape(x, (x.shape[0],1))
@@ -184,12 +234,25 @@ class GP(object):
         self.getPosterior()
 
 
+
     def getPosterior(self, x=None, y=None, der=True):
         '''
         Fit the training data. Update negative log marginal likelihood(nlZ),
         partial derivatives of nlZ w.r.t. each hyperparameter(dnlZ),
         and struct representation of the (approximate) posterior(post),
         which consists of post.alpha, post.L, post.sW.
+
+        nlZ, dnlZ, post = getPosterior(x, y, der=True)\n
+        nlZ, post       = getPosterior(x, y, der=False )
+
+        :param x: training inputs in shape (n,D)
+        :param y: training labels in shape (n,1)
+        :param boolean der: flag for whether to compute derivatives
+
+        :return: negative log marginal likelihood (nlZ), derivatives of nlZ (dnlZ), posterior structure(post)
+
+        You can print post to see descriptions of posterior.
+        or see pyGPs.Core.inf for details.
         '''
         if not x is None:
             if x.ndim == 1:
@@ -221,26 +284,25 @@ class GP(object):
             return nlZ, dnlZ, post
 
 
+
     def predict(self, xs, ys=None):
         '''
-        Prediction according to given inputs.
-        Get predictive output means(ym),
-        predictive output variances(ys2),
-        predictive latent means(fm),
-        predictive latent variances(fs2),
-        log predictive probabilities(lp).
+        Prediction of test points (given by xs) based on training data of the current model.
+        This method will output the following value:\n
+        predictive output means(ym),\n
+        predictive output variances(ys2),\n
+        predictive latent means(fm),\n
+        predictive latent variances(fs2),\n
+        log predictive probabilities(lp).\n
+        Theses values can also be achieved from model's property. (e.g. model.ym)
 
-        :param xs: test input
-        :param ys: test target(optional)
+        :param xs: test input in shape of nn by D
+        :param ys: test target(optional) in shape of nn by 1 if given
 
         :return: ym, ys2, fm, fs2, lp
         '''
-        meanfunc = self.meanfunc
-        covfunc  = self.covfunc
-        likfunc  = self.likfunc
-        inffunc  = self.inffunc
-        x = self.x
-        y = self.y
+        # check the shape of inputs
+        # transform to correct shape if neccessary
         if xs.ndim == 1:
             xs = np.reshape(xs, (xs.shape[0],1))
         self.xs = xs
@@ -249,9 +311,15 @@ class GP(object):
                 ys = np.reshape(ys, (ys.shape[0],1))
             self.ys = ys
 
+        meanfunc = self.meanfunc
+        covfunc  = self.covfunc
+        likfunc  = self.likfunc
+        inffunc  = self.inffunc
+        x = self.x
+        y = self.y
+
         if self.posterior is None:
             self.getPosterior()
-
         alpha = self.posterior.alpha
         L     = self.posterior.L
         sW    = self.posterior.sW
@@ -304,15 +372,19 @@ class GP(object):
             return ymu, ys2, fmu, fs2, lp
 
 
+
     def predict_with_posterior(self, post, xs, ys=None):
         '''
-        Prediction with provided posterior
-        (i.e. you already have the posterior and thus don't need fitting/training phases)
-        Get predictive output means(ym),
-        predictive output variances(ys2),
-        predictive latent means(fm),
-        predictive latent variances(fs2),
-        and log predictive probabilities(lp).
+        Prediction of test points (given by xs) based on training data 
+        of the current model with posterior already provided.
+        (i.e. you already have the posterior and thus don't need the fitting phase.)
+        This method will output the following value:\n
+        predictive output means(ym),\n
+        predictive output variances(ys2),\n
+        predictive latent means(fm),\n
+        predictive latent variances(fs2),\n
+        log predictive probabilities(lp).\n
+        Theses values can also be achieved from model's property. (e.g. model.ym)
 
         :param post: struct representation of posterior
         :param xs: test input
@@ -320,12 +392,8 @@ class GP(object):
 
         :return: ym, ys2, fm, fs2, lp
         '''
-        meanfunc = self.meanfunc
-        covfunc  = self.covfunc
-        likfunc  = self.likfunc
-        inffunc  = self.inffunc
-        x = self.x
-        y = self.y
+        # check the shape of inputs
+        # transform to correct shape if neccessary
         if xs.ndim == 1:
             xs = np.reshape(xs, (xs.shape[0],1))
         self.xs = xs
@@ -333,6 +401,13 @@ class GP(object):
             if ys.ndim == 1:
                 ys = np.reshape(ys, (ys.shape[0],1))
             self.ys = ys
+
+        meanfunc = self.meanfunc
+        covfunc  = self.covfunc
+        likfunc  = self.likfunc
+        inffunc  = self.inffunc
+        x = self.x
+        y = self.y
 
         self.posterior = deepcopy(post)
         alpha = post.alpha
@@ -388,8 +463,12 @@ class GP(object):
 
 
 
+
+
 class GPR(GP):
-    '''Gaussian Process Regression'''
+    '''
+    Model for Gaussian Process Regression
+    '''
     def __init__(self):
         super(GPR, self).__init__()
         self.meanfunc = mean.Zero()                        # default prior mean
@@ -398,12 +477,20 @@ class GPR(GP):
         self.inffunc = inf.Exact()                         # inference method
         self.optimizer = opt.Minimize(self)                # default optimizer
 
+
     def setNoise(self,log_sigma):
-        '''Set noise variance other than default'''
+        '''
+        Set noise other than default noise value
+
+        :param log_sigma: logorithm of the noise sigma
+        '''
         self.likfunc = lik.Gauss(log_sigma)
 
+
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
-        '''Set Optimizer. See base class.'''
+        '''
+        Overriding. Usage see base class pyGPs.gp.GP.setOptimizer
+        '''
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
@@ -432,8 +519,13 @@ class GPR(GP):
         else:
             raise Error('Optimization method is not set correctly in setOptimizer')
 
+
     def plot(self,axisvals=None):
-        '''Plot 1d GP regression.'''
+        '''
+        Plot 1d GP regression result.
+
+        :param list axisvals: [min_x, max_x, min_y, max_y] setting the plot range
+        '''
         xs = self.xs    # test point
         x = self.x
         y = self.y
@@ -453,13 +545,13 @@ class GPR(GP):
         plt.ylabel('target y')
         plt.show()
 
+
     def useInference(self, newInf):
         '''
         Use another inference techinique other than default exact inference.
 
         :param str newInf: 'Laplace' or 'EP'
         '''
-
         if newInf == "Laplace":
             self.inffunc = inf.Laplace()
         elif newInf == "EP":
@@ -467,7 +559,13 @@ class GPR(GP):
         else:
             raise Exception('Possible inf values are "Laplace", "EP".')
 
+
     def useLikelihood(self,newLik):
+        '''
+        Use another likelihood function other than default Gaussian likelihood.
+
+        :param str newLik: 'Laplace'
+        '''
         if newLik == "Laplace":
             self.likfunc = lik.Laplace()
             self.inffunc = inf.EP()
@@ -479,7 +577,9 @@ class GPR(GP):
 
 
 class GPC(GP):
-    '''Gaussian Process Classification'''
+    '''
+    Model for Gaussian Process Classification.
+    '''
     def __init__(self):
         super(GPC, self).__init__()
         self.meanfunc = mean.Zero()                        # default prior mean
@@ -488,8 +588,12 @@ class GPC(GP):
         self.inffunc = inf.EP()                            # default inference method
         self.optimizer = opt.Minimize(self)                # default optimizer
 
+
+
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
-        '''Set Optimizer. See base class.'''
+        '''
+        Overriding. Usage see base class pyGPs.gp.GP.setOptimizer
+        '''
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
@@ -510,8 +614,23 @@ class GPC(GP):
         elif method == "BFGS":
             self.optimizer = opt.BFGS(self,conf)
 
+
+
     def plot(self,x1,x2,t1,t2,axisvals=None):
-        '''Plot 2d gp classification.'''
+        '''
+        Plot 2d GP Classification result.
+
+        For plotting, we superimpose the data points with the posterior equi-probability contour 
+        lines for the probability of class two given complete information about the generating mechanism.
+
+        :param x1: inputs for class +1
+        :param x2: inputs for class -1
+        :param t1: meshgrid array for the first axis
+        :param t2: meshgrid array for the second axis
+        :param list axisvals: [min_x, max_x, min_y, max_y] setting the plot range
+
+        Note these parameters are (only) used for our hard-coded data for classification demo.
+        '''
         fig = plt.figure()
         plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
         plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
@@ -521,6 +640,8 @@ class GPC(GP):
         if not axisvals is None:
             plt.axis(axisvals)
         plt.show()
+
+
 
     def useInference(self, newInf):
         '''
@@ -533,15 +654,17 @@ class GPC(GP):
         else:
             raise Exception('Possible inf values are "Laplace".')
 
+
+
     def useLikelihood(self,newLik):
         '''
-        Use another likelihood function other than default Erf inference.
+        Use another likelihood function other than default error function.
         (Not used in this version)
 
         :param str newLik: 'Logistic'
         '''
         if newLik == "Logistic":
-            pass
+            raise Exception("Logistic likelihood is currently not implemented.")
             #self.likfunc = lik.Logistic()
         else:
             raise Exception('Possible lik values are "Logistic".')
@@ -549,8 +672,11 @@ class GPC(GP):
 
 
 
+
 class GPMC(object):
-    '''This is a one vs. one classification wrapper for GPC'''
+    '''
+    This is a one vs. one classification wrapper for GP Classification
+    '''
     def __init__(self, n_class):
         self.meanfunc = mean.Zero()                # default prior mean
         self.covfunc = cov.RBF()                   # default prior covariance
@@ -561,44 +687,96 @@ class GPMC(object):
         self.newLik = None                         # new likelihood? -> call useLikelihood
         self.newPrior = False
 
+
+
     def setPrior(self, mean=None, kernel=None):
-        '''set prior mean function and covariance function'''
+                '''
+        Set prior mean and covariance other than the default setting of current model.
+
+        :param mean: instance of mean class. (e.g. mean.Linear())
+        :param kernel: instance of covariance class. (e.g. cov.RBF())
+        '''
+        # check the type of inputs
+        # ensure they are the right class before setting prior
         if not mean is None:
+            assert isinstance(mean, pyGPs.mean.Mean), "mean function is not an instance of pyGPs.mean.Mean"
             self.meanfunc = mean
+            self.usingDefaultMean = False
         if not kernel is None:
+            assert isinstance(kernel, pyGPs.cov.Kernel), "cov function is not an instance of pyGPs.cov.Kernel"
             self.covfunc = kernel
             if type(kernel) is cov.Pre:
                 self.usingDefaultMean = False
         self.newPrior = True
 
+
+
     def useInference(self, newInf):
-        '''Use another inference techinique other than default EP inference.'''
-        self.newInf = newInf
+        '''
+        Use another inference techinique other than default EP inference.
+
+        :param str newInf: 'Laplace'
+        '''
+        if newInf == "Laplace":
+            self.inffunc = inf.Laplace()
+        else:
+            raise Exception('Possible inf values are "Laplace".')
+
+
 
     def useLikelihood(self,newLik):
-        '''Use another likelihood function other than default Erf inference.'''
-        self.newLik = newLik
+        '''
+        Use another likelihood function other than default error function.
+        (Not used in this version)
+
+        :param str newLik: 'Logistic'
+        '''
+        if newLik == "Logistic":
+            raise "Logistic likelihood is currently not implemented."
+            #self.likfunc = lik.Logistic()
+        else:
+            raise Exception('Possible lik values are "Logistic".')
+
+
 
     def setData(self,x,y):
-        '''Set data for multi-class model'''
+        '''
+        Set training inputs and traning labels to model.
+
+        :param x: training inputs in shape (n,D)
+        :param y: training labels in shape (n,1)
+
+        Note this method will transform x, y to correct shape
+        if x, y is given in 1d array. 
+        '''
+        # check wether the number of inputs and labels match
+        assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
+
+        # check the shape of inputs
+        # transform to the correct shape
         if x.ndim == 1:
             x = np.reshape(x, (x.shape[0],1))
         if y.ndim == 1:
             y = np.reshape(y, (y.shape[0],1))
+
         self.x_all = x
         self.y_all = y
 
+
+
     def fitAndPredict(self, xs):
         '''
-        Fitting model and prediction.
-        predictive_vote is a matrix where
-        row i is each test point i
-        column j is the probability for being class j
+        Fit the model with given training data and predict for test points (given by xs).
+        predictive_vote is a matrix where row i is each test point i,
+        and column j is the probability for being class j
 
+        :param xs: test inputs in shape of nn by D
         :return: predictive_vote
         '''
+        # check the shape of inputs
         if xs.ndim == 1:
             xs = np.reshape(xs, (xs.shape[0],1))
+
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
         for i in xrange(self.n_class):         # classifier for class i...
             for j in xrange(i+1,self.n_class): # ...and class j
@@ -623,17 +801,20 @@ class GPMC(object):
         return predictive_vote
 
 
+
     def optimizeAndPredict(self, xs):
         '''
-        Optimizing model and prediction.
-        predictive_vote is a matrix where
-        row i is each test point i
-        column j is the probability for being class j
+        Optimize the model with given training data and predict for test points (given by xs).
+        predictive_vote is a matrix where row i is each test point i,
+        and column j is the probability for being class j
 
+        :param xs: test inputs in shape of nn by D
         :return: predictive_vote
         '''
+        # check the shape of inputs
         if xs.ndim == 1:
             xs = np.reshape(xs, (xs.shape[0],1))
+
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
         for i in xrange(self.n_class):         # classifier for class i...
             for j in xrange(i+1,self.n_class): # ...and class j
@@ -657,9 +838,18 @@ class GPMC(object):
         predictive_vote /=  predictive_vote.sum(axis=1)[:,np.newaxis]
         return predictive_vote
 
+
+
     def createBinaryClass(self, i,j):
-        ''' Create dataset x(data) and y(label) which only contains class i and j.
-        Relabel class i to +1 and class j to -1'''
+        ''' 
+        Create dataset x(data) and y(label) which only contains class i and j.
+        Relabel class i to +1 and class j to -1
+
+        :param int i: the i_th class
+        :param int j: the j_th class
+        :return: x(data) and y(label) which only contains class i and j
+
+        '''
         class_i = []
         class_j = []
         for index in xrange(len(self.y_all)):       # check all classes
@@ -677,20 +867,35 @@ class GPMC(object):
 
 
 
+
+
 class GP_FITC(GP):
-    '''FITC GP base class'''
+    '''
+    Model for FITC GP base class
+    '''
     def __init__(self):
         super(GP_FITC, self).__init__()
-        self.u = None
+        self.u = None                  # inducing points
 
-    # overriding
+
+
     def setData(self, x, y, value_per_axis=5):
-        '''Set training data and derive deault inducing_points.
+        '''
+        Set training inputs and traning labels to model and derive deault inducing_points..
 
-        :param x: training data
-        :param y: training target
+        :param x: training inputs in shape (n,D)
+        :param y: training labels in shape (n,1)
         :param int value_per_axis: number of value in each dimension
-        when using a uni-distant default inducing points'''
+                                   when using a uni-distant default inducing points
+
+        Note this method will transform x, y to correct shape
+        if x, y is given in 1d array. 
+        '''
+        # check wether the number of inputs and labels match
+        assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
+
+        # check dimension of inputs
+        # transform to correct shape if neccessary
         if x.ndim == 1:
             x = np.reshape(x, (x.shape[0],1))
         if y.ndim == 1:
@@ -715,9 +920,17 @@ class GP_FITC(GP):
             self.u = np.array(list(itertools.product(*gridAxis)))
             self.covfunc = self.covfunc.fitc(self.u)
 
-    # overriding
+
+
     def setPrior(self, mean=None, kernel=None, inducing_points=None):
-        '''Set GP prior and inducing points'''
+        '''
+        Set prior mean and covariance other than the default setting of current model,
+        as well as the inducing points
+
+        :param mean: instance of mean class. (e.g. mean.Linear())
+        :param kernel: instance of covariance class. (e.g. cov.RBF())
+        :inducing_points: matrix of inducing points in shape of (nu,D)
+        '''
         if not kernel is None:
             if not inducing_points is None:
                 self.covfunc = kernel.fitc(inducing_points)
@@ -736,8 +949,11 @@ class GP_FITC(GP):
 
 
 
+
 class GPR_FITC(GP_FITC):
-    '''Gaussian Process Regression FITC'''
+    '''
+    Model for Gaussian Process Regression FITC
+    '''
     def __init__(self):
         super(GPR_FITC, self).__init__()
         self.meanfunc = mean.Zero()                        # default prior mean
@@ -747,12 +963,22 @@ class GPR_FITC(GP_FITC):
         self.optimizer = opt.Minimize(self)                # default optimizer
         self.u = None                                      # no default inducing points
 
+
+
     def setNoise(self,log_sigma):
-        '''Set noise variance other than default value'''
+        '''
+        Set noise other than default noise value
+
+        :param log_sigma: logorithm of the noise sigma
+        '''
         self.likfunc = lik.Gauss(log_sigma)
 
+
+
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
-        '''Set Optimizer. See base class.'''
+        '''
+        Overriding. Usage see base class pyGPs.gp.GP.setOptimizer
+        '''
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
@@ -773,8 +999,14 @@ class GPR_FITC(GP_FITC):
         elif method == "BFGS":
             self.optimizer = opt.BFGS(self,conf)
 
+
+
     def plot(self,axisvals=None):
-        '''Plot 1d GP FITC regression.'''
+        '''
+        Plot 1d GP FITC Regression result.
+
+        :param list axisvals: [min_x, max_x, min_y, max_y] setting the plot range
+        '''
         plt.figure()
         xss  = np.reshape(self.xs,(self.xs.shape[0],))
         ymm  = np.reshape(self.ym,(self.ym.shape[0],))
@@ -790,6 +1022,8 @@ class GPR_FITC(GP_FITC):
         plt.plot(self.u,np.ones_like(self.u), ls='None', color='k',marker='x',markersize=12,mew=2)
         plt.show()
 
+
+
     def useInference(self, newInf):
         '''
         Use another inference techinique other than default exact inference.
@@ -802,6 +1036,8 @@ class GPR_FITC(GP_FITC):
             self.inffunc = inf.FITC_EP()
         else:
             raise Exception('Possible inf values are "Laplace", "EP".')
+
+
 
     def useLikelihood(self,newLik):
         '''
@@ -818,8 +1054,11 @@ class GPR_FITC(GP_FITC):
 
 
 
+
 class GPC_FITC(GP_FITC):
-    '''Gaussian Process Classification FITC'''
+    '''
+    Model for Gaussian Process Classification FITC
+    '''
     def __init__(self):
         super(GPC_FITC, self).__init__()
         self.meanfunc = mean.Zero()                        # default prior mean
@@ -829,8 +1068,12 @@ class GPC_FITC(GP_FITC):
         self.optimizer = opt.Minimize(self)                # default optimizer
         self.u = None                                      # no default inducing points
 
+
+
     def setOptimizer(self, method, num_restarts=None, min_threshold=None, meanRange=None, covRange=None, likRange=None):
-        '''Set optimizer. See base class.'''
+        '''
+        Overriding. Usage see base class pyGPs.gp.GP.setOptimizer
+        '''
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             conf = pyGPs.Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
@@ -851,8 +1094,21 @@ class GPC_FITC(GP_FITC):
         elif method == "BFGS":
             self.optimizer = opt.BFGS(self,conf)
 
+
+
     def plot(self,x1,x2,t1,t2,axisvals=None):
-        '''Plot 2d GP FITC classification.'''
+        '''Plot 2d GP FITC classification.
+        For plotting, we superimpose the data points with the posterior equi-probability contour 
+        lines for the probability of class two given complete information about the generating mechanism.
+
+        :param x1: inputs for class +1
+        :param x2: inputs for class -1
+        :param t1: meshgrid array for the first axis
+        :param t2: meshgrid array for the second axis
+        :param list axisvals: [min_x, max_x, min_y, max_y] setting the plot range
+
+        Note these parameters are (only) used for our hard-coded data for classification demo.
+        '''
         fig = plt.figure()
         plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
         plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
@@ -863,6 +1119,8 @@ class GPC_FITC(GP_FITC):
         if not axisvals is None:
             plt.axis(axisvals)
         plt.show()
+
+
 
     def useInference(self, newInf):
         '''
@@ -875,6 +1133,8 @@ class GPC_FITC(GP_FITC):
         else:
             raise Exception('Possible inf values are "Laplace".')
 
+
+
     def useLikelihood(self,newLik):
         '''
         Use another inference techinique other than default Erf likelihood.
@@ -883,8 +1143,7 @@ class GPC_FITC(GP_FITC):
         :param str newLik: 'Logistic'
         '''
         if newLik == "Logistic":
-            pass
-            #self.likfunc = lik.Logistic()
+            raise Exception("Logistic likelihood is currently not implemented.")
         else:
             raise Exception('Possible lik values are "Logistic".')
 
