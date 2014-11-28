@@ -247,7 +247,8 @@ class GP(object):
         :param y: training labels in shape (n,1)
         '''
         # check wether the number of inputs and labels match
-        assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
+        if x is not None and y is not None: 
+            assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
 
         # check the shape of inputs
         # transform to the correct shape
