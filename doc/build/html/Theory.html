@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,7 +14,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     'v1.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -60,6 +61,30 @@ get a little more complicated: you might want to use expressive covariance and m
 for hyperparameters, use non-Gaussian likelihood functions (rendering exact inference intractable), use approximate inference
 algorithms, or combinations of many or all of the above.</p>
 <p>A comprehensive introduction to Gaussian Processes for Machine Learning is provided in the <a class="reference external" href="http://www.gaussianprocess.org/gpml">GPML</a> book by Rasmussen and Williams, 2006.</p>
+<div class="section" id="inference-and-likelihood-for-standard-gps">
+<h2>Inference and Likelihood for Standard GPs<a class="headerlink" href="#inference-and-likelihood-for-standard-gps" title="Permalink to this headline">¶</a></h2>
+<p>The following combinations of inference methods and likelihood functions are possible:</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Regression:</dt>
+<dd><ul class="first last simple">
+<li>Exact inference and Gaussian likelihood (default)</li>
+<li>EP inference and Laplace likelihood</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Classification:</dt>
+<dd><ul class="first last simple">
+<li>EP inference and Erf likelihood (default)</li>
+<li>Laplace inference and Erf likelihood</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
 <div class="section" id="list-of-functionality">
 <h2>List of Functionality<a class="headerlink" href="#list-of-functionality" title="Permalink to this headline">¶</a></h2>
 <p>This table lists the functionality implemented in pyGPs.</p>
@@ -200,6 +225,9 @@ algorithms, or combinations of many or all of the above.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
 <h3><a href="index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">pyGPs - A Package for Gaussian Processes</a></li>
+</ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">GPs &amp; Functionality</a></li>
@@ -210,6 +238,9 @@ algorithms, or combinations of many or all of the above.</p>
 <li class="toctree-l1"><a class="reference internal" href="Develop.html">Developing Customized Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Graph.html">Kernels for Graph Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Default.html">List of Functions and Default Parameters</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">pyGPs - A Package for Gaussian Processes</a></li>
 </ul>
 
   <h3>This Page</h3>
@@ -254,7 +285,7 @@ algorithms, or combinations of many or all of the above.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

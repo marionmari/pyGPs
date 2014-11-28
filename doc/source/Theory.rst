@@ -9,6 +9,20 @@ algorithms, or combinations of many or all of the above.
 A comprehensive introduction to Gaussian Processes for Machine Learning is provided in the `GPML`_ book by Rasmussen and Williams, 2006.
 
 
+Inference and Likelihood for Standard GPs
+------------------------
+The following combinations of inference methods and likelihood functions are possible:
+
+- Regression: 
+	- Exact inference and Gaussian likelihood (default)
+	- EP inference and Laplace likelihood
+
+
+- Classification: 
+	- EP inference and Erf likelihood (default)
+	- Laplace inference and Erf likelihood
+
+
 
 List of Functionality
 ------------------------

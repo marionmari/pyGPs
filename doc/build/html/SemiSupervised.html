@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,7 +14,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     'v1.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -71,11 +72,11 @@
 Each digit of <img class="math" src="_images/math/f3c19812b1b3f3cc95f5f55e7fbd1399eee6004a.png" alt="16*16"/> pixels is flattened into a <img class="math" src="_images/math/abd678361b0f40ec2723283c0f2bab3df5cadc68.png" alt="256"/> dimension vector.
 For the simplicity of demo, we only selected digits <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/> s and <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/> s such that we have a binary classification problem where digit <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/> for class +1 and digit <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/> for class -1. We also reduced the dataset into <img class="math" src="_images/math/e59e2c6e83eb78cca610a5fd4070ae01c8d4ae60.png" alt="100"/> samples per digit, where the original dataset consist of thousands of samples for each digit.</p>
 <p>Here are samples for two digits for <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/></p>
-<a class="reference internal image-reference" href="_images/digit1_1.png"><img alt="_images/digit1_1.png" src="_images/digit1_1.png" style="width: 30%;" /></a>
-<a class="reference internal image-reference" href="_images/digit1_2.png"><img alt="_images/digit1_2.png" src="_images/digit1_2.png" style="width: 30%;" /></a>
+<img alt="_images/digit1_1.png" src="_images/digit1_1.png" style="width: 30%;" />
+<img alt="_images/digit1_2.png" src="_images/digit1_2.png" style="width: 30%;" />
 <p>and samples for two digits for <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/></p>
-<a class="reference internal image-reference" href="_images/digit2_1.png"><img alt="_images/digit2_1.png" src="_images/digit2_1.png" style="width: 30%;" /></a>
-<a class="reference internal image-reference" href="_images/digit2_2.png"><img alt="_images/digit2_2.png" src="_images/digit2_2.png" style="width: 30%;" /></a>
+<img alt="_images/digit2_1.png" src="_images/digit2_1.png" style="width: 30%;" />
+<img alt="_images/digit2_2.png" src="_images/digit2_2.png" style="width: 30%;" />
 </div>
 <div class="section" id="form-a-nearest-neighbour-graph">
 <h2>Form a nearest neighbour graph<a class="headerlink" href="#form-a-nearest-neighbour-graph" title="Permalink to this headline">¶</a></h2>
@@ -144,8 +145,8 @@ You can create any <img class="math" src="_images/math/26eeb5258ca5099acf8fe96b2
 <p>The left image shows the digit that using diffusion kernel will predict the wrong result (should be <img class="math" src="_images/math/41c544263a265ff15498ee45f7392c5f86c6d151.png" alt="2"/>),
 but rbf kernel does the job fine. The right image shows the digit that rbf kernel predicts the wrong class, diffusion kernel on the other hand, predicts correctly due to graph information! (should be <img class="math" src="_images/math/dce34f4dfb2406144304ad0d6106c5382ddd1446.png" alt="1"/>).</p>
 <p>Interestingly, using a composite kernel with diffusion kernel on graph and an rbf kernel together. All test cases including the following are predicted correctly.</p>
-<a class="reference internal image-reference" href="_images/digitDiffwrong.png"><img alt="_images/digitDiffwrong.png" src="_images/digitDiffwrong.png" style="width: 50%;" /></a>
-<a class="reference internal image-reference" href="_images/digitRBFwrong.png"><img alt="_images/digitRBFwrong.png" src="_images/digitRBFwrong.png" style="width: 50%;" /></a>
+<img alt="_images/digitDiffwrong.png" src="_images/digitDiffwrong.png" style="width: 50%;" />
+<img alt="_images/digitRBFwrong.png" src="_images/digitRBFwrong.png" style="width: 50%;" />
 <table class="docutils footnote" frame="void" id="id3" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -168,16 +169,22 @@ but rbf kernel does the job fine. The right image shows the digit that rbf kerne
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
 <h3><a href="index.html">Table Of Contents</a></h3>
-<ul class="current">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">pyGPs - A Package for Gaussian Processes</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="Install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Theory.html">GPs &amp; Functionality</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="Examples.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Demos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Kernels.html">Kernels &amp; Means</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Likelihoods.html">Likelihoods &amp; Inference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Opts.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Develop.html">Developing Customized Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Graph.html">Kernels for Graph Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Default.html">List of Functions and Default Parameters</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">pyGPs - A Package for Gaussian Processes</a></li>
 </ul>
 
   <h3>This Page</h3>
@@ -223,7 +230,7 @@ but rbf kernel does the job fine. The right image shows the digit that rbf kerne
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

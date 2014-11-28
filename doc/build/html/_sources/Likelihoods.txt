@@ -6,7 +6,7 @@ Changing Likelihood & Inference
 Suggestions of which likelihood and inference method to use is implicitly given
 by default,
   * GPR uses Gaussian likelihood and exact inference. 
-  * GPC uses Error functionlikelihood and EP inference. 
+  * GPC uses Erf likelihood and EP inference. 
   * FITC model uses same default with corresponding FITC inference.
   * GPMC calls GPC and thus uses the default setting of GPC
 
