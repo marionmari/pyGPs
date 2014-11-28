@@ -63,6 +63,11 @@ Getting started
    Graph
    Default
 
+.. toctree ::
+    :hidden:
+
+    self
+
 
 
 
