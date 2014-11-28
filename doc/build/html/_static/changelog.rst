@@ -1,4 +1,4 @@
-Changelog pyGPs v1.3
+Changelog pyGPs v1.3.1
 =====================
 
 
