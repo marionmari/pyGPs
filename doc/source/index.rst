@@ -51,6 +51,12 @@ Getting started
 ------------------------------
 
 .. toctree::
+   :hidden:
+
+   self
+
+
+.. toctree::
    :maxdepth: 1
 
    Install 
