@@ -55,7 +55,7 @@ model.plot()                 # and plot result
 #----------------------------------------------------------------------
 # Now lets do another example to get more insight to the toolbox
 #----------------------------------------------------------------------
-print 'More Advanced Example (using a non zero mean and Matern7 kernnel)'
+print 'More Advanced Example (using a non-zero mean and Matern7 kernel)'
 model = pyGPs.GPR()           # start from a new model
 
 # Specify non-default mean and covariance functions
