@@ -10,5 +10,5 @@ setup(
     license='COPYRIGHT.txt',
     description='Gaussian Processes for Regression and Classification',
     long_description=open('README.md').read(),
-    install_requires=[],
+    install_requires=['numpy','scipy>=0.13','matplotlib'],
 )
