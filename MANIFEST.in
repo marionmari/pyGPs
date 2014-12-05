@@ -1,0 +1,2 @@
+include pyGPs README.md
+recursive-include pyGPs *.py *.mat *.npz *.txt *.m
