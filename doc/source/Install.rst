@@ -13,6 +13,10 @@ Installation
 
         sudo python setup.py install
 
+4. Or install via pip::
+		
+		pip install pyGPs 
+
 Requirements
 ------------
 * `python 2.6 or 2.7`_

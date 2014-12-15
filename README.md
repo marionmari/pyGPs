@@ -40,6 +40,10 @@ You can either add the local directory to your PYTHONPATH:
 or install the package using setup.py:
 
     python setup.py install
+    
+or install via pip::
+		
+    pip install pyGPs 
 
 Requirements
 --------------
