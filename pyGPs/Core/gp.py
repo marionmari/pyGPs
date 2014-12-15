@@ -295,17 +295,27 @@ class GP(object):
         You can print post to see descriptions of posterior.
         or see pyGPs.Core.inf for details.
         '''
+
+        # check wether the number of inputs and labels match
+        if x is not None and y is not None: 
+            assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
+
+        # check the shape of inputs
+        # transform to the correct shape
         if not x is None:
             if x.ndim == 1:
                 x = np.reshape(x, (x.shape[0],1))
             self.x = x
+
         if not y is None:
             if y.ndim == 1:
                 y = np.reshape(y, (y.shape[0],1))
             self.y = y
+
         if self.usingDefaultMean and self.meanfunc is None:
             c = np.mean(y)
             self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
+            
         # call inference method
         if isinstance(self.likfunc, lik.Erf): #or is instance(self.likfunc, lik.Logistic):
             uy  = unique(self.y)

@@ -109,7 +109,7 @@ class CG(Optimizer):
         except:
             self.errorCounter += 1
             if not self.searchConfig:         
-                raise Exception("Can not use conjugate gradient. Try other optimization methods")
+                raise Exception("Can not learn hyperparamters using conjugate gradient.")
         self.trailsCounter += 1
 
         if self.searchConfig:
@@ -169,7 +169,7 @@ class BFGS(Optimizer):
         except:
             self.errorCounter += 1
             if not self.searchConfig:         
-                raise Exception("Can not use BFGS. Try other optimization methods")
+                raise Exception("Can not learn hyperparamters using BFGS.")
         self.trailsCounter += 1
 
 
@@ -226,7 +226,7 @@ class Minimize(Optimizer):
         except:
             self.errorCounter += 1
             if not self.searchConfig:
-                raise Exception("Can not use minimize. Try other optimization methods")
+                raise Exception("Can not learn hyperparamters using minimize.")
         self.trailsCounter += 1
 
         if self.searchConfig:
@@ -280,7 +280,7 @@ class SCG(Optimizer):
         except:
             self.errorCounter += 1
             if not self.searchConfig:
-                raise Exception("Can not use Scaled conjugate gradient. Try other optimization methods")
+                raise Exception("Can not learn hyperparamters using Scaled conjugate gradient.")
         self.trailsCounter += 1
 
         if self.searchConfig:
