@@ -1,6 +1,12 @@
 List of Functions and Default Parameters
 ===========================================
 
+Mathematical Definitions of Kernels
+--------------------------------------
+Constant kernel （pyGPs.cov.Const):
+
+:math:`k(x,x') = \sigma^2`
+
 List of Kernels and Default Parameters
 ---------------------------------------
 

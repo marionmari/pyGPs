@@ -1,5 +1,12 @@
 Changelog pyGPs v1.3.1
-=====================
+==========================
+
+December 15th 2014
+----------------------------
+
+- pyGPs added to pip
+- mathematical definitions of kernel functions available in documentation
+- more error message added
 
 
 November 25th 2014
@@ -23,7 +30,7 @@ structural updates:
 
 
 October 19th 2014
-----------------
+----------------------
 
 
 documentation updates:
@@ -44,7 +51,7 @@ structural updates:
 
 
 August 9th 2014
-----------------
+------------------
 
 
 structural updates:
@@ -59,11 +66,11 @@ structural updates:
 
 
 Changelog pyGPs v1.2
-=====================
+=======================
 
 
 July 14th 2014
-----------------
+------------------
 
 documentation updates:
 
