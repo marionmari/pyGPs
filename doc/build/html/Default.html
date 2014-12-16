@@ -50,10 +50,54 @@
             
   <div class="section" id="list-of-functions-and-default-parameters">
 <h1>List of Functions and Default Parameters<a class="headerlink" href="#list-of-functions-and-default-parameters" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="mathematical-definitions-of-kernels">
-<h2>Mathematical Definitions of Kernels<a class="headerlink" href="#mathematical-definitions-of-kernels" title="Permalink to this headline">¶</a></h2>
-<p>Constant kernel （pyGPs.cov.Const):
+<div class="section" id="mathematical-definitions-of-standard-kernels">
+<h2>Mathematical Definitions of Standard Kernels<a class="headerlink" href="#mathematical-definitions-of-standard-kernels" title="Permalink to this headline">¶</a></h2>
+<p><strong>Constant kernel</strong>:
 <img class="math" src="_images/math/38fe1a51bdee6c263070bea41f15cfebb915921b.png" alt="k(x,x') = \sigma^2"/></p>
+<p><strong>Gabor kernel</strong>:
+<img class="math" src="_images/math/2df8055fae41582ff3366a7b4470a428fdaf0d1e.png" alt="k(x,x') = \exp{(-\frac{||x-x'||^2} {2l^2})}  \cos{(\frac{2\pi||x-x'||}{p})}"/></p>
+<p><strong>Linear kernel with ARD</strong>:
+<img class="math" src="_images/math/eb05a9cdad144744e5bccea49c8584ef878fc20e.png" alt="k(x,x') = \sigma^2 x^T L^{-1} x'"/></p>
+<p>where <img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> is a diagnal matrix
+consist of length scale <img class="math" src="_images/math/2f3dadb6b9c48fc2802c0ebfdc1498d309031e08.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>.</p>
+<p><strong>Linear kernel</strong>:
+<img class="math" src="_images/math/ef0c7a8432a41faaa830b7c95116e50300b1851c.png" alt="k(x,x') = \sigma^2 x^T x'"/></p>
+<p><strong>Matern kernel</strong>:
+<img class="math" src="_images/math/6b16c3d0be36f57e03401f2c0402730719143d5f.png" alt="k(x,x') = \sigma^2 f(r\sqrt{d})\exp{(-r\sqrt{d})}"/></p>
+<p>with
+<img class="math" src="_images/math/6c90deec8b13a758a72dc4653420712840ab8a63.png" alt="f(t)=1"/> for <img class="math" src="_images/math/42a9f04629562820665b30f2dbb41108e774eaeb.png" alt="d=1"/>,
+<img class="math" src="_images/math/438da57f435c8a70608837b105dab7694113bde0.png" alt="f(t)=1+t"/> for <img class="math" src="_images/math/856c1da6b59af6b801109a15f37e6348c778b614.png" alt="d=3"/> and
+<img class="math" src="_images/math/b92bba7e9f688b2ed950c00a4db803b238ca5a84.png" alt="f(t)=(1+t+t^2)/3"/> for <img class="math" src="_images/math/0c69d1273beeeec5eb86e9cdd3bf326ddc98e0ae.png" alt="d=5"/>.</p>
+<p>where r is the distance
+<img class="math" src="_images/math/b15933d0fd900a0db0430b80d569107818643e87.png" alt="r=\sqrt{||x-x'||^T L^{-1}||x-x'||}"/> and <img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> is a diagnal matrix
+consist of length scale <img class="math" src="_images/math/2f3dadb6b9c48fc2802c0ebfdc1498d309031e08.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>.</p>
+<p><strong>Independent noise kernel</strong>:
+<img class="math" src="_images/math/611415f0327670aa11abb1406096027369cfa713.png" alt="k(x,x') = \sigma_{n}^{2}"/></p>
+<p><strong>Periodic kernel</strong>:
+<img class="math" src="_images/math/06b3f11a4ec8d90c81c364384254393a849143fe.png" alt="k(x,x') = \sigma^2\exp{(-\frac{2\sin^2(\pi||x-x'||/p)}{l^2})}"/></p>
+<p><strong>Piecewise polynomial kernel</strong>:
+<img class="math" src="_images/math/a9f615e37e3af4f78c27875c00a7d2fb53607989.png" alt="k(x,x') = \sigma^2 \max{(1-r,0)}^{(j+v)} f(r,j)"/></p>
+<p>with <img class="math" src="_images/math/8a3d44257da2d0c9cca72f3c19c7c5bde1bde44b.png" alt="j = floor(D/2)+v+1"/></p>
+<p>where D is the dimension of input and
+<img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> is a diagnal matrix
+consist of length scale <img class="math" src="_images/math/2f3dadb6b9c48fc2802c0ebfdc1498d309031e08.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>
+and f is a function depending on v. See gpml matlab v3.4.</p>
+<p><strong>Polynomial kernel</strong>:
+<img class="math" src="_images/math/3ed920362465c6019b6ccf83bea6f54f8198e402.png" alt="k(x,x') = \sigma^2 (x^T x' + c )^d"/></p>
+<p><strong>Squared exponential kernel</strong>:
+<img class="math" src="_images/math/4b8399cc9b3fcabaf6758395dfc7fd9e29a4096d.png" alt="k(x,x') = \sigma^2 \exp{(-\frac{||x-x'||^2}{2l^2})}"/></p>
+<p><strong>Squared exponential kernel with ARD</strong>:
+<img class="math" src="_images/math/54c6888c5f68153203d8caaee1c507e05edd972b.png" alt="k(x,x') = \sigma^2 \exp{(-\frac{||x-x'||^T L^{-1}||x-x'||}{2})}"/></p>
+<p>where <img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> is a diagnal matrix
+consist of length scale <img class="math" src="_images/math/2f3dadb6b9c48fc2802c0ebfdc1498d309031e08.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>.</p>
+<p><strong>Squared exponential kernel with unit magnitude</strong>:
+<img class="math" src="_images/math/98ccaa502fd92744b27a058c61559ca31faa7d59.png" alt="k(x,x') = \exp{(-\frac{||x-x'||^2}{2l^2})}"/></p>
+<p><strong>Rational quadratic kernel</strong>:
+<img class="math" src="_images/math/6666bb8a6781484eda6c9d7a6d1112d9d25ab7f9.png" alt="k(x,x') = \sigma^2 (1+\frac{||x-x'||^2}{2\alpha l^2})^{-\alpha}"/></p>
+<p><strong>Rational quadratic kernel with ARD</strong>:
+<img class="math" src="_images/math/2d8ebfb969df9975444b3261189b6762874cc534.png" alt="k(x,x') = \sigma^2 (1+\frac{||x-x'||^T L^{-1}||x-x'||}{2\alpha})^{-\alpha}"/></p>
+<p>where <img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> is a diagnal matrix
+consist of length scale <img class="math" src="_images/math/2f3dadb6b9c48fc2802c0ebfdc1498d309031e08.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>.</p>
 </div>
 <div class="section" id="module-pyGPs.Core.cov">
 <span id="list-of-kernels-and-default-parameters"></span><h2>List of Kernels and Default Parameters<a class="headerlink" href="#module-pyGPs.Core.cov" title="Permalink to this headline">¶</a></h2>

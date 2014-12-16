@@ -1005,7 +1005,7 @@ class LINard(Kernel):
             nn,D = z.shape
             A = np.reshape(np.sum(z*z,1), (nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
-            n, D = x.shape           
+            n, D = x.shape 
             A = np.dot(x,x.T)+ np.eye(n)*1e-10
         elif mode == 'cross':             # compute covariance between data sets x and z
             z = np.dot(z,np.diag(1./ell))
