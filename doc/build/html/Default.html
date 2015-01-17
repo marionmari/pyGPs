@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>List of Functions and Default Parameters &mdash; pyGPs v1.3.1 documentation</title>
+    <title>List of Functions and Default Parameters &mdash; pyGPs v1.3.2 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     'v1.3.1',
+        VERSION:     'v1.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pyGPs v1.3.1 documentation" href="index.html" />
+    <link rel="top" title="pyGPs v1.3.2 documentation" href="index.html" />
     <link rel="prev" title="Kernels for Graph Data" href="Graph.html" /> 
   </head>
   <body>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="Graph.html" title="Kernels for Graph Data"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.3.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs v1.3.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,51 +53,51 @@
 <div class="section" id="mathematical-definitions-of-standard-kernels">
 <h2>Mathematical Definitions of Standard Kernels<a class="headerlink" href="#mathematical-definitions-of-standard-kernels" title="Permalink to this headline">¶</a></h2>
 <p><strong>Constant kernel</strong>:
-<img class="math" src="_images/math/38fe1a51bdee6c263070bea41f15cfebb915921b.png" alt="k(x,x') = \sigma^2"/></p>
+<img class="math" src="_images/math/d88131d76bef2d9e2fd17440dd1e1a38aec2bfa8.png" alt="k(x,x') = \sigma^2"/></p>
 <p><strong>Gabor kernel</strong>:
-<img class="math" src="_images/math/2df8055fae41582ff3366a7b4470a428fdaf0d1e.png" alt="k(x,x') = \exp{(-\frac{||x-x'||^2} {2l^2})}  \cos{(\frac{2\pi||x-x'||}{p})}"/></p>
+<img class="math" src="_images/math/86f38bf263edf2fa596fce2aa59fa26b1972ecb1.png" alt="k(x,x') = \exp{(-\frac{||x-x'||^2} {2l^2})}  \cos{(\frac{2\pi||x-x'||}{p})}"/></p>
 <p><strong>Linear kernel with ARD</strong>:
-<img class="math" src="_images/math/eb05a9cdad144744e5bccea49c8584ef878fc20e.png" alt="k(x,x') = \sigma^2 x^T L^{-1} x'"/></p>
-<p>where <img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> is a diagnal matrix
-consist of length scale <img class="math" src="_images/math/2f3dadb6b9c48fc2802c0ebfdc1498d309031e08.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>.</p>
+<img class="math" src="_images/math/ffd37af05cc4a959b050f052094ff9b9491cbe97.png" alt="k(x,x') = \sigma^2 x^T L^{-1} x'"/></p>
+<p>where <img class="math" src="_images/math/0a5711c7a37994043b2bc3bb374adca232491762.png" alt="L"/> is a diagnal matrix
+consist of length scale <img class="math" src="_images/math/affe12ecf5ed9c8e10237a7711ceaffad5ff2f42.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/>.</p>
 <p><strong>Linear kernel</strong>:
-<img class="math" src="_images/math/ef0c7a8432a41faaa830b7c95116e50300b1851c.png" alt="k(x,x') = \sigma^2 x^T x'"/></p>
+<img class="math" src="_images/math/56eb8c036d9d0efac19c6e08f314a3e26df1eb8d.png" alt="k(x,x') = \sigma^2 x^T x'"/></p>
 <p><strong>Matern kernel</strong>:
-<img class="math" src="_images/math/6b16c3d0be36f57e03401f2c0402730719143d5f.png" alt="k(x,x') = \sigma^2 f(r\sqrt{d})\exp{(-r\sqrt{d})}"/></p>
+<img class="math" src="_images/math/6e2e14995171a5100d79785669de2fc5118c2289.png" alt="k(x,x') = \sigma^2 f(r\sqrt{d})\exp{(-r\sqrt{d})}"/></p>
 <p>with
-<img class="math" src="_images/math/6c90deec8b13a758a72dc4653420712840ab8a63.png" alt="f(t)=1"/> for <img class="math" src="_images/math/42a9f04629562820665b30f2dbb41108e774eaeb.png" alt="d=1"/>,
-<img class="math" src="_images/math/438da57f435c8a70608837b105dab7694113bde0.png" alt="f(t)=1+t"/> for <img class="math" src="_images/math/856c1da6b59af6b801109a15f37e6348c778b614.png" alt="d=3"/> and
-<img class="math" src="_images/math/b92bba7e9f688b2ed950c00a4db803b238ca5a84.png" alt="f(t)=(1+t+t^2)/3"/> for <img class="math" src="_images/math/0c69d1273beeeec5eb86e9cdd3bf326ddc98e0ae.png" alt="d=5"/>.</p>
+<img class="math" src="_images/math/ab00b1dcfc306bca26521984fe70e99f2fb23a3c.png" alt="f(t)=1"/> for <img class="math" src="_images/math/c0c4677937214de046e792bf58aff56583ba536f.png" alt="d=1"/>,
+<img class="math" src="_images/math/1a7e7cfa05c4a66ec1af32a9424db03ff73defd6.png" alt="f(t)=1+t"/> for <img class="math" src="_images/math/5cbb32d20b9c42982de9e42ae1c8061f3d6c593b.png" alt="d=3"/> and
+<img class="math" src="_images/math/27470de41c2ef88699ae29d1cfe044559913b1c4.png" alt="f(t)=(1+t+t^2)/3"/> for <img class="math" src="_images/math/19631691e9ad965e1706a9c87b7ed034c9db26de.png" alt="d=5"/>.</p>
 <p>where r is the distance
-<img class="math" src="_images/math/b15933d0fd900a0db0430b80d569107818643e87.png" alt="r=\sqrt{||x-x'||^T L^{-1}||x-x'||}"/> and <img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> is a diagnal matrix
-consist of length scale <img class="math" src="_images/math/2f3dadb6b9c48fc2802c0ebfdc1498d309031e08.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>.</p>
+<img class="math" src="_images/math/aa80c0ff59927ab091daad2385f76237a6f10852.png" alt="r=\sqrt{||x-x'||^T L^{-1}||x-x'||}"/> and <img class="math" src="_images/math/0a5711c7a37994043b2bc3bb374adca232491762.png" alt="L"/> is a diagnal matrix
+consist of length scale <img class="math" src="_images/math/affe12ecf5ed9c8e10237a7711ceaffad5ff2f42.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/>.</p>
 <p><strong>Independent noise kernel</strong>:
-<img class="math" src="_images/math/611415f0327670aa11abb1406096027369cfa713.png" alt="k(x,x') = \sigma_{n}^{2}"/></p>
+<img class="math" src="_images/math/53c62d2bd4f2bd3f5e97e9f8c8526a28130b27d2.png" alt="k(x,x') = \sigma_{n}^{2}"/></p>
 <p><strong>Periodic kernel</strong>:
-<img class="math" src="_images/math/06b3f11a4ec8d90c81c364384254393a849143fe.png" alt="k(x,x') = \sigma^2\exp{(-\frac{2\sin^2(\pi||x-x'||/p)}{l^2})}"/></p>
+<img class="math" src="_images/math/3fd0268609ca9151c1cfe383d121f8f465e3523b.png" alt="k(x,x') = \sigma^2\exp{(-\frac{2\sin^2(\pi||x-x'||/p)}{l^2})}"/></p>
 <p><strong>Piecewise polynomial kernel</strong>:
-<img class="math" src="_images/math/a9f615e37e3af4f78c27875c00a7d2fb53607989.png" alt="k(x,x') = \sigma^2 \max{(1-r,0)}^{(j+v)} f(r,j)"/></p>
-<p>with <img class="math" src="_images/math/8a3d44257da2d0c9cca72f3c19c7c5bde1bde44b.png" alt="j = floor(D/2)+v+1"/></p>
+<img class="math" src="_images/math/2d19994797e755afe0e6edd03e2916a5cc771954.png" alt="k(x,x') = \sigma^2 \max{(1-r,0)}^{(j+v)} f(r,j)"/></p>
+<p>with <img class="math" src="_images/math/849ad0332e4be7edf1688b7a49c83eb92c4cf4d2.png" alt="j = floor(D/2)+v+1"/></p>
 <p>where D is the dimension of input and
-<img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> is a diagnal matrix
-consist of length scale <img class="math" src="_images/math/2f3dadb6b9c48fc2802c0ebfdc1498d309031e08.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>
+<img class="math" src="_images/math/0a5711c7a37994043b2bc3bb374adca232491762.png" alt="L"/> is a diagnal matrix
+consist of length scale <img class="math" src="_images/math/affe12ecf5ed9c8e10237a7711ceaffad5ff2f42.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/>
 and f is a function depending on v. See gpml matlab v3.4.</p>
 <p><strong>Polynomial kernel</strong>:
-<img class="math" src="_images/math/3ed920362465c6019b6ccf83bea6f54f8198e402.png" alt="k(x,x') = \sigma^2 (x^T x' + c )^d"/></p>
+<img class="math" src="_images/math/b29e6827b97f9cef4b7e2e4071da351175c34fc1.png" alt="k(x,x') = \sigma^2 (x^T x' + c )^d"/></p>
 <p><strong>Squared exponential kernel</strong>:
-<img class="math" src="_images/math/4b8399cc9b3fcabaf6758395dfc7fd9e29a4096d.png" alt="k(x,x') = \sigma^2 \exp{(-\frac{||x-x'||^2}{2l^2})}"/></p>
+<img class="math" src="_images/math/0b98c1e4a51af03ef8b4076e8fb339b3ed291c80.png" alt="k(x,x') = \sigma^2 \exp{(-\frac{||x-x'||^2}{2l^2})}"/></p>
 <p><strong>Squared exponential kernel with ARD</strong>:
-<img class="math" src="_images/math/54c6888c5f68153203d8caaee1c507e05edd972b.png" alt="k(x,x') = \sigma^2 \exp{(-\frac{||x-x'||^T L^{-1}||x-x'||}{2})}"/></p>
-<p>where <img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> is a diagnal matrix
-consist of length scale <img class="math" src="_images/math/2f3dadb6b9c48fc2802c0ebfdc1498d309031e08.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>.</p>
+<img class="math" src="_images/math/c23dfe9a9b6028a96a94a64ad0cb05bc10f4d611.png" alt="k(x,x') = \sigma^2 \exp{(-\frac{||x-x'||^T L^{-1}||x-x'||}{2})}"/></p>
+<p>where <img class="math" src="_images/math/0a5711c7a37994043b2bc3bb374adca232491762.png" alt="L"/> is a diagnal matrix
+consist of length scale <img class="math" src="_images/math/affe12ecf5ed9c8e10237a7711ceaffad5ff2f42.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/>.</p>
 <p><strong>Squared exponential kernel with unit magnitude</strong>:
-<img class="math" src="_images/math/98ccaa502fd92744b27a058c61559ca31faa7d59.png" alt="k(x,x') = \exp{(-\frac{||x-x'||^2}{2l^2})}"/></p>
+<img class="math" src="_images/math/ef968f19ce79cc0d9363d513f593899207d5c068.png" alt="k(x,x') = \exp{(-\frac{||x-x'||^2}{2l^2})}"/></p>
 <p><strong>Rational quadratic kernel</strong>:
-<img class="math" src="_images/math/6666bb8a6781484eda6c9d7a6d1112d9d25ab7f9.png" alt="k(x,x') = \sigma^2 (1+\frac{||x-x'||^2}{2\alpha l^2})^{-\alpha}"/></p>
+<img class="math" src="_images/math/9fefe4e594dc80cbbd1f53c83c4087753b1b1886.png" alt="k(x,x') = \sigma^2 (1+\frac{||x-x'||^2}{2\alpha l^2})^{-\alpha}"/></p>
 <p><strong>Rational quadratic kernel with ARD</strong>:
-<img class="math" src="_images/math/2d8ebfb969df9975444b3261189b6762874cc534.png" alt="k(x,x') = \sigma^2 (1+\frac{||x-x'||^T L^{-1}||x-x'||}{2\alpha})^{-\alpha}"/></p>
-<p>where <img class="math" src="_images/math/859ccf4cd60c7bc6b8fa1afc9a42dc811a826d6f.png" alt="L"/> is a diagnal matrix
-consist of length scale <img class="math" src="_images/math/2f3dadb6b9c48fc2802c0ebfdc1498d309031e08.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/34857b3ba74ce5cd8607f3ebd23e9015908ada71.png" alt="i"/>.</p>
+<img class="math" src="_images/math/a27d518e64588f3142b5c95c9d2eeb3a062960c1.png" alt="k(x,x') = \sigma^2 (1+\frac{||x-x'||^T L^{-1}||x-x'||}{2\alpha})^{-\alpha}"/></p>
+<p>where <img class="math" src="_images/math/0a5711c7a37994043b2bc3bb374adca232491762.png" alt="L"/> is a diagnal matrix
+consist of length scale <img class="math" src="_images/math/affe12ecf5ed9c8e10237a7711ceaffad5ff2f42.png" alt="l_{i}^2"/> for each dimension <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/>.</p>
 </div>
 <div class="section" id="module-pyGPs.Core.cov">
 <span id="list-of-kernels-and-default-parameters"></span><h2>List of Kernels and Default Parameters<a class="headerlink" href="#module-pyGPs.Core.cov" title="Permalink to this headline">¶</a></h2>
@@ -127,7 +127,7 @@ the inputs x, z and the inducing inputs xu as needed by infFITC</p>
 
 <dl class="class">
 <dt id="pyGPs.Core.cov.Gabor">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Gabor</tt><big>(</big><em>log_ell=0.0</em>, <em>log_p=0.0</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.Gabor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">Gabor</tt><big>(</big><em>log_ell=0.0</em>, <em>log_p=0.0</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Gabor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Gabor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gabor covariance function with length scale ell and period p. The
 covariance function is parameterized as:</p>
 <p>k(x,z) = h( ||x-z|| ) with h(t) = exp(-t^2/(2*ell^2))*cos(2*pi*t/p).</p>
@@ -157,7 +157,7 @@ there is no computation in this class, it just defines rules about a kernel clas
 each covariance function will inherit it and implement its own behaviour</p>
 <dl class="method">
 <dt id="pyGPs.Core.cov.Kernel.checkInputGetCovMatrix">
-<tt class="descname">checkInputGetCovMatrix</tt><big>(</big><em>x</em>, <em>z</em>, <em>mode</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.Kernel.checkInputGetCovMatrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">checkInputGetCovMatrix</tt><big>(</big><em>x</em>, <em>z</em>, <em>mode</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Kernel.checkInputGetCovMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Kernel.checkInputGetCovMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check validity of inputs for the method getCovMatrix()</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -178,7 +178,7 @@ each covariance function will inherit it and implement its own behaviour</p>
 
 <dl class="method">
 <dt id="pyGPs.Core.cov.Kernel.checkInputGetDerMatrix">
-<tt class="descname">checkInputGetDerMatrix</tt><big>(</big><em>x</em>, <em>z</em>, <em>mode</em>, <em>der</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.Kernel.checkInputGetDerMatrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">checkInputGetDerMatrix</tt><big>(</big><em>x</em>, <em>z</em>, <em>mode</em>, <em>der</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#Kernel.checkInputGetDerMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.Kernel.checkInputGetDerMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check validity of inputs for the method getDerMatrix()</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -517,7 +517,7 @@ hyp = log_ell_list + [ log_sigma, log_alpha ]</p>
 
 <dl class="class">
 <dt id="pyGPs.Core.cov.SM">
-<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">SM</tt><big>(</big><em>Q=0</em>, <em>hyps=</em><span class="optional">[</span><span class="optional">]</span>, <em>D=None</em><big>)</big><a class="headerlink" href="#pyGPs.Core.cov.SM" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pyGPs.Core.cov.</tt><tt class="descname">SM</tt><big>(</big><em>Q=0</em>, <em>hyps=</em>, <span class="optional">[</span><span class="optional">]</span><em>D=None</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/cov.html#SM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.cov.SM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gaussian Spectral Mixture covariance function. The
 covariance function is parameterized as:</p>
 <p>k(x^p,x^q) = w&#8217;<a href="#id1"><span class="problematic" id="id2">*</span></a>prod( exp(-2*pi^2*d^2*v)*cos(2*pi*d*m), 2), d = <a href="#id3"><span class="problematic" id="id4">|x^p,x^q|</span></a></p>
@@ -677,15 +677,15 @@ Arye Nehorai and John P. Cunningham, and
 <em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Erf</tt><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Erf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Erf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error function or cumulative Gaussian likelihood function for binary
 classification or probit regression.</p>
-<p><img class="math" src="_images/math/7bf22e34ad48c1790522e60e9f37809d7a1ed009.png" alt="Erf(t)=\frac{1}{2}(1+erf(\frac{t}{\sqrt{2}}))=normcdf(t)"/></p>
+<p><img class="math" src="_images/math/6d4e164567280dc8c2e043836c1654e6c1ab1b39.png" alt="Erf(t)=\frac{1}{2}(1+erf(\frac{t}{\sqrt{2}}))=normcdf(t)"/></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="pyGPs.Core.lik.Gauss">
 <em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Gauss</tt><big>(</big><em>log_sigma=-2.3025850929940455</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Gauss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Gauss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gaussian likelihood function for regression.</p>
-<p><img class="math" src="_images/math/ff97ea0691ff78ade77ebe3fd425f924a94e2fc6.png" alt="Gauss(t)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(t-y)^2}{2\sigma^2}}"/>,
-where <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> is the mean and <img class="math" src="_images/math/fa35d9fc104207e09a712110ac81612c5b279a6c.png" alt="\sigma"/> is the standard deviation.</p>
+<p><img class="math" src="_images/math/fae605346b499c4f082a51a7b94aba620f9f1b1c.png" alt="Gauss(t)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(t-y)^2}{2\sigma^2}}"/>,
+where <img class="math" src="_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> is the mean and <img class="math" src="_images/math/2298cf1485084afe72757a9c8483af49a138d81f.png" alt="\sigma"/> is the standard deviation.</p>
 <p>hyp = [ log_sigma ]</p>
 </dd></dl>
 
@@ -693,8 +693,8 @@ where <img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c
 <dt id="pyGPs.Core.lik.Laplace">
 <em class="property">class </em><tt class="descclassname">pyGPs.Core.lik.</tt><tt class="descname">Laplace</tt><big>(</big><em>log_sigma=-2.3025850929940455</em><big>)</big><a class="reference internal" href="_modules/pyGPs/Core/lik.html#Laplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyGPs.Core.lik.Laplace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Laplacian likelihood function for regression. ONLY works with EP inference!</p>
-<p><img class="math" src="_images/math/22af8a3a9d3c790d24b4f31a7e3d8270ac105a7b.png" alt="Laplace(t) = \frac{1}{2b}e^{-\frac{|t-y|}{b}}"/> where <img class="math" src="_images/math/cc23cfcc01f3ea0f1af4f5fe7160f178a5570f2a.png" alt="b=\frac{\sigma}{\sqrt{2}}"/>,
-<img class="math" src="_images/math/092e364e1d9d19ad5fffb0b46ef4cc7f2da02c1c.png" alt="y"/> is the mean and <img class="math" src="_images/math/fa35d9fc104207e09a712110ac81612c5b279a6c.png" alt="\sigma"/> is the standard deviation.</p>
+<p><img class="math" src="_images/math/49b8c8eb155a7daf16f3e48d605a6932a3ef0171.png" alt="Laplace(t) = \frac{1}{2b}e^{-\frac{|t-y|}{b}}"/> where <img class="math" src="_images/math/a313227a289292aa9bffb3ea489f5063f011acb4.png" alt="b=\frac{\sigma}{\sqrt{2}}"/>,
+<img class="math" src="_images/math/b124ff74afb0914bb434e8fb849eb56d734412f8.png" alt="y"/> is the mean and <img class="math" src="_images/math/2298cf1485084afe72757a9c8483af49a138d81f.png" alt="\sigma"/> is the standard deviation.</p>
 <p>hyp = [ log_sigma ]</p>
 </dd></dl>
 
@@ -815,12 +815,12 @@ parameter sn2, we simply use snu2 = 1e-6.</p>
         <li class="right" >
           <a href="Graph.html" title="Kernels for Graph Data"
              >previous</a> |</li>
-        <li><a href="index.html">pyGPs v1.3.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">pyGPs v1.3.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Marion Neumann, Shan Huang, Daniel Marthaler, Kristian Kersting.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

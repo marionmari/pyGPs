@@ -2,7 +2,7 @@ Installation
 ============================
 1. First, download_ the archive from github and extract it to any local directory.
 
-.. _download: https://github.com/marionmari/pyGPs/releases/tag/v1.3.1
+.. _download: https://github.com/marionmari/pyGPs/archive/1.3.2.tar.gz
 
 2. You can either add the local directory to your PYTHONPATH ::
 
