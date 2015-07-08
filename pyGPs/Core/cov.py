@@ -104,11 +104,11 @@ class Kernel(object):
         pass
 
 
-    
+
     def checkInputGetCovMatrix(self,x,z,mode):
         '''
         Check validity of inputs for the method getCovMatrix()
-        
+
         :param x: training data
         :param z: test data
         :param str mode: 'self_test' return self derivative matrix of test data(test by 1).
@@ -121,14 +121,14 @@ class Kernel(object):
             raise Exception("Specify at least one: training input (x) or test input (z) or both.")
         if mode == 'cross':
             if x is None or z is None:
-                raise Exception("Specify both: training input (x) and test input (z) for cross covariance.")    
-            
+                raise Exception("Specify both: training input (x) and test input (z) for cross covariance.")
+
 
 
     def checkInputGetDerMatrix(self,x,z,mode,der):
         '''
         Check validity of inputs for the method getDerMatrix()
-        
+
         :param x: training data
         :param z: test data
         :param str mode: 'self_test' return self derivative matrix of test data(test by 1).
@@ -145,9 +145,9 @@ class Kernel(object):
                 raise Exception("Specify both: training input (x) and test input (z) for cross covariance.")
         if der is None:
             raise Exception("Specify the index of parameters of the derivatives.")
-            
-            
-            
+
+
+
 
     # overloading
     def __add__(self,cov):
@@ -478,6 +478,40 @@ class SM(Kernel):
 	        self.hyp = hyps
     	self.para = [Q]
 
+    def initSMhypers(self, x, y):
+        """
+        Initialize hyperparameters for the spectral-mixture kernel. Weights are
+        all set to be uniformly distributed, means are given by a random sample
+        from a uniform distribution scaled by the Nyquist frequency, and variances are given by a random sample from a uniform distribution scaled by the max distance.
+        """
+        x = np.atleast_2d(x)
+        y = np.atleast_2d(y)
+        (n, D) = x.shape
+        Q = self.para[0]
+        w = np.zeros(Q)
+        m = np.zeros((D, Q))
+        s = np.zeros((D, Q))
+        w[:] = np.std(y) / Q
+        hypinit = np.zeros(Q + 2 * D * Q)
+
+        for i in range(D):
+            # Calculate distances
+            xslice = np.atleast_2d(x[:, i]).T
+            d2 = spdist.cdist(xslice, xslice, 'sqeuclidean')
+            if n > 1:
+                d2[d2 == 0] = d2[0, 1]
+            else:
+                d2[d2 == 0] = 1
+            minshift = np.min(np.min(np.sqrt(d2)))
+            nyquist = 0.5 / minshift
+            m[i, :] = nyquist * np.random.ranf((1, Q))
+            maxshift = np.max(np.max(np.sqrt(d2)))
+            s[i, :] = 1. / np.abs(maxshift * np.random.ranf((1, Q)))
+        hypinit[:Q] = np.log(w)
+        hypinit[Q + np.arange(0, Q * D)] = np.log(m[:]).T
+        hypinit[Q + Q * D + np.arange(0, Q * D)] = np.log(s[:]).T
+        self.hyp = list(hypinit)
+
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
         Q = self.para[0]
@@ -702,7 +736,7 @@ class PiecePoly(Kernel):
         j = np.floor(0.5*D) + v + 1
         if mode == 'self_test':              # self covariances for the test cases
             nn,D = z.shape
-            A = np.zeros((nn,1)) 
+            A = np.zeros((nn,1))
         elif mode == 'train':                # compute covariance matix for dataset x
             A = np.sqrt( spdist.cdist(x/ell, x/ell, 'sqeuclidean') )
         elif mode == 'cross':                # compute covariance between data sets x and z
@@ -837,7 +871,7 @@ class RBFard(Kernel):
 
     :param D: dimension of pattern. set if you want default ell, which is 1 for each dimension.
     :param log_ell_list: characteristic length scale for each dimension.
-    :param log_sigma: signal deviation. 
+    :param log_sigma: signal deviation.
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0.):
         if log_ell_list is None:
@@ -901,7 +935,7 @@ class Const(Kernel):
     '''
     Constant kernel. hyp = [ log_sigma ]
 
-    :param log_sigma: signal deviation. 
+    :param log_sigma: signal deviation.
     '''
     def __init__(self, log_sigma=0.):
         self.hyp = [log_sigma]
@@ -1005,7 +1039,7 @@ class LINard(Kernel):
             nn,D = z.shape
             A = np.reshape(np.sum(z*z,1), (nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
-            n, D = x.shape 
+            n, D = x.shape
             A = np.dot(x,x.T)+ np.eye(n)*1e-10
         elif mode == 'cross':             # compute covariance between data sets x and z
             z = np.dot(z,np.diag(1./ell))

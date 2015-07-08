@@ -38,8 +38,8 @@ if __name__ == '__main__':
     m = pyGPs.mean.Zero()
 
     for _ in range(10):
-      hyps = pyGPs.cov.initSMhypers(Q, x, y)
-      k = pyGPs.cov.SM(Q, hyps)
+      k = pyGPs.cov.SM(Q)
+      k.initSMhypers(x, y)
       model.setPrior(kernel=k)
 
       # Noise std. deviation
