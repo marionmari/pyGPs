@@ -215,9 +215,9 @@ class Minimize(Optimizer):
 
     def findMin(self, x, y, numIters = 100):
         meanfunc = self.model.meanfunc
-        covfunc = self.model.covfunc
-        likfunc = self.model.likfunc
-        inffunc = self.model.inffunc
+        covfunc  = self.model.covfunc
+        likfunc  = self.model.likfunc
+        inffunc  = self.model.inffunc
         hypInArray = self._convert_to_array()
 
         try:
@@ -270,9 +270,9 @@ class SCG(Optimizer):
 
     def findMin(self, x, y, numIters = 100):
         meanfunc = self.model.meanfunc
-        covfunc = self.model.covfunc
-        likfunc = self.model.likfunc
-        inffunc = self.model.inffunc
+        covfunc  = self.model.covfunc
+        likfunc  = self.model.likfunc
+        inffunc  = self.model.inffunc
         hypInArray = self._convert_to_array()
         try:
             opt = scg.run(self._nlzAnddnlz, hypInArray, niters = numIters)

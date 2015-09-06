@@ -40,13 +40,14 @@
 import numpy as np
 import math
 
+
 class Mean(object):
     '''
     The base function for mean function
     '''
     def __init__(self):
         super(Mean, self).__init__()
-        self.hyp = []
+        self.hyp  = []
         self.para = []
 
 
@@ -55,7 +56,6 @@ class Mean(object):
 	    	  'model.meanfunc.getMean()\n'+\
 		  'model.meanfunc.getDerMatrix()'
         return strvalue
-
 
 
     # overloading
@@ -131,7 +131,6 @@ class Mean(object):
         pass
 
 
-
 class ProductOfMean(Mean):
     '''Product of two mean fucntions.'''
     def __init__(self,mean1,mean2):
@@ -166,7 +165,6 @@ class ProductOfMean(Mean):
         else:
             raise Exception("Error: der out of range for meanProduct")
         return A
-
 
 
 class SumOfMean(Mean):
@@ -205,7 +203,6 @@ class SumOfMean(Mean):
         return A
 
 
-
 class ScaleOfMean(Mean):
     '''Scale of a mean function.'''
     def __init__(self,mean,scalar):
@@ -234,7 +231,6 @@ class ScaleOfMean(Mean):
         else:
             A = c * self.mean.getDerMatrix(x,der-1)
         return A
-
 
 
 class PowerOfMean(Mean):
@@ -270,23 +266,24 @@ class PowerOfMean(Mean):
         return A
 
 
-
 class Zero(Mean):
     '''Zero mean.'''
     def __init__(self):
         self.hyp = []
         self.name = '0'
+        self.initial = -1 # output scale
+
 
     def getMean(self, x=None):
         n, D = x.shape
         A = np.zeros((n,1))
         return A
 
+
     def getDerMatrix(self, x=None, der=None):
         n, D = x.shape
         A = np.zeros((n,1))
         return A
-
 
 
 class One(Mean):
@@ -294,17 +291,19 @@ class One(Mean):
     def __init__(self):
         self.hyp = []
         self.name = '1'
+        self.initial = -1 # output scale
+
 
     def getMean(self, x=None):
         n, D = x.shape
         A = np.ones((n,1))
         return A
 
+
     def getDerMatrix(self, x=None, der=None):
         n, D = x.shape
         A = np.zeros((n,1))
         return A
-
 
 
 class Const(Mean):
@@ -313,13 +312,17 @@ class Const(Mean):
 
     :param c: constant value for mean
     '''
+
     def __init__(self, c=5.):
         self.hyp = [c]
+        self.initial = -1 # output scale
+
 
     def getMean(self, x=None):
         n,D = x.shape
         A = self.hyp[0] * np.ones((n,1))
         return A
+
 
     def getDerMatrix(self, x=None, der=None):
         n,D = x.shape
@@ -330,7 +333,6 @@ class Const(Mean):
         return A
 
 
-
 class Linear(Mean):
     '''
     Linear mean function. self.hyp = alpha_list
@@ -338,14 +340,19 @@ class Linear(Mean):
     :param D: dimension of training data. Set if you want default alpha, which is 0.5 for each dimension.
     :alpha_list: scalar alpha for each dimension
     '''
+
     def __init__(self, D=None, alpha_list=None):
         if alpha_list is None:
         	if D is None:
         		self.hyp = [0.5]
+                self.initial = 0 # Scale of input variable
         	else:
-	            self.hyp = [0.5 for i in xrange(D)]
+	            self.hyp     = [0.5 for i in xrange(D)]
+                self.initial = [i for i in range(D)] #Scale of appropriate input
         else:
             self.hyp = alpha_list
+            self.initial = [i for i in range(D)] #Scale of appropriate input
+
 
     def getMean(self, x=None):
         n, D = x.shape
@@ -353,6 +360,7 @@ class Linear(Mean):
         c = np.reshape(c,(len(c),1))
         A = np.dot(x,c)
         return A
+
 
     def getDerMatrix(self, x=None, der=None):
         n, D = x.shape
@@ -363,8 +371,6 @@ class Linear(Mean):
         else:
             A = np.zeros((n,1))
         return A
-
-
 
 
 if __name__ == '__main__':

@@ -16,7 +16,7 @@ import numpy as np
 
 class random_init_conf(object):
     def __init__(self, mean, cov, lik):
-        self.num_restarts = None
+        self.num_restarts  = None
         self.min_threshold = None
         #self.mean = mean
         #self.cov = cov

@@ -224,10 +224,6 @@ class GP(object):
         pass
 
 
-    def initialize_hyperparameters(self):
-      pass
-
-
     def optimize(self, x=None, y=None, numIterations=40):
         '''
         Train optimal hyperparameters based on training data,
@@ -261,7 +257,6 @@ class GP(object):
         ## discussed in Ryan Turner's Thesis: Gaussian Processes for State
         ## Space Models and Changepoint Detection (pp 62-63)
         # Overwrite each of the hyperparameters with their respective initvalue
-        self.initialize_hyperparameters()
         optimalHyp, optimalNlZ = self.optimizer.findMin(self.x, self.y, numIters = numIterations)
         self.nlZ = optimalNlZ
 
