@@ -11,8 +11,8 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-import pyGPs
 import numpy as np
+from pyGPs.Core import gp, mean, cov
 
 # This demo will not only introduce GP regression model,
 # but provides a gerneral insight of our tourbox.
@@ -24,7 +24,6 @@ import numpy as np
 #     pyGPs.GPR_FITC     -> Sparse GP Regression
 #     pyGPs.GPC_FITC     -> Sparse GP Classification
 #     pyGPs.GPMC         -> Muli-class Classification
-
 
 
 print ''
@@ -42,7 +41,7 @@ z = demoData['xstar']        # test data
 # A five-line example
 #----------------------------------------------------------------------
 print 'Basic Example'
-model = pyGPs.GPR()          # model
+model = gp.GPR()          # model
 print 'Before Optimization'
 model.setData(x,y)
 model.predict(z)             # predict test cases (before optimization)
@@ -56,14 +55,13 @@ model.plot()                 # and plot result
 # Now lets do another example to get more insight to the toolbox
 #----------------------------------------------------------------------
 print 'More Advanced Example (using a non-zero mean and Matern7 kernel)'
-model = pyGPs.GPR()           # start from a new model
+model = gp.GPR()           # start from a new model
 
 # Specify non-default mean and covariance functions
 # SEE doc_kernel_mean for documentation of all kernels/means
-m = pyGPs.mean.Const() + pyGPs.mean.Linear()
-k = pyGPs.cov.Matern(d=7) # Approximates RBF kernel
-model.setPrior(mean=m, kernel=k)
-
+m = mean.Const() + mean.Linear()
+k = cov.Matern(d=7) # Approximates RBF kernel
+model.setPrior(meanfunc=m, kernel=k)
 
 
 # Specify optimization method (single run "Minimize" by default)

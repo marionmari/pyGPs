@@ -43,8 +43,9 @@
 
 
 import numpy as np
-import lik, cov
 from copy import copy, deepcopy
+
+import lik, cov
 from tools import solve_chol, brentmin, cholupdate, jitchol
 np.seterr(all='ignore')
 

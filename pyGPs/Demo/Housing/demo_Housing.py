@@ -11,9 +11,9 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-import pyGPs
 import numpy as np
 import matplotlib.pyplot as plt
+from pyGPs.Core import gp
 
 if __name__ == '__main__':
 
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     ys = (ys-np.mean(ys))/(np.std(ys)+1.e-16)
     N,D = x.shape
     
-    model = pyGPs.GPR()
+    model = gp.GPR()
     model.getPosterior(x, y)
     print 'Initial negative log marginal likelihood = ', round(model.nlZ,3)
     

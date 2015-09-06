@@ -11,9 +11,10 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-import pyGPs
 import numpy as np
 from time import clock
+
+from pyGPs.Core import gp, mean, cov
 
 # Example demo for pyGP prediction of carbon dioxide concentration using
 # the Mauna Loa CO2 data [Pieter Tans, Aug 2012].
@@ -26,7 +27,6 @@ from time import clock
 # The MIT Press, 2006. ISBN 0-262-18253-X].
 #
 # Copyright (c) by Marion Neumann and Daniel Marthaler, 20/05/2013
-
 
 
 if __name__ == '__main__':
@@ -58,15 +58,15 @@ if __name__ == '__main__':
     xs = xs.reshape(len(xs),1)
 
     # DEFINE parameterized covariance function
-    k1 = pyGPs.cov.RBF(np.log(67.), np.log(66.))
-    k2 = pyGPs.cov.Periodic(np.log(1.3), np.log(1.0), np.log(2.4)) * pyGPs.cov.RBF(np.log(90.), np.log(2.4))
-    k3 = pyGPs.cov.RQ(np.log(1.2), np.log(0.66), np.log(0.78))
-    k4 = pyGPs.cov.RBF(np.log(1.6/12.), np.log(0.18)) + pyGPs.cov.Noise(np.log(0.19))
+    k1 = cov.RBF(np.log(67.), np.log(66.))
+    k2 = cov.Periodic(np.log(1.3), np.log(1.0), np.log(2.4)) * cov.RBF(np.log(90.), np.log(2.4))
+    k3 = cov.RQ(np.log(1.2), np.log(0.66), np.log(0.78))
+    k4 = cov.RBF(np.log(1.6/12.), np.log(0.18)) + cov.Noise(np.log(0.19))
     k  = k1 + k2 + k3 + k4
 
     # STANDARD GP (prediction)
     print 'Original CO2 Data:'
-    model = pyGPs.GPR()
+    model = gp.GPR()
     model.setData(x,y)
     model.plotData_1d()
     model.setPrior(kernel=k)
