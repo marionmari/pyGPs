@@ -52,6 +52,7 @@ import numpy as np
 import math
 import scipy.spatial.distance as spdist
 
+
 class Kernel(object):
     """
     This is a base class of Kernel functions
@@ -61,7 +62,7 @@ class Kernel(object):
     def __init__(self):
         self.hyp = []
         self.para = []
-
+        self.initial = []
 
 
     def __repr__(self):
@@ -69,7 +70,6 @@ class Kernel(object):
 	    	  'model.covfunc.getCovMatrix()\n'+\
 		  'model.covfunc.getDerMatrix()'
         return strvalue
-
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -87,7 +87,6 @@ class Kernel(object):
         pass
 
 
-
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         '''
         Compute derivatives wrt. hyperparameters according to input mode
@@ -102,7 +101,6 @@ class Kernel(object):
         :return: the corresponding derivative matrix
         '''
         pass
-
 
 
     def checkInputGetCovMatrix(self,x,z,mode):
@@ -122,7 +120,6 @@ class Kernel(object):
         if mode == 'cross':
             if x is None or z is None:
                 raise Exception("Specify both: training input (x) and test input (z) for cross covariance.")
-
 
 
     def checkInputGetDerMatrix(self,x,z,mode,der):
@@ -147,8 +144,6 @@ class Kernel(object):
             raise Exception("Specify the index of parameters of the derivatives.")
 
 
-
-
     # overloading
     def __add__(self,cov):
         '''
@@ -158,7 +153,6 @@ class Kernel(object):
         :return: an instance of SumOfKernel
         '''
         return SumOfKernel(self,cov)
-
 
 
     # overloading
@@ -179,10 +173,8 @@ class Kernel(object):
             print "only numbers and Kernels are supported operand types for *"
 
 
-
     # overloading
     __rmul__ = __mul__
-
 
 
     def fitc(self,inducingInput):
@@ -193,7 +185,6 @@ class Kernel(object):
         :return: an instance of FITCOfKernel
         '''
         return FITCOfKernel(self,inducingInput)
-
 
 
     # can be replaced by spdist from scipy
@@ -219,13 +210,14 @@ class Kernel(object):
         return C
 
 
-
 class ProductOfKernel(Kernel):
     '''Product of two kernel function.'''
     def __init__(self,cov1,cov2):
         self.cov1 = cov1
         self.cov2 = cov2
         self._hyp = cov1.hyp + cov2.hyp
+        self._initial = cov1.initial + cov2.initial
+
 
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
@@ -233,14 +225,28 @@ class ProductOfKernel(Kernel):
         self._hyp = hyp
         self.cov1.hyp = self._hyp[:len1]
         self.cov2.hyp = self._hyp[len1:]
+
     def _getHyp(self):
         return self._hyp
     hyp = property(_getHyp,_setHyp)
+
+    def _setInitial(self,initial):
+        assert len(initial) == len(self._initial)
+        len1 = len(self.cov1.initial)
+        self._initial = initial
+        self.cov1.initial = self._initial[:len1]
+        self.cov2.initial = self._initial[len1:]
+
+    def _getInitial(self):
+        return self._initial
+    initial = property(_getInitial,_setInitial)
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
         A = self.cov1.getCovMatrix(x,z,mode) * self.cov2.getCovMatrix(x,z,mode)
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -254,27 +260,43 @@ class ProductOfKernel(Kernel):
         return A
 
 
-
 class SumOfKernel(Kernel):
     '''Sum of two kernel function.'''
     def __init__(self,cov1,cov2):
         self.cov1 = cov1
         self.cov2 = cov2
         self._hyp = cov1.hyp + cov2.hyp
+        self._initial = cov1.initial + cov2.initial
+
+
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.cov1.hyp)
         self._hyp = hyp
         self.cov1.hyp = self._hyp[:len1]
         self.cov2.hyp = self._hyp[len1:]
+
+
     def _getHyp(self):
         return self._hyp
     hyp = property(_getHyp,_setHyp)
+
+    def _setInitial(self,initial):
+        assert len(initial) == len(self._initial)
+        len1 = len(self.cov1.initial)
+        self._initial = initial
+        self.cov1.initial = self._initial[:len1]
+        self.cov2.initial = self._initial[len1:]
+
+    def _getInitial(self):
+        return self._initial
+    initial = property(_getInitial,_setInitial)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
         A = self.cov1.getCovMatrix(x,z,mode) + self.cov2.getCovMatrix(x,z,mode)
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -288,7 +310,6 @@ class SumOfKernel(Kernel):
         return A
 
 
-
 class ScaleOfKernel(Kernel):
     '''Scale of a kernel function.'''
     def __init__(self,cov,scalar):
@@ -297,19 +318,40 @@ class ScaleOfKernel(Kernel):
             self._hyp = [scalar] + cov.hyp
         else:
             self._hyp = [scalar]
+        if cov.initial:
+            self._initial = [-1] + cov.initial
+        else:
+            self._initial = [-1]
+
+
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         self._hyp = hyp
         self.cov.hyp = self._hyp[1:]
+
+
     def _getHyp(self):
         return self._hyp
     hyp = property(_getHyp,_setHyp)
+
+
+    def _setInitial(self,initial):
+        assert len(initial) == len(self._initial)
+        len1 = len(self.cov1.initial)
+        self._initial = initial
+        self.cov1.initial = self._initial[:len1]
+        self.cov2.initial = self._initial[len1:]
+
+    def _getInitial(self):
+        return self._initial
+    initial = property(_getInitial,_setInitial)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
         sf2 = np.exp(self.hyp[0])                     # scale parameter
         A = sf2 * self.cov.getCovMatrix(x,z,mode)     # accumulate cov
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -334,13 +376,27 @@ class FITCOfKernel(Kernel):
         self.inducingInput = inducingInput
         self.covfunc = cov
         self._hyp = cov.hyp
+        self._initial = cov.initial
+
 
     def _getHyp(self):
         return self._hyp
+
     def _setHyp(self, hyp):
         self._hyp = hyp
         self.covfunc.hyp = hyp
     hyp = property(_getHyp,_setHyp)
+
+    def _setInitial(self,initial):
+        assert len(initial) == len(self._initial)
+        len1 = len(self.cov1.initial)
+        self._initial = initial
+        self.cov1.initial = self._initial[:len1]
+        self.cov2.initial = self._initial[len1:]
+
+    def _getInitial(self):
+        return self._initial
+    initial = property(_getInitial,_setInitial)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -362,6 +418,7 @@ class FITCOfKernel(Kernel):
             K = self.covfunc.getCovMatrix(x=xu,z=z,mode='cross')
             return K
 
+
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
         xu = self.inducingInput
@@ -382,6 +439,7 @@ class FITCOfKernel(Kernel):
             K = self.covfunc.getDerMatrix(x=xu,z=z,mode='cross',der=der)
             return K
 
+
 class Gabor(Kernel):
     '''
     Gabor covariance function with length scale ell and period p. The
@@ -398,10 +456,13 @@ class Gabor(Kernel):
 
     :param log_ell: characteristic length scale.
     :param log_p: period.
+    :param initial: initialization scales for MLE Type II optimization
     '''
 
     def __init__(self, log_ell=0., log_p=0.):
         self.hyp = [log_ell, log_p]
+        self.initial = [0, 0] # Sqrt input variable and input variable
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -417,6 +478,7 @@ class Gabor(Kernel):
         dp = 2 * np.pi * np.sqrt(A) * ell / p
         A = np.exp(-0.5 * A) * np.cos(dp)
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -441,7 +503,6 @@ class Gabor(Kernel):
             raise Exception("Wrong derivative entry in Gabor")
 
         return A
-
 
 
 class SM(Kernel):
@@ -478,6 +539,7 @@ class SM(Kernel):
 	        self.hyp = hyps
     	self.para = [Q]
 
+
     def initSMhypers(self, x, y):
         """
         Initialize hyperparameters for the spectral-mixture kernel. Weights are
@@ -511,6 +573,7 @@ class SM(Kernel):
         hypinit[Q + np.arange(0, Q * D)] = np.log(m[:]).T
         hypinit[Q + Q * D + np.arange(0, Q * D)] = np.log(s[:]).T
         self.hyp = list(hypinit)
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -553,6 +616,7 @@ class SM(Kernel):
                 C = C * k((d2[:, :, j] * v[j, q], d[:, :, j] * m[j, q]))
                 A = A + C
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -613,7 +677,6 @@ class SM(Kernel):
         return A
 
 
-
 class Poly(Kernel):
     '''
     Polynomial covariance function. hyp = [ log_c, log_sigma ]
@@ -621,10 +684,13 @@ class Poly(Kernel):
     :param log_c: inhomogeneous offset.
     :param log_sigma: signal deviation.
     :param d: degree of polynomial (not treated as hyperparameter, i.e. will not be trained).
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_c=0., d=2, log_sigma=0. ):
         self.hyp = [log_c, log_sigma]
         self.para = [d]
+        self.initial = [-1,-1] #Both have output scale
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -645,6 +711,7 @@ class Poly(Kernel):
             A = np.dot(x,z.T)
         A = sf2 * (c + A)**ord
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -673,7 +740,6 @@ class Poly(Kernel):
         return A
 
 
-
 class PiecePoly(Kernel):
     '''
     Piecewise polynomial kernel with compact support.
@@ -682,13 +748,17 @@ class PiecePoly(Kernel):
     :param log_ell: characteristic length scale.
     :param log_sigma: signal deviation.
     :param v: degree v will be rounded to 0,1,2,or 3. (not treated as hyperparameter, i.e. will not be trained).
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_ell=0., v=2, log_sigma=0. ):
         self.hyp = [log_ell, log_sigma]
         self.para = [v]
+        self.initial = [0,-1]
+
 
     def ppmax(self,A,B):
         return np.maximum(A,B*np.ones_like(A))
+
 
     def func(self,v,r,j):
         if v == 0:
@@ -702,6 +772,7 @@ class PiecePoly(Kernel):
         else:
              raise Exception (["Wrong degree in PiecePoly.  Should be 0,1,2 or 3, is " + str(v)])
 
+
     def dfunc(self,v,r,j):
         if v == 0:
             return 0
@@ -714,11 +785,14 @@ class PiecePoly(Kernel):
         else:
             raise Exception (["Wrong degree in PiecePoly.  Should be 0,1,2 or 3, is " + str(v)])
 
+
     def pp(self,r,j,v,func):
         return func(v,r,j)*(self.ppmax(1-r,0)**(j+v))
 
+
     def dpp(self,r,j,v,func,dfunc):
         return self.ppmax(1-r,0)**(j+v-1) * r * ( (j+v)*self.func(v,r,j) - self.ppmax(1-r,0) * self.dfunc(v,r,j) )
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -743,6 +817,7 @@ class PiecePoly(Kernel):
             A = np.sqrt( spdist.cdist(x/ell, z/ell, 'sqeuclidean') )
         A = sf2 * self.pp(A,j,v,self.func)
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -776,16 +851,18 @@ class PiecePoly(Kernel):
         return A
 
 
-
 class RBF(Kernel):
     '''
     Squared Exponential kernel with isotropic distance measure. hyp = [log_ell, log_sigma]
 
     :param log_ell: characteristic length scale.
     :param log_sigma: signal deviation.
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_ell=0., log_sigma=0.):
         self.hyp = [log_ell, log_sigma]
+        self.initial = [0,-1] # ell is input scale, sigma is output
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -800,6 +877,7 @@ class RBF(Kernel):
             A = spdist.cdist(x/ell,z/ell,'sqeuclidean')
         A = sf2 * np.exp(-0.5*A)
         return A
+
 
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
@@ -822,16 +900,18 @@ class RBF(Kernel):
         return A
 
 
-
 class RBFunit(Kernel):
     '''
     Squared Exponential kernel with isotropic distance measure with unit magnitude.
     i.e signal variance is always 1. hyp = [ log_ell ]
 
     :param log_ell: characteristic length scale.
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_ell=0.):
         self.hyp = [log_ell]
+        self.initial = [0] # ell is input scale
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -845,6 +925,7 @@ class RBFunit(Kernel):
             A = spdist.cdist(x/ell,z/ell,'sqeuclidean')
         A = np.exp(-0.5*A)
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -863,7 +944,6 @@ class RBFunit(Kernel):
         return A
 
 
-
 class RBFard(Kernel):
     '''
     Squared Exponential kernel with Automatic Relevance Determination.
@@ -872,12 +952,16 @@ class RBFard(Kernel):
     :param D: dimension of pattern. set if you want default ell, which is 1 for each dimension.
     :param log_ell_list: characteristic length scale for each dimension.
     :param log_sigma: signal deviation.
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0.):
         if log_ell_list is None:
             self.hyp = [0. for i in xrange(D)] + [log_sigma]
+            self.initial = [i for i in range(D)] + [-1]
         else:
             self.hyp = log_ell_list + [log_sigma]
+            self.initial = [i for i in range(len(log_ell_list))] + [-1]
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -897,6 +981,7 @@ class RBFard(Kernel):
             A = spdist.cdist(np.dot(np.diag(ell),x.T).T,np.dot(np.diag(ell),z.T).T,'sqeuclidean')
         A = sf2*np.exp(-0.5*A)
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -930,15 +1015,17 @@ class RBFard(Kernel):
         return A
 
 
-
 class Const(Kernel):
     '''
     Constant kernel. hyp = [ log_sigma ]
 
     :param log_sigma: signal deviation.
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_sigma=0.):
         self.hyp = [log_sigma]
+        self.initial = [-1]
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -954,6 +1041,7 @@ class Const(Kernel):
             nn,D = z.shape
             A = sf2 * np.ones((n,nn))
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -975,15 +1063,17 @@ class Const(Kernel):
         return A
 
 
-
 class Linear(Kernel):
     '''
     Linear kernel. hyp = [ log_sigma ].
 
     :param log_sigma: signal deviation.
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_sigma=0.):
         self.hyp = [ log_sigma ]
+        self.initial = [-1]
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -998,6 +1088,7 @@ class Linear(Kernel):
             A = np.dot(x,z.T)
         A = sf2 * A
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -1017,7 +1108,6 @@ class Linear(Kernel):
         return A
 
 
-
 class LINard(Kernel):
     '''
     Linear covariance function with Automatic Relevance Detemination.
@@ -1025,12 +1115,16 @@ class LINard(Kernel):
 
     :param D: dimension of training data. Set if you want default ell, which is 1 for each dimension.
     :param log_ell_list: characteristic length scale for each dimension.
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, D=None, log_ell_list=None):
         if log_ell_list is None:
             self.hyp = [0. for i in xrange(D)]
+            self.initial = [i for i in range(D)]
         else:
             self.hyp = log_ell_list
+            self.initial = [i for i in range(len(log_ell_list))]
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -1045,6 +1139,7 @@ class LINard(Kernel):
             z = np.dot(z,np.diag(1./ell))
             A = np.dot(x,z.T)
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -1067,7 +1162,6 @@ class LINard(Kernel):
         return A
 
 
-
 class Matern(Kernel):
     '''
     Matern covariance function with nu = d/2 and isotropic distance measure.
@@ -1079,10 +1173,13 @@ class Matern(Kernel):
     :param d: d is 2 times nu. Can only be 1,3, 5, or 7
     :param log_ell: characteristic length scale.
     :param log_sigma: signal deviation.
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_ell=0., d=3, log_sigma=0. ):
         self.hyp = [ log_ell, log_sigma ]
         self.para = [d]
+        self.initial = [0,-1]
+
 
     def func(self,d,t):
         if d == 1:
@@ -1096,6 +1193,7 @@ class Matern(Kernel):
         else:
             raise Exception("Wrong value for d in Matern")
 
+
     def dfunc(self,d,t): # Note, this is func - d func/dt
         if d == 1:
             return 1
@@ -1108,11 +1206,14 @@ class Matern(Kernel):
         else:
             raise Exception("Wrong value for d in Matern")
 
+
     def mfunc(self,d,t):
         return self.func(d,t)*np.exp(-1.*t)
 
+
     def dmfunc(self,d,t):
         return self.dfunc(d,t)*t*np.exp(-1.*t)
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -1139,6 +1240,7 @@ class Matern(Kernel):
             A = np.sqrt(spdist.cdist(x, z, 'sqeuclidean'))
         A = sf2 * self.mfunc(d,A)
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -1175,7 +1277,6 @@ class Matern(Kernel):
         return A
 
 
-
 class Periodic(Kernel):
     '''
     Stationary kernel for a smooth periodic function.
@@ -1184,9 +1285,12 @@ class Periodic(Kernel):
     :param log_p: period.
     :param log_ell: characteristic length scale.
     :param log_sigma: signal deviation.
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_ell=0., log_p=0., log_sigma=0. ):
         self.hyp = [ log_ell, log_p, log_sigma]
+        self.initial = [0,0,-1]
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -1209,6 +1313,7 @@ class Periodic(Kernel):
         A = A * A
         A = sf2 *np.exp(-2.*A)
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -1243,7 +1348,6 @@ class Periodic(Kernel):
         return A
 
 
-
 class Noise(Kernel):
     '''
     Independent covariance function, i.e "white noise", with specified variance.
@@ -1251,9 +1355,12 @@ class Noise(Kernel):
     hyp = [ log_sigma ]
 
     :param log_sigma: signal deviation.
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_sigma=0.):
         self.hyp = [log_sigma]
+        self.initial = [-1]
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -1271,6 +1378,7 @@ class Noise(Kernel):
             A[M < tol] = 1.
         A = s2*A
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -1293,7 +1401,6 @@ class Noise(Kernel):
         return A
 
 
-
 class RQ(Kernel):
     '''
     Rational Quadratic covariance function with isotropic distance measure.
@@ -1302,9 +1409,12 @@ class RQ(Kernel):
     :param log_ell: characteristic length scale.
     :param log_sigma: signal deviation.
     :param log_alpha: shape parameter for the RQ covariance.
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_ell=0., log_sigma=0., log_alpha=0.):
         self.hyp = [ log_ell, log_sigma, log_alpha ]
+        self.initial = [0,-1,-1]
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -1320,6 +1430,7 @@ class RQ(Kernel):
             D2 = spdist.cdist(x/ell, z/ell, 'sqeuclidean')
         A = sf2 * ( ( 1.0 + 0.5*D2/alpha )**(-alpha) )
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -1345,7 +1456,6 @@ class RQ(Kernel):
         return A
 
 
-
 class RQard(Kernel):
     '''
     Rational Quadratic covariance function with Automatic Relevance Detemination
@@ -1356,12 +1466,16 @@ class RQard(Kernel):
     :param log_ell_list: characteristic length scale for each dimension.
     :param log_sigma: signal deviation.
     :param log_alpha: shape parameter for the RQ covariance.
+    :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0., log_alpha=0.):
         if log_ell_list is None:
             self.hyp = [0. for i in xrange(D)] + [ log_sigma, log_alpha ]
+            self.initial = [i for i in range(D)] + [ -1, -1 ]
         else:
             self.hyp = log_ell_list + [ log_sigma, log_alpha ]
+            self.initial = [i for i in range(len(log_ell_list))] + [ -1, -1 ]
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -1382,6 +1496,7 @@ class RQard(Kernel):
             D2 = spdist.cdist(np.dot(np.diag(ell),x.T).T, np.dot(np.diag(ell),z.T).T, 'sqeuclidean')
         A = sf2 * ( ( 1.0 + 0.5*D2/alpha )**(-alpha) )
         return A
+
 
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         self.checkInputGetDerMatrix(x,z,mode,der)
@@ -1418,7 +1533,6 @@ class RQard(Kernel):
         return A
 
 
-
 class Pre(Kernel):
     '''
     Precomputed kernel matrix. No hyperparameters and thus nothing will be optimised.
@@ -1431,6 +1545,8 @@ class Pre(Kernel):
         self.M1 = M1
         self.M2 = M2
         self.hyp = []
+        self.initial = []
+
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         if mode == 'self_test':           # diagonal covariance between test_test
@@ -1442,16 +1558,13 @@ class Pre(Kernel):
             A = self.M1[:-1,:]
         return A
 
+
     def getDerMatrix(self,x=None,z=None,mode=None,der=None):
         if not der is None:
             raise Exception("Error: NO optimization in precomputed kernel matrix")
         return 0
 
 
-
 if __name__ == '__main__':
     pass
-
-
-
 

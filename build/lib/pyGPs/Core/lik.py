@@ -45,6 +45,8 @@ class Likelihood(object):
     """Base function for Likelihood function"""
     def __init__(self):
         self.hyp = []
+
+
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         '''
         The likelihood functions have two possible modes, the mode being selected
@@ -127,6 +129,8 @@ class Gauss(Likelihood):
     '''
     def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [log_sigma]
+        self.initial = [-1] # Output scale
+
 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn2 = np.exp(2. * self.hyp[0])
@@ -237,7 +241,7 @@ class Erf(Likelihood):
     '''
     def __init__(self):
         self.hyp = []
-
+ 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         if not y is None:
             y = np.sign(y)
@@ -372,6 +376,8 @@ class Laplace(Likelihood):
     '''
     def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [ log_sigma ]
+        self.initial = [-1] # output scale
+
 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn = np.exp(self.hyp); b = sn/np.sqrt(2);
@@ -511,6 +517,7 @@ class Laplace(Likelihood):
                 n = len(s2.flatten()); b = np.zeros((n,1)); y = y*np.ones((n,1)); z = y
                 return b,z
 
+
     def _lerfc(self,t):
         ''' numerically safe implementation of f(t) = log(1-erf(t)) = log(erfc(t))'''
         from scipy.special import erfc
@@ -526,6 +533,7 @@ class Laplace(Likelihood):
         f[ok] += np.log(erfc( t[ok] ))             # safe eval
         return f
 
+
     def _expABz_expAx(self,A,x,B,z):
         '''
         Computes y = ( (exp(A).*B)*z ) ./ ( exp(A)*x ) in a numerically safe way
@@ -538,6 +546,7 @@ class Laplace(Likelihood):
         A = A - np.dot(maxA, np.ones((1,N)))       # subtract maximum value
         y = ( np.dot((np.exp(A)*B),z) ) / ( np.dot(np.exp(A),x) )
         return y[0]
+
 
     def _logphi(self,z):
         ''' Safe implementation of the log of phi(x) = \int_{-\infty}^x N(f|0,1) df
@@ -554,6 +563,7 @@ class Laplace(Likelihood):
         lp[nok] = -0.5*(np.log(np.pi) + z[nok]**2) - np.log( np.sqrt(2.+0.5*(z[nok]**2)) - z[nok]/np.sqrt(2)) 
         lp[ip] = (1-lam)*lp[ip] + lam*np.log( 0.5*( 1.+erf(z[ip]/np.sqrt(2.)) ) )
         return lp
+
 
     def _logsum2exp(self,logx):
         '''computes y = log( sum(exp(x),2) ) in a numerically safe way

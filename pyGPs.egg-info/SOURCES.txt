@@ -51,6 +51,7 @@ pyGPs/GraphExtensions/graphUtil.py
 pyGPs/GraphExtensions/nodeKernels.py
 pyGPs/Optimization/__init__.py
 pyGPs/Optimization/conf.py
+pyGPs/Optimization/initialize_hyperparameters.py
 pyGPs/Optimization/minimize.py
 pyGPs/Optimization/scg.py
 pyGPs/Testing/unit_test_cov.py

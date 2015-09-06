@@ -39,8 +39,6 @@ p1 = demoData['p1']          # prior for class 1 (with label -1)
 p2 = demoData['p2']          # prior for class 2 (with label +1)
 
 
-
-
 #----------------------------------------------------------------------
 # First example -> state default values
 #----------------------------------------------------------------------

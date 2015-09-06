@@ -253,10 +253,6 @@ class GP(object):
             self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
 
         # optimize
-        ## Initialize the hyperparameters utilizing the initilization methods
-        ## discussed in Ryan Turner's Thesis: Gaussian Processes for State
-        ## Space Models and Changepoint Detection (pp 62-63)
-        # Overwrite each of the hyperparameters with their respective initvalue
         optimalHyp, optimalNlZ = self.optimizer.findMin(self.x, self.y, numIters = numIterations)
         self.nlZ = optimalNlZ
 
@@ -530,7 +526,7 @@ class GPR(GP):
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             ## Should call initialize_hyperparameters here
-            conf = Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
+            conf = Optimization.conf.random_init_conf()
             conf.num_restarts  = num_restarts
             conf.min_threshold = min_threshold
 
@@ -619,7 +615,7 @@ class GPC(GP):
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             ## Should call initialize_hyperparameters here
-            conf = Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
+            conf = Optimization.conf.random_init_conf()
             conf.num_restarts = num_restarts
             conf.min_threshold = min_threshold
             if not meanRange is None:
@@ -993,7 +989,7 @@ class GPR_FITC(GP_FITC):
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             ## Should call initialize_hyperparameters here
-            conf = Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
+            conf = Optimization.conf.random_init_conf()
             conf.num_restarts = num_restarts
             conf.min_threshold = min_threshold
             if not meanRange is None:
@@ -1085,7 +1081,7 @@ class GPC_FITC(GP_FITC):
         conf = None
         if (num_restarts!=None) or (min_threshold!=None):
             ## Should call initialize_hyperparameters here
-            conf = Optimization.conf.random_init_conf(self.meanfunc,self.covfunc,self.likfunc)
+            conf = Optimization.conf.random_init_conf()
             conf.num_restarts = num_restarts
             conf.min_threshold = min_threshold
             if not meanRange is None:

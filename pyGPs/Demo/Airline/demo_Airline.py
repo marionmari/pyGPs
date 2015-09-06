@@ -39,9 +39,8 @@ if __name__ == '__main__':
 
     for _ in range(10):
       k = cov.SM(Q)
-      k.initSMhypers(x, y)
+      #k.initSMhypers(x, y)
       model.setPrior(kernel=k)
-
       # Noise std. deviation
       sn = 0.1
 

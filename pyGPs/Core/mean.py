@@ -47,14 +47,14 @@ class Mean(object):
     '''
     def __init__(self):
         super(Mean, self).__init__()
-        self.hyp  = []
-        self.para = []
+        self.hyp     = []
+        self.para    = []
+        self.initial = []
 
 
     def __repr__(self):
         strvalue =str(type(self))+': to get the mean vector or mean derviatives use: \n'+\
-	    	  'model.meanfunc.getMean()\n'+\
-		  'model.meanfunc.getDerMatrix()'
+	    	  'model.meanfunc.getMean()\n' + 'model.meanfunc.getDerMatrix()'
         return strvalue
 
 
@@ -118,7 +118,6 @@ class Mean(object):
         pass
 
 
-
     def getDerMatrix(self, x=None, der=None):
         '''
         Compute derivatives wrt. hyperparameters.
@@ -142,19 +141,36 @@ class ProductOfMean(Mean):
             self._hyp = mean2.hyp
         elif not mean2.hyp:
             self._hyp = mean1.hyp
+
+
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.mean1.hyp)
         self._hyp = hyp
         self.mean1.hyp = self._hyp[:len1]
         self.mean2.hyp = self._hyp[len1:]
+
+
     def _getHyp(self):
         return self._hyp
     hyp = property(_getHyp,_setHyp)
 
+    def _setInitial(self,initial):
+        assert len(initial) == len(self._initial)
+        len1 = len(self.mean1.initial)
+        self._initial = initial
+        self.mean1.initial = self._initial[:len1]
+        self.mean2.initial = self._initial[len1:]
+
+    def _getInitial(self):
+        return self._initial
+    initial = property(_getInitial,_setInitial)
+
+
     def getMean(self, x=None):
         A = self.mean1.getMean(x) * self.mean2.getMean(x)
         return A
+
 
     def getDerMatrix(self, x=None, der=None):
         if der < len(self.mean1.hyp):
@@ -174,23 +190,42 @@ class SumOfMean(Mean):
         self.mean2 = mean2
         if mean1.hyp and mean2.hyp:
             self._hyp = mean1.hyp + mean2.hyp
+            self._initial = mean1.initial + mean2.initial
         elif not mean1.hyp:
             self._hyp = mean2.hyp
+            self._initial = mean2.initial
         elif not mean2.hyp:
             self._hyp = mean1.hyp
+            self._initial = mean1.initial
+
+
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.mean1.hyp)
         self._hyp = hyp
         self.mean1.hyp = self._hyp[:len1]
         self.mean2.hyp = self._hyp[len1:]
+
     def _getHyp(self):
         return self._hyp
     hyp = property(_getHyp,_setHyp)
 
+    def _setInitial(self,initial):
+        assert len(initial) == len(self._initial)
+        len1 = len(self.mean1.initial)
+        self._initial = initial
+        self.mean1.initial = self._initial[:len1]
+        self.mean2.initial = self._initial[len1:]
+
+    def _getInitial(self):
+        return self._initial
+    initial = property(_getInitial,_setInitial)
+        
+
     def getMean(self, x=None):
         A = self.mean1.getMean(x) + self.mean2.getMean(x)
         return A
+
 
     def getDerMatrix(self, x=None, der=None):
         if der < len(self.mean1.hyp):
@@ -211,18 +246,34 @@ class ScaleOfMean(Mean):
             self._hyp = [scalar] + mean.hyp
         else:
             self._hyp = [scalar]
+
+
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         self._hyp = hyp
         self.mean.hyp = self._hyp[1:]
+
     def _getHyp(self):
         return self._hyp
     hyp = property(_getHyp,_setHyp)
+
+    def _setInitial(self,initial):
+        assert len(initial) == len(self._initial)
+        len1 = len(self.mean1.initial)
+        self._initial = initial
+        self.mean1.initial = self._initial[:len1]
+        self.mean2.initial = self._initial[len1:]
+
+    def _getInitial(self):
+        return self._initial
+    initial = property(_getInitial,_setInitial)
+
 
     def getMean(self, x=None):
         c = self.hyp[0]                          # scale parameter
         A = c * self.mean.getMean(x)             # accumulate means
         return A
+
 
     def getDerMatrix(self, x=None, der=None):
         c = self.hyp[0]                          # scale parameter
@@ -241,19 +292,36 @@ class PowerOfMean(Mean):
             self._hyp = [d] + mean.hyp
         else:
             self._hyp = [d]
+
+
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         self._hyp = hyp
         self.mean.hyp = self._hyp[1:]
+
+
     def _getHyp(self):
         return self._hyp
     hyp = property(_getHyp,_setHyp)
+
+
+    def _setInitial(self,initial):
+        assert len(initial) == len(self._initial)
+        len1 = len(self.mean1.initial)
+        self._initial = initial
+        self.mean1.initial = self._initial[:len1]
+        self.mean2.initial = self._initial[len1:]
+
+    def _getInitial(self):
+        return self._initial
+    initial = property(_getInitial,_setInitial)
 
     def getMean(self, x=None):
         d = np.abs(np.floor(self.hyp[0]))
         d = max(d,1)
         A = self.mean.getMean(x) **d              # accumulate means
         return A
+
 
     def getDerMatrix(self, x=None, der=None):
         d = np.abs(np.floor(self.hyp[0]))
@@ -271,7 +339,6 @@ class Zero(Mean):
     def __init__(self):
         self.hyp = []
         self.name = '0'
-        self.initial = -1 # output scale
 
 
     def getMean(self, x=None):
@@ -291,7 +358,6 @@ class One(Mean):
     def __init__(self):
         self.hyp = []
         self.name = '1'
-        self.initial = -1 # output scale
 
 
     def getMean(self, x=None):
@@ -315,7 +381,7 @@ class Const(Mean):
 
     def __init__(self, c=5.):
         self.hyp = [c]
-        self.initial = -1 # output scale
+        self.initial = [-1] # output scale
 
 
     def getMean(self, x=None):
@@ -343,11 +409,11 @@ class Linear(Mean):
 
     def __init__(self, D=None, alpha_list=None):
         if alpha_list is None:
-        	if D is None:
-        		self.hyp = [0.5]
-                self.initial = 0 # Scale of input variable
-        	else:
-	            self.hyp     = [0.5 for i in xrange(D)]
+            if D is None:
+                self.hyp = [0.5]
+                self.initial = [0] # Scale of input variable
+            else:
+                self.hyp     = [0.5 for i in xrange(D)]
                 self.initial = [i for i in range(D)] #Scale of appropriate input
         else:
             self.hyp = alpha_list

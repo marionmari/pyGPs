@@ -21,11 +21,12 @@
 import numpy as np
 from scipy.optimize import fmin_bfgs as bfgs
 from scipy.optimize import fmin_cg as cg
-from pyGPs.Optimization import minimize, scg
 from copy import deepcopy
 
-import pyGPs
-import gp
+from pyGPs.Core import cov
+from pyGPs.Optimization import minimize, scg
+from pyGPs.Optimization.initialize_hyperparameters import initialize_hyperparameters
+
 
 class Optimizer(object):
     def __init__(self, model=None, searchConfig = None):
@@ -43,7 +44,7 @@ class Optimizer(object):
 
         You can achieve advanced search strategy by initializing Optimizer with searchConfig,
         which is an instance of pyGPs.Optimization.conf.
-        See more in pyGPs.Optimization.conf and pyGPs.Core.gp.GP.setOptimizer,
+        See more in pyGPs.Optimization.conf and Core.gp.GP.setOptimizer,
         as well as in online documentation of section Optimizers.
         '''
         pass
@@ -73,6 +74,32 @@ class Optimizer(object):
         hyplist = self.model.meanfunc.hyp + self.model.covfunc.hyp + self.model.likfunc.hyp
         return np.array(hyplist)
 
+    def _initialize(self,x,y):
+        for i in range(len(self.model.meanfunc.hyp)):
+            if self.model.meanfunc.initial[i] == -1:
+              self.model.meanfunc.hyp[i] = initialize_hyperparameters(y)
+            elif len(x.shape)== 2:
+              self.model.meanfunc.hyp[i] = initialize_hyperparameters(x[:,self.model.meanfunc.initial[i]])
+            else:
+              self.model.meanfunc.hyp[i] = initialize_hyperparameters(x)
+ 
+        for i in range(len(self.model.covfunc.hyp)):
+            if self.model.covfunc.initial[i] == -1:
+              self.model.covfunc.hyp[i] = initialize_hyperparameters(y)
+            elif len(x.shape)== 2:
+              self.model.covfunc.hyp[i] = initialize_hyperparameters(x[:,self.model.covfunc.initial[i]])
+            else:
+              self.model.covfunc.hyp[i] = initialize_hyperparameters(x)
+
+        for i in range(len(self.model.likfunc.hyp)):
+            if self.model.likfunc.initial[i] == -1:
+              self.model.likfunc.hyp[i] = initialize_hyperparameters(y)
+            elif len(x.shape)== 2:
+              self.model.likfunc.hyp[i] = initialize_hyperparameters(x[:,self.inffunc.initial[i]])
+            else:
+              self.model.likfunc.hyp[i] = initialize_hyperparameters(x)
+
+
     def _apply_in_objects(self, hypInArray):
         '''Apply the values in the input array to hyparameters of model.'''
         Lm = len(self.model.meanfunc.hyp)
@@ -97,6 +124,10 @@ class CG(Optimizer):
         covfunc    = self.model.covfunc
         likfunc    = self.model.likfunc
         inffunc    = self.model.inffunc
+        if isinstance(covfunc,cov.SM):
+            self.model.covfunc.initSMhypers(x,y)
+        else:
+            self._initialize(x,y)
         hypInArray = self._convert_to_array()
         try:
             opt = cg(self._nlml, hypInArray, self._dnlml, maxiter=numIters, disp=False, full_output=True)
@@ -156,6 +187,11 @@ class BFGS(Optimizer):
         covfunc = self.model.covfunc
         likfunc = self.model.likfunc
         inffunc = self.model.inffunc
+        if isinstance(covfunc,cov.SM):
+            self.model.covfunc.initSMhypers(x,y)
+        else:
+            self._initialize(x,y)
+
         hypInArray = self._convert_to_array()
 
         try:
@@ -215,9 +251,14 @@ class Minimize(Optimizer):
 
     def findMin(self, x, y, numIters = 100):
         meanfunc = self.model.meanfunc
-        covfunc = self.model.covfunc
-        likfunc = self.model.likfunc
-        inffunc = self.model.inffunc
+        covfunc  = self.model.covfunc
+        likfunc  = self.model.likfunc
+        inffunc  = self.model.inffunc
+        
+        if isinstance(covfunc,cov.SM):
+            self.model.covfunc.initSMhypers(x,y)
+        else:
+            self._initialize(x,y)
         hypInArray = self._convert_to_array()
 
         try:
@@ -270,9 +311,15 @@ class SCG(Optimizer):
 
     def findMin(self, x, y, numIters = 100):
         meanfunc = self.model.meanfunc
-        covfunc = self.model.covfunc
-        likfunc = self.model.likfunc
-        inffunc = self.model.inffunc
+        covfunc  = self.model.covfunc
+        likfunc  = self.model.likfunc
+        inffunc  = self.model.inffunc
+
+        if isinstance(covfunc,cov.SM):
+            self.model.covfunc.initSMhypers(x,y)
+        else:
+            self._initialize(x,y)
+
         hypInArray = self._convert_to_array()
         try:
             opt = scg.run(self._nlzAnddnlz, hypInArray, niters = numIters)
