@@ -5,6 +5,7 @@ pyGPs/__init__.py
 pyGPs.egg-info/PKG-INFO
 pyGPs.egg-info/SOURCES.txt
 pyGPs.egg-info/dependency_links.txt
+pyGPs.egg-info/pbr.json
 pyGPs.egg-info/requires.txt
 pyGPs.egg-info/top_level.txt
 pyGPs/Core/__init__.py

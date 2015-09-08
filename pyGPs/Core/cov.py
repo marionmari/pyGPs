@@ -63,7 +63,7 @@ class Kernel(object):
         self.hyp = []
         self.para = []
         self.initial = []
-
+        self.scaled = []
 
     def __repr__(self):
         strvalue =str(type(self))+': to get the kernel matrix or kernel derviatives use: \n'+\
@@ -210,15 +210,7 @@ class Kernel(object):
         return C
 
 
-class ProductOfKernel(Kernel):
-    '''Product of two kernel function.'''
-    def __init__(self,cov1,cov2):
-        self.cov1 = cov1
-        self.cov2 = cov2
-        self._hyp = cov1.hyp + cov2.hyp
-        self._initial = cov1.initial + cov2.initial
-
-
+class CompositeKernel(Kernel):
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.cov1.hyp)
@@ -240,6 +232,27 @@ class ProductOfKernel(Kernel):
     def _getInitial(self):
         return self._initial
     initial = property(_getInitial,_setInitial)
+
+    def _setScaled(self,scaled):
+        assert len(scaled) == len(self._scaled)
+        len1 = len(self.cov1.scaled)
+        self._scaled = scaled
+        self.cov1.scaled = self._scaled[:len1]
+        self.cov2.scaled = self._scaled[len1:]
+
+    def _getScaled(self):
+        return self._scaled
+    scaled = property(_getScaled,_setScaled)
+
+
+class ProductOfKernel(CompositeKernel):
+    '''Product of two kernel function.'''
+    def __init__(self,cov1,cov2):
+        self.cov1 = cov1
+        self.cov2 = cov2
+        self._hyp = cov1.hyp + cov2.hyp
+        self._initial = cov1.initial + cov2.initial
+        self._scaled = cov1.scaled + cov2.scaled
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -260,7 +273,7 @@ class ProductOfKernel(Kernel):
         return A
 
 
-class SumOfKernel(Kernel):
+class SumOfKernel(CompositeKernel):
     '''Sum of two kernel function.'''
     def __init__(self,cov1,cov2):
         self.cov1 = cov1
@@ -268,29 +281,6 @@ class SumOfKernel(Kernel):
         self._hyp = cov1.hyp + cov2.hyp
         self._initial = cov1.initial + cov2.initial
 
-
-    def _setHyp(self,hyp):
-        assert len(hyp) == len(self._hyp)
-        len1 = len(self.cov1.hyp)
-        self._hyp = hyp
-        self.cov1.hyp = self._hyp[:len1]
-        self.cov2.hyp = self._hyp[len1:]
-
-
-    def _getHyp(self):
-        return self._hyp
-    hyp = property(_getHyp,_setHyp)
-
-    def _setInitial(self,initial):
-        assert len(initial) == len(self._initial)
-        len1 = len(self.cov1.initial)
-        self._initial = initial
-        self.cov1.initial = self._initial[:len1]
-        self.cov2.initial = self._initial[len1:]
-
-    def _getInitial(self):
-        return self._initial
-    initial = property(_getInitial,_setInitial)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -310,7 +300,7 @@ class SumOfKernel(Kernel):
         return A
 
 
-class ScaleOfKernel(Kernel):
+class ScaleOfKernel(CompositeKernel):
     '''Scale of a kernel function.'''
     def __init__(self,cov,scalar):
         self.cov = cov
@@ -323,28 +313,6 @@ class ScaleOfKernel(Kernel):
         else:
             self._initial = [-1]
 
-
-    def _setHyp(self,hyp):
-        assert len(hyp) == len(self._hyp)
-        self._hyp = hyp
-        self.cov.hyp = self._hyp[1:]
-
-
-    def _getHyp(self):
-        return self._hyp
-    hyp = property(_getHyp,_setHyp)
-
-
-    def _setInitial(self,initial):
-        assert len(initial) == len(self._initial)
-        len1 = len(self.cov1.initial)
-        self._initial = initial
-        self.cov1.initial = self._initial[:len1]
-        self.cov2.initial = self._initial[len1:]
-
-    def _getInitial(self):
-        return self._initial
-    initial = property(_getInitial,_setInitial)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -364,7 +332,7 @@ class ScaleOfKernel(Kernel):
 
 
 
-class FITCOfKernel(Kernel):
+class FITCOfKernel(CompositeKernel):
     '''
     Covariance function to be used together with the FITC approximation.
     The function allows for more than one output argument and does not respect the
@@ -378,25 +346,6 @@ class FITCOfKernel(Kernel):
         self._hyp = cov.hyp
         self._initial = cov.initial
 
-
-    def _getHyp(self):
-        return self._hyp
-
-    def _setHyp(self, hyp):
-        self._hyp = hyp
-        self.covfunc.hyp = hyp
-    hyp = property(_getHyp,_setHyp)
-
-    def _setInitial(self,initial):
-        assert len(initial) == len(self._initial)
-        len1 = len(self.cov1.initial)
-        self._initial = initial
-        self.cov1.initial = self._initial[:len1]
-        self.cov2.initial = self._initial[len1:]
-
-    def _getInitial(self):
-        return self._initial
-    initial = property(_getInitial,_setInitial)
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
