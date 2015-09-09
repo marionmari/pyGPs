@@ -255,41 +255,6 @@ class ProductOfKernel(CompositeKernel):
         self._scaled = cov1.scaled + cov2.scaled
 
 
-    '''def _setHyp(self,hyp):
-        assert len(hyp) == len(self._hyp)
-        len1 = len(self.cov1.hyp)
-        self._hyp = hyp
-        self.cov1.hyp = self._hyp[:len1]
-        self.cov2.hyp = self._hyp[len1:]
-
-    def _getHyp(self):
-        return self._hyp
-    hyp = property(_getHyp,_setHyp)
-
-    def _setInitial(self,initial):
-        assert len(initial) == len(self._initial)
-        len1 = len(self.cov1.initial)
-        self._initial = initial
-        self.cov1.initial = self._initial[:len1]
-        self.cov2.initial = self._initial[len1:]
-
-    def _getInitial(self):
-        return self._initial
-    initial = property(_getInitial,_setInitial)
-
-    def _setScaled(self,scaled):
-        assert len(scaled) == len(self._scaled)
-        len1 = len(self.cov1.scaled)
-        self._scaled = scaled
-        self.cov1.scaled = self._scaled[:len1]
-        self.cov2.scaled = self._scaled[len1:]
-
-    def _getScaled(self):
-        return self._scaled
-    scaled = property(_getScaled,_setScaled)
-    '''
-
-
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
         A = self.cov1.getCovMatrix(x,z,mode) * self.cov2.getCovMatrix(x,z,mode)
@@ -316,30 +281,6 @@ class SumOfKernel(CompositeKernel):
         self._hyp = cov1.hyp + cov2.hyp
         self._initial = cov1.initial + cov2.initial
 
-
-    '''def _setHyp(self,hyp):
-        assert len(hyp) == len(self._hyp)
-        len1 = len(self.cov1.hyp)
-        self._hyp = hyp
-        self.cov1.hyp = self._hyp[:len1]
-        self.cov2.hyp = self._hyp[len1:]
-
-
-    def _getHyp(self):
-        return self._hyp
-    hyp = property(_getHyp,_setHyp)
-
-    def _setInitial(self,initial):
-        assert len(initial) == len(self._initial)
-        len1 = len(self.cov1.initial)
-        self._initial = initial
-        self.cov1.initial = self._initial[:len1]
-        self.cov2.initial = self._initial[len1:]
-
-    def _getInitial(self):
-        return self._initial
-    initial = property(_getInitial,_setInitial)
-    '''
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -373,29 +314,6 @@ class ScaleOfKernel(CompositeKernel):
             self._initial = [-1]
 
 
-    '''def _setHyp(self,hyp):
-        assert len(hyp) == len(self._hyp)
-        self._hyp = hyp
-        self.cov.hyp = self._hyp[1:]
-
-
-    def _getHyp(self):
-        return self._hyp
-    hyp = property(_getHyp,_setHyp)
-
-
-    def _setInitial(self,initial):
-        assert len(initial) == len(self._initial)
-        len1 = len(self.cov1.initial)
-        self._initial = initial
-        self.cov1.initial = self._initial[:len1]
-        self.cov2.initial = self._initial[len1:]
-
-    def _getInitial(self):
-        return self._initial
-    initial = property(_getInitial,_setInitial)
-    '''
-
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
         sf2 = np.exp(self.hyp[0])                     # scale parameter
@@ -428,26 +346,6 @@ class FITCOfKernel(CompositeKernel):
         self._hyp = cov.hyp
         self._initial = cov.initial
 
-
-    '''def _getHyp(self):
-        return self._hyp
-
-    def _setHyp(self, hyp):
-        self._hyp = hyp
-        self.covfunc.hyp = hyp
-    hyp = property(_getHyp,_setHyp)
-
-    def _setInitial(self,initial):
-        assert len(initial) == len(self._initial)
-        len1 = len(self.cov1.initial)
-        self._initial = initial
-        self.cov1.initial = self._initial[:len1]
-        self.cov2.initial = self._initial[len1:]
-
-    def _getInitial(self):
-        return self._initial
-    initial = property(_getInitial,_setInitial)
-    '''
 
     def getCovMatrix(self,x=None,z=None,mode=None):
         self.checkInputGetCovMatrix(x,z,mode)
@@ -513,6 +411,7 @@ class Gabor(Kernel):
     def __init__(self, log_ell=0., log_p=0.):
         self.hyp = [log_ell, log_p]
         self.initial = [0, 0] # Sqrt input variable and input variable
+        self.scaled = ['log','log']
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -738,9 +637,10 @@ class Poly(Kernel):
     :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_c=0., d=2, log_sigma=0. ):
-        self.hyp = [log_c, log_sigma]
-        self.para = [d]
+        self.hyp     = [log_c, log_sigma]
+        self.para    = [d]
         self.initial = [-1,-1] #Both have output scale
+        self.scaled  = ['log','log']
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -802,9 +702,10 @@ class PiecePoly(Kernel):
     :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_ell=0., v=2, log_sigma=0. ):
-        self.hyp = [log_ell, log_sigma]
-        self.para = [v]
+        self.hyp     = [log_ell, log_sigma]
+        self.para    = [v]
         self.initial = [0,-1]
+        self.scaled  = ['log','log']
 
 
     def ppmax(self,A,B):
@@ -911,8 +812,9 @@ class RBF(Kernel):
     :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_ell=0., log_sigma=0.):
-        self.hyp = [log_ell, log_sigma]
+        self.hyp     = [log_ell, log_sigma]
         self.initial = [0,-1] # ell is input scale, sigma is output
+        self.scaled  = ['log','log']
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -962,6 +864,7 @@ class RBFunit(Kernel):
     def __init__(self, log_ell=0.):
         self.hyp = [log_ell]
         self.initial = [0] # ell is input scale
+        self.scaled  = ['log']
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -1009,9 +912,11 @@ class RBFard(Kernel):
         if log_ell_list is None:
             self.hyp = [0. for i in xrange(D)] + [log_sigma]
             self.initial = [i for i in range(D)] + [-1]
+            self.scaled  = ['log' for i in range(D)] + ['log']
         else:
             self.hyp = log_ell_list + [log_sigma]
             self.initial = [i for i in range(len(log_ell_list))] + [-1]
+            self.scaled  = ['log' for i in range(D)] + ['log']
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -1074,8 +979,9 @@ class Const(Kernel):
     :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_sigma=0.):
-        self.hyp = [log_sigma]
+        self.hyp     = [log_sigma]
         self.initial = [-1]
+        self.scaled  = ['log']
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -1122,8 +1028,9 @@ class Linear(Kernel):
     :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_sigma=0.):
-        self.hyp = [ log_sigma ]
+        self.hyp     = [ log_sigma ]
         self.initial = [-1]
+        self.scaled  = ['log']
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -1172,9 +1079,11 @@ class LINard(Kernel):
         if log_ell_list is None:
             self.hyp = [0. for i in xrange(D)]
             self.initial = [i for i in range(D)]
+            self.scaled  = ['log' for i in range(D)]
         else:
             self.hyp = log_ell_list
             self.initial = [i for i in range(len(log_ell_list))]
+            self.scaled  = ['log' for i in range(D)]
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -1230,6 +1139,7 @@ class Matern(Kernel):
         self.hyp = [ log_ell, log_sigma ]
         self.para = [d]
         self.initial = [0,-1]
+        self.scaled  = ['log','log']
 
 
     def func(self,d,t):
@@ -1341,6 +1251,7 @@ class Periodic(Kernel):
     def __init__(self, log_ell=0., log_p=0., log_sigma=0. ):
         self.hyp = [ log_ell, log_p, log_sigma]
         self.initial = [0,0,-1]
+        self.scaled  = ['log','log','log']
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -1409,8 +1320,9 @@ class Noise(Kernel):
     :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_sigma=0.):
-        self.hyp = [log_sigma]
+        self.hyp     = [log_sigma]
         self.initial = [-1]
+        self.scaled  = ['log']
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -1463,8 +1375,9 @@ class RQ(Kernel):
     :param initial: which variable scale for initialization of MLE type II optimization
     '''
     def __init__(self, log_ell=0., log_sigma=0., log_alpha=0.):
-        self.hyp = [ log_ell, log_sigma, log_alpha ]
+        self.hyp     = [ log_ell, log_sigma, log_alpha ]
         self.initial = [0,-1,-1]
+        self.scaled  = ['log','log','log']
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):
@@ -1521,11 +1434,13 @@ class RQard(Kernel):
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0., log_alpha=0.):
         if log_ell_list is None:
-            self.hyp = [0. for i in xrange(D)] + [ log_sigma, log_alpha ]
+            self.hyp     = [0. for i in xrange(D)] + [ log_sigma, log_alpha ]
             self.initial = [i for i in range(D)] + [ -1, -1 ]
+            self.scaled  = ['log' for i in range(D)] + ['log','log']
         else:
-            self.hyp = log_ell_list + [ log_sigma, log_alpha ]
+            self.hyp     = log_ell_list + [ log_sigma, log_alpha ]
             self.initial = [i for i in range(len(log_ell_list))] + [ -1, -1 ]
+            self.scaled  = ['log' for i in range(D)] + ['log','log']
 
 
     def getCovMatrix(self,x=None,z=None,mode=None):

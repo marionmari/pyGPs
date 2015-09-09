@@ -50,6 +50,7 @@ class Mean(object):
         self.hyp     = []
         self.para    = []
         self.initial = []
+        self.scaled  = []
 
 
     def __repr__(self):
@@ -138,7 +139,6 @@ class CompositeMean(Mean):
         self.mean1.hyp = self._hyp[:len1]
         self.mean2.hyp = self._hyp[len1:]
 
-
     def _getHyp(self):
         return self._hyp
     hyp = property(_getHyp,_setHyp)
@@ -153,6 +153,17 @@ class CompositeMean(Mean):
     def _getInitial(self):
         return self._initial
     initial = property(_getInitial,_setInitial)
+
+    def _setScaled(self,scaled):
+        assert len(scaled) == len(self._scaled)
+        len1 = len(self.mean1.scaled)
+        self._scaled = scaled
+        self.mean1.scaled = self._scaled[:len1]
+        self.mean2.scaled = self._scaled[len1:]
+
+    def _getScaled(self):
+        return self._scaled
+    scaled = property(_getScaled,_setScaled)
 
 
 class ProductOfMean(CompositeMean):
@@ -273,6 +284,7 @@ class Zero(Mean):
     '''Zero mean.'''
     def __init__(self):
         self.hyp = []
+        self.scaled  = []
         self.name = '0'
 
 
@@ -293,6 +305,7 @@ class One(Mean):
     def __init__(self):
         self.hyp = []
         self.name = '1'
+        self.scaled  = []
 
 
     def getMean(self, x=None):
@@ -317,6 +330,7 @@ class Const(Mean):
     def __init__(self, c=5.):
         self.hyp = [c]
         self.initial = [-1] # output scale
+        self.scaled  = []
 
 
     def getMean(self, x=None):
@@ -353,6 +367,7 @@ class Linear(Mean):
         else:
             self.hyp = alpha_list
             self.initial = [i for i in range(D)] #Scale of appropriate input
+        self.scaled  = []
 
 
     def getMean(self, x=None):

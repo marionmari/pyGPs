@@ -76,22 +76,34 @@ class Optimizer(object):
 
     def _initialize(self,x,y):
         for i in range(len(self.model.meanfunc.hyp)):
+            #print self.model.meanfunc
+            #if self.model.meanfunc.scaled is not None:
+            #    scaler = getattr(np, self.model.meanfunc.scaled[i])
+            #else:
+            #    scaler = lambda x: x
+            scaler = lambda x: x
             if self.model.meanfunc.initial[i] == -1:
-              self.model.meanfunc.hyp[i] = initialize_hyperparameters(y)
+              self.model.meanfunc.hyp[i] = scaler(initialize_hyperparameters(y))
             elif len(x.shape)== 2:
-              self.model.meanfunc.hyp[i] = initialize_hyperparameters(x[:,self.model.meanfunc.initial[i]])
+              self.model.meanfunc.hyp[i] = scaler(initialize_hyperparameters(x[:,self.model.meanfunc.initial[i]]))
             else:
-              self.model.meanfunc.hyp[i] = initialize_hyperparameters(x)
+              self.model.meanfunc.hyp[i] = scaler(initialize_hyperparameters(x))
 
         for i in range(len(self.model.covfunc.hyp)):
-            if self.model.covfunc.initial[i] == -1:
-              self.model.covfunc.hyp[i] = initialize_hyperparameters(y)
-            elif len(x.shape)== 2:
-              self.model.covfunc.hyp[i] = initialize_hyperparameters(x[:,self.model.covfunc.initial[i]])
+            if self.model.meanfunc.scaled is not None:
+                scaler = getattr(np, self.model.covfunc.scaled[i])
             else:
-              self.model.covfunc.hyp[i] = initialize_hyperparameters(x)
+                scaler = lambda x: x
+
+            if self.model.covfunc.initial[i] == -1:
+              self.model.covfunc.hyp[i] = scaler(initialize_hyperparameters(y))
+            elif len(x.shape)== 2:
+              self.model.covfunc.hyp[i] = scaler(initialize_hyperparameters(x[:,self.model.covfunc.initial[i]]))
+            else:
+              self.model.covfunc.hyp[i] = scaler(initialize_hyperparameters(x))
 
         for i in range(len(self.model.likfunc.hyp)):
+            # No scaler architecture for likfunc
             if self.model.likfunc.initial[i] == -1:
               self.model.likfunc.hyp[i] = initialize_hyperparameters(y)
             elif len(x.shape)== 2:

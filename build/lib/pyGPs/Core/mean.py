@@ -50,6 +50,7 @@ class Mean(object):
         self.hyp     = []
         self.para    = []
         self.initial = []
+        self.scaled  = []
 
 
     def __repr__(self):
@@ -129,19 +130,7 @@ class Mean(object):
         '''
         pass
 
-
-class ProductOfMean(Mean):
-    '''Product of two mean fucntions.'''
-    def __init__(self,mean1,mean2):
-        self.mean1 = mean1
-        self.mean2 = mean2
-        if mean1.hyp and mean2.hyp:
-            self._hyp = mean1.hyp + mean2.hyp
-        elif not mean1.hyp:
-            self._hyp = mean2.hyp
-        elif not mean2.hyp:
-            self._hyp = mean1.hyp
-
+class CompositeMean(Mean):
 
     def _setHyp(self,hyp):
         assert len(hyp) == len(self._hyp)
@@ -149,7 +138,6 @@ class ProductOfMean(Mean):
         self._hyp = hyp
         self.mean1.hyp = self._hyp[:len1]
         self.mean2.hyp = self._hyp[len1:]
-
 
     def _getHyp(self):
         return self._hyp
@@ -165,6 +153,30 @@ class ProductOfMean(Mean):
     def _getInitial(self):
         return self._initial
     initial = property(_getInitial,_setInitial)
+
+    def _setScaled(self,scaled):
+        assert len(scaled) == len(self._scaled)
+        len1 = len(self.mean1.scaled)
+        self._scaled = scaled
+        self.mean1.scaled = self._scaled[:len1]
+        self.mean2.scaled = self._scaled[len1:]
+
+    def _getScaled(self):
+        return self._scaled
+    scaled = property(_getScaled,_setScaled)
+
+
+class ProductOfMean(CompositeMean):
+    '''Product of two mean fucntions.'''
+    def __init__(self,mean1,mean2):
+        self.mean1 = mean1
+        self.mean2 = mean2
+        if mean1.hyp and mean2.hyp:
+            self._hyp = mean1.hyp + mean2.hyp
+        elif not mean1.hyp:
+            self._hyp = mean2.hyp
+        elif not mean2.hyp:
+            self._hyp = mean1.hyp
 
 
     def getMean(self, x=None):
@@ -183,7 +195,7 @@ class ProductOfMean(Mean):
         return A
 
 
-class SumOfMean(Mean):
+class SumOfMean(CompositeMean):
     '''Sum of two mean functions.'''
     def __init__(self,mean1,mean2):
         self.mean1 = mean1
@@ -198,29 +210,6 @@ class SumOfMean(Mean):
             self._hyp = mean1.hyp
             self._initial = mean1.initial
 
-
-    def _setHyp(self,hyp):
-        assert len(hyp) == len(self._hyp)
-        len1 = len(self.mean1.hyp)
-        self._hyp = hyp
-        self.mean1.hyp = self._hyp[:len1]
-        self.mean2.hyp = self._hyp[len1:]
-
-    def _getHyp(self):
-        return self._hyp
-    hyp = property(_getHyp,_setHyp)
-
-    def _setInitial(self,initial):
-        assert len(initial) == len(self._initial)
-        len1 = len(self.mean1.initial)
-        self._initial = initial
-        self.mean1.initial = self._initial[:len1]
-        self.mean2.initial = self._initial[len1:]
-
-    def _getInitial(self):
-        return self._initial
-    initial = property(_getInitial,_setInitial)
-        
 
     def getMean(self, x=None):
         A = self.mean1.getMean(x) + self.mean2.getMean(x)
@@ -238,7 +227,7 @@ class SumOfMean(Mean):
         return A
 
 
-class ScaleOfMean(Mean):
+class ScaleOfMean(CompositeMean):
     '''Scale of a mean function.'''
     def __init__(self,mean,scalar):
         self.mean = mean
@@ -246,27 +235,6 @@ class ScaleOfMean(Mean):
             self._hyp = [scalar] + mean.hyp
         else:
             self._hyp = [scalar]
-
-
-    def _setHyp(self,hyp):
-        assert len(hyp) == len(self._hyp)
-        self._hyp = hyp
-        self.mean.hyp = self._hyp[1:]
-
-    def _getHyp(self):
-        return self._hyp
-    hyp = property(_getHyp,_setHyp)
-
-    def _setInitial(self,initial):
-        assert len(initial) == len(self._initial)
-        len1 = len(self.mean1.initial)
-        self._initial = initial
-        self.mean1.initial = self._initial[:len1]
-        self.mean2.initial = self._initial[len1:]
-
-    def _getInitial(self):
-        return self._initial
-    initial = property(_getInitial,_setInitial)
 
 
     def getMean(self, x=None):
@@ -284,7 +252,7 @@ class ScaleOfMean(Mean):
         return A
 
 
-class PowerOfMean(Mean):
+class PowerOfMean(CompositeMean):
     '''Power of a mean fucntion.'''
     def __init__(self, mean, d):
         self.mean = mean
@@ -293,28 +261,6 @@ class PowerOfMean(Mean):
         else:
             self._hyp = [d]
 
-
-    def _setHyp(self,hyp):
-        assert len(hyp) == len(self._hyp)
-        self._hyp = hyp
-        self.mean.hyp = self._hyp[1:]
-
-
-    def _getHyp(self):
-        return self._hyp
-    hyp = property(_getHyp,_setHyp)
-
-
-    def _setInitial(self,initial):
-        assert len(initial) == len(self._initial)
-        len1 = len(self.mean1.initial)
-        self._initial = initial
-        self.mean1.initial = self._initial[:len1]
-        self.mean2.initial = self._initial[len1:]
-
-    def _getInitial(self):
-        return self._initial
-    initial = property(_getInitial,_setInitial)
 
     def getMean(self, x=None):
         d = np.abs(np.floor(self.hyp[0]))
@@ -338,6 +284,7 @@ class Zero(Mean):
     '''Zero mean.'''
     def __init__(self):
         self.hyp = []
+        self.scaled  = []
         self.name = '0'
 
 
@@ -358,6 +305,7 @@ class One(Mean):
     def __init__(self):
         self.hyp = []
         self.name = '1'
+        self.scaled  = []
 
 
     def getMean(self, x=None):
@@ -382,6 +330,7 @@ class Const(Mean):
     def __init__(self, c=5.):
         self.hyp = [c]
         self.initial = [-1] # output scale
+        self.scaled  = []
 
 
     def getMean(self, x=None):
@@ -418,6 +367,7 @@ class Linear(Mean):
         else:
             self.hyp = alpha_list
             self.initial = [i for i in range(D)] #Scale of appropriate input
+        self.scaled  = []
 
 
     def getMean(self, x=None):
