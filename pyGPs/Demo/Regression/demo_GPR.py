@@ -43,7 +43,7 @@ z = demoData['xstar']        # test data
 print 'Basic Example'
 model = gp.GPR()          # model
 print 'Before Optimization'
-model.setData(x,y)
+model.setData(x, y)
 model.predict(z)             # predict test cases (before optimization)
 model.plot()                 # and plot result
 model.optimize(x, y)         # optimize hyperparamters (default optimizer: single run minimize)
@@ -60,7 +60,8 @@ model = gp.GPR()           # start from a new model
 # Specify non-default mean and covariance functions
 # SEE doc_kernel_mean for documentation of all kernels/means
 m = mean.Const() + mean.Linear()
-k = cov.Matern(d=7) # Approximates RBF kernel
+print m.scaled
+k = cov.Matern(d=7)  # Approximates RBF kernel
 model.setPrior(meanfunc=m, kernel=k)
 
 
@@ -93,13 +94,11 @@ model.optimize(x, y)
 #   model.fm (predictive latent means)
 #   model.fs2 (predictive latent variances)
 #   model.lp (log predictive probability)
-print 'Optimized negative log marginal likelihood:', round(model.nlZ,3)
-
+print 'Optimized negative log marginal likelihood:', round(model.nlZ, 3)
 
 # Predict test data
 # output mean(ymu)/variance(ys2), latent mean(fmu)/variance(fs2), and log predictive probabilities(lp)
 ym, ys2, fmu, fs2, lp = model.predict(z)
-
 
 # Set range of axis for plotting
 # NOTE: plot() is a toy method only for 1-d data
@@ -114,14 +113,11 @@ model.plot()
 # [For all model] Speed up prediction time if you know posterior in advance
 post = model.posterior    # already known before
 
-
-ym, ys2, fmu, fs2, lp = model.predict_with_posterior(post,z)
+ym, ys2, fmu, fs2, lp = model.predict_with_posterior(post, z)
 # ...other than model.predict(z)
-
 
 # [Only for Regresstion] Specify noise of data (sigma=0.1 by default)
 # You don't need it if you optimize it later anyway
-model.setNoise( log_sigma=np.log(0.1) )
+model.setNoise(log_sigma=np.log(0.1))
 
 print '--------------------END OF DEMO-----------------------'
-

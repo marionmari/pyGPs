@@ -38,7 +38,7 @@
 # Copyright (c) by Marion Neumann and Shan Huang, Sep.2013
 
 import numpy as np
-import math
+#import math
 
 
 class Mean(object):
@@ -47,32 +47,28 @@ class Mean(object):
     '''
     def __init__(self):
         super(Mean, self).__init__()
-        self.hyp     = []
-        self.para    = []
+        self.hyp = []
+        self.para = []
         self.initial = []
-        self.scaled  = []
-
+        self.scaled = []
 
     def __repr__(self):
-        strvalue =str(type(self))+': to get the mean vector or mean derviatives use: \n'+\
-	    	  'model.meanfunc.getMean()\n' + 'model.meanfunc.getDerMatrix()'
+        strvalue = str(type(self))+': to get the mean vector or mean derviatives use: \n' + \
+            'model.meanfunc.getMean()\n' + 'model.meanfunc.getDerMatrix()'
         return strvalue
 
-
     # overloading
-    def __add__(self,mean):
+    def __add__(self, mean):
         '''
         Overloading + operator.
 
         :param mean: mean function
         :return: an instance of SumOfMean
         '''
-        return SumOfMean(self,mean)
-
-
+        return SumOfMean(self, mean)
 
     # overloading
-    def __mul__(self,other):
+    def __mul__(self, other):
         '''
         Overloading * operator.
         Using * for both multiplication with scalar and product of means
@@ -82,21 +78,17 @@ class Mean(object):
         :return: an instance of ScaleOfMean or ProductOfMean
         '''
         if isinstance(other, int) or isinstance(other, float):
-            return ScaleOfMean(self,other)
+            return ScaleOfMean(self, other)
         elif isinstance(other, Mean):
-            return ProductOfMean(self,other)
+            return ProductOfMean(self, other)
         else:
             print "only numbers and Means are allowed for *"
-
-
 
     # overloading
     __rmul__ = __mul__
 
-
-
     # overloading
-    def __pow__(self,number):
+    def __pow__(self, number):
         '''
         Overloading ** operator.
 
@@ -104,11 +96,9 @@ class Mean(object):
         :return: an instance of PowerOfMean
         '''
         if isinstance(number, int) and number > 0:
-            return PowerOfMean(self,number)
+            return PowerOfMean(self, number)
         else:
             print "only non-zero integers are supported for **"
-
-
 
     def getMean(self, x=None):
         '''
@@ -117,7 +107,6 @@ class Mean(object):
         :param x: training data
         '''
         pass
-
 
     def getDerMatrix(self, x=None, der=None):
         '''
@@ -130,9 +119,9 @@ class Mean(object):
         '''
         pass
 
-class CompositeMean(Mean):
 
-    def _setHyp(self,hyp):
+class CompositeMean(Mean):
+    def _setHyp(self, hyp):
         assert len(hyp) == len(self._hyp)
         len1 = len(self.mean1.hyp)
         self._hyp = hyp
@@ -141,9 +130,9 @@ class CompositeMean(Mean):
 
     def _getHyp(self):
         return self._hyp
-    hyp = property(_getHyp,_setHyp)
+    hyp = property(_getHyp, _setHyp)
 
-    def _setInitial(self,initial):
+    def _setInitial(self, initial):
         assert len(initial) == len(self._initial)
         len1 = len(self.mean1.initial)
         self._initial = initial
@@ -152,9 +141,9 @@ class CompositeMean(Mean):
 
     def _getInitial(self):
         return self._initial
-    initial = property(_getInitial,_setInitial)
+    initial = property(_getInitial, _setInitial)
 
-    def _setScaled(self,scaled):
+    def _setScaled(self, scaled):
         assert len(scaled) == len(self._scaled)
         len1 = len(self.mean1.scaled)
         self._scaled = scaled
@@ -163,12 +152,12 @@ class CompositeMean(Mean):
 
     def _getScaled(self):
         return self._scaled
-    scaled = property(_getScaled,_setScaled)
+    scaled = property(_getScaled, _setScaled)
 
 
 class ProductOfMean(CompositeMean):
     '''Product of two mean fucntions.'''
-    def __init__(self,mean1,mean2):
+    def __init__(self, mean1, mean2):
         self.mean1 = mean1
         self.mean2 = mean2
         if mean1.hyp and mean2.hyp:
@@ -178,11 +167,9 @@ class ProductOfMean(CompositeMean):
         elif not mean2.hyp:
             self._hyp = mean1.hyp
 
-
     def getMean(self, x=None):
         A = self.mean1.getMean(x) * self.mean2.getMean(x)
         return A
-
 
     def getDerMatrix(self, x=None, der=None):
         if der < len(self.mean1.hyp):
@@ -197,24 +184,25 @@ class ProductOfMean(CompositeMean):
 
 class SumOfMean(CompositeMean):
     '''Sum of two mean functions.'''
-    def __init__(self,mean1,mean2):
+    def __init__(self, mean1, mean2):
         self.mean1 = mean1
         self.mean2 = mean2
         if mean1.hyp and mean2.hyp:
             self._hyp = mean1.hyp + mean2.hyp
             self._initial = mean1.initial + mean2.initial
+            self._scaled = mean1.scaled + mean2.scaled
         elif not mean1.hyp:
             self._hyp = mean2.hyp
             self._initial = mean2.initial
+            self._scaled = mean2.scaled
         elif not mean2.hyp:
             self._hyp = mean1.hyp
             self._initial = mean1.initial
-
+            self._scaled = mean1.scaled
 
     def getMean(self, x=None):
         A = self.mean1.getMean(x) + self.mean2.getMean(x)
         return A
-
 
     def getDerMatrix(self, x=None, der=None):
         if der < len(self.mean1.hyp):
@@ -229,26 +217,28 @@ class SumOfMean(CompositeMean):
 
 class ScaleOfMean(CompositeMean):
     '''Scale of a mean function.'''
-    def __init__(self,mean,scalar):
+    def __init__(self, mean, scalar):
         self.mean = mean
         if mean.hyp:
             self._hyp = [scalar] + mean.hyp
+            self._initial = mean.initial
+            self._scaled = mean.scaled
         else:
             self._hyp = [scalar]
-
+            self._initial = []
+            self._scaled = []
 
     def getMean(self, x=None):
         c = self.hyp[0]                          # scale parameter
         A = c * self.mean.getMean(x)             # accumulate means
         return A
 
-
     def getDerMatrix(self, x=None, der=None):
         c = self.hyp[0]                          # scale parameter
         if der == 0:                             # compute derivative w.r.t. c
             A = self.mean.getMean(x)
         else:
-            A = c * self.mean.getDerMatrix(x,der-1)
+            A = c * self.mean.getDerMatrix(x, der-1)
         return A
 
 
@@ -258,20 +248,22 @@ class PowerOfMean(CompositeMean):
         self.mean = mean
         if mean.hyp:
             self._hyp = [d] + mean.hyp
+            self._initial = [-1] + mean.initial
+            self._scaled = [] + mean.scaled
         else:
             self._hyp = [d]
-
+            self._initial = []
+            self._scaled = []
 
     def getMean(self, x=None):
         d = np.abs(np.floor(self.hyp[0]))
-        d = max(d,1)
-        A = self.mean.getMean(x) **d              # accumulate means
+        d = max(d, 1)
+        A = self.mean.getMean(x) ** d              # accumulate means
         return A
-
 
     def getDerMatrix(self, x=None, der=None):
         d = np.abs(np.floor(self.hyp[0]))
-        d = max(d,1)
+        d = max(d, 1)
         if der == 0:                             # compute derivative w.r.t. c
             a = self.mean.getMean(x)
             A = a**d * np.log(a)
@@ -284,19 +276,17 @@ class Zero(Mean):
     '''Zero mean.'''
     def __init__(self):
         self.hyp = []
-        self.scaled  = []
+        self.scaled = []
         self.name = '0'
-
 
     def getMean(self, x=None):
         n, D = x.shape
-        A = np.zeros((n,1))
+        A = np.zeros((n, 1))
         return A
-
 
     def getDerMatrix(self, x=None, der=None):
         n, D = x.shape
-        A = np.zeros((n,1))
+        A = np.zeros((n, 1))
         return A
 
 
@@ -305,18 +295,16 @@ class One(Mean):
     def __init__(self):
         self.hyp = []
         self.name = '1'
-        self.scaled  = []
-
+        self.scaled = []
 
     def getMean(self, x=None):
         n, D = x.shape
-        A = np.ones((n,1))
+        A = np.ones((n, 1))
         return A
-
 
     def getDerMatrix(self, x=None, der=None):
         n, D = x.shape
-        A = np.zeros((n,1))
+        A = np.zeros((n, 1))
         return A
 
 
@@ -329,22 +317,20 @@ class Const(Mean):
 
     def __init__(self, c=5.):
         self.hyp = [c]
-        self.initial = [-1] # output scale
-        self.scaled  = []
-
+        self.initial = [-1]  # output scale
+        self.scaled = []
 
     def getMean(self, x=None):
-        n,D = x.shape
-        A = self.hyp[0] * np.ones((n,1))
+        n, D = x.shape
+        A = self.hyp[0] * np.ones((n, 1))
         return A
 
-
     def getDerMatrix(self, x=None, der=None):
-        n,D = x.shape
+        n, D = x.shape
         if der == 0:                  # compute derivative vector wrt c
-            A = np.ones((n,1))
+            A = np.ones((n, 1))
         else:
-            A = np.zeros((n,1))
+            A = np.zeros((n, 1))
         return A
 
 
@@ -360,40 +346,33 @@ class Linear(Mean):
         if alpha_list is None:
             if D is None:
                 self.hyp = [0.5]
-                self.initial = [0] # Scale of input variable
+                self.initial = [0]  # Scale of input variable
             else:
-                self.hyp     = [0.5 for i in xrange(D)]
-                self.initial = [i for i in range(D)] #Scale of appropriate input
+                self.hyp = [0.5 for i in xrange(D)]
+                self.initial = [i for i in range(D)]  # Scale of appropriate input
         else:
             self.hyp = alpha_list
-            self.initial = [i for i in range(D)] #Scale of appropriate input
-        self.scaled  = []
+            self.initial = [i for i in range(D)]  # Scale of appropriate input
 
+        self.scaled = []
 
     def getMean(self, x=None):
         n, D = x.shape
         c = np.array(self.hyp)
-        c = np.reshape(c,(len(c),1))
-        A = np.dot(x,c)
+        c = np.reshape(c, (len(c), 1))
+        A = np.dot(x, c)
         return A
-
 
     def getDerMatrix(self, x=None, der=None):
         n, D = x.shape
         c = np.array(self.hyp)
-        c = np.reshape(c,(len(c),1))
+        c = np.reshape(c, (len(c), 1))
         if isinstance(der, int) and der < D:     # compute derivative vector wrt meanparameters
-            A = np.reshape(x[:,der], (len(x[:,der]),1) )
+            A = np.reshape(x[:, der], (len(x[:, der]), 1) )
         else:
-            A = np.zeros((n,1))
+            A = np.zeros((n, 1))
         return A
 
 
 if __name__ == '__main__':
     pass
-
-
-
-
-
-
