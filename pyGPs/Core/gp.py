@@ -534,7 +534,7 @@ class GPR(GP):
         '''
         Set noise other than default noise value
 
-        :param log_sigma: logorithm of the noise sigma
+        :param log_sigma: logarithm of the noise sigma
         '''
         self.likfunc = lik.Gauss(log_sigma)
 
@@ -1021,7 +1021,7 @@ class GPR_FITC(GP_FITC):
         '''
         Set noise other than default noise value
 
-        :param log_sigma: logorithm of the noise sigma
+        :param log_sigma: logarithm of the noise sigma
         '''
         self.likfunc = lik.Gauss(log_sigma)
 
