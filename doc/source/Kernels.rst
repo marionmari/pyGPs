@@ -9,7 +9,7 @@ You may already seen, we can specify a kernel function like this(same for mean f
 
 There are several points need to be noticed:
 
-1. Most parameters are initilized in their logorithms. This is because we need to make sure they are positive during optimization. e.g. Here length scale and signal variance should always be positive.
+1. Most parameters are initilized in their logarithms. This is because we need to make sure they are positive during optimization. e.g. Here length scale and signal variance should always be positive.
 
 2. Most kernel functions have a scalar in front, namely signal variance(set by log_sigma)
 
