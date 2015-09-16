@@ -108,12 +108,12 @@ class CG(Optimizer):
                 print "Gradient and/or function calls not changing."
         except:
             self.errorCounter += 1
-            if not self.searchConfig:         
+            if not self.searchConfig:
                 raise Exception("Can not learn hyperparamters using conjugate gradient.")
         self.trailsCounter += 1
 
         if self.searchConfig:
-            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
+            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange
             if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
@@ -136,9 +136,8 @@ class CG(Optimizer):
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
                     print "[CG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
-                    return optimalHyp, funcValue 
+                    return optimalHyp, funcValue
         return optimalHyp, funcValue
-
 
 
 class BFGS(Optimizer):
@@ -168,13 +167,13 @@ class BFGS(Optimizer):
                 print "Gradient and/or function calls not changing."
         except:
             self.errorCounter += 1
-            if not self.searchConfig:         
+            if not self.searchConfig:
                 raise Exception("Can not learn hyperparamters using BFGS.")
         self.trailsCounter += 1
 
 
         if self.searchConfig:
-            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
+            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange
             if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
@@ -200,7 +199,6 @@ class BFGS(Optimizer):
                     return optimalHyp, funcValue
 
         return optimalHyp, funcValue
-
 
 
 class Minimize(Optimizer):
@@ -257,10 +255,9 @@ class Minimize(Optimizer):
         return optimalHyp, funcValue
 
 
-
 class SCG(Optimizer):
     '''Scaled conjugent gradient (faster than CG)'''
-    def __init__(self, model, searchConfig = None):
+    def __init__(self, model, searchConfig=None):
         super(SCG, self).__init__()
         self.model = model
         self.searchConfig = searchConfig
@@ -307,7 +304,7 @@ class SCG(Optimizer):
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
                     print "[SCG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
-                    return optimalHyp, funcValue 
+                    return optimalHyp, funcValue
 
         return optimalHyp, funcValue
 
