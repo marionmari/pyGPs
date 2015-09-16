@@ -26,6 +26,7 @@ from scipy.optimize import fmin_cg as cg
 from pyGPs.Optimization import minimize, scg
 from copy import deepcopy
 
+
 class Optimizer(object):
     def __init__(self, model=None, searchConfig = None):
         self.model = model
