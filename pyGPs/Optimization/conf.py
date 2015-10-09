@@ -15,17 +15,17 @@
 import numpy as np
 
 class random_init_conf(object):
-    def __init__(self):
-        self.num_restarts  = None
+    def __init__(self, mean, cov, lik):
+        self.num_restarts = None
         self.min_threshold = None
-        #self.mean = mean
-        #self.cov = cov
-        #self.lik = lik
-        #self._meanRange = [(-5,5) for i in mean.hyp]
-        #self._covRange  = [(-5,5) for i in cov.hyp]        
-        #self._likRange  = [(-5,5) for i in lik.hyp]
+        self.mean = mean
+        self.cov = cov
+        self.lik = lik
+        self._meanRange = [(-5,5) for i in mean.hyp]
+        self._covRange  = [(-5,5) for i in cov.hyp]        
+        self._likRange  = [(-5,5) for i in lik.hyp]
 
-    '''def _getmr(self):
+    def _getmr(self):
         return self._meanRange
     def _setmr(self, value):
         if len(value) == len(self.mean.hyp):
@@ -51,5 +51,13 @@ class random_init_conf(object):
         else:
             raise Exception('The length of likRange is not consistent with number of liklihood hyparameters')
     likRange = property(_getlr,_setlr)
-    '''
+
+
+
+
+
+
+
+
+
 

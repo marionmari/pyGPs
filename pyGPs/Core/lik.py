@@ -39,14 +39,12 @@
 
 import numpy as np
 from scipy.special import erf
-import inference
+import inf
 
 class Likelihood(object):
     """Base function for Likelihood function"""
     def __init__(self):
         self.hyp = []
-
-
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         '''
         The likelihood functions have two possible modes, the mode being selected
@@ -74,13 +72,13 @@ class Likelihood(object):
 
         2) With four or five input arguments, the fouth being an object of class "Inference" [INFERENCE MODE]
 
-         evaluate(y, mu, s2, inference.EP()) OR evaluate(y, mu, s2, inference.Laplace(), i)
+         evaluate(y, mu, s2, inf.EP()) OR evaluate(y, mu, s2, inf.Laplace(), i)
 
          There are two cases for inf, namely a) infLaplace, b) infEP
          The last input i, refers to derivatives w.r.t. the ith hyperparameter.
 
          | a1)
-         | lp,dlp,d2lp,d3lp = evaluate(y, f, [], inference.Laplace()).
+         | lp,dlp,d2lp,d3lp = evaluate(y, f, [], inf.Laplace()).
          | lp, dlp, d2lp and d3lp correspond to derivatives of the log likelihood.
          | log(p(y|f)) w.r.t. to the latent location f.
          | lp = log( p(y|f) )
@@ -89,7 +87,7 @@ class Likelihood(object):
          | d3lp = d^3 log( p(y|f) ) / df^3
 
          | a2)
-         | lp_dhyp,dlp_dhyp,d2lp_dhyp = evaluate(y, f, [], inference.Laplace(), i)
+         | lp_dhyp,dlp_dhyp,d2lp_dhyp = evaluate(y, f, [], inf.Laplace(), i)
          | returns derivatives w.r.t. to the ith hyperparameter
          | lp_dhyp = d log( p(y|f) ) / (dhyp_i)
          | dlp_dhyp = d^2 log( p(y|f) ) / (df   dhyp_i)
@@ -97,14 +95,14 @@ class Likelihood(object):
 
 
          | b1)
-         | lZ,dlZ,d2lZ = evaluate(y, mu, s2, inference.EP())
+         | lZ,dlZ,d2lZ = evaluate(y, mu, s2, inf.EP())
          | let Z = \int p(y|f) N(f|mu,s2) df then
          | lZ = log(Z)
          | dlZ = d log(Z) / dmu
          | d2lZ = d^2 log(Z) / dmu^2
 
          | b2)
-         | dlZhyp = evaluate(y, mu, s2, inference.EP(), i)
+         | dlZhyp = evaluate(y, mu, s2, inf.EP(), i)
          | returns derivatives w.r.t. to the ith hyperparameter
          | dlZhyp = d log(Z) / dhyp_i
 
@@ -129,8 +127,6 @@ class Gauss(Likelihood):
     '''
     def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [log_sigma]
-        self.initial = [-1] # Output scale
-
 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn2 = np.exp(2. * self.hyp[0])
@@ -144,7 +140,7 @@ class Gauss(Likelihood):
                 lp = -(y-mu)**2 /sn2/2 - np.log(2.*np.pi*sn2)/2.
                 s2 = np.zeros_like(s2)
             else:
-                inf_func = inference.EP()   # prediction
+                inf_func = inf.EP()   # prediction
                 lp = self.evaluate(y, mu, s2, inf_func)
             if nargout>1:
                 ymu = mu                 # first y moment
@@ -156,7 +152,7 @@ class Gauss(Likelihood):
             else:
                 return lp
         else:
-            if isinstance(inffunc, inference.EP):
+            if isinstance(inffunc, inf.EP):
                 if der is None:                                  # no derivative mode
                     lZ = -(y-mu)**2/(sn2+s2)/2. - np.log(2*np.pi*(sn2+s2))/2. # log part function
                     if nargout>1:
@@ -171,7 +167,7 @@ class Gauss(Likelihood):
                 else:                                            # derivative mode
                     dlZhyp = ((y-mu)**2/(sn2+s2)-1) / (1+s2/sn2) # deriv. w.r.t. hyp.lik
                     return dlZhyp
-            elif isinstance(inffunc, inference.Laplace):
+            elif isinstance(inffunc, inf.Laplace):
                 if der is None:                                  # no derivative mode
                     if y is None:
                         y=0
@@ -241,7 +237,7 @@ class Erf(Likelihood):
     '''
     def __init__(self):
         self.hyp = []
- 
+
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         if not y is None:
             y = np.sign(y)
@@ -257,7 +253,7 @@ class Erf(Likelihood):
             if s2zero:                                   # log probability evaluation
                 p,lp = self.cumGauss(y,mu,2)
             else:                                        # prediction
-                lp = self.evaluate(y, mu, s2, inference.EP())
+                lp = self.evaluate(y, mu, s2, inf.EP())
                 p = np.exp(lp)
             if nargout>1:
                 ymu = 2*p-1                              # first y moment
@@ -269,7 +265,7 @@ class Erf(Likelihood):
             else:
                 return lp
         else:                                            # inference mode
-            if isinstance(inffunc, inference.Laplace):
+            if isinstance(inffunc, inf.Laplace):
                 if der is None:                          # no derivative mode
                     f = mu; yf = y*f                     # product latents and labels
                     p,lp = self.cumGauss(y,f,2)
@@ -290,7 +286,7 @@ class Erf(Likelihood):
                 else:                                    # derivative mode
                     return []                            # derivative w.r.t. hypers
 
-            elif isinstance(inffunc, inference.EP):
+            elif isinstance(inffunc, inf.EP):
                 if der is None:                          # no derivative mode
                     z = mu/np.sqrt(1+s2)
                     junk,lZ = self.cumGauss(y,z,2)       # log part function
@@ -310,7 +306,7 @@ class Erf(Likelihood):
                 else:                                    # derivative mode
                     return []                       # deriv. wrt hyp.lik
         '''
-        if inffunc == 'inference.infVB':
+        if inffunc == 'inf.infVB':
             if der is None:                              # no derivative mode
                 # naive variational lower bound based on asymptotical properties of lik
                 # normcdf(t) -> -(t*A_hat^2-2dt+c)/2 for t->-np.inf (tight lower bound)
@@ -376,8 +372,6 @@ class Laplace(Likelihood):
     '''
     def __init__(self, log_sigma=np.log(0.1) ):
         self.hyp = [ log_sigma ]
-        self.initial = [-1] # output scale
-
 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         sn = np.exp(self.hyp); b = sn/np.sqrt(2);
@@ -393,7 +387,7 @@ class Laplace(Likelihood):
             if s2zero:                                   # log probability evaluation
                 lp = -np.abs(y-mu)/b -np.log(2*b); s2 = 0
             else:                                        # prediction
-                lp = self.evaluate(y, mu, s2, inference.EP())
+                lp = self.evaluate(y, mu, s2, inf.EP())
             if nargout>1:
                 ymu = mu                              # first y moment
                 if nargout>2:
@@ -404,7 +398,7 @@ class Laplace(Likelihood):
             else:
                 return lp
         else:                                            # inference mode
-            if isinstance(inffunc, inference.Laplace):
+            if isinstance(inffunc, inf.Laplace):
                 if der is None:                          # no derivative mode
                     if y is None:
                         y = np.zeros_like(mu)
@@ -428,7 +422,7 @@ class Laplace(Likelihood):
                     dlp_dhyp = np.sign(mu-y)/b              # first derivative,
                     d2lp_dhyp = np.zeros(mu.shape)         # and also of the second mu derivative
                     return lp_dhyp, dlp_dhyp, d2lp_dhyp
-            elif isinstance(inffunc, inference.EP):
+            elif isinstance(inffunc, inf.EP):
                 n = np.max([len(y.flatten()),len(mu.flatten()),len(s2.flatten()),len(sn.flatten())])
                 on = np.ones((n,1))
                 y = y*on; mu = mu*on; s2 = s2*on; sn = sn*on;
@@ -492,7 +486,7 @@ class Laplace(Likelihood):
                         dlZhyp[idlik] = 0
                     if np.any(idgau):
                         l = Laplace(log_hyp=np.log(sn[idgau]))
-                        a =  l.evaluate(mu=mu[idgau], y=y[idgau], inffunc='inference.Laplace', nargout=1)
+                        a =  l.evaluate(mu=mu[idgau], y=y[idgau], inffunc='inf.Laplace', nargout=1)
                         dlZhyp[idgau] = a[0]
 
                     if np.any(id):
@@ -513,10 +507,9 @@ class Laplace(Likelihood):
                         dam = em*(dvm - 2/np.sqrt(np.pi)*np.exp(-zm**2-lezm)*dzm)
                         dlZhyp[id] = (dap+dam)/(ep+em) - 1;
                     return dlZhyp               # deriv. wrt hyp.lik
-            elif isinstance(inffunc, inference.VB):
+            elif isinstance(inffunc, inf.VB):
                 n = len(s2.flatten()); b = np.zeros((n,1)); y = y*np.ones((n,1)); z = y
                 return b,z
-
 
     def _lerfc(self,t):
         ''' numerically safe implementation of f(t) = log(1-erf(t)) = log(erfc(t))'''
@@ -533,7 +526,6 @@ class Laplace(Likelihood):
         f[ok] += np.log(erfc( t[ok] ))             # safe eval
         return f
 
-
     def _expABz_expAx(self,A,x,B,z):
         '''
         Computes y = ( (exp(A).*B)*z ) ./ ( exp(A)*x ) in a numerically safe way
@@ -546,7 +538,6 @@ class Laplace(Likelihood):
         A = A - np.dot(maxA, np.ones((1,N)))       # subtract maximum value
         y = ( np.dot((np.exp(A)*B),z) ) / ( np.dot(np.exp(A),x) )
         return y[0]
-
 
     def _logphi(self,z):
         ''' Safe implementation of the log of phi(x) = \int_{-\infty}^x N(f|0,1) df
@@ -563,7 +554,6 @@ class Laplace(Likelihood):
         lp[nok] = -0.5*(np.log(np.pi) + z[nok]**2) - np.log( np.sqrt(2.+0.5*(z[nok]**2)) - z[nok]/np.sqrt(2)) 
         lp[ip] = (1-lam)*lp[ip] + lam*np.log( 0.5*( 1.+erf(z[ip]/np.sqrt(2.)) ) )
         return lp
-
 
     def _logsum2exp(self,logx):
         '''computes y = log( sum(exp(x),2) ) in a numerically safe way

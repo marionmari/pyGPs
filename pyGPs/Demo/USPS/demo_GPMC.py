@@ -11,11 +11,11 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
+import pyGPs
+from pyGPs.Validation import valid
 import numpy as np
 from scipy.io import loadmat
 
-from pyGPs.Core import gp, mean, cov
-from pyGPs.Validation import valid
 
 # To have a gerneral idea,
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
@@ -67,7 +67,7 @@ ys = ys[:20,:]
 #----------------------------------------------------------------------
 
 # State model with 10 classes
-model = gp.GPMC(10)
+model = pyGPs.GPMC(10)
 
 # Set data to model
 model.setData(x,y)
@@ -90,9 +90,9 @@ print "Accuracy of recognizing hand-writen digits:", round(acc,2)
 #----------------------------------------------------------------------
 # Just like we did for GP classification
 # You can use specify the setting for all binary classificiation problem by:
-m = mean.Zero()
-k = cov.RBF()
-model.setPrior(meanfunc=m,kernel=k)
+m = pyGPs.mean.Zero()
+k = pyGPs.cov.RBF()
+model.setPrior(mean=m,kernel=k)
 model.useInference("Laplace")
 
 # Beside optimizeAndPredict(xs),

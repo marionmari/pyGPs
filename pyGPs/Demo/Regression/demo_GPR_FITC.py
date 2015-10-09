@@ -11,8 +11,8 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
+import pyGPs
 import numpy as np
-from pyGPs.Core import gp, mean, cov
 
 # To have a gerneral idea, 
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
@@ -38,7 +38,7 @@ z = demoData['xstar']        # test data
 print "Example 1: default inducing points"
 
 # Start from a new model 
-model = gp.GPR_FITC()
+model = pyGPs.GPR_FITC()
 
 # Notice if you want to use default inducing points:
 # You MUST call setData(x,y) FIRST!
@@ -58,11 +58,12 @@ model.predict(z)
 model.plot()
 
 
+
 print '------------------------------------------------------'
 print "Example 2: user-defined inducing points"
 
 # Start from a new model 
-model = gp.GPR_FITC()            
+model = pyGPs.GPR_FITC()            
 
 # You can define inducing points yourself. 
 # You can pick some points by hand
@@ -75,9 +76,9 @@ u = np.reshape(u,(num_u,1))
 
 
 # and specify inducing point when seting prior
-m = mean.Linear( D=x.shape[1] ) + mean.Const()  
-k = cov.RBF()
-model.setPrior(meanfunc=m, kernel=k, inducing_points=u) 
+m = pyGPs.mean.Linear( D=x.shape[1] ) + pyGPs.mean.Const()  
+k = pyGPs.cov.RBF()
+model.setPrior(mean=m, kernel=k, inducing_points=u) 
 
 # The rest is analogous to what we have done before
 model.setData(x, y)
