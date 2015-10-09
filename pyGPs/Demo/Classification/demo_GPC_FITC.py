@@ -11,8 +11,8 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-import pyGPs
 import numpy as np
+from pyGPs.Core import gp, mean, cov
 
 # To have a gerneral idea,
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
@@ -48,7 +48,7 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 print "Example 1: default inducing points"
 
 # Start from a new model
-model = pyGPs.GPC_FITC()
+model = gp.GPC_FITC()
 
 # Notice if you want to use default inducing points:
 # You MUST call setData(x,y) FIRST!
@@ -73,7 +73,7 @@ model.plot(x1,x2,t1,t2)
 print '------------------------------------------------------'
 print "Example 2: user-defined inducing points"
 
-model = pyGPs.GPC_FITC()
+model = gp.GPC_FITC()
 
 # You can define inducing points yourself.
 # u = np.array([])
@@ -81,9 +81,9 @@ u1,u2 = np.meshgrid(np.linspace(-2,2,5),np.linspace(-2,2,5))
 u = np.array(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),))))
 
 # and specify inducing point when seting prior
-m = pyGPs.mean.Zero()
-k = pyGPs.cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
-model.setPrior(mean=m, kernel=k, inducing_points=u)
+m = mean.Zero()
+k = cov.RBFard(log_ell_list=[0.05,0.17], log_sigma=1.)
+model.setPrior(meanfunc=m, kernel=k, inducing_points=u)
 
 # The rest is analogous to what we have done before.
 model.setData(x, y)

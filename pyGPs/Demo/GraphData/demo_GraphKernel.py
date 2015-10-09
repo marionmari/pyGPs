@@ -16,9 +16,10 @@
 
 import numpy as np
 from scipy.sparse.csc import csc_matrix
-import pyGPs
+
+from pyGPs.Core import gp, cov
 from pyGPs.Validation import valid
-from pyGPs.GraphExtensions import graphUtil,graphKernels
+from pyGPs.GraphExtensions import graphUtil, graphKernels
 
 location = 'graphData/'
 data = np.load(location+'MUTAG.npz')
@@ -69,9 +70,9 @@ for t in xrange(num_Iteration+1):
         n1 = len(index_train)
         n2 = len(index_test)        
         
-        model = pyGPs.GPC()
+        model = gp.GPC()
         M1,M2 = graphUtil.formKernelMatrix(Matrix, index_train, index_test)
-        k = pyGPs.cov.Pre(M1,M2)
+        k = cov.Pre(M1,M2)
         model.setPrior(kernel=k)
 
         # gp

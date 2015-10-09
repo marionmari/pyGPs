@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import io as sio
 
-import pyGPs
+from pyGPs.Core import gp, mean, cov
 
 if __name__ == '__main__':
     data = sio.loadmat('airlinedata.mat')
@@ -31,17 +31,16 @@ if __name__ == '__main__':
     # Set some parameters
     Q = 10
 
-    model = pyGPs.GPR()           # start from a new model
+    model = gp.GPR()           # start from a new model
 
     # Specify non-default mean and covariance functions
     # @SEE doc_kernel_mean for documentation of all kernels/means
-    m = pyGPs.mean.Zero()
+    m = mean.Zero()
 
     for _ in range(10):
-      k = pyGPs.cov.SM(Q)
-      k.initSMhypers(x, y)
+      k = cov.SM(Q)
+      #k.initSMhypers(x, y)
       model.setPrior(kernel=k)
-
       # Noise std. deviation
       sn = 0.1
 

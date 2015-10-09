@@ -11,9 +11,10 @@
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 
-import pyGPs
-from pyGPs.Validation import valid
 import numpy as np
+
+from pyGPs.Core import gp
+from pyGPs.Validation import valid
 
 # To have a gerneral idea,
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
@@ -67,7 +68,7 @@ cv_run = 0
 for x_train, x_test, y_train, y_test in valid.k_fold_validation(x, y, K):
     print 'Run:', cv_run
     # This is a binary classification problem
-    model = pyGPs.GPC()
+    model = gp.GPC()
     # Since no prior knowldege, leave everything default 
     model.optimize(x_train, y_train)
     # Predit 
@@ -98,7 +99,7 @@ print 'Root-Mean-Square Error: ', np.round(np.mean(RMSE),2)
 # Evaluation measures
 #----------------------------------------------------------------------
 '''
-We defined the following measures(@SEE pyGPs.Valid.valid):
+We defined the following measures(@SEE pyGps.Valididation.valid):
 
 	RMSE - Root mean squared error
 	ACC - Classification accuracy

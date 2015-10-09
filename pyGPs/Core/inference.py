@@ -43,8 +43,9 @@
 
 
 import numpy as np
-import lik, cov
 from copy import copy, deepcopy
+
+import lik, cov
 from tools import solve_chol, brentmin, cholupdate, jitchol
 np.seterr(all='ignore')
 
@@ -123,6 +124,7 @@ class Inference(object):
     def __init__(self):
         pass
 
+
     def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
         '''
         Inference computation based on inputs.
@@ -157,6 +159,7 @@ class Inference(object):
         '''
         pass
 
+
     def _epComputeParams(self, K, y, ttau, tnu, likfunc, m, inffunc):
         n     = len(y)                                                # number of training cases
         ssi   = np.sqrt(ttau)                                         # compute Sigma and mu
@@ -173,6 +176,7 @@ class Inference(object):
                 - np.dot((nu_n-m*tau_n).T,((ttau/tau_n*(nu_n-m*tau_n)-2*tnu) / (ttau+tau_n)))/2 \
                 + (tnu**2/(tau_n+ttau)).sum()/2.- np.log(1.+ttau/tau_n).sum()/2.
         return Sigma, mu, nlZ[0], L
+
 
     def _logdetA(self,K,w,nargout):
         '''
@@ -207,6 +211,7 @@ class Inference(object):
         else:
             return ldA
 
+
     def _Psi_line(self,s,dalpha,alpha,K,m,likfunc,y,inffunc):
         '''Criterion Psi at alpha + s*dalpha for line search
         [Psi,alpha,f,dlp,W] = _Psi_line(s,dalpha,alpha,hyp,K,m,lik,y,inf)
@@ -217,6 +222,7 @@ class Inference(object):
         W = -d2lp
         Psi = np.dot(alpha.T,(f-m))/2. - lp.sum()
         return Psi[0],alpha,f,dlp,W
+
 
     def _epfitcZ(self,d,P,R,nn,gg,ttau,tnu,d0,R0,P0,y,likfunc,m,inffunc):
         '''
@@ -240,6 +246,7 @@ class Inference(object):
             + (tnu**2/(tau_n+ttau)).sum()/2. - (np.log(1+ttau/tau_n)).sum()/2.
         return nlZ,nu_n,tau_n
 
+
     def _epfitcRefresh(self,d0,P0,R0,R0P0,w,b):
         '''
         Refresh the representation of the posterior from initial and site parameters
@@ -259,6 +266,7 @@ class Inference(object):
         nn = d*b                                                  # O(n)
         gg = np.dot(R0.T,np.dot(R.T,np.dot(R,np.dot(R0P0,t*b))))  # O(n*nu)
         return d,P,R,nn,gg
+
 
     def _epfitcUpdate(self,d,P_i,R,nn,gg,w,b,ii,w_i,b_i,m,d0,P0,R0):
         dwi = w_i-w[ii]
@@ -282,6 +290,7 @@ class Inference(object):
         P_i = P_i/t                                        # O(nu)
         return d,P_i,R,nn,gg,w,b
 
+
     def _mvmZ(self,x,RVdd,t):
         '''
         Matrix vector multiplication with Z=inv(K+inv(W))
@@ -289,12 +298,14 @@ class Inference(object):
         Zx = t*x - np.dot(RVdd.T,np.dot(RVdd,x))
         return Zx
 
+
     def _mvmK(self,al,V,d0):
         '''
         Matrix vector multiplication with approximate covariance matrix
         '''
         Kal = np.dot(V.T,np.dot(V,al)) + d0*al
         return Kal
+
 
     def _Psi_lineFITC(self,s,dalpha,alpha,V,d0,m,likfunc,y,inffunc):
         '''
@@ -307,6 +318,7 @@ class Inference(object):
         W = -d2lp
         Psi = np.dot(alpha.T,(f-m))/2. - lp.sum()
         return Psi[0],alpha,f,dlp,W
+
 
     def _fitcRefresh(self,d0,P0,R0,R0P0, w):
         '''
@@ -346,7 +358,7 @@ class Exact(Inference):
         #L     = np.linalg.cholesky(K/sn2+np.eye(n)).T         # Cholesky factor of covariance with noise
         L     = jitchol(K/sn2+np.eye(n)).T                     # Cholesky factor of covariance with noise
         alpha = solve_chol(L,y-m)/sn2
-        post = postStruct()
+        post  = postStruct()
         post.alpha = alpha                                     # return the posterior parameters
         post.sW    = np.ones((n,1))/np.sqrt(sn2)               # sqrt of noise precision vector
         post.L     = L                                         # L = chol(eye(n)+sW*sW'.*K)
@@ -389,15 +401,13 @@ class FITC_Exact(Inference):
         diagK,Kuu,Ku = covfunc.getCovMatrix(x=x, mode='train')  # evaluate covariance matrix
         m  = meanfunc.getMean(x)                                # evaluate mean vector
         n, D = x.shape
-        nu = Kuu.shape[0]
+        nu   = Kuu.shape[0]
 
         sn2   = np.exp(2*likfunc.hyp[0])                         # noise variance of likGauss
         snu2  = 1.e-6*sn2                                        # hard coded inducing inputs noise
-        #Luu   = np.linalg.cholesky(Kuu+snu2*np.eye(nu)).T        # Kuu + snu2*I = Luu'*Luu
         Luu   = jitchol(Kuu+snu2*np.eye(nu)).T        # Kuu + snu2*I = Luu'*Luu
         V     = np.linalg.solve(Luu.T,Ku)                        # V = inv(Luu')*Ku => V'*V = Q
         g_sn2 = diagK + sn2 - np.array([(V*V).sum(axis=0)]).T    # g + sn2 = diag(K) + sn2 - diag(Q)
-        #Lu    = np.linalg.cholesky(np.eye(nu) + np.dot(V/np.tile(g_sn2.T,(nu,1)),V.T)).T  # Lu'*Lu=I+V*diag(1/g_sn2)*V'
         Lu    = jitchol(np.eye(nu) + np.dot(V/np.tile(g_sn2.T,(nu,1)),V.T)).T  # Lu'*Lu=I+V*diag(1/g_sn2)*V'
         r     = (y-m)/np.sqrt(g_sn2)
         be    = np.linalg.solve(Lu.T,np.dot(V,r/np.sqrt(g_sn2)))
