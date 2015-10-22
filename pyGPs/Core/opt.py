@@ -19,14 +19,12 @@
 # Copyright (c) by Marion Neumann and Shan Huang, 30/09/2013
 
 import numpy as np
+import pyGPs
+import gp
 from scipy.optimize import fmin_bfgs as bfgs
 from scipy.optimize import fmin_cg as cg
-from copy import deepcopy
-
-from pyGPs.Core import cov
 from pyGPs.Optimization import minimize, scg
-from pyGPs.Optimization.initialize_hyperparameters import initialize_hyperparameters
-
+from copy import deepcopy
 
 class Optimizer(object):
     def __init__(self, model=None, searchConfig = None):
@@ -44,7 +42,7 @@ class Optimizer(object):
 
         You can achieve advanced search strategy by initializing Optimizer with searchConfig,
         which is an instance of pyGPs.Optimization.conf.
-        See more in pyGPs.Optimization.conf and Core.gp.GP.setOptimizer,
+        See more in pyGPs.Optimization.conf and pyGPs.Core.gp.GP.setOptimizer,
         as well as in online documentation of section Optimizers.
         '''
         pass
@@ -74,44 +72,6 @@ class Optimizer(object):
         hyplist = self.model.meanfunc.hyp + self.model.covfunc.hyp + self.model.likfunc.hyp
         return np.array(hyplist)
 
-    def _initialize(self,x,y):
-        for i in range(len(self.model.meanfunc.hyp)):
-            #print self.model.meanfunc
-            #if self.model.meanfunc.scaled is not None:
-            #    scaler = getattr(np, self.model.meanfunc.scaled[i])
-            #else:
-            #    scaler = lambda x: x
-            scaler = lambda x: x
-            if self.model.meanfunc.initial[i] == -1:
-              self.model.meanfunc.hyp[i] = scaler(initialize_hyperparameters(y))
-            elif len(x.shape)== 2:
-              self.model.meanfunc.hyp[i] = scaler(initialize_hyperparameters(x[:,self.model.meanfunc.initial[i]]))
-            else:
-              self.model.meanfunc.hyp[i] = scaler(initialize_hyperparameters(x))
-
-        for i in range(len(self.model.covfunc.hyp)):
-            if self.model.meanfunc.scaled is not None:
-                scaler = getattr(np, self.model.covfunc.scaled[i])
-            else:
-                scaler = lambda x: x
-
-            if self.model.covfunc.initial[i] == -1:
-              self.model.covfunc.hyp[i] = scaler(initialize_hyperparameters(y))
-            elif len(x.shape)== 2:
-              self.model.covfunc.hyp[i] = scaler(initialize_hyperparameters(x[:,self.model.covfunc.initial[i]]))
-            else:
-              self.model.covfunc.hyp[i] = scaler(initialize_hyperparameters(x))
-
-        for i in range(len(self.model.likfunc.hyp)):
-            # No scaler architecture for likfunc
-            if self.model.likfunc.initial[i] == -1:
-              self.model.likfunc.hyp[i] = initialize_hyperparameters(y)
-            elif len(x.shape)== 2:
-              self.model.likfunc.hyp[i] = initialize_hyperparameters(x[:,self.inffunc.initial[i]])
-            else:
-              self.model.likfunc.hyp[i] = initialize_hyperparameters(x)
-
-
     def _apply_in_objects(self, hypInArray):
         '''Apply the values in the input array to hyparameters of model.'''
         Lm = len(self.model.meanfunc.hyp)
@@ -126,20 +86,16 @@ class CG(Optimizer):
     '''Conjugent gradient'''
     def __init__(self, model, searchConfig = None):
         super(CG, self).__init__()
-        self.model         = model
-        self.searchConfig  = searchConfig
+        self.model = model
+        self.searchConfig = searchConfig
         self.trailsCounter = 0
-        self.errorCounter  = 0
+        self.errorCounter = 0
 
     def findMin(self, x, y, numIters = 100):
-        meanfunc   = self.model.meanfunc
-        covfunc    = self.model.covfunc
-        likfunc    = self.model.likfunc
-        inffunc    = self.model.inffunc
-        if isinstance(covfunc,cov.SM):
-            self.model.covfunc.initSMhypers(x,y)
-        else:
-            self._initialize(x,y)
+        meanfunc = self.model.meanfunc
+        covfunc = self.model.covfunc
+        likfunc = self.model.likfunc
+        inffunc = self.model.inffunc
         hypInArray = self._convert_to_array()
         try:
             opt = cg(self._nlml, hypInArray, self._dnlml, maxiter=numIters, disp=False, full_output=True)
@@ -152,12 +108,12 @@ class CG(Optimizer):
                 print "Gradient and/or function calls not changing."
         except:
             self.errorCounter += 1
-            if not self.searchConfig:
+            if not self.searchConfig:         
                 raise Exception("Can not learn hyperparamters using conjugate gradient.")
         self.trailsCounter += 1
 
         if self.searchConfig:
-            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange
+            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
             if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
@@ -180,7 +136,7 @@ class CG(Optimizer):
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
                     print "[CG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
-                    return optimalHyp, funcValue
+                    return optimalHyp, funcValue 
         return optimalHyp, funcValue
 
 
@@ -199,11 +155,6 @@ class BFGS(Optimizer):
         covfunc = self.model.covfunc
         likfunc = self.model.likfunc
         inffunc = self.model.inffunc
-        if isinstance(covfunc,cov.SM):
-            self.model.covfunc.initSMhypers(x,y)
-        else:
-            self._initialize(x,y)
-
         hypInArray = self._convert_to_array()
 
         try:
@@ -217,13 +168,13 @@ class BFGS(Optimizer):
                 print "Gradient and/or function calls not changing."
         except:
             self.errorCounter += 1
-            if not self.searchConfig:
+            if not self.searchConfig:         
                 raise Exception("Can not learn hyperparamters using BFGS.")
         self.trailsCounter += 1
 
 
         if self.searchConfig:
-            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange
+            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
             if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
@@ -263,14 +214,9 @@ class Minimize(Optimizer):
 
     def findMin(self, x, y, numIters = 100):
         meanfunc = self.model.meanfunc
-        covfunc  = self.model.covfunc
-        likfunc  = self.model.likfunc
-        inffunc  = self.model.inffunc
-
-        if isinstance(covfunc,cov.SM):
-            self.model.covfunc.initSMhypers(x,y)
-        else:
-            self._initialize(x,y)
+        covfunc = self.model.covfunc
+        likfunc = self.model.likfunc
+        inffunc = self.model.inffunc
         hypInArray = self._convert_to_array()
 
         try:
@@ -323,15 +269,9 @@ class SCG(Optimizer):
 
     def findMin(self, x, y, numIters = 100):
         meanfunc = self.model.meanfunc
-        covfunc  = self.model.covfunc
-        likfunc  = self.model.likfunc
-        inffunc  = self.model.inffunc
-
-        if isinstance(covfunc,cov.SM):
-            self.model.covfunc.initSMhypers(x,y)
-        else:
-            self._initialize(x,y)
-
+        covfunc = self.model.covfunc
+        likfunc = self.model.likfunc
+        inffunc = self.model.inffunc
         hypInArray = self._convert_to_array()
         try:
             opt = scg.run(self._nlzAnddnlz, hypInArray, niters = numIters)
@@ -367,7 +307,7 @@ class SCG(Optimizer):
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
                     print "[SCG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter)
-                    return optimalHyp, funcValue
+                    return optimalHyp, funcValue 
 
         return optimalHyp, funcValue
 

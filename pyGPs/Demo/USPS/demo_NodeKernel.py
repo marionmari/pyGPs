@@ -14,8 +14,7 @@
 import numpy as np
 from scipy.io import loadmat
 import matplotlib.pyplot as plt
-
-from pyGPs.Core import gp, mean, cov
+import pyGPs
 from pyGPs.GraphExtensions import graphUtil, nodeKernels
 from pyGPs.Validation import valid
 
@@ -102,8 +101,8 @@ if __name__ == "__main__":
         
     ## RBF kernel
     # initialize Gaussian process
-    model = gp.GPC()
-    k = cov.RBF()
+    model = pyGPs.GPC()
+    k = pyGPs.cov.RBF()
     model.setPrior(kernel=k)
 
     # split training and test data
@@ -122,9 +121,9 @@ if __name__ == "__main__":
 
     ## DIFFUSION Kernel
     # compute kernel matrix and initalize GP with precomputed kernel                  
-    model = gp.GPC()
+    model = pyGPs.GPC()
     M1,M2 = graphUtil.formKernelMatrix(Matrix, index_train, index_test)
-    k = cov.Pre(M1,M2)          
+    k = pyGPs.cov.Pre(M1,M2)          
     model.setPrior(kernel=k)
 
     # if you only use precomputed kernel matrix, there is no training data needed,
@@ -143,9 +142,9 @@ if __name__ == "__main__":
     
     ## SUM of DIFFUSION and RBF Kernel
     # compute kernel matrix and initalize GP with precomputed kernel                  
-    model = gp.GPC()
+    model = pyGPs.gp.GPC()
     M1,M2 = graphUtil.formKernelMatrix(Matrix, index_train, index_test)
-    k = cov.Pre(M1,M2) + cov.RBFunit()
+    k = pyGPs.cov.Pre(M1,M2) + pyGPs.cov.RBFunit()
     model.setPrior(kernel=k)
 
     # if you use combination of precomputed matrix and other kernel function,
