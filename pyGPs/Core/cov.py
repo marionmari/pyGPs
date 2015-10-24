@@ -176,7 +176,7 @@ class Kernel(object):
         elif isinstance(other, Kernel):
             return ProductOfKernel(self,other)
         else:
-            print "only numbers and Kernels are supported operand types for *"
+            print("only numbers and Kernels are supported operand types for *")
 
 
 
@@ -347,6 +347,8 @@ class FITCOfKernel(Kernel):
         xu = self.inducingInput
         if not x is None:
             try:
+                print(xu.shape)
+                print(x.shape)
                 assert(xu.shape[1] == x.shape[1])
             except AssertionError:
                 raise Exception('Dimensionality of inducing inputs must match training inputs')
@@ -475,8 +477,8 @@ class SM(Kernel):
         if D:
             self.hyp = np.random.random(Q*(1+2*D))
         else:
-	        self.hyp = hyps
-    	self.para = [Q]
+            self.hyp = hyps
+        self.para = [Q]
 
     def initSMhypers(self, x, y):
         """
@@ -540,17 +542,17 @@ class SM(Kernel):
                 d2[:, :, j] = spdist.cdist(xslice, zslice, 'sqeuclidean')
         d = np.sqrt(d2)
 
-        k = lambda (d2v, dm): np.exp(-2 * np.pi ** 2 * d2v) * np.cos(2* np.pi * dm)  # evaluation of the covariance
+        k = lambda d2v, dm: np.exp(-2 * np.pi ** 2 * d2v) * np.cos(2* np.pi * dm)  # evaluation of the covariance
         km = lambda dm: -2 * np.pi * np.tan(2 * np.pi * dm) * dm  # remainder when differentiating w.r.t. m
         kv = lambda d2v: -d2v * (2 * np.pi) ** 2  # remainder when differentiating w.r.t. v
 
         A = 0.
         c = 1.
-        qq = range(Q)
+        qq = list(range(Q))
         for q in qq:
             C = w[q] * c
             for j in range(D):
-                C = C * k((d2[:, :, j] * v[j, q], d[:, :, j] * m[j, q]))
+                C = C * k(d2[:, :, j] * v[j, q], d[:, :, j] * m[j, q])
                 A = A + C
         return A
 
@@ -582,13 +584,13 @@ class SM(Kernel):
                 d2[:, :, j] = spdist.cdist(xslice, zslice, 'sqeuclidean')
         d = np.sqrt(d2)
 
-        k = lambda (d2v, dm): np.exp(-2 * np.pi ** 2 * d2v) * np.cos(2* np.pi * dm)  # evaluation of the covariance
+        k = lambda d2v, dm: np.exp(-2 * np.pi ** 2 * d2v) * np.cos(2* np.pi * dm)  # evaluation of the covariance
         km = lambda dm: -2 * np.pi * np.tan(2 * np.pi * dm) * dm  # remainder when differentiating w.r.t. m
         kv = lambda d2v: -d2v * (2 * np.pi) ** 2  # remainder when differentiating w.r.t. v
 
         A = 0.
         c = 1.
-        qq = range(Q)
+        qq = list(range(Q))
         if der < Q:                         # compute derivative matrix wrt w
             c = 1
             qq = [der]
@@ -608,7 +610,7 @@ class SM(Kernel):
         for q in qq:
             C = w[q] * c
             for j in range(D):
-                C = C * k((d2[:, :, j] * v[j, q], d[:, :, j] * m[j, q]))
+                C = C * k(d2[:, :, j] * v[j, q], d[:, :, j] * m[j, q])
                 A = A + C
         return A
 
@@ -875,7 +877,7 @@ class RBFard(Kernel):
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0.):
         if log_ell_list is None:
-            self.hyp = [0. for i in xrange(D)] + [log_sigma]
+            self.hyp = [0. for i in range(D)] + [log_sigma]
         else:
             self.hyp = log_ell_list + [log_sigma]
 
@@ -1028,7 +1030,7 @@ class LINard(Kernel):
     '''
     def __init__(self, D=None, log_ell_list=None):
         if log_ell_list is None:
-            self.hyp = [0. for i in xrange(D)]
+            self.hyp = [0. for i in range(D)]
         else:
             self.hyp = log_ell_list
 
@@ -1125,7 +1127,7 @@ class Matern(Kernel):
         try:
             assert(d in [1,3,5,7])         # check for valid values of d
         except AssertionError:
-            print "Warning: You specified d to be neither 1,3,5 nor 7. We set it to d=3. "
+            print("Warning: You specified d to be neither 1,3,5 nor 7. We set it to d=3. ")
             d = 3
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -1151,7 +1153,7 @@ class Matern(Kernel):
         try:
             assert(d in [1,3,5,7])         # check for valid values of d
         except AssertionError:
-            print "Warning: You specified d to be neither 1,3,5 nor 7. We set to d=3. "
+            print("Warning: You specified d to be neither 1,3,5 nor 7. We set to d=3. ")
             d = 3
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -1359,7 +1361,7 @@ class RQard(Kernel):
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0., log_alpha=0.):
         if log_ell_list is None:
-            self.hyp = [0. for i in xrange(D)] + [ log_sigma, log_alpha ]
+            self.hyp = [0. for i in range(D)] + [ log_sigma, log_alpha ]
         else:
             self.hyp = log_ell_list + [ log_sigma, log_alpha ]
 

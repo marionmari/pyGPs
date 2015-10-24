@@ -22,7 +22,7 @@ import numpy as np
 
 def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = False, pointlog = False, scalelog = False, tolX = 1.0e-8, tolO = 1.0e-8, eval = None): 
     '''Scaled conjugate gradient optimization. '''
-    if display: print '\n***** starting optimization (SCG) *****\n'
+    if display: print('\n***** starting optimization (SCG) *****\n')
     nparams = len(x);
     #  Check gradients
     if gradcheck:
@@ -118,7 +118,7 @@ def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = Fals
             #scalelog(j) = beta;     # Current scale parameter
             pass
         if display > 0:
-            print('***** Cycle %4d  Error %11.6f  Scale %e' %( j, fnow, beta))
+            print(('***** Cycle %4d  Error %11.6f  Scale %e' %( j, fnow, beta)))
 
         if (success == 1):
         # Test for termination
@@ -167,7 +167,7 @@ def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = Fals
     # iterations.
     # options(8) = fold;
     if (display):
-        print "maximum number of iterations reached"
+        print("maximum number of iterations reached")
     if eval is not None:
         return x, listF, evalList, time
     else:

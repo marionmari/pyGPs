@@ -24,6 +24,9 @@ import sys
 from math import sqrt
 import scipy.linalg.lapack as lapack
 
+def cmp(a, b):
+    return int(a > b) - int(a < b)
+
 def jitchol(A,maxtries=5):
     ''' Copyright (c) 2012, GPy authors (James Hensman, Nicolo Fusi, Ricardo Andrade,
         Nicolas Durrande, Alan Saul, Max Zwiessele, Neil D. Lawrence).
@@ -60,17 +63,17 @@ def jitchol(A,maxtries=5):
     else:
         diagA = np.diag(A)
         if np.any(diagA <= 0.):
-            raise np.linalg.LinAlgError, "kernel matrix not positive definite: non-positive diagonal elements"
+            raise np.linalg.LinAlgError("kernel matrix not positive definite: non-positive diagonal elements")
         jitter = diagA.mean() * 1e-9
         while maxtries > 0 and np.isfinite(jitter):
-            print 'Warning: adding jitter of {:.10e} to diagnol of kernel matrix for numerical stability'.format(jitter)
+            print('Warning: adding jitter of {:.10e} to diagnol of kernel matrix for numerical stability'.format(jitter))
             try:
                 return np.linalg.cholesky(A + np.eye(A.shape[0]).T * jitter, lower=True)
             except:
                 jitter *= 10
             finally:
                 maxtries -= 1
-        raise np.linalg.LinAlgError, "kernel matrix not positive definite, even with jitter."
+        raise np.linalg.LinAlgError("kernel matrix not positive definite, even with jitter.")
 
 
 

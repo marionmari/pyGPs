@@ -85,7 +85,7 @@ class Mean(object):
         elif isinstance(other, Mean):
             return ProductOfMean(self,other)
         else:
-            print "only numbers and Means are allowed for *"
+            print("only numbers and Means are allowed for *")
 
 
 
@@ -105,7 +105,7 @@ class Mean(object):
         if isinstance(number, int) and number > 0:
             return PowerOfMean(self,number)
         else:
-            print "only non-zero integers are supported for **"
+            print("only non-zero integers are supported for **")
 
 
 
@@ -343,7 +343,7 @@ class Linear(Mean):
         	if D is None:
         		self.hyp = [0.5]
         	else:
-	            self.hyp = [0.5 for i in xrange(D)]
+	            self.hyp = [0.5 for i in range(D)]
         else:
             self.hyp = alpha_list
 

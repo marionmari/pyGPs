@@ -56,7 +56,7 @@ class InfTests(unittest.TestCase):
 
 
     def test_infExact(self):
-        print "testing exact inference..."
+        print("testing exact inference...")
         inffunc = pyGPs.inf.Exact()
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF()
@@ -66,7 +66,7 @@ class InfTests(unittest.TestCase):
 
 
     def test_infFITC_Exact(self):
-        print "testing FITC inference..."
+        print("testing FITC inference...")
         inffunc = pyGPs.inf.FITC_Exact()
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF().fitc(self.u)
@@ -76,7 +76,7 @@ class InfTests(unittest.TestCase):
 
 
     def test_infEP(self):
-        print "testing EP inference..."
+        print("testing EP inference...")
         inffunc = pyGPs.inf.EP()
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF()
@@ -86,7 +86,7 @@ class InfTests(unittest.TestCase):
 
 
     def test_infFITC_EP(self):
-        print "testing FITC EP inference..."
+        print("testing FITC EP inference...")
         inffunc = pyGPs.inf.FITC_EP()
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF().fitc(self.u)
@@ -96,7 +96,7 @@ class InfTests(unittest.TestCase):
 
 
     def test_infLaplace(self):
-        print "testing Laplace inference..."
+        print("testing Laplace inference...")
         inffunc = pyGPs.inf.Laplace()
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF()
@@ -106,7 +106,7 @@ class InfTests(unittest.TestCase):
 
 
     def test_infFITC_Laplace(self):
-        print "testing FITC EP inference..."
+        print("testing FITC EP inference...")
         inffunc = pyGPs.inf.FITC_Laplace()
         meanfunc = pyGPs.mean.Zero()
         covfunc = pyGPs.cov.RBF().fitc(self.u)
@@ -126,6 +126,6 @@ class InfTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print "Running unit tests..."
+    print("Running unit tests...")
     unittest.main()
 

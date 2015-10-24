@@ -1,3 +1,3 @@
-import scg
-import minimize
-import conf
+from . import scg
+from . import minimize
+from . import conf

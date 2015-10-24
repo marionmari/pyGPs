@@ -162,6 +162,6 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
             x3 = 1/(1-d0)                     
             ls_failed = 1                              # this line search failed
     
-    if verbose: print "\n"
+    if verbose: print("\n")
     #print fX
     return X, fX, i

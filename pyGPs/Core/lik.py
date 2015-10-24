@@ -39,7 +39,7 @@
 
 import numpy as np
 from scipy.special import erf
-import inf
+from . import inf
 
 class Likelihood(object):
     """Base function for Likelihood function"""

@@ -110,11 +110,11 @@ def rwKernel(A, p=1, a=2):
     :return: kernel matrix
     '''
     if type(p) != int:
-	p = int(p)
+        p = int(p)
     if p < 1:
-	raise Exception('Step parameter p needs to be larger than 0.') 	
+        raise Exception('Step parameter p needs to be larger than 0.') 	
     if a <= 1:	
-	a=1.0001
+        a=1.0001
     I = np.identity(A.shape[0])
     L = normLap(A)
     K = np.linalg.matrix_power( a*I - L, p)	

@@ -1,3 +1,3 @@
-import graphKernels
-import graphUtil
-import nodeKernels
+from . import graphKernels
+from . import graphUtil
+from . import nodeKernels

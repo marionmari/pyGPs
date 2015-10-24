@@ -43,9 +43,9 @@
 
 
 import numpy as np
-import lik, cov
+from . import cov
 from copy import copy, deepcopy
-from tools import solve_chol, brentmin, cholupdate, jitchol
+from .tools import solve_chol, brentmin, cholupdate, jitchol
 np.seterr(all='ignore')
 
 
@@ -96,11 +96,11 @@ class dnlZStruct(object):
         self.cov = []
         self.lik = []
         if m.hyp:
-            self.mean = [0 for i in xrange(len(m.hyp))]
+            self.mean = [0 for i in range(len(m.hyp))]
         if c.hyp:
-            self.cov  = [0 for i in xrange(len(c.hyp))]
+            self.cov  = [0 for i in range(len(c.hyp))]
         if l.hyp:
-            self.lik  = [0 for i in xrange(len(l.hyp))]
+            self.lik  = [0 for i in range(len(l.hyp))]
 
     def __str__(self):
         value = "Derivatives of mean, cov and lik functions:\n" +\
@@ -187,7 +187,7 @@ class Inference(object):
         u = np.diag(U)
         signU = np.prod(np.sign(u))  # sign of U
         detP = 1                     # compute sign (and det) of the permutation matrix P
-        p = np.dot(P,np.array(range(n)).T)
+        p = np.dot(P,np.array(list(range(n))).T)
         for ii in range(n):
             if ii != p[ii]:
                 detP = -detP
@@ -336,6 +336,7 @@ class Exact(Inference):
     def __init__(self):
         self.name = "Exact inference"
     def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
+        from . import lik
         if not isinstance(likfunc, lik.Gauss):
             raise Exception ('Exact inference only possible with Gaussian likelihood')
         n, D = x.shape
@@ -381,6 +382,7 @@ class FITC_Exact(Inference):
         self.name = 'FICT exact inference'
 
     def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
+        from . import lik
         if not isinstance(likfunc, lik.Gauss):                  # NOTE: no explicit call to likGauss
             raise Exception ('Exact inference only possible with Gaussian likelihood')
         if not isinstance(covfunc, cov.FITCOfKernel):
@@ -737,7 +739,7 @@ class EP(Inference):
         nlZ_old = np.inf; sweep = 0               # converged, max. sweeps or min. sweeps?
         while (np.abs(nlZ-nlZ_old) > tol and sweep < max_sweep) or (sweep < min_sweep):
             nlZ_old = nlZ; sweep += 1
-            rperm = xrange(n)                     # randperm(n)
+            rperm = range(n)                     # randperm(n)
             for ii in rperm:                      # iterate EP updates (in random order) over examples
                 tau_ni = 1/Sigma[ii,ii] - ttau[ii]#  first find the cavity distribution ..
                 nu_ni  = mu[ii]/Sigma[ii,ii] + m[ii]*tau_ni - tnu[ii]    # .. params tau_ni and nu_ni
@@ -859,7 +861,7 @@ class FITC_EP(Inference):
         while (np.abs(nlZ-nlZ_old) > tol and sweep < max_sweep) or (sweep < min_sweep):
             nlZ_old = nlZ
             sweep += 1
-            rperm = range(n)                            # randperm(n)
+            rperm = list(range(n))                            # randperm(n)
             for ii in rperm:                            # iterate EP updates (in random order) over examples
                 p_i = np.reshape(P[:,ii],(P.shape[0],1))
                 t = np.dot(R,np.dot(R0,p_i))            # temporary variables

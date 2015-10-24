@@ -42,8 +42,8 @@
 import itertools
 import numpy as np
 import matplotlib.pyplot as plt
-import inf, mean, lik, cov, opt
-from tools import unique, jitchol, solve_chol
+from . import inf, mean, lik, cov, opt
+from .tools import unique, jitchol, solve_chol
 from copy import deepcopy
 import pyGPs
 
@@ -375,8 +375,8 @@ class GP(object):
         L     = self.posterior.L
         sW    = self.posterior.sW
 
-        nz = range(len(alpha[:,0]))         # non-sparse representation
-        if L == []:                         # in case L is not provided, we compute it
+        nz = list(range(len(alpha[:,0])))         # non-sparse representation
+        if L is None or L.size == 0:                         # in case L is not provided, we compute it
             K = covfunc.getCovMatrix(x=x[nz,:], mode='train')
             #L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
             L = jitchol( (np.eye(len(nz)) + np.dot(sW,sW.T)*K).T )
@@ -390,7 +390,7 @@ class GP(object):
         fs2 = np.zeros((ns,1))
         lp  = np.zeros((ns,1))
         while nact<=ns-1:                              # process minibatches of test cases to save memory
-            id  = range(nact,min(nact+nperbatch,ns))   # data points to process
+            id  = list(range(nact,min(nact+nperbatch,ns)))   # data points to process
             kss = covfunc.getCovMatrix(z=xs[id,:], mode='self_test')    # self-variances
             Ks  = covfunc.getCovMatrix(x=x[nz,:], z=xs[id,:], mode='cross')   # cross-covariances
             ms  = meanfunc.getMean(xs[id,:])
@@ -465,7 +465,7 @@ class GP(object):
         L     = post.L
         sW    = post.sW
 
-        nz = range(len(alpha[:,0]))         # non-sparse representation
+        nz = list(range(len(alpha[:,0])))         # non-sparse representation
         if L == []:                         # in case L is not provided, we compute it
             K = covfunc.getCovMatrix(x=x[nz,:], mode='train')
             #L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
@@ -480,7 +480,7 @@ class GP(object):
         fs2 = np.zeros((ns,1))
         lp  = np.zeros((ns,1))
         while nact<=ns-1:                              # process minibatches of test cases to save memory
-            id  = range(nact,min(nact+nperbatch,ns))   # data points to process
+            id  = list(range(nact,min(nact+nperbatch,ns)))   # data points to process
             kss = covfunc.getCovMatrix(z=xs[id,:], mode='self_test')    # self-variances
             Ks  = covfunc.getCovMatrix(x=x[nz,:], z=xs[id,:], mode='cross')   # cross-covariances
             ms  = meanfunc.getMean(xs[id,:])
@@ -784,7 +784,7 @@ class GPMC(object):
         :param str newLik: 'Logistic'
         '''
         if newLik == "Logistic":
-            raise "Logistic likelihood is currently not implemented."
+            raise Exception("Logistic likelihood is currently not implemented.")
             #self.likfunc = lik.Logistic()
         else:
             raise Exception('Possible lik values are "Logistic".')
@@ -830,8 +830,8 @@ class GPMC(object):
             xs = np.reshape(xs, (xs.shape[0],1))
 
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
-        for i in xrange(self.n_class):         # classifier for class i...
-            for j in xrange(i+1,self.n_class): # ...and class j
+        for i in range(self.n_class):         # classifier for class i...
+            for j in range(i+1,self.n_class): # ...and class j
                 x,y = self.createBinaryClass(i,j)
                 model = GPC()
                 if self.newPrior:
@@ -868,8 +868,8 @@ class GPMC(object):
             xs = np.reshape(xs, (xs.shape[0],1))
 
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
-        for i in xrange(self.n_class):         # classifier for class i...
-            for j in xrange(i+1,self.n_class): # ...and class j
+        for i in range(self.n_class):         # classifier for class i...
+            for j in range(i+1,self.n_class): # ...and class j
                 x,y = self.createBinaryClass(i,j)
                 model = GPC()
                 if self.newPrior:
@@ -904,7 +904,7 @@ class GPMC(object):
         '''
         class_i = []
         class_j = []
-        for index in xrange(len(self.y_all)):       # check all classes
+        for index in range(len(self.y_all)):       # check all classes
             target = self.y_all[index]
             if target == i:
                 class_i.append(index)
@@ -961,7 +961,7 @@ class GP_FITC(GP):
         # get range of x in each dimension
         # 5 uniformally selected value for each dimension
         gridAxis=[]
-        for d in xrange(x.shape[1]):
+        for d in range(x.shape[1]):
             column = x[:,d]
             mini = np.min(column)
             maxi = np.max(column)

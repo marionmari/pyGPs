@@ -1,9 +1,9 @@
-import inf
-import cov
-import mean
-import lik
-import gp
-import opt
+from . import inf
+from . import cov
+from . import mean
+from . import lik
+from . import gp
+from . import opt
 
 
 
