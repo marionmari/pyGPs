@@ -1,3 +1,4 @@
+from __future__ import print_function
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -21,8 +22,8 @@ from scipy.io import loadmat
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
 # Here, the focus is on multi-class classification.
 
-print ''
-print '---------------------GPMC DEMO-----------------------'
+print('')
+print('---------------------GPMC DEMO-----------------------')
 
 # GPMC is NOT based on multi-class Laplace Approximation.
 # It works as a one vs. one classification wrapper
@@ -82,7 +83,7 @@ predictive_class = np.reshape(predictive_class, (predictive_class.shape[0],1))
 
 # Accuracy of recognized digit
 acc = valid.ACC(predictive_class, ys)
-print "Accuracy of recognizing hand-writen digits:", round(acc,2)
+print("Accuracy of recognizing hand-writen digits:", round(acc,2))
 
 
 #----------------------------------------------------------------------
@@ -99,5 +100,5 @@ model.useInference("Laplace")
 # there is also an option to predict without optimization
 # model.fitAndPredict(xs)
 
-print '--------------------END OF DEMO-----------------------'
+print('--------------------END OF DEMO-----------------------')
 

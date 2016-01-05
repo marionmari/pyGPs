@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import range
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -37,56 +39,56 @@ class MeanTests(unittest.TestCase):
     def checkMean(self, m):
         mean = m.getMean(x=self.x)             # get mean
         self.checkMeanOutput(mean)
-        for der in xrange(len(m.hyp)):         # get derivatives
+        for der in range(len(m.hyp)):         # get derivatives
             derivative = m.getDerMatrix(x=self.x, der=der)
             self.checkDerOutput(derivative)
 
 
     def test_meanZero(self):
-        print "testing meanZero..."
+        print("testing meanZero...")
         m = pyGPs.mean.Zero()
         self.checkMean(m)
 
 
 
     def test_meanLinear(self):
-        print "testing meanLinear..."
+        print("testing meanLinear...")
         m = pyGPs.mean.Linear(D=self.x.shape[1]) 
         self.checkMean(m)
 
 
     def test_meanOne(self):
-        print "testing meanOne..."
+        print("testing meanOne...")
         m = pyGPs.mean.One() 
         self.checkMean(m)
 
 
     def test_meanConst(self):
-        print "testing meanConst..."
+        print("testing meanConst...")
         m = pyGPs.mean.Const() 
         self.checkMean(m)
 
 
     def test_meanScale(self):
-        print "testing (compositing mean) muliply by a scalar..."
+        print("testing (compositing mean) muliply by a scalar...")
         m = pyGPs.mean.One() * 6
         self.checkMean(m)   
 
 
     def test_meanSum(self):
-        print "testing (compositing mean) sum of two means..."
+        print("testing (compositing mean) sum of two means...")
         m = pyGPs.mean.One() + pyGPs.mean.Const() 
         self.checkMean(m)
 
 
     def test_meanProduct(self):
-        print "testing (compositing mean) product of two means..."
+        print("testing (compositing mean) product of two means...")
         m = pyGPs.mean.One() * pyGPs.mean.Const() 
         self.checkMean(m)
 
 
     def test_meanPower(self):
-        print "testing (compositing mean) power of a mean..."
+        print("testing (compositing mean) power of a mean...")
         m = pyGPs.mean.Const() ** 2
         self.checkMean(m)
 
@@ -102,6 +104,6 @@ class MeanTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print "Running unit tests..."
+    print("Running unit tests...")
     unittest.main()
 

@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -74,7 +76,7 @@ def normalizeKernel(K):
     '''
     Kdiag = np.atleast_2d(np.diag(K))
     normalizers = np.sqrt(Kdiag*Kdiag.T)
-    K_norm = K/normalizers
+    K_norm = old_div(K,normalizers)
     return K_norm
 
 

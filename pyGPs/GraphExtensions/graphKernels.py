@@ -1,3 +1,8 @@
+from __future__ import division
+from __future__ import print_function
+from builtins import str
+from builtins import range
+from past.utils import old_div
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -68,7 +73,7 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
     ## INITIALIZE label probabilities of labeled nodes (num_nodes x num_labels)
     if l.shape[1]==1:
         lab_prob = np.zeros((num_nodes,num_labels),dtype=np.float64)            
-        for i in xrange(num_nodes):
+        for i in range(num_nodes):
             if l[i,0] > 0:
                 lab_prob[i,l[i,0]-1] = 1
     else: 
@@ -83,7 +88,7 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
     ## INITIALIZE unlabeled/uninitialized nodes UNIFORMLY
     idx_unif = np.where(np.sum(lab_prob, axis=1)==0)[0]         
     if idx_unif.shape[0] != 0:
-        lab_prob[idx_unif,:] = 1./lab_prob.shape[1] 
+        lab_prob[idx_unif,:] = old_div(1.,lab_prob.shape[1]) 
     ## row normalize A -> transition matrix T
     if (ktype=='label_propagation') or (ktype=='label_diffusion'):
         row_sums = np.array(A.sum(axis=1))[:,0] 
@@ -93,12 +98,12 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
     #===========================================================================
     # ## PROPAGATION KERNEL ITERATIONS
     #===========================================================================
-    for h in xrange(h_max+1):  
-        print 'ITERATION: ', h
+    for h in range(h_max+1):  
+        print('ITERATION: ', h)
         if h > 0:
             ## LABEL UPDATE 
             if showEachStep:
-                print '...computing LABEL UPDATE'
+                print('...computing LABEL UPDATE')
             
             if ktype == 'label_propagation':
                 lab_prob[idx,:] = lab_orig[idx,:]   # PUSH BACK original LABELS
@@ -112,7 +117,7 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
                 # y(t+1) = alpha*S*y(t)+(1-alpha)*y(0)
                 alpha = 0.8
                 # compute S
-                diag = np.array(A.sum(axis=1)).T**(-1/2)
+                diag = np.array(A.sum(axis=1)).T**(old_div(-1,2))
                 D = spsp.lil_matrix((A.shape[0], A.shape[1]), dtype=float) #
                 D.setdiag(diag[0,:])
                 D = D.tocsr()
@@ -121,7 +126,7 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
         
         ## COMPUTE hashvalues 
         if showEachStep:
-            print '...computing hashvalues'
+            print('...computing hashvalues')
         # determine path to take depending on chosen distance
         use_cauchy = (p =='L1') or (p =='tv')
         take_sqrt  = (p =='hellinger') 
@@ -136,18 +141,18 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
         b = w * np.random.rand()         
         # compute hashes
         # hashLabels is a Vector with length: number of nodes (hashvalue for respective node)
-        hashLabels = (np.dot(lab_prob,v) + b) / w
+        hashLabels = old_div((np.dot(lab_prob,v) + b), w)
         hashLabels = np.floor(hashLabels)                           # take floor
         uniqueHash, hashLabels = np.unique(hashLabels, return_inverse=True)  # map to consecutive integer from 0        
         ## COMPUTE kernel contribution 
         if showEachStep:
-            print '...computing KERNEL contribution'                     
+            print('...computing KERNEL contribution')                     
         # aggregate counts on graphs
         # counts is a matrix: number of graphs x number of hashlabels
         num_bins = len(uniqueHash)
         counts = np.zeros((num_graphs, num_bins))      # init counts matrix 
         # accumulate counts of hash labels                              
-        for i in xrange(num_nodes):
+        for i in range(num_nodes):
             counts[ (gr_id[i,0]-1), hashLabels[i] ] +=1
             
         # compute base kernel (here: LINEAR kernel)
@@ -163,7 +168,7 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
             K[:,:,h] = K_h
         
         if showEachStep:
-            print K[:,:,h] 
+            print(K[:,:,h]) 
 
     ## VISUALIZE KERNELS
     if VIS:  

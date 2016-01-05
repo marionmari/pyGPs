@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import print_function
+from past.utils import old_div
 
 #===============================================================================
 #   This program is distributed WITHOUT ANY WARRANTY; without even the implied 
@@ -47,7 +50,7 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
     EXT = 3.0;              # extrapolate maximum 3 times the current step-size
     MAX = 20;                     # max 20 function evaluations per line search
     RATIO = 10;                                   # maximum allowed slope ratio
-    SIG = 0.1;RHO = SIG/2;# SIG and RHO are the constants controlling the Wolfe-
+    SIG = 0.1;RHO = old_div(SIG,2);# SIG and RHO are the constants controlling the Wolfe-
     #Powell conditions. SIG is the maximum allowed absolute ratio between
     #previous and new slopes (derivatives in the search direction), thus setting
     #SIG to low (positive) values forces higher precision in the line-searches.
@@ -66,7 +69,7 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
     i = i + (length<0)                                          # count epochs?!
     s = -df0 
     d0 = -dot(s,s)               # initial search direction (steepest) and slope
-    x3 = red/(1.0-d0)                              # initial step is red/(|s|+1)
+    x3 = old_div(red,(1.0-d0))                              # initial step is red/(|s|+1)
     
     while i < abs(length):                                  # while not finished
         i = i + (length>0)                                  # count iterations?!
@@ -89,7 +92,7 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
                         return
                     success = 1
                 except:                     # catch any error which occured in f
-                    x3 = (x2+x3)/2                        # bisect and try again
+                    x3 = old_div((x2+x3),2)                        # bisect and try again
             if f3 < F0:
                 X0 = X+x3*s; F0 = f3; dF0 = df3               # keep best values
             d3 = dot(df3,s)                                          # new slope
@@ -122,18 +125,18 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
             else:
                 x2 = x3; f2 = f3; d2 = d3              # move point 3 to point 2
             if f4 > f0:           
-                x3 = x2-(0.5*d2*(x4-x2)**2)/(f4-f2-d2*(x4-x2))
+                x3 = x2-old_div((0.5*d2*(x4-x2)**2),(f4-f2-d2*(x4-x2)))
                                                        # quadratic interpolation
             else:
                 A = 6*(f2-f4)/(x4-x2)+3*(d4+d2)            # cubic interpolation
                 B = 3*(f4-f2)-(2*d2+d4)*(x4-x2)
                 if A != 0:
-                    x3=x2+(sqrt(B*B-A*d2*(x4-x2)**2)-B)/A
+                    x3=x2+old_div((sqrt(B*B-A*d2*(x4-x2)**2)-B),A)
                                                       # num. error possible, ok!
                 else:
                     x3 = inf
             if isnan(x3) or isinf(x3):
-                x3 = (x2+x4)/2       # if we had a numerical problem then bisect
+                x3 = old_div((x2+x4),2)       # if we had a numerical problem then bisect
             x3 = max(min(x3, x4-INT*(x4-x2)),x2+INT*(x4-x2))  
                                                         # don't accept too close
             result3 = f(X+x3*s, *args)
@@ -152,16 +155,16 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
             d3 = d0; d0 = dot(df0,s)
             if d0 > 0:                              # new slope must be negative
                 s = -df0; d0 = -dot(s,s)      # otherwise use steepest direction
-            x3 = x3 * min(RATIO, d3/(d0-SMALL))      # slope ratio but max RATIO
+            x3 = x3 * min(RATIO, old_div(d3,(d0-SMALL)))      # slope ratio but max RATIO
             ls_failed = 0                        # this line search did not fail
         else:
             X = X0; f0 = F0; df0 = dF0               # restore best point so far
             if ls_failed or (i>abs(length)): # line search failed twice in a row
                 break                     # or we ran out of time, so we give up
             s = -df0; d0 = -dot(s,s)                              # try steepest
-            x3 = 1/(1-d0)                     
+            x3 = old_div(1,(1-d0))                     
             ls_failed = 1                              # this line search failed
     
-    if verbose: print "\n"
+    if verbose: print("\n")
     #print fX
     return X, fX, i

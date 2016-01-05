@@ -1,3 +1,4 @@
-import graphKernels
-import graphUtil
-import nodeKernels
+from __future__ import absolute_import
+from . import graphKernels
+from . import graphUtil
+from . import nodeKernels

@@ -1,3 +1,9 @@
+from __future__ import division
+from __future__ import absolute_import
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -42,8 +48,8 @@
 import itertools
 import numpy as np
 import matplotlib.pyplot as plt
-import inf, mean, lik, cov, opt
-from tools import unique, jitchol, solve_chol
+from . import inf, mean, lik, cov, opt
+from .tools import unique, jitchol, solve_chol
 from copy import deepcopy
 import pyGPs
 
@@ -183,7 +189,7 @@ class GP(object):
         fig = plt.figure()
         plt.plot(x1[:,0], x1[:,1], 'b+', markersize = 12)
         plt.plot(x2[:,0], x2[:,1], 'r+', markersize = 12)
-        pc = plt.contour(t1, t2, np.reshape(p2/(p1+p2), (t1.shape[0],t1.shape[1]) ))
+        pc = plt.contour(t1, t2, np.reshape(old_div(p2,(p1+p2)), (t1.shape[0],t1.shape[1]) ))
         fig.colorbar(pc)
         plt.grid()
         if axisvals:
@@ -375,7 +381,7 @@ class GP(object):
         L     = self.posterior.L
         sW    = self.posterior.sW
 
-        nz = range(len(alpha[:,0]))         # non-sparse representation
+        nz = list(range(len(alpha[:,0])))         # non-sparse representation
         if L == []:                         # in case L is not provided, we compute it
             K = covfunc.getCovMatrix(x=x[nz,:], mode='train')
             #L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
@@ -390,13 +396,13 @@ class GP(object):
         fs2 = np.zeros((ns,1))
         lp  = np.zeros((ns,1))
         while nact<=ns-1:                              # process minibatches of test cases to save memory
-            id  = range(nact,min(nact+nperbatch,ns))   # data points to process
+            id  = list(range(nact,min(nact+nperbatch,ns)))   # data points to process
             kss = covfunc.getCovMatrix(z=xs[id,:], mode='self_test')    # self-variances
             Ks  = covfunc.getCovMatrix(x=x[nz,:], z=xs[id,:], mode='cross')   # cross-covariances
             ms  = meanfunc.getMean(xs[id,:])
             N   = (alpha.shape)[1]                     # number of alphas (usually 1; more in case of sampling)
             Fmu = np.tile(ms,(1,N)) + np.dot(Ks.T,alpha[nz])          # conditional mean fs|f
-            fmu[id] = np.reshape(Fmu.sum(axis=1)/N,(len(id),1))       # predictive means
+            fmu[id] = np.reshape(old_div(Fmu.sum(axis=1),N),(len(id),1))       # predictive means
             if Ltril: # L is triangular => use Cholesky parameters (alpha,sW,L)
                 V       = np.linalg.solve(L.T,np.tile(sW,(1,len(id)))*Ks)
                 fs2[id] = kss - np.array([(V*V).sum(axis=0)]).T             # predictive variances
@@ -408,9 +414,9 @@ class GP(object):
                 Lp, Ymu, Ys2 = likfunc.evaluate(None,Fmu[:],Fs2[:],None,None,3)
             else:
                 Lp, Ymu, Ys2 = likfunc.evaluate(np.tile(ys[id],(1,N)), Fmu[:], Fs2[:],None,None,3)
-            lp[id]  = np.reshape( np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1)/N , (len(id),1) )   # log probability; sample averaging
-            ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
-            ys2[id] = np.reshape( np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1)/N , (len(id),1) ) # .. variance
+            lp[id]  = np.reshape( old_div(np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1),N) , (len(id),1) )   # log probability; sample averaging
+            ymu[id] = np.reshape( old_div(np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1),N) ,(len(id),1) )  # predictive mean ys|y and ...
+            ys2[id] = np.reshape( old_div(np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1),N) , (len(id),1) ) # .. variance
             nact = id[-1]+1                  # set counter to index of next data point
         self.ym = ymu
         self.ys2 = ys2
@@ -465,7 +471,7 @@ class GP(object):
         L     = post.L
         sW    = post.sW
 
-        nz = range(len(alpha[:,0]))         # non-sparse representation
+        nz = list(range(len(alpha[:,0])))         # non-sparse representation
         if L == []:                         # in case L is not provided, we compute it
             K = covfunc.getCovMatrix(x=x[nz,:], mode='train')
             #L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
@@ -480,13 +486,13 @@ class GP(object):
         fs2 = np.zeros((ns,1))
         lp  = np.zeros((ns,1))
         while nact<=ns-1:                              # process minibatches of test cases to save memory
-            id  = range(nact,min(nact+nperbatch,ns))   # data points to process
+            id  = list(range(nact,min(nact+nperbatch,ns)))   # data points to process
             kss = covfunc.getCovMatrix(z=xs[id,:], mode='self_test')    # self-variances
             Ks  = covfunc.getCovMatrix(x=x[nz,:], z=xs[id,:], mode='cross')   # cross-covariances
             ms  = meanfunc.getMean(xs[id,:])
             N   = (alpha.shape)[1]                     # number of alphas (usually 1; more in case of sampling)
             Fmu = np.tile(ms,(1,N)) + np.dot(Ks.T,alpha[nz])          # conditional mean fs|f
-            fmu[id] = np.reshape(Fmu.sum(axis=1)/N,(len(id),1))       # predictive means
+            fmu[id] = np.reshape(old_div(Fmu.sum(axis=1),N),(len(id),1))       # predictive means
             if Ltril: # L is triangular => use Cholesky parameters (alpha,sW,L)
                 V       = np.linalg.solve(L.T,np.tile(sW,(1,len(id)))*Ks)
                 fs2[id] = kss - np.array([(V*V).sum(axis=0)]).T             # predictive variances
@@ -498,9 +504,9 @@ class GP(object):
                 [Lp, Ymu, Ys2] = likfunc.evaluate(None,Fmu[:],Fs2[:],None,None,3)
             else:
                 [Lp, Ymu, Ys2] = likfunc.evaluate(np.tile(ys[id],(1,N)), Fmu[:], Fs2[:],None,None,3)
-            lp[id]  = np.reshape( np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1)/N , (len(id),1) )   # log probability; sample averaging
-            ymu[id] = np.reshape( np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1)/N ,(len(id),1) )  # predictive mean ys|y and ...
-            ys2[id] = np.reshape( np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1)/N , (len(id),1) ) # .. variance
+            lp[id]  = np.reshape( old_div(np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1),N) , (len(id),1) )   # log probability; sample averaging
+            ymu[id] = np.reshape( old_div(np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1),N) ,(len(id),1) )  # predictive mean ys|y and ...
+            ys2[id] = np.reshape( old_div(np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1),N) , (len(id),1) ) # .. variance
             nact = id[-1]+1                  # set counter to index of next data point
         self.ym  = ymu
         self.ys2 = ys2
@@ -784,7 +790,7 @@ class GPMC(object):
         :param str newLik: 'Logistic'
         '''
         if newLik == "Logistic":
-            raise "Logistic likelihood is currently not implemented."
+            raise Exception("Logistic likelihood is currently not implemented.")
             #self.likfunc = lik.Logistic()
         else:
             raise Exception('Possible lik values are "Logistic".')
@@ -830,8 +836,8 @@ class GPMC(object):
             xs = np.reshape(xs, (xs.shape[0],1))
 
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
-        for i in xrange(self.n_class):         # classifier for class i...
-            for j in xrange(i+1,self.n_class): # ...and class j
+        for i in range(self.n_class):         # classifier for class i...
+            for j in range(i+1,self.n_class): # ...and class j
                 x,y = self.createBinaryClass(i,j)
                 model = GPC()
                 if self.newPrior:
@@ -868,8 +874,8 @@ class GPMC(object):
             xs = np.reshape(xs, (xs.shape[0],1))
 
         predictive_vote = np.zeros((xs.shape[0],self.n_class))
-        for i in xrange(self.n_class):         # classifier for class i...
-            for j in xrange(i+1,self.n_class): # ...and class j
+        for i in range(self.n_class):         # classifier for class i...
+            for j in range(i+1,self.n_class): # ...and class j
                 x,y = self.createBinaryClass(i,j)
                 model = GPC()
                 if self.newPrior:
@@ -904,7 +910,7 @@ class GPMC(object):
         '''
         class_i = []
         class_j = []
-        for index in xrange(len(self.y_all)):       # check all classes
+        for index in range(len(self.y_all)):       # check all classes
             target = self.y_all[index]
             if target == i:
                 class_i.append(index)
@@ -961,7 +967,7 @@ class GP_FITC(GP):
         # get range of x in each dimension
         # 5 uniformally selected value for each dimension
         gridAxis=[]
-        for d in xrange(x.shape[1]):
+        for d in range(x.shape[1]):
             column = x[:,d]
             mini = np.min(column)
             maxi = np.max(column)

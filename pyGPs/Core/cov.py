@@ -1,3 +1,9 @@
+from __future__ import division
+from __future__ import print_function
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -66,8 +72,8 @@ class Kernel(object):
 
     def __repr__(self):
         strvalue =str(type(self))+': to get the kernel matrix or kernel derviatives use: \n'+\
-	    	  'model.covfunc.getCovMatrix()\n'+\
-		  'model.covfunc.getDerMatrix()'
+          'model.covfunc.getCovMatrix()\n'+\
+          'model.covfunc.getDerMatrix()'
         return strvalue
 
 
@@ -176,7 +182,7 @@ class Kernel(object):
         elif isinstance(other, Kernel):
             return ProductOfKernel(self,other)
         else:
-            print "only numbers and Kernels are supported operand types for *"
+            print("only numbers and Kernels are supported operand types for *")
 
 
 
@@ -411,9 +417,9 @@ class Gabor(Kernel):
             nn, D = z.shape
             A = np.zeros((nn, 1))
         elif mode == 'train':                 # compute covariance matix for dataset x
-            A = spdist.cdist(x / ell, x / ell, 'sqeuclidean')
+            A = spdist.cdist(old_div(x, ell), old_div(x, ell), 'sqeuclidean')
         elif mode == 'cross':                 # compute covariance between data sets x and z
-            A = spdist.cdist(x / ell, z / ell, 'sqeuclidean')
+            A = spdist.cdist(old_div(x, ell), old_div(z, ell), 'sqeuclidean')
         dp = 2 * np.pi * np.sqrt(A) * ell / p
         A = np.exp(-0.5 * A) * np.cos(dp)
         return A
@@ -426,9 +432,9 @@ class Gabor(Kernel):
             nn, D = z.shape
             A = np.zeros((nn, 1))
         elif mode == 'train':                 # compute covariance matix for dataset x
-            A = spdist.cdist(x / ell, x / ell, 'sqeuclidean')
+            A = spdist.cdist(old_div(x, ell), old_div(x, ell), 'sqeuclidean')
         elif mode == 'cross':                 # compute covariance between data sets x and z
-            A = spdist.cdist(x / ell, z / ell, 'sqeuclidean')
+            A = spdist.cdist(old_div(x, ell), old_div(z, ell), 'sqeuclidean')
         dp = 2 * np.pi * np.sqrt(A) * ell / p
 
         if der == 0:                          # compute derivative matrix wrt 1st parameter
@@ -475,8 +481,8 @@ class SM(Kernel):
         if D:
             self.hyp = np.random.random(Q*(1+2*D))
         else:
-	        self.hyp = hyps
-    	self.para = [Q]
+            self.hyp = hyps
+        self.para = [Q]
 
     def initSMhypers(self, x, y):
         """
@@ -491,7 +497,7 @@ class SM(Kernel):
         w = np.zeros(Q)
         m = np.zeros((D, Q))
         s = np.zeros((D, Q))
-        w[:] = np.std(y) / Q
+        w[:] = old_div(np.std(y), Q)
         hypinit = np.zeros(Q + 2 * D * Q)
 
         for i in range(D):
@@ -503,10 +509,10 @@ class SM(Kernel):
             else:
                 d2[d2 == 0] = 1
             minshift = np.min(np.min(np.sqrt(d2)))
-            nyquist = 0.5 / minshift
+            nyquist = old_div(0.5, minshift)
             m[i, :] = nyquist * np.random.ranf((1, Q))
             maxshift = np.max(np.max(np.sqrt(d2)))
-            s[i, :] = 1. / np.abs(maxshift * np.random.ranf((1, Q)))
+            s[i, :] = old_div(1., np.abs(maxshift * np.random.ranf((1, Q))))
         hypinit[:Q] = np.log(w)
         hypinit[Q + np.arange(0, Q * D)] = np.log(m[:]).T
         hypinit[Q + Q * D + np.arange(0, Q * D)] = np.log(s[:]).T
@@ -519,7 +525,7 @@ class SM(Kernel):
             nn, D = z.shape
         else:
             nn, D = x.shape
-        assert Q == len(self.hyp) / (1 + 2 * D)
+        assert Q == old_div(len(self.hyp), (1 + 2 * D))
 
         w = np.exp(self.hyp[:Q])
         m = np.exp(np.reshape(self.hyp[Q:Q + Q * D], (D, Q)))
@@ -540,13 +546,13 @@ class SM(Kernel):
                 d2[:, :, j] = spdist.cdist(xslice, zslice, 'sqeuclidean')
         d = np.sqrt(d2)
 
-        k = lambda (d2v, dm): np.exp(-2 * np.pi ** 2 * d2v) * np.cos(2* np.pi * dm)  # evaluation of the covariance
+        k = lambda d2v_dm: np.exp(-2 * np.pi ** 2 * d2v_dm[0]) * np.cos(2* np.pi * d2v_dm[1])  # evaluation of the covariance
         km = lambda dm: -2 * np.pi * np.tan(2 * np.pi * dm) * dm  # remainder when differentiating w.r.t. m
         kv = lambda d2v: -d2v * (2 * np.pi) ** 2  # remainder when differentiating w.r.t. v
 
         A = 0.
         c = 1.
-        qq = range(Q)
+        qq = list(range(Q))
         for q in qq:
             C = w[q] * c
             for j in range(D):
@@ -561,7 +567,7 @@ class SM(Kernel):
             nn, D = z.shape
         else:
             nn, D = x.shape
-        assert Q == len(self.hyp) / (1 + 2 * D)
+        assert Q == old_div(len(self.hyp), (1 + 2 * D))
 
         w = np.exp(self.hyp[:Q])
         m = np.exp(np.reshape(self.hyp[Q:Q + Q * D], (D, Q)))
@@ -582,24 +588,24 @@ class SM(Kernel):
                 d2[:, :, j] = spdist.cdist(xslice, zslice, 'sqeuclidean')
         d = np.sqrt(d2)
 
-        k = lambda (d2v, dm): np.exp(-2 * np.pi ** 2 * d2v) * np.cos(2* np.pi * dm)  # evaluation of the covariance
+        k = lambda d2v_dm1: np.exp(-2 * np.pi ** 2 * d2v_dm1[0]) * np.cos(2* np.pi * d2v_dm1[1])  # evaluation of the covariance
         km = lambda dm: -2 * np.pi * np.tan(2 * np.pi * dm) * dm  # remainder when differentiating w.r.t. m
         kv = lambda d2v: -d2v * (2 * np.pi) ** 2  # remainder when differentiating w.r.t. v
 
         A = 0.
         c = 1.
-        qq = range(Q)
+        qq = list(range(Q))
         if der < Q:                         # compute derivative matrix wrt w
             c = 1
             qq = [der]
         elif der < Q + Q * D:               # compute derivative matrix wrt sig
             p = (der - Q) % D
-            q = (der - Q - p) / D
+            q = old_div((der - Q - p), D)
             c = km(d[:, :, p] * m[p, q])
             qq = [q]
         elif der < 2 * Q * D + Q:           # compute derivative matrix wrt mu
             p = (der - (D + 1) * Q) % D
-            q = (der - (D + 1) * Q - p) / D
+            q = old_div((der - (D + 1) * Q - p), D)
             c = kv(d2[:, :, p] * v[p, q])
             qq = [q]
         else:
@@ -738,9 +744,9 @@ class PiecePoly(Kernel):
             nn,D = z.shape
             A = np.zeros((nn,1))
         elif mode == 'train':                # compute covariance matix for dataset x
-            A = np.sqrt( spdist.cdist(x/ell, x/ell, 'sqeuclidean') )
+            A = np.sqrt( spdist.cdist(old_div(x,ell), old_div(x,ell), 'sqeuclidean') )
         elif mode == 'cross':                # compute covariance between data sets x and z
-            A = np.sqrt( spdist.cdist(x/ell, z/ell, 'sqeuclidean') )
+            A = np.sqrt( spdist.cdist(old_div(x,ell), old_div(z,ell), 'sqeuclidean') )
         A = sf2 * self.pp(A,j,v,self.func)
         return A
 
@@ -762,9 +768,9 @@ class PiecePoly(Kernel):
             nn,D = z.shape
             A = np.zeros((nn,1))
         elif mode == 'train':                # compute covariance matix for dataset x
-            A = np.sqrt( spdist.cdist(x/ell, x/ell, 'sqeuclidean') )
+            A = np.sqrt( spdist.cdist(old_div(x,ell), old_div(x,ell), 'sqeuclidean') )
         elif mode == 'cross':                # compute covariance between data sets x and z
-            A = np.sqrt( spdist.cdist(x/ell, z/ell, 'sqeuclidean') )
+            A = np.sqrt( spdist.cdist(old_div(x,ell), old_div(z,ell), 'sqeuclidean') )
         if der == 0:                            # compute derivative matrix wrt 1st parameter
             A = sf2 * self.dpp(A,j,v,self.func,self.dfunc)
         elif der == 1:                          # compute derivative matrix wrt 2nd parameter
@@ -795,9 +801,9 @@ class RBF(Kernel):
             nn,D = z.shape
             A = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for training set
-            A = spdist.cdist(x/ell,x/ell,'sqeuclidean')
+            A = spdist.cdist(old_div(x,ell),old_div(x,ell),'sqeuclidean')
         elif mode == 'cross':             # compute covariance between data sets x and z
-            A = spdist.cdist(x/ell,z/ell,'sqeuclidean')
+            A = spdist.cdist(old_div(x,ell),old_div(z,ell),'sqeuclidean')
         A = sf2 * np.exp(-0.5*A)
         return A
 
@@ -810,9 +816,9 @@ class RBF(Kernel):
             nn,D = z.shape
             A = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
-            A = spdist.cdist(x/ell,x/ell,'sqeuclidean')
+            A = spdist.cdist(old_div(x,ell),old_div(x,ell),'sqeuclidean')
         elif mode == 'cross':             # compute covariance between data sets x and z
-            A = spdist.cdist(x/ell,z/ell,'sqeuclidean')
+            A = spdist.cdist(old_div(x,ell),old_div(z,ell),'sqeuclidean')
         if der == 0:    # compute derivative matrix wrt 1st parameter
             A = sf2 * np.exp(-0.5*A) * A
         elif der == 1:  # compute derivative matrix wrt 2nd parameter
@@ -840,9 +846,9 @@ class RBFunit(Kernel):
             nn,D = z.shape
             A = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
-            A = spdist.cdist(x/ell,x/ell,'sqeuclidean')
+            A = spdist.cdist(old_div(x,ell),old_div(x,ell),'sqeuclidean')
         elif mode == 'cross':             # compute covariance between data sets x and z
-            A = spdist.cdist(x/ell,z/ell,'sqeuclidean')
+            A = spdist.cdist(old_div(x,ell),old_div(z,ell),'sqeuclidean')
         A = np.exp(-0.5*A)
         return A
 
@@ -853,9 +859,9 @@ class RBFunit(Kernel):
             nn,D = z.shape
             A = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
-            A = spdist.cdist(x/ell,x/ell,'sqeuclidean')
+            A = spdist.cdist(old_div(x,ell),old_div(x,ell),'sqeuclidean')
         elif mode == 'cross':             # compute covariance between data sets x and z
-            A = spdist.cdist(x/ell,z/ell,'sqeuclidean')
+            A = spdist.cdist(old_div(x,ell),old_div(z,ell),'sqeuclidean')
         if der == 0:           # compute derivative matrix wrt 1st parameter
             A = np.exp(-0.5*A) * A
         else:
@@ -875,7 +881,7 @@ class RBFard(Kernel):
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0.):
         if log_ell_list is None:
-            self.hyp = [0. for i in xrange(D)] + [log_sigma]
+            self.hyp = [0. for i in range(D)] + [log_sigma]
         else:
             self.hyp = log_ell_list + [log_sigma]
 
@@ -885,7 +891,7 @@ class RBFard(Kernel):
             n, D = x.shape
         if not z is None:
             nn, D = z.shape
-        ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
+        ell = old_div(1.,np.exp(self.hyp[0:D]))    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -904,7 +910,7 @@ class RBFard(Kernel):
             n, D = x.shape
         if not z is None:
             nn, D = z.shape
-        ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
+        ell = old_div(1.,np.exp(self.hyp[0:D]))    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -919,10 +925,10 @@ class RBFard(Kernel):
             if mode == 'self_test':
                 A = A*0
             elif mode == 'train':
-                tem = np.atleast_2d(x[:,der])/ell[der]
+                tem = old_div(np.atleast_2d(x[:,der]),ell[der])
                 A *= spdist.cdist(tem,tem,'sqeuclidean')
             elif mode == 'cross':
-                A *= spdist.cdist(np.atleast_2d(x[:,der]).T/ell[der],np.atleast_2d(z[:,der]).T/ell[der],'sqeuclidean')
+                A *= spdist.cdist(old_div(np.atleast_2d(x[:,der]).T,ell[der]),old_div(np.atleast_2d(z[:,der]).T,ell[der]),'sqeuclidean')
         elif der == D:                    # compute derivative matrix wrt magnitude parameter
             A = 2.*A
         else:
@@ -1028,7 +1034,7 @@ class LINard(Kernel):
     '''
     def __init__(self, D=None, log_ell_list=None):
         if log_ell_list is None:
-            self.hyp = [0. for i in xrange(D)]
+            self.hyp = [0. for i in range(D)]
         else:
             self.hyp = log_ell_list
 
@@ -1042,7 +1048,7 @@ class LINard(Kernel):
             n, D = x.shape
             A = np.dot(x,x.T)+ np.eye(n)*1e-10
         elif mode == 'cross':             # compute covariance between data sets x and z
-            z = np.dot(z,np.diag(1./ell))
+            z = np.dot(z,np.diag(old_div(1.,ell)))
             A = np.dot(x,z.T)
         return A
 
@@ -1060,7 +1066,7 @@ class LINard(Kernel):
             elif mode == 'train':
                 A = -2.*np.dot(np.atleast_2d(x[:,der]).T,np.atleast_2d(x[:,der]))
             elif mode == 'cross':
-                z = np.dot(z,np.diag(1./ell))
+                z = np.dot(z,np.diag(old_div(1.,ell)))
                 A = -2.*np.dot(np.atleast_2d(x[:,der]).T, np.atleast_2d(z[:,der])) # cross covariances
         else:
             raise Exception("Wrong derivative index in covLINard")
@@ -1102,9 +1108,9 @@ class Matern(Kernel):
         elif d == 3:
             return t
         elif d == 5:
-            return (1./3.)*(t + t*t)
+            return (old_div(1.,3.))*(t + t*t)
         elif d == 7:
-            return (1./15.)*(t + 3.*t*t + t*t*t)
+            return (old_div(1.,15.))*(t + 3.*t*t + t*t*t)
         else:
             raise Exception("Wrong value for d in Matern")
 
@@ -1125,7 +1131,7 @@ class Matern(Kernel):
         try:
             assert(d in [1,3,5,7])         # check for valid values of d
         except AssertionError:
-            print "Warning: You specified d to be neither 1,3,5 nor 7. We set it to d=3. "
+            print("Warning: You specified d to be neither 1,3,5 nor 7. We set it to d=3. ")
             d = 3
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -1151,7 +1157,7 @@ class Matern(Kernel):
         try:
             assert(d in [1,3,5,7])         # check for valid values of d
         except AssertionError:
-            print "Warning: You specified d to be neither 1,3,5 nor 7. We set to d=3. "
+            print("Warning: You specified d to be neither 1,3,5 nor 7. We set to d=3. ")
             d = 3
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -1205,7 +1211,7 @@ class Periodic(Kernel):
         elif mode == 'cross':             # compute covariance between data sets x and z
             A = np.sqrt(spdist.cdist(x, z, 'sqeuclidean'))
         A = np.pi*A/p
-        A = np.sin(A)/ell
+        A = old_div(np.sin(A),ell)
         A = A * A
         A = sf2 *np.exp(-2.*A)
         return A
@@ -1228,14 +1234,14 @@ class Periodic(Kernel):
             A = np.sqrt(spdist.cdist(x, z, 'sqeuclidean'))
         A = np.pi*A/p
         if der == 0:            # compute derivative matrix wrt 1st parameter
-            A = np.sin(A)/ell
+            A = old_div(np.sin(A),ell)
             A = A * A
             A = 4. *sf2 *np.exp(-2.*A) * A
         elif der == 1:          # compute derivative matrix wrt 2nd parameter
-            R = np.sin(A)/ell
+            R = old_div(np.sin(A),ell)
             A = 4 * sf2/ell * np.exp(-2.*R*R)*R*np.cos(A)*A
         elif der == 2:          # compute derivative matrix wrt 3rd parameter
-            A = np.sin(A)/ell
+            A = old_div(np.sin(A),ell)
             A = A * A
             A = 2. * sf2 * np.exp(-2.*A)
         else:
@@ -1315,9 +1321,9 @@ class RQ(Kernel):
             nn,D = z.shape
             D2 = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
-            D2 = spdist.cdist(x/ell, x/ell, 'sqeuclidean')
+            D2 = spdist.cdist(old_div(x,ell), old_div(x,ell), 'sqeuclidean')
         elif mode == 'cross':             # compute covariance between data sets x and z
-            D2 = spdist.cdist(x/ell, z/ell, 'sqeuclidean')
+            D2 = spdist.cdist(old_div(x,ell), old_div(z,ell), 'sqeuclidean')
         A = sf2 * ( ( 1.0 + 0.5*D2/alpha )**(-alpha) )
         return A
 
@@ -1330,9 +1336,9 @@ class RQ(Kernel):
             nn,D = z.shape
             D2 = np.zeros((nn,1))
         elif mode == 'train':             # compute covariance matix for dataset x
-            D2 = spdist.cdist(x/ell, x/ell, 'sqeuclidean')
+            D2 = spdist.cdist(old_div(x,ell), old_div(x,ell), 'sqeuclidean')
         elif mode == 'cross':             # compute covariance between data sets x and z
-            D2 = spdist.cdist(x/ell, z/ell, 'sqeuclidean')
+            D2 = spdist.cdist(old_div(x,ell), old_div(z,ell), 'sqeuclidean')
         if der == 0:                # compute derivative matrix wrt 1st parameter
             A = sf2 * ( 1.0 + 0.5*D2/alpha )**(-alpha-1) * D2
         elif der == 1:              # compute derivative matrix wrt 2nd parameter
@@ -1359,7 +1365,7 @@ class RQard(Kernel):
     '''
     def __init__(self, D=None, log_ell_list=None, log_sigma=0., log_alpha=0.):
         if log_ell_list is None:
-            self.hyp = [0. for i in xrange(D)] + [ log_sigma, log_alpha ]
+            self.hyp = [0. for i in range(D)] + [ log_sigma, log_alpha ]
         else:
             self.hyp = log_ell_list + [ log_sigma, log_alpha ]
 
@@ -1369,7 +1375,7 @@ class RQard(Kernel):
             n, D = x.shape
         if not z is None:
             nn, D = z.shape
-        ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
+        ell = old_div(1.,np.exp(self.hyp[0:D]))    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
         alpha = np.exp(self.hyp[D+1])
         if mode == 'self_test':           # self covariances for the test cases
@@ -1389,7 +1395,7 @@ class RQard(Kernel):
             n, D = x.shape
         if not z is None:
             nn, D = z.shape
-        ell = 1./np.exp(self.hyp[0:D])    # characteristic length scale
+        ell = old_div(1.,np.exp(self.hyp[0:D]))    # characteristic length scale
         sf2 = np.exp(2.*self.hyp[D])      # signal variance
         alpha = np.exp(self.hyp[D+1])
         if mode == 'self_test':           # self covariances for the test cases
@@ -1404,10 +1410,10 @@ class RQard(Kernel):
             if mode == 'self_test':
                 A = D2*0
             elif mode == 'train':
-                tmp = np.atleast_2d(x[:,der])/ell[der]
+                tmp = old_div(np.atleast_2d(x[:,der]),ell[der])
                 A = sf2 * ( 1.0 + 0.5*D2/alpha )**(-alpha-1) * spdist.cdist(tmp, tmp, 'sqeuclidean')
             elif mode == 'cross':
-                A = sf2 * ( 1.0 + 0.5*D2/alpha )**(-alpha-1) * spdist.cdist(np.atleast_2d(x[:,der]).T/ell[der], np.atleast_2d(z[:,der]).T/ell[der], 'sqeuclidean')
+                A = sf2 * ( 1.0 + 0.5*D2/alpha )**(-alpha-1) * spdist.cdist(old_div(np.atleast_2d(x[:,der]).T,ell[der]), old_div(np.atleast_2d(z[:,der]).T,ell[der]), 'sqeuclidean')
         elif der==D:                # compute derivative matrix wrt magnitude parameter
             A = 2. * sf2 * ( ( 1.0 + 0.5*D2/alpha )**(-alpha) )
         elif der==(D+1):            # compute derivative matrix wrt magnitude parameter

@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -26,7 +28,7 @@ def normLap(A):
     '''
     I = np.identity(A.shape[0])
     d = A.sum(axis=0)
-    d = np.sqrt(1./d)    
+    d = np.sqrt(old_div(1.,d))    
     D = np.diag(d)
     L = I - np.dot( np.dot(D,A),D )
     return L
@@ -91,7 +93,7 @@ def VNDKernel(A, alpha=0.5):
     ''' 
     I = np.identity(A.shape[0])
     d = A.sum(axis=0)
-    d = np.sqrt(1./d)    
+    d = np.sqrt(old_div(1.,d))    
     D = np.diag(d)
     S = np.dot( np.dot(D,A),D )
     K = np.linalg.inv( I - alpha*S )
@@ -110,14 +112,14 @@ def rwKernel(A, p=1, a=2):
     :return: kernel matrix
     '''
     if type(p) != int:
-	p = int(p)
+        p = int(p)
     if p < 1:
-	raise Exception('Step parameter p needs to be larger than 0.') 	
-    if a <= 1:	
-	a=1.0001
+        raise Exception('Step parameter p needs to be larger than 0.')
+    if a <= 1:
+        a=1.0001
     I = np.identity(A.shape[0])
     L = normLap(A)
-    K = np.linalg.matrix_power( a*I - L, p)	
+    K = np.linalg.matrix_power( a*I - L, p)
     return K
 
 

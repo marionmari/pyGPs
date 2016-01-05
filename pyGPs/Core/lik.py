@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import absolute_import
+from past.utils import old_div
+from builtins import object
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
 #    Shan Huang [shan dot huang at iais dot fraunhofer dot de]
@@ -39,12 +43,12 @@
 
 import numpy as np
 from scipy.special import erf
-import inf
 
 class Likelihood(object):
     """Base function for Likelihood function"""
     def __init__(self):
         self.hyp = []
+
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
         '''
         The likelihood functions have two possible modes, the mode being selected
@@ -129,6 +133,7 @@ class Gauss(Likelihood):
         self.hyp = [log_sigma]
 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
+        from . import inf
         sn2 = np.exp(2. * self.hyp[0])
         if inffunc is None:              # prediction mode
             if y is None:
@@ -137,7 +142,7 @@ class Gauss(Likelihood):
             if (not s2 is None) and np.linalg.norm(s2) > 0:
                 s2zero = False
             if s2zero:                   # log probability
-                lp = -(y-mu)**2 /sn2/2 - np.log(2.*np.pi*sn2)/2.
+                lp = -(y-mu)**2 /sn2/2 - old_div(np.log(2.*np.pi*sn2),2.)
                 s2 = np.zeros_like(s2)
             else:
                 inf_func = inf.EP()   # prediction
@@ -154,29 +159,29 @@ class Gauss(Likelihood):
         else:
             if isinstance(inffunc, inf.EP):
                 if der is None:                                  # no derivative mode
-                    lZ = -(y-mu)**2/(sn2+s2)/2. - np.log(2*np.pi*(sn2+s2))/2. # log part function
+                    lZ = -(y-mu)**2/(sn2+s2)/2. - old_div(np.log(2*np.pi*(sn2+s2)),2.) # log part function
                     if nargout>1:
-                        dlZ  = (y-mu)/(sn2+s2)                   # 1st derivative w.r.t. mean
+                        dlZ  = old_div((y-mu),(sn2+s2))                   # 1st derivative w.r.t. mean
                         if nargout>2:
-                            d2lZ = -1/(sn2+s2)                   # 2nd derivative w.r.t. mean
+                            d2lZ = old_div(-1,(sn2+s2))                   # 2nd derivative w.r.t. mean
                             return lZ,dlZ,d2lZ
                         else:
                            return lZ,dlZ
                     else:
                         return lZ
                 else:                                            # derivative mode
-                    dlZhyp = ((y-mu)**2/(sn2+s2)-1) / (1+s2/sn2) # deriv. w.r.t. hyp.lik
+                    dlZhyp = old_div((old_div((y-mu)**2,(sn2+s2))-1), (1+old_div(s2,sn2))) # deriv. w.r.t. hyp.lik
                     return dlZhyp
             elif isinstance(inffunc, inf.Laplace):
                 if der is None:                                  # no derivative mode
                     if y is None:
                         y=0
                     ymmu = y-mu
-                    lp = -ymmu**2/(2*sn2) - np.log(2*np.pi*sn2)/2.
+                    lp = old_div(-ymmu**2,(2*sn2)) - old_div(np.log(2*np.pi*sn2),2.)
                     if nargout>1:
-                        dlp = ymmu/sn2                           # dlp, derivative of log likelihood
+                        dlp = old_div(ymmu,sn2)                           # dlp, derivative of log likelihood
                         if nargout>2:                            # d2lp, 2nd derivative of log likelihood
-                            d2lp = -np.ones_like(ymmu)/sn2
+                            d2lp = old_div(-np.ones_like(ymmu),sn2)
                             if nargout>3:                        # d3lp, 3rd derivative of log likelihood
                                 d3lp = np.zeros_like(ymmu)
                                 return lp,dlp,d2lp,d3lp
@@ -187,7 +192,7 @@ class Gauss(Likelihood):
                     else:
                         return lp
                 else:                                            # derivative mode
-                    lp_dhyp   = (y-mu)**2/sn2 - 1                # derivative of log likelihood w.r.t. hypers
+                    lp_dhyp   = old_div((y-mu)**2,sn2) - 1                # derivative of log likelihood w.r.t. hypers
                     dlp_dhyp  = 2*(mu-y)/sn2                     # first derivative,
                     d2lp_dhyp = 2*np.ones_like(mu)/sn2           # and also of the second mu derivative
                     return lp_dhyp,dlp_dhyp,d2lp_dhyp
@@ -239,6 +244,7 @@ class Erf(Likelihood):
         self.hyp = []
 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
+        from . import inf
         if not y is None:
             y = np.sign(y)
             y[y==0] = 1
@@ -288,7 +294,7 @@ class Erf(Likelihood):
 
             elif isinstance(inffunc, inf.EP):
                 if der is None:                          # no derivative mode
-                    z = mu/np.sqrt(1+s2)
+                    z = old_div(mu,np.sqrt(1+s2))
                     junk,lZ = self.cumGauss(y,z,2)       # log part function
                     if not y is None:
                          z = z*y
@@ -325,7 +331,7 @@ class Erf(Likelihood):
             yf = y*f
         else:
             yf = f
-        p = (1. + erf(yf/np.sqrt(2.)))/2. # likelihood
+        p = old_div((1. + erf(old_div(yf,np.sqrt(2.)))),2.) # likelihood
         if nargout>1:
             lp = self.logphi(yf,p)
             return p,lp
@@ -336,13 +342,13 @@ class Erf(Likelihood):
         # return n_p = gauOverCumGauss(f,p)
         n_p = np.zeros_like(f)       # safely compute Gaussian over cumulative Gaussian
         ok = f>-5                    # naive evaluation for large values of f
-        n_p[ok] = (np.exp(-f[ok]**2/2)/np.sqrt(2*np.pi)) / p[ok]
+        n_p[ok] = old_div((old_div(np.exp(old_div(-f[ok]**2,2)),np.sqrt(2*np.pi))), p[ok])
         bd = f<-6                    # tight upper bound evaluation
-        n_p[bd] = np.sqrt(f[bd]**2/4+1)-f[bd]/2
+        n_p[bd] = np.sqrt(old_div(f[bd]**2,4)+1)-old_div(f[bd],2)
         interp = np.logical_and(np.logical_not(ok),np.logical_not(bd)) # linearly interpolate between both of them
         tmp = f[interp]
         lam = -5. - f[interp]
-        n_p[interp] = (1-lam)*(np.exp(-tmp**2/2)/np.sqrt(2*np.pi))/p[interp] + lam *(np.sqrt(tmp**2/4+1)-tmp/2);
+        n_p[interp] = (1-lam)*(old_div(np.exp(old_div(-tmp**2,2)),np.sqrt(2*np.pi)))/p[interp] + lam *(np.sqrt(old_div(tmp**2,4)+1)-old_div(tmp,2));
         return n_p
 
     def logphi(self,z,p):
@@ -353,9 +359,9 @@ class Erf(Likelihood):
         bd = z<zmin                                 # use asymptotics
         nok = np.logical_not(ok)
         ip = np.logical_and(nok,np.logical_not(bd)) # interpolate between both of them
-        lam = 1/(1.+np.exp( 25.*(0.5-(z[ip]-zmin)/(zmax-zmin)) ))  # interp. weights
+        lam = old_div(1,(1.+np.exp( 25.*(0.5-old_div((z[ip]-zmin),(zmax-zmin))) )))  # interp. weights
         lp[ok] = np.log(p[ok])
-        lp[nok] = -np.log(np.pi)/2. -z[nok]**2/2. - np.log( np.sqrt(z[nok]**2/2.+2.) - z[nok]/np.sqrt(2.) )
+        lp[nok] = old_div(-np.log(np.pi),2.) -old_div(z[nok]**2,2.) - np.log( np.sqrt(old_div(z[nok]**2,2.)+2.) - old_div(z[nok],np.sqrt(2.)) )
         lp[ip] = (1-lam)*lp[ip] + lam*np.log( p[ip] )
         return lp
 
@@ -374,7 +380,8 @@ class Laplace(Likelihood):
         self.hyp = [ log_sigma ]
 
     def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
-        sn = np.exp(self.hyp); b = sn/np.sqrt(2);
+        from . import inf
+        sn = np.exp(self.hyp); b = old_div(sn,np.sqrt(2));
         if y is None:
             y = np.zeros_like(mu)
         if inffunc is None:                              # prediction mode if inf is not present
@@ -385,7 +392,7 @@ class Laplace(Likelihood):
                 if np.linalg.norm(s2)>0:
                     s2zero = False                       # s2==0?
             if s2zero:                                   # log probability evaluation
-                lp = -np.abs(y-mu)/b -np.log(2*b); s2 = 0
+                lp = old_div(-np.abs(y-mu),b) -np.log(2*b); s2 = 0
             else:                                        # prediction
                 lp = self.evaluate(y, mu, s2, inf.EP())
             if nargout>1:
@@ -403,9 +410,9 @@ class Laplace(Likelihood):
                     if y is None:
                         y = np.zeros_like(mu)
                     ymmu = y-mu
-                    lp = np.abs(ymmu)/b - np.log(2*b)
+                    lp = old_div(np.abs(ymmu),b) - np.log(2*b)
                     if nargout>1:                        # derivative of log likelihood
-                        dlp = np.sign(ymmu)/b
+                        dlp = old_div(np.sign(ymmu),b)
                         if nargout>2:                    # 2nd derivative of log likelihood
                             d2lp = np.zeros_like(ymmu)
                             if nargout>3:                # 3rd derivative of log likelihood
@@ -418,8 +425,8 @@ class Laplace(Likelihood):
                     else:
                         return lp
                 else:                                    # derivative w.r.t. hypers
-                    lp_dhyp = np.abs(y-mu)/b - 1           # derivative of log likelihood w.r.t. hypers
-                    dlp_dhyp = np.sign(mu-y)/b              # first derivative,
+                    lp_dhyp = old_div(np.abs(y-mu),b) - 1           # derivative of log likelihood w.r.t. hypers
+                    dlp_dhyp = old_div(np.sign(mu-y),b)              # first derivative,
                     d2lp_dhyp = np.zeros(mu.shape)         # and also of the second mu derivative
                     return lp_dhyp, dlp_dhyp, d2lp_dhyp
             elif isinstance(inffunc, inf.EP):
@@ -439,7 +446,7 @@ class Laplace(Likelihood):
                     dlZ = np.zeros((n,1))
                     d2lZ = np.zeros((n,1))
                     if np.any(idlik):
-                        l = Gauss(log_sigma=np.log(s2[idlik])/2)
+                        l = Gauss(log_sigma=old_div(np.log(s2[idlik]),2))
                         a = l.evaluate(mu[idlik], y[idlik])
                         lZ[idlik] = a[0]; dlZ[idlik] = a[1]; d2lZ[idlik] = a[2]
                     if np.any(idgau):
@@ -448,11 +455,11 @@ class Laplace(Likelihood):
                         lZ[idgau] = a[0]; dlZ[idgau] = a[1]; d2lZ[idgau] = a[2]
                     if np.any(id):
                         # substitution to obtain unit variance, zero mean Laplacian
-                        tvar = s2[id]/(sn[id]**2+1e-16)
-                        tmu = (mu[id]-y[id])/(sn[id]+1e-16)
+                        tvar = old_div(s2[id],(sn[id]**2+1e-16))
+                        tmu = old_div((mu[id]-y[id]),(sn[id]+1e-16))
                         # an implementation based on logphi(t) = log(normcdf(t))
-                        zp = (tmu+np.sqrt(2)*tvar)/np.sqrt(tvar)
-                        zm = (tmu-np.sqrt(2)*tvar)/np.sqrt(tvar)
+                        zp = old_div((tmu+np.sqrt(2)*tvar),np.sqrt(tvar))
+                        zm = old_div((tmu-np.sqrt(2)*tvar),np.sqrt(tvar))
                         ap =  self._logphi(-zp)+np.sqrt(2)*tmu
                         am =  self._logphi( zm)-np.sqrt(2)*tmu
                         apam = np.vstack((ap,am)).T
@@ -461,16 +468,16 @@ class Laplace(Likelihood):
                     if nargout>1:
                         lqp = -0.5*zp**2 - 0.5*np.log(2*np.pi) - self._logphi(-zp);       # log( N(z)/Phi(z) )
                         lqm = -0.5*zm**2 - 0.5*np.log(2*np.pi) - self._logphi( zm);
-                        dap = -np.exp(lqp-0.5*np.log(s2[id])) + np.sqrt(2)/sn[id]
-                        dam =  np.exp(lqm-0.5*np.log(s2[id])) - np.sqrt(2)/sn[id]
+                        dap = -np.exp(lqp-0.5*np.log(s2[id])) + old_div(np.sqrt(2),sn[id])
+                        dam =  np.exp(lqm-0.5*np.log(s2[id])) - old_div(np.sqrt(2),sn[id])
                         _z1 = np.vstack((ap,am)).T
                         _z2 = np.vstack((dap,dam)).T
                         _x = np.array([[1],[1]])
                         dlZ[id] = self._expABz_expAx(_z1, _x, _z2, _x)
                         if nargout>2:
                             a = np.sqrt(8.)/sn[id]/np.sqrt(s2[id]);
-                            bp = 2./sn[id]**2 - (a - zp/s2[id])*np.exp(lqp)
-                            bm = 2./sn[id]**2 - (a + zm/s2[id])*np.exp(lqm)
+                            bp = old_div(2.,sn[id]**2) - (a - old_div(zp,s2[id]))*np.exp(lqp)
+                            bm = old_div(2.,sn[id]**2) - (a + old_div(zm,s2[id]))*np.exp(lqm)
                             _x = np.reshape(np.array([1,1]),(2,1))
                             _z1 = np.reshape(np.array([ap,am]),(1,2))
                             _z2 = np.reshape(np.array([bp,bm]),(1,2))
@@ -491,12 +498,12 @@ class Laplace(Likelihood):
 
                     if np.any(id):
                         # substitution to obtain unit variance, zero mean Laplacian
-                        tmu = (mu[id]-y[id])/(sn[id]+1e-16);        tvar = s2[id]/(sn[id]**2+1e-16)
-                        zp  = (tvar+tmu/np.sqrt(2))/np.sqrt(tvar);  vp = tvar+np.sqrt(2)*tmu
-                        zm  = (tvar-tmu/np.sqrt(2))/np.sqrt(tvar);  vm = tvar-np.sqrt(2)*tmu
-                        dzp = (-s2[id]/sn[id]+tmu*sn[id]/np.sqrt(2)) / np.sqrt(s2[id])
+                        tmu = old_div((mu[id]-y[id]),(sn[id]+1e-16));        tvar = old_div(s2[id],(sn[id]**2+1e-16))
+                        zp  = old_div((tvar+old_div(tmu,np.sqrt(2))),np.sqrt(tvar));  vp = tvar+np.sqrt(2)*tmu
+                        zm  = old_div((tvar-old_div(tmu,np.sqrt(2))),np.sqrt(tvar));  vm = tvar-np.sqrt(2)*tmu
+                        dzp = old_div((old_div(-s2[id],sn[id])+tmu*sn[id]/np.sqrt(2)), np.sqrt(s2[id]))
                         dvp = -2*tvar - np.sqrt(2)*tmu
-                        dzm = (-s2[id]/sn[id]-tmu*sn[id]/np.sqrt(2)) / np.sqrt(s2[id])
+                        dzm = old_div((old_div(-s2[id],sn[id])-tmu*sn[id]/np.sqrt(2)), np.sqrt(s2[id]))
                         dvm = -2*tvar + np.sqrt(2)*tmu
                         lezp = self._lerfc(zp); # ap = exp(vp).*ezp
                         lezm = self._lerfc(zm); # am = exp(vm).*ezm
@@ -505,7 +512,7 @@ class Laplace(Likelihood):
                         em  = np.exp(vm+lezm-vmax)
                         dap = ep*(dvp - 2/np.sqrt(np.pi)*np.exp(-zp**2-lezp)*dzp)
                         dam = em*(dvm - 2/np.sqrt(np.pi)*np.exp(-zm**2-lezm)*dzm)
-                        dlZhyp[id] = (dap+dam)/(ep+em) - 1;
+                        dlZhyp[id] = old_div((dap+dam),(ep+em)) - 1;
                     return dlZhyp               # deriv. wrt hyp.lik
             elif isinstance(inffunc, inf.VB):
                 n = len(s2.flatten()); b = np.zeros((n,1)); y = y*np.ones((n,1)); z = y
@@ -520,8 +527,8 @@ class Laplace(Likelihood):
         bd = t>tmax                              # evaluate tight bound
         nok = np.logical_not(ok)
         interp = np.logical_and(nok,np.logical_not(bd)) # interpolate between both of them
-        f[nok] = np.log(2/np.sqrt(np.pi)) -t[nok]**2 -np.log(t[nok]+np.sqrt( t[nok]**2+4/np.pi ))
-        lam = 1/(1+np.exp( 12*(0.5-(t[interp]-tmin)/(tmax-tmin)) ))   # interp. weights
+        f[nok] = np.log(old_div(2,np.sqrt(np.pi))) -t[nok]**2 -np.log(t[nok]+np.sqrt( t[nok]**2+old_div(4,np.pi) ))
+        lam = old_div(1,(1+np.exp( 12*(0.5-old_div((t[interp]-tmin),(tmax-tmin))) )))   # interp. weights
         f[interp] = lam*f[interp] + (1-lam)*np.log(erfc( t[interp] ))
         f[ok] += np.log(erfc( t[ok] ))             # safe eval
         return f
@@ -536,7 +543,7 @@ class Laplace(Likelihood):
         maxA = np.max(A,axis=1)                    # number of columns, max over columns
         maxA = np.array([maxA]).T
         A = A - np.dot(maxA, np.ones((1,N)))       # subtract maximum value
-        y = ( np.dot((np.exp(A)*B),z) ) / ( np.dot(np.exp(A),x) )
+        y = old_div(( np.dot((np.exp(A)*B),z) ), ( np.dot(np.exp(A),x) ))
         return y[0]
 
     def _logphi(self,z):
@@ -549,10 +556,10 @@ class Laplace(Likelihood):
         bd = z<zmin                                 # use asymptotics
         nok = np.logical_not(ok)
         ip = np.logical_and(nok,np.logical_not(bd)) # interpolate between both of them
-        lam = 1./(1.+np.exp( 25.*(0.5-(z[ip]-zmin)/(zmax-zmin)) ))  # interp. weights
-        lp[ok] = np.log( 0.5*( 1.+erf(z[ok]/np.sqrt(2.)) ) )
-        lp[nok] = -0.5*(np.log(np.pi) + z[nok]**2) - np.log( np.sqrt(2.+0.5*(z[nok]**2)) - z[nok]/np.sqrt(2)) 
-        lp[ip] = (1-lam)*lp[ip] + lam*np.log( 0.5*( 1.+erf(z[ip]/np.sqrt(2.)) ) )
+        lam = old_div(1.,(1.+np.exp( 25.*(0.5-old_div((z[ip]-zmin),(zmax-zmin))) )))  # interp. weights
+        lp[ok] = np.log( 0.5*( 1.+erf(old_div(z[ok],np.sqrt(2.))) ) )
+        lp[nok] = -0.5*(np.log(np.pi) + z[nok]**2) - np.log( np.sqrt(2.+0.5*(z[nok]**2)) - old_div(z[nok],np.sqrt(2))) 
+        lp[ip] = (1-lam)*lp[ip] + lam*np.log( 0.5*( 1.+erf(old_div(z[ip],np.sqrt(2.))) ) )
         return lp
 
     def _logsum2exp(self,logx):

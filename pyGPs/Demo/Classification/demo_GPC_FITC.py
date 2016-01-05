@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import zip
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -18,8 +20,8 @@ import numpy as np
 # you may want to read demo_GPR, demo_kernel and demo_optimization first!
 # Here, the focus is on the difference of FITC classification.
 
-print ''
-print '-------------------GPC_FITC DEMO----------------------'
+print('')
+print('-------------------GPC_FITC DEMO----------------------')
 
 #----------------------------------------------------------------------
 # Load demo data (generated from Gaussians)
@@ -45,7 +47,7 @@ p2 = demoData['p2']          # prior for class 2 (with label +1)
 # Sparse GP classification (FITC) example
 #----------------------------------------------------------------------
 
-print "Example 1: default inducing points"
+print("Example 1: default inducing points")
 
 # Start from a new model
 model = pyGPs.GPC_FITC()
@@ -60,7 +62,7 @@ model.setData(x, y)
 # model.setData(x, y, value_per_axis=10)
 
 model.optimize()
-print "Negative log marginal likelihood optimized:", round(model.nlZ,3)
+print("Negative log marginal likelihood optimized:", round(model.nlZ,3))
 
 # Prediction
 n = z.shape[0]
@@ -70,15 +72,15 @@ model.plot(x1,x2,t1,t2)
 
 
 
-print '------------------------------------------------------'
-print "Example 2: user-defined inducing points"
+print('------------------------------------------------------')
+print("Example 2: user-defined inducing points")
 
 model = pyGPs.GPC_FITC()
 
 # You can define inducing points yourself.
 # u = np.array([])
 u1,u2 = np.meshgrid(np.linspace(-2,2,5),np.linspace(-2,2,5))
-u = np.array(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),))))
+u = np.array(list(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),)))))
 
 # and specify inducing point when seting prior
 m = pyGPs.mean.Zero()
@@ -88,9 +90,9 @@ model.setPrior(mean=m, kernel=k, inducing_points=u)
 # The rest is analogous to what we have done before.
 model.setData(x, y)
 model.getPosterior()
-print "Negative log marginal likelihood before optimization:", round(model.nlZ,3)
+print("Negative log marginal likelihood before optimization:", round(model.nlZ,3))
 model.optimize()
-print "Negative log marginal likelihood optimized:", round(model.nlZ,3)
+print("Negative log marginal likelihood optimized:", round(model.nlZ,3))
 
 # predict
 n = z.shape[0]
@@ -100,7 +102,7 @@ model.plot(x1,x2,t1,t2)
 
 
 
-print '--------------------END OF DEMO-----------------------'
+print('--------------------END OF DEMO-----------------------')
 
 
 

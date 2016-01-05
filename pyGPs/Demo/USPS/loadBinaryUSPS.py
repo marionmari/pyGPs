@@ -1,3 +1,4 @@
+from builtins import range
 import numpy as np 
 from scipy.io import loadmat
 import os,sys
@@ -14,7 +15,7 @@ def load_binary(D1,D2,reduce=False):
     D1_list = []
     D2_list = []
     n,D = x.shape
-    for i in xrange(n):
+    for i in range(n):
         if y[i,D1] == 1:
             D1_list.append(i)
         elif y[i,D2] == 1:

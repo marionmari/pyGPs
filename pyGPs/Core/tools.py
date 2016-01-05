@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import print_function
+from past.builtins import cmp
+from past.utils import old_div
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -60,17 +64,17 @@ def jitchol(A,maxtries=5):
     else:
         diagA = np.diag(A)
         if np.any(diagA <= 0.):
-            raise np.linalg.LinAlgError, "kernel matrix not positive definite: non-positive diagonal elements"
+            raise np.linalg.LinAlgError("kernel matrix not positive definite: non-positive diagonal elements")
         jitter = diagA.mean() * 1e-9
         while maxtries > 0 and np.isfinite(jitter):
-            print 'Warning: adding jitter of {:.10e} to diagnol of kernel matrix for numerical stability'.format(jitter)
+            print('Warning: adding jitter of {:.10e} to diagnol of kernel matrix for numerical stability'.format(jitter))
             try:
                 return np.linalg.cholesky(A + np.eye(A.shape[0]).T * jitter, lower=True)
             except:
                 jitter *= 10
             finally:
                 maxtries -= 1
-        raise np.linalg.LinAlgError, "kernel matrix not positive definite, even with jitter."
+        raise np.linalg.LinAlgError("kernel matrix not positive definite, even with jitter.")
 
 
 
@@ -190,7 +194,7 @@ def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
     funccount += 1
     fv = fx; fw = fx
     xm = 0.5*(a+b)
-    tol1 = seps*abs(xf) + tol/3.0;
+    tol1 = seps*abs(xf) + old_div(tol,3.0);
     tol2 = 2.0*tol1
     # Main loop
     while ( abs(xf-xm) > (tol2 - 0.5*(b-a)) ):
@@ -210,7 +214,7 @@ def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
             # Is the parabola acceptable
             if ( (abs(p)<abs(0.5*q*r)) and (p>q*(a-xf)) and (p<q*(b-xf)) ):
                 # Yes, parabolic interpolation step
-                d = p/q
+                d = old_div(p,q)
                 x = xf+d
                 # f must not be evaluated too close to ax or bx
                 if ((x-a) < tol2) or ((b-x) < tol2):
@@ -250,7 +254,7 @@ def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
             elif ( (fu <= fv) or ((v == xf) or (v == w)) ):
                 v = x; fv = fu
         xm = 0.5*(a+b)
-        tol1 = seps*abs(xf) + tol/3.0; tol2 = 2.0*tol1
+        tol1 = seps*abs(xf) + old_div(tol,3.0); tol2 = 2.0*tol1
         if funccount >= Nitmax:
             # typically we should not get here
             # print 'Warning: Specified number of function evaluation reached (brentmin)'

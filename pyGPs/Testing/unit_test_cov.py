@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import range
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -52,7 +54,7 @@ class CovarianceTests(unittest.TestCase):
     def is_positive_semi_definite(self, K):
         v = np.linalg.eig(K)[0]
         if any(v.real<=-1e-9):
-            print v.real.min()
+            print(v.real.min())
             return False
         else:
             return True
@@ -71,7 +73,7 @@ class CovarianceTests(unittest.TestCase):
         k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
         k3 = k.getCovMatrix(z=self.z, mode='self_test')       # test test by test self covariance
         self.checkCovOutput(k1,k2,k3)
-        for der in xrange(len(k.hyp)):                        # checking derivatives for each hyperparameter
+        for der in range(len(k.hyp)):                        # checking derivatives for each hyperparameter
             kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative
             kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative
             kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
@@ -79,75 +81,75 @@ class CovarianceTests(unittest.TestCase):
 
 
     def test_covSM(self):
-        print "testing covSM..."
+        print("testing covSM...")
         k = pyGPs.cov.SM(Q=10,D=self.x.shape[1])
         self.checkCovariance(k)
 
     def test_covGabor(self):
-        print "testing covGabor..."
+        print("testing covGabor...")
         k = pyGPs.cov.Gabor()
         self.checkCovariance(k)
 
     def test_covRBF(self):
-        print "testing covRBF..."
+        print("testing covRBF...")
         k = pyGPs.cov.RBF()
         self.checkCovariance(k)
 
 
     def test_covRBFunit(self):
-        print "testing covRBFunit..."
+        print("testing covRBFunit...")
         k = pyGPs.cov.RBFunit()
         self.checkCovariance(k)
 
 
     def test_covRBFard(self):
-        print "testing covRBFard..."
+        print("testing covRBFard...")
         k = pyGPs.cov.RBFard(D=self.x.shape[1])
         self.checkCovariance(k)
 
 
     def test_covConst(self):
-        print "testing covConst..."
+        print("testing covConst...")
         k = pyGPs.cov.Const()
         self.checkCovariance(k)
 
 
     def test_covLinear(self):
-        print "testing covLinear..."
+        print("testing covLinear...")
         k = pyGPs.cov.Linear()
         self.checkCovariance(k)
 
 
     def test_covLINard(self):
-        print "testing covLINard..."
+        print("testing covLINard...")
         k = pyGPs.cov.LINard(D=self.x.shape[1])
         self.checkCovariance(k)
 
 
     def test_covMatern(self):
-        print "testing covMatern..."
-        print "...d = 1..."
+        print("testing covMatern...")
+        print("...d = 1...")
         k = pyGPs.cov.Matern(d=1)
         self.checkCovariance(k)
 
-        print "testing covMatern..."
-        print "...d = 3..."
+        print("testing covMatern...")
+        print("...d = 3...")
         k = pyGPs.cov.Matern(d=3)
         self.checkCovariance(k)
 
-        print "testing covMatern..."
-        print "...d = 5..."
+        print("testing covMatern...")
+        print("...d = 5...")
         k = pyGPs.cov.Matern(d=5)
         self.checkCovariance(k)
 
-        print "testing covMatern..."
-        print "...d = 7..."
+        print("testing covMatern...")
+        print("...d = 7...")
         k = pyGPs.cov.Matern(d=7)
         self.checkCovariance(k)
 
 
     def test_covPeriodic(self):
-        print "testing covPeriodic..."
+        print("testing covPeriodic...")
         k = pyGPs.cov.Periodic()
         n = 20          # number of training inputs
         nn = 10         # number of test inputs
@@ -160,7 +162,7 @@ class CovarianceTests(unittest.TestCase):
         self.assertTrue(k1.shape == (n,n))
         self.assertTrue(k2.shape == (n,nn))
         self.assertTrue(k3.shape == (nn,1))
-        for der in xrange(len(k.hyp)):                        # checking derivatives for each hyperparameter
+        for der in range(len(k.hyp)):                        # checking derivatives for each hyperparameter
             kd1 = k.getDerMatrix(x=x, mode='train',der=der)           # test train by train derivative
             kd2 = k.getDerMatrix(x=x, z=z, mode='cross',der=der) # test train by test derivative
             kd3 = k.getDerMatrix(z=z, mode='self_test',der=der)       # test test by test self derivative
@@ -169,25 +171,25 @@ class CovarianceTests(unittest.TestCase):
 
 
     def test_covNoise(self):
-        print "testing covNoise..."
+        print("testing covNoise...")
         k = pyGPs.cov.Noise()
         self.checkCovariance(k)
 
 
     def test_covRQ(self):
-        print "testing covRQ..."
+        print("testing covRQ...")
         k = pyGPs.cov.RQ()
         self.checkCovariance(k)
 
 
     def test_covRQard(self):
-        print "testing covRQard..."
+        print("testing covRQard...")
         k = pyGPs.cov.RQard(D=self.x.shape[1])
         self.checkCovariance(k)
 
 
     def test_covPre(self):
-        print "testing covPre..."
+        print("testing covPre...")
         k = pyGPs.cov.Pre(self.M1, self.M2)                   # load precomputed kernel matrix
         k1 = k.getCovMatrix(x=self.x, mode='train')           # test train by train covariance
         k2 = k.getCovMatrix(x=self.x, z=self.z, mode='cross') # test train by test covariance
@@ -197,7 +199,7 @@ class CovarianceTests(unittest.TestCase):
         self.assertTrue(k1.shape == (n,n))
         self.assertTrue(k2.shape == (n,nn))
         self.assertTrue(k3.shape == (nn,1))
-        for der in xrange(len(k.hyp)):                        # checking derivatives for each hyperparameter
+        for der in range(len(k.hyp)):                        # checking derivatives for each hyperparameter
             kd1 = k.getDerMatrix(x=self.x, mode='train',der=der)           # test train by train derivative
             kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative
             kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
@@ -205,37 +207,37 @@ class CovarianceTests(unittest.TestCase):
 
 
     def test_covPiecePoly(self):
-        print "testing covPiecePoly..."
+        print("testing covPiecePoly...")
         k = pyGPs.cov.PiecePoly()
         self.checkCovariance(k)
 
 
     def test_covPoly(self):
-        print "testing covPoly..."
+        print("testing covPoly...")
         k = pyGPs.cov.Poly()
         self.checkCovariance(k)
 
 
     def test_covScale(self):
-        print "testing (composing kernel) muliply by a scalar..."
+        print("testing (composing kernel) muliply by a scalar...")
         k = pyGPs.cov.RBF()*5
         self.checkCovariance(k)
 
 
     def test_covSum(self):
-        print "testing (composing kernel) sum of two kernels..."
+        print("testing (composing kernel) sum of two kernels...")
         k = pyGPs.cov.RBF() + pyGPs.cov.PiecePoly()
         self.checkCovariance(k)
 
 
     def test_covProduct(self):
-        print "testing (composing kernel) product of two kernels..."
+        print("testing (composing kernel) product of two kernels...")
         k = pyGPs.cov.RBF() * pyGPs.cov.PiecePoly()
         self.checkCovariance(k)
 
 
     def test_covFITC(self):
-        print "testing FITC kernel to be used with sparse GP..."
+        print("testing FITC kernel to be used with sparse GP...")
         n,D  = self.x.shape
         nn,D = self.z.shape
         nu = 5        # number of inducing points
@@ -252,7 +254,7 @@ class CovarianceTests(unittest.TestCase):
         self.assertTrue(k2.shape == (nu,nn))
         self.assertTrue(k3.shape == (nn,1))
 
-        for der in xrange(len(k.hyp)):
+        for der in range(len(k.hyp)):
             Kd, Kuud, Kud = k.getDerMatrix(x=self.x, mode='train',der=der) # test train by train derivative
             kd2 = k.getDerMatrix(x=self.x, z=self.z, mode='cross',der=der) # test train by test derivative
             kd3 = k.getDerMatrix(z=self.z, mode='self_test',der=der)       # test test by test self derivative
@@ -271,6 +273,6 @@ class CovarianceTests(unittest.TestCase):
     '''
 
 if __name__ == "__main__":
-    print "Running unit tests..."
+    print("Running unit tests...")
     unittest.main()
 
