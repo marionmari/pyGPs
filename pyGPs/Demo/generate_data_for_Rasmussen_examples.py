@@ -1,3 +1,5 @@
+from builtins import zip
+from builtins import range
 import numpy as np 
 
 def save_data_regresssion():
@@ -16,7 +18,7 @@ def save_data_regresssion():
 
     # TEST points
     # test points evenly distributed in the interval [-2, 2.5]
-    xstar = np.array(range(-200,250,4), dtype=np.float64, ndmin=2).T
+    xstar = np.array(list(range(-200,250,4)), dtype=np.float64, ndmin=2).T
     xstar /= 100
     np.savez('Regression/regression_data', x=x, y=y, xstar=xstar) 
 
@@ -155,7 +157,7 @@ def save_data_classification():
     # For plotting, we superimpose the data points with the posterior equi-probability contour 
     # lines for the probability of class two given complete information about the generating mechanism.
     t1,t2 = np.meshgrid(np.arange(-4,4.1,0.1),np.arange(-4,4.1,0.1))
-    t = np.array(zip(np.reshape(t1,(np.prod(t1.shape),)),np.reshape(t2,(np.prod(t2.shape),)))) # these are the test inputs
+    t = np.array(list(zip(np.reshape(t1,(np.prod(t1.shape),)),np.reshape(t2,(np.prod(t2.shape),))))) # these are the test inputs
     n = t.shape[0]
 
     tmm = np.zeros_like(t)

@@ -1,3 +1,4 @@
+from builtins import object
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]

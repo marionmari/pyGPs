@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import range
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [marthaler at ge dot com]
@@ -58,40 +60,40 @@ class LikTests(unittest.TestCase):
 
 
     def checkLikelihood(self, likelihood):
-        print "predictive mode"
+        print("predictive mode")
         lp, ymu, ys2 = likelihood.evaluate(y=self.y, mu=self.mu, s2=self.s2, nargout=3)
         self.checkPrediction(lp, ymu, ys2)
 
-        print "inference mode(Laplace inference)"
+        print("inference mode(Laplace inference)")
         lp,dlp,d2lp,d3lp = likelihood.evaluate(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.Laplace(), nargout=4)
         self.checkInferenceLaplace(lp,dlp,d2lp,d3lp)
-        for der in xrange(len(likelihood.hyp)):
+        for der in range(len(likelihood.hyp)):
             lp_dhyp,dlp_dhyp,d2lp_dhyp = likelihood.evaluate(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.Laplace(), der=der, nargout=4)
             self.checkDerivativeLaplace(lp_dhyp,dlp_dhyp,d2lp_dhyp)
 
-        print "inference mode(EP inference)"
+        print("inference mode(EP inference)")
         lp,dlp,d2lp = likelihood.evaluate(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.EP(), nargout=3)
         self.checkInferenceEP(lp,dlp,d2lp)
-        for der in xrange(len(likelihood.hyp)):
+        for der in range(len(likelihood.hyp)):
             dlZhyp = likelihood.evaluate(y=self.y, mu=self.mu, s2=self.s2, inffunc=pyGPs.inf.EP(), der=der, nargout=3)
             self.checkDerivativeEP(dlZhyp)
 
 
     def test_likGauss(self):
-        print "testing Gaussian likelihood..."
+        print("testing Gaussian likelihood...")
         likelihood = pyGPs.lik.Gauss()
         self.checkLikelihood(likelihood)
 
 
 
     def test_likErf(self):
-        print "testing error function(cumulative Gaussian) likelihood..."
+        print("testing error function(cumulative Gaussian) likelihood...")
         likelihood = pyGPs.lik.Erf() 
         self.checkLikelihood(likelihood)
 
 
     def test_likLaplace(self):
-        print "testing Laplacian likelihood..."
+        print("testing Laplacian likelihood...")
         likelihood = pyGPs.lik.Laplace() 
         self.checkLikelihood(likelihood)
 
@@ -105,6 +107,6 @@ class LikTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print "Running unit tests..."
+    print("Running unit tests...")
     unittest.main()
 

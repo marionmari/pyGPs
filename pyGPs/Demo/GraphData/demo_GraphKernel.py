@@ -1,3 +1,6 @@
+from __future__ import print_function
+from builtins import str
+from builtins import range
 
 #! /usr/bin/env python
 #coding=utf-8
@@ -34,7 +37,7 @@ graph_label = data['labels']                          # N x 1 graph label array
 N = graph_label.shape[0]                              # number of graphs)
 
 graph_label = np.int8(graph_label)
-for i in xrange(N):
+for i in range(N):
     if graph_label[i,0] == 0:
         graph_label[i,0] -= 1
 
@@ -43,19 +46,19 @@ for i in xrange(N):
 #===========================================================================
 num_Iteration = 10
 w = 1e-4
-dist = 'tv' 		# possible values: 'tv', 'hellinger'
-np.random.seed(1)	# set random seed to get reproducible kernel matrices (to account for randomness in kernel average resutls over several returns of the experiment)	
+dist = 'tv'         # possible values: 'tv', 'hellinger'
+np.random.seed(1)    # set random seed to get reproducible kernel matrices (to account for randomness in kernel average resutls over several returns of the experiment)    
 K = graphKernels.propagationKernel(A, node_label, gr_id, num_Iteration, w, dist, 'label_diffusion', SUM=True, VIS=False, showEachStep=False) 
 
 #----------------------------------------------------------------------
 # Cross Validation
 #----------------------------------------------------------------------
-print '...GP prediction (10-fold CV)'
+print('...GP prediction (10-fold CV)')
 
-for t in xrange(num_Iteration+1):
+for t in range(num_Iteration+1):
     ACC = []           # accuracy
     
-    print 'number of kernel iterations =', t
+    print('number of kernel iterations =', t)
     Matrix = K[:,:,t]
     # normalize kernel matrix (not useful for MUTAG)
     # Matrix = graphUtil.normalizeKernel(Matrix)
@@ -86,6 +89,6 @@ for t in xrange(num_Iteration+1):
         ACC.append(acc)
     
     
-    print 'Accuracy: ', np.round(np.mean(ACC),2), '('+str(np.round(np.std(ACC),2))+')'
+    print('Accuracy: ', np.round(np.mean(ACC),2), '('+str(np.round(np.std(ACC),2))+')')
      
   

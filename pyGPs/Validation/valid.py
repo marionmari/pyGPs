@@ -1,3 +1,6 @@
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -36,7 +39,7 @@ def k_fold_validation(x, y, K=10, randomise=False):
 
     n, D = x.shape
     assert n > K
-    for k in xrange(K):
+    for k in range(K):
         x_train = np.array([e for i, e in enumerate(x) if i % K != k])
         x_test = np.array([e for i, e in enumerate(x) if i % K == k])
         y_train = np.array([e for i, e in enumerate(y) if i % K != k])
@@ -53,10 +56,10 @@ def k_fold_index(n, K=10):
     :param K: number of folds
 
     '''
-    for k in xrange(K):
+    for k in range(K):
         indice_train = []
         indice_test = []
-        for i in xrange(n):
+        for i in range(n):
             if i % K == k:
                 indice_test.append(i)
             else:
@@ -85,10 +88,10 @@ def ACC(predict,target):
     '''
     n,D = target.shape
     count = 0.
-    for i in xrange(n):
+    for i in range(n):
         if predict[i,0] == target[i,0]:
             count += 1
-    return count/n
+    return old_div(count,n)
 
 
 def Prec(predict,target):
@@ -102,12 +105,12 @@ def Prec(predict,target):
     n,D = target.shape
     count_1 = 0.
     count_2 = 0.
-    for i in xrange(n):
+    for i in range(n):
         if predict[i,0] == 1:
             count_1 += 1
             if target[i,0] == 1:
                 count_2 += 1
-    return count_2 / count_1
+    return old_div(count_2, count_1)
 
 
 def Recall(predict,target):
@@ -121,12 +124,12 @@ def Recall(predict,target):
     n,D = target.shape
     count_1 = 0.
     count_2 = 0.
-    for i in xrange(n):   
+    for i in range(n):   
         if target[i,0] == 1:
             count_1 += 1
             if predict[i,0] == 1:
                 count_2 += 1
-    return count_2 / count_1
+    return old_div(count_2, count_1)
 
 
 def NLPD(y, MU, S2):

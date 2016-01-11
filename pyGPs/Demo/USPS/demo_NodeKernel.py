@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import range
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -28,7 +30,7 @@ def load_binary(D1,D2,reduce=False):
     D1_list = []
     D2_list = []
     n,D = x.shape
-    for i in xrange(n):
+    for i in range(n):
         if y[i,D1] == 1:
             D1_list.append(i)
         elif y[i,D2] == 1:
@@ -76,12 +78,12 @@ if __name__ == "__main__":
     exampleDigit7_2 = np.reshape(exampleDigit7_2,(16,16))
     plotDigit(exampleDigit7_2, 'This is another 2.')
 
-    # true class 1 	
+    # true class 1     
     exampleDigitBad = x[70]    # digit that predicts wrong for rbf
     exampleDigitBad = np.reshape(exampleDigitBad,(16,16))
     plotDigit(exampleDigitBad, 'This digit is an example where the rbf kernel predicts the wrong class (2). \nDiffusion kernel predicts correctly due to graph information!')
     
-    # true class 2 	
+    # true class 2     
     exampleDigitBad = x[190]    # digit that predicts wrong for diff
     exampleDigitBad = np.reshape(exampleDigitBad,(16,16))
     plotDigit(exampleDigitBad, 'This digit is an example where the diff kernel predicts the wrong class (1). \nrbf kernel, however, predicts correctly!')
@@ -95,7 +97,7 @@ if __name__ == "__main__":
     N = Matrix.shape[0]
     
     # set training and test set
-    index_train = xrange(N)
+    index_train = range(N)
     index_test = [38, 81, 124, 129, 70, 190]
     index_train =  np.setdiff1d(index_train, index_test)
         
@@ -117,7 +119,7 @@ if __name__ == "__main__":
     
     # evaluation 
     predictive_class_rbf = np.sign(model.ym)
-    ACC_rbf = valid.ACC(predictive_class_rbf, y_test)	
+    ACC_rbf = valid.ACC(predictive_class_rbf, y_test)    
 
     ## DIFFUSION Kernel
     # compute kernel matrix and initalize GP with precomputed kernel                  
@@ -159,10 +161,10 @@ if __name__ == "__main__":
     ACC_sum = valid.ACC(predictive_class_sum, y_test)
     
     
-    print np.hstack((np.array(index_test, ndmin=2).T, y_test, predictive_class_rbf, predictive_class_diff, predictive_class_sum))
-    print 'accuracy (RBF): ' , ACC_rbf
-    print 'accuracy (DIFF): ' , ACC_diff
-    print 'accuracy (SUM): ' , ACC_sum
+    print(np.hstack((np.array(index_test, ndmin=2).T, y_test, predictive_class_rbf, predictive_class_diff, predictive_class_sum)))
+    print('accuracy (RBF): ' , ACC_rbf)
+    print('accuracy (DIFF): ' , ACC_diff)
+    print('accuracy (SUM): ' , ACC_sum)
 
 
    

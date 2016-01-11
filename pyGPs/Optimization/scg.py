@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import print_function
+from past.utils import old_div
 #===============================================================================
 #   SCG  Scaled conjugate gradient optimization.
 #
@@ -22,7 +25,7 @@ import numpy as np
 
 def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = False, pointlog = False, scalelog = False, tolX = 1.0e-8, tolO = 1.0e-8, eval = None): 
     '''Scaled conjugate gradient optimization. '''
-    if display: print '\n***** starting optimization (SCG) *****\n'
+    if display: print('\n***** starting optimization (SCG) *****\n')
     nparams = len(x);
     #  Check gradients
     if gradcheck:
@@ -73,19 +76,19 @@ def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = Fals
                 else:
                     return x, listF
 
-            sigma = sigma0/sqrt(kappa)
+            sigma = old_div(sigma0,sqrt(kappa))
             xplus = x + sigma*d
             gplus = f(xplus, *args)[1]
             gradCount += 1
-            theta = (np.dot(d, (gplus - gradnew)))/sigma;
+            theta = old_div((np.dot(d, (gplus - gradnew))),sigma);
      
         # Increase effective curvature and evaluate step size alpha.
         delta = theta + beta*kappa
         if (delta <= 0):
             delta = beta*kappa
-            beta = beta - theta/kappa
+            beta = beta - old_div(theta,kappa)
 
-        alpha = - mu/delta
+        alpha = old_div(- mu,delta)
          
         # Calculate the comparison ratio.
         xnew = x + alpha*d
@@ -158,7 +161,7 @@ def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = Fals
             nsuccess = 0;
         else:
             if (success == 1):
-                gamma = np.dot((gradold - gradnew), gradnew)/(mu)
+                gamma = old_div(np.dot((gradold - gradnew), gradnew),(mu))
                 d = gamma*d - gradnew;
 
         j += 1
@@ -167,7 +170,7 @@ def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = Fals
     # iterations.
     # options(8) = fold;
     if (display):
-        print "maximum number of iterations reached"
+        print("maximum number of iterations reached")
     if eval is not None:
         return x, listF, evalList, time
     else:

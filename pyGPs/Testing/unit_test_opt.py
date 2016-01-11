@@ -1,3 +1,4 @@
+from __future__ import print_function
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -37,33 +38,33 @@ class OptTests(unittest.TestCase):
         # and optimalHyp is a flattened numpy array
         optimalHyp, funcValue = optimizer.findMin(self.x, self.y)
         self.assertTrue(funcValue < self.nlZ_beforeOpt)     
-        print "optimal hyperparameters in flattened array:", optimalHyp 
+        print("optimal hyperparameters in flattened array:", optimalHyp) 
 
 
 
     def test_CG(self):
-        print "testing Conjugent gradient..."
+        print("testing Conjugent gradient...")
         optimizer = pyGPs.Core.opt.CG(self.model)
         self.checkOptimizer(optimizer)
 
 
 
     def test_BFGS(self):
-        print "testing quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)..."
+        print("testing quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)...")
         optimizer = pyGPs.Core.opt.BFGS(self.model)
         self.checkOptimizer(optimizer)
 
 
 
     def test_SCG(self):
-        print "testing Scaled conjugent gradient..."
+        print("testing Scaled conjugent gradient...")
         optimizer = pyGPs.Core.opt.SCG(self.model)
         self.checkOptimizer(optimizer)
 
 
 
     def test_Minimize(self):
-        print "testing minimize by Carl Rasmussen ..."
+        print("testing minimize by Carl Rasmussen ...")
         optimizer = pyGPs.Core.opt.Minimize(self.model)
         self.checkOptimizer(optimizer)
 
@@ -81,6 +82,6 @@ class OptTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print "Running unit tests..."
+    print("Running unit tests...")
     unittest.main()
 

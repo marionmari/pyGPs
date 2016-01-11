@@ -1,3 +1,7 @@
+from __future__ import print_function
+from builtins import str
+from builtins import range
+from builtins import object
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -52,8 +56,8 @@ class Mean(object):
 
     def __repr__(self):
         strvalue =str(type(self))+': to get the mean vector or mean derviatives use: \n'+\
-	    	  'model.meanfunc.getMean()\n'+\
-		  'model.meanfunc.getDerMatrix()'
+              'model.meanfunc.getMean()\n'+\
+          'model.meanfunc.getDerMatrix()'
         return strvalue
 
 
@@ -85,7 +89,7 @@ class Mean(object):
         elif isinstance(other, Mean):
             return ProductOfMean(self,other)
         else:
-            print "only numbers and Means are allowed for *"
+            print("only numbers and Means are allowed for *")
 
 
 
@@ -105,7 +109,7 @@ class Mean(object):
         if isinstance(number, int) and number > 0:
             return PowerOfMean(self,number)
         else:
-            print "only non-zero integers are supported for **"
+            print("only non-zero integers are supported for **")
 
 
 
@@ -340,10 +344,10 @@ class Linear(Mean):
     '''
     def __init__(self, D=None, alpha_list=None):
         if alpha_list is None:
-        	if D is None:
-        		self.hyp = [0.5]
-        	else:
-	            self.hyp = [0.5 for i in xrange(D)]
+            if D is None:
+                self.hyp = [0.5]
+            else:
+                self.hyp = [0.5 for i in range(D)]
         else:
             self.hyp = alpha_list
 

@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import print_function
+from builtins import zip
+from past.utils import old_div
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -32,7 +36,7 @@ from time import clock
 if __name__ == '__main__':
 
     # LOAD data
-    infile = 'mauna.txt'	# Note: Samples with value -99.99 were dropped.
+    infile = 'mauna.txt'    # Note: Samples with value -99.99 were dropped.
     f      = open(infile,'r')
     year   = []
     co2    = []
@@ -54,18 +58,18 @@ if __name__ == '__main__':
     n,D = x.shape
 
     # TEST POINTS
-    xs = np.arange(2004+1./24.,2024-1./24.,1./12.)
+    xs = np.arange(2004+old_div(1.,24.),2024-old_div(1.,24.),old_div(1.,12.))
     xs = xs.reshape(len(xs),1)
 
     # DEFINE parameterized covariance function
     k1 = pyGPs.cov.RBF(np.log(67.), np.log(66.))
     k2 = pyGPs.cov.Periodic(np.log(1.3), np.log(1.0), np.log(2.4)) * pyGPs.cov.RBF(np.log(90.), np.log(2.4))
     k3 = pyGPs.cov.RQ(np.log(1.2), np.log(0.66), np.log(0.78))
-    k4 = pyGPs.cov.RBF(np.log(1.6/12.), np.log(0.18)) + pyGPs.cov.Noise(np.log(0.19))
+    k4 = pyGPs.cov.RBF(np.log(old_div(1.6,12.)), np.log(0.18)) + pyGPs.cov.Noise(np.log(0.19))
     k  = k1 + k2 + k3 + k4
 
     # STANDARD GP (prediction)
-    print 'Original CO2 Data:'
+    print('Original CO2 Data:')
     model = pyGPs.GPR()
     model.setData(x,y)
     model.plotData_1d()
@@ -79,11 +83,11 @@ if __name__ == '__main__':
     t1 = clock()
     model.predict(xs)
 
-    print 'Using Handcrafted Kernel from GPML Book:'
-    print 'Time to optimize = ', t1-t0
-    print 'Optimized mean = ', model.meanfunc.hyp
-    print 'Optimized covariance = ', model.covfunc.hyp
-    print 'Optimized liklihood = ', model.likfunc.hyp
-    print 'Final negative log marginal likelihood = ', round(model.nlZ,3)
+    print('Using Handcrafted Kernel from GPML Book:')
+    print('Time to optimize = ', t1-t0)
+    print('Optimized mean = ', model.meanfunc.hyp)
+    print('Optimized covariance = ', model.covfunc.hyp)
+    print('Optimized liklihood = ', model.likfunc.hyp)
+    print('Final negative log marginal likelihood = ', round(model.nlZ,3))
 
     model.plot()

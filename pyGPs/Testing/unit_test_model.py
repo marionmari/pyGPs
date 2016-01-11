@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import zip
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -35,7 +37,7 @@ class ModelTests(unittest.TestCase):
         self.yc = clsData['y']            # training target
         self.zc = clsData['xstar']        # test data
         u1,u2 = np.meshgrid(np.linspace(-2,2,5),np.linspace(-2,2,5))
-        self.uc = np.array(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),)))) # inducing points
+        self.uc = np.array(list(zip(np.reshape(u2,(np.prod(u2.shape),)),np.reshape(u1,(np.prod(u1.shape),))))) # inducing points
 
 
     def checkRegressionOutput(self, model):
@@ -55,7 +57,7 @@ class ModelTests(unittest.TestCase):
 
 
     def test_GPR(self):
-        print "testing GP regression..."
+        print("testing GP regression...")
         model = pyGPs.GPR()
         m = pyGPs.mean.Zero()
         k = pyGPs.cov.RBF()
@@ -67,7 +69,7 @@ class ModelTests(unittest.TestCase):
 
 
     def test_GPC(self):
-        print "testing GP classification..."
+        print("testing GP classification...")
         model = pyGPs.GPC()
         m = pyGPs.mean.Zero()
         k = pyGPs.cov.RBF()
@@ -88,7 +90,7 @@ class ModelTests(unittest.TestCase):
 
 
     def test_GPR_FITC(self):
-        print "testing GP sparse regression..."
+        print("testing GP sparse regression...")
         model = pyGPs.GPR_FITC()
         m = pyGPs.mean.Zero()
         k = pyGPs.cov.RBF()
@@ -100,7 +102,7 @@ class ModelTests(unittest.TestCase):
 
 
     def test_GPC_FITC(self):
-        print "testing GP sparse classification..."
+        print("testing GP sparse classification...")
         model = pyGPs.GPC_FITC()
         m = pyGPs.mean.Zero()
         k = pyGPs.cov.RBF()
@@ -123,6 +125,6 @@ class ModelTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print "Running unit tests(about 5 min)..."
+    print("Running unit tests(about 5 min)...")
     unittest.main()
 
