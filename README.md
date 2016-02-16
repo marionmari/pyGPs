@@ -1,5 +1,5 @@
 ================================================================================
-    Marion Neumann [marion dot neumann at uni-bonn dot de]
+    Marion Neumann [m dot neumann at wustl dot edu]
     Daniel Marthaler [dan dot marthaler at gmail dot com]
     Shan Huang [schan dot huang at gmail dot com]
     Kristian Kersting [kristian dot kersting at cs dot tu-dortmund dot de]
