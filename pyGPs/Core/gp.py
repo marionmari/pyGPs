@@ -52,6 +52,7 @@ from . import inf, mean, lik, cov, opt
 from .tools import unique, jitchol, solve_chol
 from copy import deepcopy
 import pyGPs
+from pyGPs.Core.cov import FITCOfKernel
 
 SHADEDCOLOR = [0.7539, 0.89453125, 0.62890625, 1.0]
 MEANCOLOR = [ 0.2109375, 0.63385, 0.1796875, 1.0]
@@ -398,7 +399,11 @@ class GP(object):
         while nact<=ns-1:                              # process minibatches of test cases to save memory
             id  = list(range(nact,min(nact+nperbatch,ns)))   # data points to process
             kss = covfunc.getCovMatrix(z=xs[id,:], mode='self_test')    # self-variances
-            Ks  = covfunc.getCovMatrix(x=x[nz,:], z=xs[id,:], mode='cross')   # cross-covariances
+            if isinstance(covfunc, FITCOfKernel): 
+                Ks = covfunc.getCovMatrix(x=x, z=xs[id,:], mode='cross')   # cross-covariances
+                Ks = Ks[nz,:]
+            else:
+                Ks  = covfunc.getCovMatrix(x=x[nz,:], z=xs[id,:], mode='cross')   # cross-covariances
             ms  = meanfunc.getMean(xs[id,:])
             N   = (alpha.shape)[1]                     # number of alphas (usually 1; more in case of sampling)
             Fmu = np.tile(ms,(1,N)) + np.dot(Ks.T,alpha[nz])          # conditional mean fs|f
@@ -575,7 +580,7 @@ class GPR(GP):
         elif method == "RTMinimize":
             self.optimizer = opt.RTMinimize(self, conf)
         else:
-            raise Error('Optimization method is not set correctly in setOptimizer')
+            raise Exception('Optimization method is not set correctly in setOptimizer')
 
 
     def plot(self,axisvals=None):
@@ -997,7 +1002,7 @@ class GP_FITC(GP):
                 if not self.u is None:
                     self.covfunc = kernel.fitc(self.u)
                 else:
-                    raise error("To use default inducing points, please call setData() first!")
+                    raise Exception("To use default inducing points, please call setData() first!")
             if type(kernel) is cov.Pre:
                 self.usingDefaultMean = False
         if not mean is None:
