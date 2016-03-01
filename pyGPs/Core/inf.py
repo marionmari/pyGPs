@@ -255,8 +255,9 @@ class Inference(object):
         '''
         nu = R0.shape[0]                                 # number of inducing points
         rot180   = lambda A: np.rot90(np.rot90(A))       # little helper functions
-        #chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
-        chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        #bug!#chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        chol_inv = lambda A: rot180( np.linalg.solve(jitchol(rot180(A)), np.eye(nu)) ) # chol(inv(A))
+    
         t  = old_div(1,(1+d0*w))                                  # temporary variable O(n)
         d  = d0*t                                        # O(n)
         P  = np.tile(t.T,(nu,1))*P0                      # O(n*nu)
@@ -324,7 +325,9 @@ class Inference(object):
         nu = R0.shape[0]                                  # number of inducing points
         rot180   = lambda A: np.rot90(np.rot90(A))        # little helper functions
         #chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
-        chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        #bug!#chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        chol_inv = lambda A: rot180( np.linalg.solve(jitchol(rot180(A)), np.eye(nu)) ) # chol(inv(A))
+ 
         t  = old_div(1,(1+d0*w))                                   # temporary variable O(n)
         d  = d0*t                                         # O(n)
         P  = np.tile(t.T,(nu,1))*P0;                      # O(n*nu)
@@ -350,7 +353,7 @@ class Exact(Inference):
 
         sn2   = np.exp(2*likfunc.hyp[0])                       # noise variance of likGauss
         #L     = np.linalg.cholesky(K/sn2+np.eye(n)).T         # Cholesky factor of covariance with noise
-        L     = jitchol(old_div(K,sn2)+np.eye(n)).T                     # Cholesky factor of covariance with noise
+        L     = jitchol(old_div(K,sn2)+np.eye(n)).T            # Cholesky factor of covariance with noise
         alpha = old_div(solve_chol(L,y-m),sn2)
         post = postStruct()
         post.alpha = alpha                                     # return the posterior parameters
@@ -399,9 +402,10 @@ class FITC_Exact(Inference):
 
         sn2   = np.exp(2*likfunc.hyp[0])                         # noise variance of likGauss
         snu2  = 1.e-6*sn2                                        # hard coded inducing inputs noise
-        #Luu   = np.linalg.cholesky(Kuu+snu2*np.eye(nu)).T        # Kuu + snu2*I = Luu'*Luu
-        Luu   = jitchol(Kuu+snu2*np.eye(nu)).T        # Kuu + snu2*I = Luu'*Luu
-        V     = np.linalg.solve(Luu.T,Ku)                        # V = inv(Luu')*Ku => V'*V = Q
+        #Luu   = np.linalg.cholesky(Kuu+snu2*np.eye(nu)).T       # Kuu + snu2*I = Luu'*Luu
+        Luu   = jitchol(Kuu+snu2*np.eye(nu)).T                   # Kuu + snu2*I = Luu'*Luu
+        V     = np.linalg.solve(Luu.T,Ku)                        # V = inv(Luu')*Ku => V'*V = Q        
+        
         g_sn2 = diagK + sn2 - np.array([(V*V).sum(axis=0)]).T    # g + sn2 = diag(K) + sn2 - diag(Q)
         #Lu    = np.linalg.cholesky(np.eye(nu) + np.dot(V/np.tile(g_sn2.T,(nu,1)),V.T)).T  # Lu'*Lu=I+V*diag(1/g_sn2)*V'
         Lu    = jitchol(np.eye(nu) + np.dot(old_div(V,np.tile(g_sn2.T,(nu,1))),V.T)).T  # Lu'*Lu=I+V*diag(1/g_sn2)*V'
@@ -588,7 +592,9 @@ class FITC_Laplace(Inference):
         nu = Kuu.shape[0]
         rot180   = lambda A: np.rot90(np.rot90(A))      # little helper functions
         #chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
-        chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        #bug!#chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        chol_inv = lambda A: rot180( np.linalg.solve(jitchol(rot180(A)), np.eye(nu)) ) # chol(inv(A))
+        
         R0 = chol_inv(Kuu+snu2*np.eye(nu))              # initial R, used for refresh O(nu^3)
         V  = np.dot(R0,Ku); d0 = diagK - np.array([(V*V).sum(axis=0)]).T     # initial d, needed
 
@@ -832,7 +838,8 @@ class FITC_EP(Inference):
         n, D = x.shape; nu = Kuu.shape[0]
         rot180   = lambda A: np.rot90(np.rot90(A))      # little helper functions
         #chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
-        chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        #bug!#chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
+        chol_inv = lambda A: rot180( np.linalg.solve(jitchol(rot180(A)), np.eye(nu)) ) # chol(inv(A))
 
         R0 = chol_inv(Kuu+snu2*np.eye(nu))              # initial R, used for refresh O(nu^3)
         V  = np.dot(R0,Ku); d0 = diagK - np.array([(V*V).sum(axis=0)]).T # initial d, needed for refresh O(n*nu^2)
