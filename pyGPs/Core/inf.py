@@ -255,7 +255,6 @@ class Inference(object):
         '''
         nu = R0.shape[0]                                 # number of inducing points
         rot180   = lambda A: np.rot90(np.rot90(A))       # little helper functions
-        #bug!#chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
         chol_inv = lambda A: rot180( np.linalg.solve(jitchol(rot180(A)), np.eye(nu)) ) # chol(inv(A))
     
         t  = old_div(1,(1+d0*w))                                  # temporary variable O(n)
@@ -325,7 +324,6 @@ class Inference(object):
         nu = R0.shape[0]                                  # number of inducing points
         rot180   = lambda A: np.rot90(np.rot90(A))        # little helper functions
         #chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
-        #bug!#chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
         chol_inv = lambda A: rot180( np.linalg.solve(jitchol(rot180(A)), np.eye(nu)) ) # chol(inv(A))
  
         t  = old_div(1,(1+d0*w))                                   # temporary variable O(n)
@@ -592,7 +590,6 @@ class FITC_Laplace(Inference):
         nu = Kuu.shape[0]
         rot180   = lambda A: np.rot90(np.rot90(A))      # little helper functions
         #chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
-        #bug!#chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
         chol_inv = lambda A: rot180( np.linalg.solve(jitchol(rot180(A)), np.eye(nu)) ) # chol(inv(A))
         
         R0 = chol_inv(Kuu+snu2*np.eye(nu))              # initial R, used for refresh O(nu^3)
@@ -838,7 +835,6 @@ class FITC_EP(Inference):
         n, D = x.shape; nu = Kuu.shape[0]
         rot180   = lambda A: np.rot90(np.rot90(A))      # little helper functions
         #chol_inv = lambda A: np.linalg.solve( rot180( np.linalg.cholesky(rot180(A)) ),np.eye(nu)) # chol(inv(A))
-        #bug!#chol_inv = lambda A: np.linalg.solve( rot180( jitchol(rot180(A)) ),np.eye(nu)) # chol(inv(A))
         chol_inv = lambda A: rot180( np.linalg.solve(jitchol(rot180(A)), np.eye(nu)) ) # chol(inv(A))
 
         R0 = chol_inv(Kuu+snu2*np.eye(nu))              # initial R, used for refresh O(nu^3)
