@@ -101,11 +101,11 @@ class dnlZStruct(object):
         self.mean = []
         self.cov = []
         self.lik = []
-        if m.hyp:
+        if m.hyp is not None:
             self.mean = [0 for i in range(len(m.hyp))]
-        if c.hyp:
+        if c.hyp is not None:
             self.cov  = [0 for i in range(len(c.hyp))]
-        if l.hyp:
+        if l.hyp is not None:
             self.lik  = [0 for i in range(len(l.hyp))]
 
     def __str__(self):
