@@ -869,7 +869,6 @@ class RBFunit(Kernel):
         return A
 
 
-
 class RBFard(Kernel):
     '''
     Squared Exponential kernel with Automatic Relevance Determination.
@@ -910,8 +909,8 @@ class RBFard(Kernel):
             n, D = x.shape
         if not z is None:
             nn, D = z.shape
-        ell = old_div(1.,np.exp(self.hyp[0:D]))    # characteristic length scale
-        sf2 = np.exp(2.*self.hyp[D])      # signal variance
+        ell = old_div(1., np.exp(self.hyp[0:D]))  # characteristic length scale
+        sf2 = np.exp(2.*self.hyp[D])        # signal variance
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
             A = np.zeros((nn,1))
@@ -925,16 +924,18 @@ class RBFard(Kernel):
             if mode == 'self_test':
                 A = A*0
             elif mode == 'train':
-                tem = old_div(np.atleast_2d(x[:,der]),ell[der])
+                # tem = (np.atleast_2d(x[:,der])/ell[der])  # buggy. Need the transpose for spdist.cdist to work properly
+                # tem = (np.atleast_2d(x[:,der])/ell[der]).T  # buggy version
+                tem = (np.atleast_2d(x[:,der])*ell[der]).T
                 A *= spdist.cdist(tem,tem,'sqeuclidean')
             elif mode == 'cross':
-                A *= spdist.cdist(old_div(np.atleast_2d(x[:,der]).T,ell[der]),old_div(np.atleast_2d(z[:,der]).T,ell[der]),'sqeuclidean')
+                # A *= spdist.cdist(np.atleast_2d(x[:,der]).T/ell[der],np.atleast_2d(z[:,der]).T/ell[der],'sqeuclidean')  # buggy version
+                A *= spdist.cdist(np.atleast_2d(x[:, der]).T * ell[der], np.atleast_2d(z[:, der]).T * ell[der], 'sqeuclidean')
         elif der == D:                    # compute derivative matrix wrt magnitude parameter
             A = 2.*A
         else:
             raise Exception("Wrong derivative index in RDFard")
         return A
-
 
 
 class Const(Kernel):

@@ -219,7 +219,7 @@ class Minimize(Optimizer):
         self.trailsCounter = 0
         self.errorCounter = 0
 
-    def findMin(self, x, y, numIters = 100):
+    def findMin(self, x, y, numIters = 200):
         meanfunc = self.model.meanfunc
         covfunc = self.model.covfunc
         likfunc = self.model.likfunc
@@ -227,9 +227,11 @@ class Minimize(Optimizer):
         hypInArray = self._convert_to_array()
 
         try:
-            opt = minimize.run(self._nlzAnddnlz, hypInArray, length=-numIters)
+            # opt = minimize.run(self._nlzAnddnlz, hypInArray, length=-numIters)
+            opt = minimize.run(self._nlzAnddnlz, hypInArray, length=numIters)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1][-1]
+            print("Number of line searches %g" % opt[2])
         except:
             self.errorCounter += 1
             if not self.searchConfig:
@@ -242,17 +244,19 @@ class Minimize(Optimizer):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
                 self.trailsCounter += 1                 # increase counter
-                for i in range(hypInArray.shape[0]):   # random init of hyp
+                for i in xrange(hypInArray.shape[0]):   # random init of hyp
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = minimize.run(self._nlzAnddnlz, hypInArray, length=-40)
+                    # thisopt = minimize.run(self._nlzAnddnlz, hypInArray, length=-numIters)
+                    thisopt = minimize.run(self._nlzAnddnlz, hypInArray, length=numIters)
+                    print("Number of line searches %g" % thisopt[2])
                     if thisopt[1][-1] < funcValue:
                         funcValue  = thisopt[1][-1]
                         optimalHyp = thisopt[0]
                 except:
                     self.errorCounter += 1
-                if self.searchConfig.num_restarts and self.errorCounter > old_div(self.searchConfig.num_restarts,2):
+                if self.searchConfig.num_restarts and self.errorCounter > self.searchConfig.num_restarts/2:
                     print("[Minimize] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
                     raise Exception("Over half of the trails failed for minimize")
                 if self.searchConfig.num_restarts and self.trailsCounter > self.searchConfig.num_restarts-1:         # if exceed num_restarts

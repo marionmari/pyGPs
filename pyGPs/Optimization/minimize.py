@@ -36,7 +36,7 @@ from past.utils import old_div
 
 
 
-from numpy import dot, isinf, isnan, any, sqrt, isreal, real, nan, inf
+from numpy import dot, isinf, isnan, any, sqrt, isreal, real, nan, inf, finfo
 
 def run(f, X, args=(), length=None, red=1.0, verbose=False):
     '''
@@ -46,11 +46,12 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
     The function is a straightforward Python-translation of Carl Rasmussen's
     Matlab-function minimize.m
     '''
-    INT = 0.1;# don't reevaluate within 0.1 of the limit of the current bracket
-    EXT = 3.0;              # extrapolate maximum 3 times the current step-size
-    MAX = 20;                     # max 20 function evaluations per line search
-    RATIO = 10;                                   # maximum allowed slope ratio
-    SIG = 0.1;RHO = old_div(SIG,2);# SIG and RHO are the constants controlling the Wolfe-
+    INT = 0.1                # don't reevaluate within 0.1 of the limit of the current bracket
+    EXT = 3                  # extrapolate maximum 3 times the current step-size
+    MAX = 20                 # max 20 function evaluations per line search
+    RATIO = 10               # maximum allowed slope ratio
+    SIG = 0.1
+    RHO = old_div(SIG, 2.0)  # SIG and RHO are the constants controlling the Wolfe-
     #Powell conditions. SIG is the maximum allowed absolute ratio between
     #previous and new slopes (derivatives in the search direction), thus setting
     #SIG to low (positive) values forces higher precision in the line-searches.
@@ -59,7 +60,8 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
     #Tuning of SIG (depending on the nature of the function to be optimized) may
     #speed up the minimization; it is probably not worth playing much with RHO.
 
-    SMALL = 10.**-16                           #minimize.m uses matlab's realmin 
+    # SMALL = 10.**-16                           #minimize.m uses matlab's realmin
+    SMALL = finfo(float).tiny
     i = 0                                          # zero the run length counter
     ls_failed = 0                           # no previous line search has failed
     result = f(X, *args)
@@ -92,7 +94,7 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
                         return
                     success = 1
                 except:                     # catch any error which occured in f
-                    x3 = old_div((x2+x3),2)                        # bisect and try again
+                    x3 = old_div((x2+x3),2.0)                        # bisect and try again
             if f3 < F0:
                 X0 = X+x3*s; F0 = f3; dF0 = df3               # keep best values
             d3 = dot(df3,s)                                          # new slope
@@ -101,8 +103,8 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
                 break
             x1 = x2; f1 = f2; d1 = d2                  # move point 2 to point 1
             x2 = x3; f2 = f3; d2 = d3                  # move point 3 to point 2
-            A = 6*(f1-f2)+3*(d2+d1)*(x2-x1)           # make cubic extrapolation
-            B = 3*(f2-f1)-(2*d1+d2)*(x2-x1)
+            A = 6.*(f1-f2)+3.*(d2+d1)*(x2-x1)           # make cubic extrapolation
+            B = 3.*(f2-f1)-(2.*d1+d2)*(x2-x1)
             Z = B+sqrt(complex(B*B-A*d1*(x2-x1)))
             if Z != 0.0:
                 x3 = x1-d1*(x2-x1)**2/Z               # num. error possible, ok!
@@ -128,8 +130,8 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
                 x3 = x2-old_div((0.5*d2*(x4-x2)**2),(f4-f2-d2*(x4-x2)))
                                                        # quadratic interpolation
             else:
-                A = 6*(f2-f4)/(x4-x2)+3*(d4+d2)            # cubic interpolation
-                B = 3*(f4-f2)-(2*d2+d4)*(x4-x2)
+                A = 6.*(f2-f4)/(x4-x2)+3.*(d4+d2)            # cubic interpolation
+                B = 3.*(f4-f2)-(2.*d2+d4)*(x4-x2)
                 if A != 0:
                     x3=x2+old_div((sqrt(B*B-A*d2*(x4-x2)**2)-B),A)
                                                       # num. error possible, ok!
@@ -162,7 +164,7 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
             if ls_failed or (i>abs(length)): # line search failed twice in a row
                 break                     # or we ran out of time, so we give up
             s = -df0; d0 = -dot(s,s)                              # try steepest
-            x3 = old_div(1,(1-d0))                     
+            x3 = old_div(1.,(1.-d0))
             ls_failed = 1                              # this line search failed
     
     if verbose: print("\n")
