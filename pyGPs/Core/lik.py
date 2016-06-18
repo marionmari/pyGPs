@@ -535,7 +535,7 @@ class Laplace(Likelihood):
 
     def _expABz_expAx(self,A,x,B,z):
         '''
-        Computes y = ( (exp(A).*B)*z ) ./ ( exp(A)*x ) in a numerically safe way
+        Computes y = ( (exp(A).*B)*z ) / ( exp(A)*x ) in a numerically safe way
         The function is not general in the sense that it yields correct values for
         all types of inputs. We assume that the values are close together.
         '''
@@ -575,6 +575,132 @@ class Laplace(Likelihood):
         return list(y.flatten())
 
 
+class Logistic(Likelihood):
+    '''
+    Logistic likelihood function for binary classification or logit regression. 
+
+    :math:`Logistic(t) = \\frac{1}{1+\exp(-t)}` 
+
+    hyp = [ log_sigma ]
+    '''
+    def __init__(self):
+        self.hyp = []
+
+    def evaluate(self, y=None, mu=None, s2=None, inffunc=None, der=None, nargout=1):
+        from . import inf
+        if not y is None:
+            y = np.sign(y)
+            y[y==0] = 1
+        else:
+            y = 1                                        # allow only +/- 1 values
+        if inffunc is None:                              # prediction mode if inf is not pre$
+            y = y*np.ones_like(mu)                       # make y a vector
+            s2zero = True;
+            if not s2 is None:
+                if np.linalg.norm(s2)>0:
+                    s2zero = False                       # s2==0?
+
+            if s2zero:                                   # log probability evaluation
+                yf = y*mu
+                lp = yf
+                lp[-35<yf] = -np.log(1.+np.exp(-yf[-35<yf]))
+            else:                                        # prediction
+                lp = self.evaluate(y, mu, s2, inf.EP())
+
+            p = np.exp(lp)
+
+            if nargout>1:
+                ymu = 2*p-1                              # first y moment
+                if nargout>2:
+                    ys2 = 4*p*(1-p)                      # second y moment
+                    return lp,ymu,ys2
+                else:
+                    return lp,ymu
+            else:
+                return lp
+        else:
+            if isinstance(inffunc, inf.EP):
+                if der is None:                                  # no derivative 
+                    y = y*np.ones(mu.shape)                                   
+                    lam = sqrt(2)*np.asarray([0.44, 0.41, 0.40, 0.39, 0.36])
+                    c = np.asarray([1.146480988574439e+02, -1.508871030070582e+03, 2.676085036831241e+03,
+                                    -1.356294962039222e+03, 7.543285642111850e+01])
+                    [lZc,dlZc,d2lZc] = lik.Erf(np.dot(y,np.ones((1,5))), np.dot(likLogisticmu,lam), s2*(lam**2), inffunc, None, 3)
+                    lZ = self.log_expA_x(lZc,c)
+                    dlZ  = self.expABz_expAx(lZc, c, dlZc, c*lam.T)
+                    d2lZ = self.expABz_expAx(lZc, c, dlZc**2 + d2lZc, c*(lam**2).T) - dlZ**2
+                    # The scale mixture approximation does not capture the correct asymptotic
+                    # behavior; we have linear decay instead of quadratic decay as suggested
+                    # by the scale mixture approximation. By observing that for large values 
+                    # of -f*y ln(p(y|f)) for likLogistic is linear in f with slope y, we are
+                    # able to analytically integrate the tail region.
+                    val = np.abs(mu)-196/200*s2-4       # empirically determined bound at val==0
+                    lam = 1/(1+np.exp(-10*val));       # interpolation weights
+                    lZtail = np.min(s2/2-np.abs(mu),-0.1)  # apply the same to p(y|f) = 1 - p(-y|f)
+                    dlZtail = -np.sign(mu) 
+                    d2lZtail = np.zeros(mu.shape)
+                    id = y*mu>0
+                    lZtail[id] = np.log(1-np.exp(lZtail[id]))  # label and mean agree
+                    dlZtail[id] = 0
+                    lZ   = (1-lam)*lZ + lam*lZtail      # interpolate between scale ..
+                    dlZ  = (1-lam)*dlZ + lam*dlZtail    # ..  mixture and   ..
+                    d2lZ = (1-lam)*d2lZ + lam*d2lZtail  # .. tail approximation
+                    return lZ,dlZ,d2lZ
+                else:                                   # derivative mode
+                    return []                           # deriv. wrt hyp.lik
+
+            elif isinstance(inffunc, inf.Laplace):
+                if der is None:                                  # no derivative 
+                    f = mu; yf = y*f; s = -yf;                   # product latents and labels
+                    ps   = np.max(0,s) 
+                    lp = -(ps+np.log(np.exp(-ps)+np.exp(s-ps)))            # lp = -(log(1+exp(s)))
+                    if nargout>1:                                          # first derivatives
+                        s   = np.min(0,f); 
+                        p   = np.exp(s)/(np.exp(s)+np.exp(s-f))           # p = 1/(1+exp(-f))
+                        dlp = (y+1)/2-p                       # derivative of log likelihood
+                        if nargout>2:                         # 2nd derivative of log likelihood
+                            d2lp = -np.exp(2*s-f)/(np.exp(s)+np.exp(s-f))**2
+                            if nargout>3:                     # 3rd derivative of log likelihood
+                                d3lp = 2*d2lp*(0.5-p)
+                                return dlp, d21p, d31p
+                            return dlp, d21p
+                        return dlp
+                    else:                # derivative mode
+                        return []        # derivative w.r.t. hypers
+
+            elif isinstance(inffunc, inf.VB):  # variational lower site bound
+                # using -log(1+exp(-s)) = s/2 -log( 2*cosh(s/2) );
+                # the bound has the form: (b+z/ga)*f - f.^2/(2*ga) - h(ga)/2
+                # = numel(s2); b = (y/2).*ones(n,1); z = zeros(size(b));
+                #return b, z
+                assert Error('VB likelihood not implemented (yet)')
+
+    def _log_expA_x(self,A,x):
+        '''
+        Computes y = log( exp(A)*x ) in a numerically safe way by subtracting the
+        maximal value in each row to avoid cancelation after taking the exp
+        '''
+        N = A.shape[1]
+        # number of columns, max over columns
+        maxA = np.max(A,axis=1)                          
+
+        #exp(A) = exp(A-max(A))*exp(max(A))
+        y = np.log( np.dot(np.exp(A - np.dot(maxA[:,np.newaxis],np.ones((1,N)))),x)) + maxA
+        return y
+
+    def _expABz_expAx(self,A,x,B,z):
+        '''
+        Computes y = ( (exp(A).*B)*z ) / ( exp(A)*x ) in a numerically safe way
+        The function is not general in the sense that it yields correct values for
+        all types of inputs. We assume that the values are close together.
+        '''
+        N = A.shape[1]
+        # number of columns, max over columns
+        maxA = np.max(A,axis=1)                    
+        maxA = np.array([maxA]).T
+        A = A - np.dot(maxA, np.ones((1,N)))       # subtract maximum value
+        y = old_div(( np.dot((np.exp(A)*B),z) ), ( np.dot(np.exp(A),x) ))
+        return y[0]
 
 if __name__ == '__main__':
     pass
