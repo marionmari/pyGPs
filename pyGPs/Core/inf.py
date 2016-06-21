@@ -120,6 +120,13 @@ class dnlZStruct(object):
                 "model.dnlZ.mean\n"+"model.dnlZ.cov\n"+"model.dnlZ.lik"
         return value
 
+    def accumulateDnlZ(self,dnlZObject):
+        self.mean= [x+y for x, y in zip(self.mean, dnlZObject.mean)]
+        self.cov = [x+y for x, y in zip(self.cov, dnlZObject.cov)]
+        self.lik = [x+y for x, y in zip(self.lik, dnlZObject.lik)]
+        return self
+
+
 
 
 class Inference(object):
