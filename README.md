@@ -47,7 +47,7 @@ or install via pip::
 
 Requirements
 --------------
-- python 2.6 or 2.7
+- python 2.6 or 2.7 or *NEW* python 3
 - scipy (v0.13.0 or later), numpy, and matplotlib: open-source packages for scientific computing using the Python programming language. 
 
 
