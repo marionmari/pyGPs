@@ -1,3 +1,15 @@
+
+Changelog pyGPs v1.3.3
+=========================
+
+August 2016
+----------------------------
+- fix to RBFard kernel derivative
+- general model based on likelihoods
+- Python 3 compatibility
+- New Demo: clustering of time series (using independent GP likelihoods) 
+
+
 Changelog pyGPs v1.3.2
 =========================
 
