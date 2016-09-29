@@ -1,6 +1,15 @@
 __author__ = 'christiaanleysen'
 
-#This example divides a set of timeseries into two clusters of the most similar timeseries using the general model learn over a set of timeseries
+# This example divides a set of timeseries into two clusters of the most similar timeseries using the general 
+# model learn over a set of timeseries.
+#
+# Find more information in the foloowing paper: 
+#
+# "Energy consumption profiling using Gaussian Processes",
+# Christiaan Leysen*, Mathias Verbeke†, Pierre Dagnely†, Wannes Meert* 
+# *Dept. Computer Science, KU Leuven, Belgium
+# †Data Innovation Team, Sirris, Belgium
+# https://lirias.kuleuven.be/bitstream/123456789/550688/1/conf2.pdf
 
 
 
