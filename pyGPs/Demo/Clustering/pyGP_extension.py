@@ -1,6 +1,6 @@
 __author__ = 'christiaanleysen'
 
-import Core.gp as pyGPs
+import pyGPs.Core.gp as pyGPs
 import scipy
 import numpy as np
 import timeit
