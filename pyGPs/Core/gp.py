@@ -383,7 +383,7 @@ class GP(object):
         sW    = self.posterior.sW
 
         nz = list(range(len(alpha[:,0])))         # non-sparse representation
-        if L == []:                         # in case L is not provided, we compute it
+        if len(L) == 0:                         # in case L is not provided, we compute it
             K = covfunc.getCovMatrix(x=x[nz,:], mode='train')
             #L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
             L = jitchol( (np.eye(len(nz)) + np.dot(sW,sW.T)*K).T )
@@ -477,7 +477,7 @@ class GP(object):
         sW    = post.sW
 
         nz = list(range(len(alpha[:,0])))         # non-sparse representation
-        if L == []:                         # in case L is not provided, we compute it
+        if len(L) == 0:                         # in case L is not provided, we compute it
             K = covfunc.getCovMatrix(x=x[nz,:], mode='train')
             #L = np.linalg.cholesky( (np.eye(nz) + np.dot(sW,sW.T)*K).T )
             L = jitchol( (np.eye(len(nz)) + np.dot(sW,sW.T)*K).T )
