@@ -52,6 +52,7 @@ import numpy as np
 from . import lik, cov
 from copy import copy, deepcopy
 from .tools import solve_chol, brentmin, cholupdate, jitchol
+import logging
 np.seterr(all='ignore')
 
 
@@ -134,7 +135,7 @@ class Inference(object):
     Base class for inference. Defined several tool methods in it.
     '''
     def __init__(self):
-        pass
+        self.logger = logging.getLogger(__name__)
 
     def evaluate(self, meanfunc, covfunc, likfunc, x, y, nargout=1):
         '''
@@ -770,8 +771,8 @@ class EP(Inference):
             # recompute since repeated rank-one updates can destroy numerical precision
             Sigma, mu, nlZ, L = self._epComputeParams(K, y, ttau, tnu, likfunc, m, inffunc)
         if sweep == max_sweep:
-            pass
-            # print '[warning] maximum number of sweeps reached in function infEP'
+            self.logger.warning("maximum number of sweeps reached in function infEP")
+            
         self.last_ttau = ttau; self.last_tnu = tnu          # remember for next call
         sW = np.sqrt(ttau); alpha = tnu-sW*solve_chol(L,sW*np.dot(K,tnu))
         post = postStruct()
@@ -894,8 +895,7 @@ class FITC_EP(Inference):
             [d,P,R,nn,gg] = self._epfitcRefresh(d0,Ku,R0,V,ttau,tnu)
             [nlZ,nu_n,tau_n] = self._epfitcZ(d,P,R,nn,gg,ttau,tnu,d0,R0,Ku,y,likfunc,m,inffunc)
         if sweep == max_sweep:
-            pass
-            # print '[warning] maximum number of sweeps reached in function infEP'
+            self.logger.warning("maximum number of sweeps reached in function infEP")
 
         self.last_ttau = ttau
         self.last_tnu = tnu       # remember for next call

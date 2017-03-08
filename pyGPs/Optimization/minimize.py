@@ -1,5 +1,4 @@
 from __future__ import division
-from __future__ import print_function
 from past.utils import old_div
 
 #===============================================================================
@@ -37,6 +36,7 @@ from past.utils import old_div
 
 
 from numpy import dot, isinf, isnan, any, sqrt, isreal, real, nan, inf, finfo
+import logging
 
 def run(f, X, args=(), length=None, red=1.0, verbose=False):
     '''
@@ -167,6 +167,6 @@ def run(f, X, args=(), length=None, red=1.0, verbose=False):
             x3 = old_div(1.,(1.-d0))
             ls_failed = 1                              # this line search failed
     
-    if verbose: print("\n")
-    #print fX
+    if verbose:
+        logging.getLogger(__name__).info(str(fX))
     return X, fX, i

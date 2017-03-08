@@ -1,4 +1,3 @@
-from __future__ import print_function
 from builtins import str
 from builtins import range
 from builtins import object
@@ -43,6 +42,7 @@ from builtins import object
 
 import numpy as np
 import math
+import logging
 
 class Mean(object):
     '''
@@ -52,6 +52,7 @@ class Mean(object):
         super(Mean, self).__init__()
         self.hyp = []
         self.para = []
+        self.logger = logging.getLogger(__name__)
 
 
     def __repr__(self):
@@ -89,7 +90,7 @@ class Mean(object):
         elif isinstance(other, Mean):
             return ProductOfMean(self,other)
         else:
-            print("only numbers and Means are allowed for *")
+            self.logger.error("only numbers and Means are allowed for *")
 
 
 
@@ -109,7 +110,7 @@ class Mean(object):
         if isinstance(number, int) and number > 0:
             return PowerOfMean(self,number)
         else:
-            print("only non-zero integers are supported for **")
+            self.logger.error("only non-zero integers are supported for **")
 
 
 

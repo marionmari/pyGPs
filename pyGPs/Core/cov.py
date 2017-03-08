@@ -1,9 +1,8 @@
 from __future__ import division
-from __future__ import print_function
 from builtins import str
 from builtins import range
-from past.utils import old_div
 from builtins import object
+from past.utils import old_div
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]
@@ -57,6 +56,7 @@ from builtins import object
 import numpy as np
 import math
 import scipy.spatial.distance as spdist
+import logging
 
 class Kernel(object):
     """
@@ -67,6 +67,7 @@ class Kernel(object):
     def __init__(self):
         self.hyp = []
         self.para = []
+        self.logger = logging.getLogger(__name__)
 
 
 
@@ -182,7 +183,7 @@ class Kernel(object):
         elif isinstance(other, Kernel):
             return ProductOfKernel(self,other)
         else:
-            print("only numbers and Kernels are supported operand types for *")
+            self.logger.error("only numbers and Kernels are supported operand types for *")
 
 
 
@@ -1132,7 +1133,7 @@ class Matern(Kernel):
         try:
             assert(d in [1,3,5,7])         # check for valid values of d
         except AssertionError:
-            print("Warning: You specified d to be neither 1,3,5 nor 7. We set it to d=3. ")
+            self.logger.warning("d is neither 1,3,5 nor 7. We set it to d=3. ")
             d = 3
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
@@ -1158,7 +1159,7 @@ class Matern(Kernel):
         try:
             assert(d in [1,3,5,7])         # check for valid values of d
         except AssertionError:
-            print("Warning: You specified d to be neither 1,3,5 nor 7. We set to d=3. ")
+            self.logger.warning("d is neither 1,3,5 nor 7. We set to d=3. ")
             d = 3
         if mode == 'self_test':           # self covariances for the test cases
             nn,D = z.shape
