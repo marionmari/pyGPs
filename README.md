@@ -33,17 +33,17 @@ Installing pyGPs
 ------------------
 Download the archive and extract it to any local directory.
 
-You can either add the local directory to your PYTHONPATH:
-
-    export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/../parent_folder_of_pyGPs
+You can install via pip (**Recommended!**):
+        
+    pip install pyGPs 
 
 or install the package using setup.py:
 
     python setup.py install
-    
-or install via pip::
-		
-    pip install pyGPs 
+
+or add the local directory to your PYTHONPATH:
+
+    export PYTHONPATH=$PYTHONPATH:/path/to/local/directory/../parent_folder_of_pyGPs
 
 Requirements
 --------------
