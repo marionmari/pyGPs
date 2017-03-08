@@ -244,7 +244,7 @@ class Minimize(Optimizer):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
                 self.trailsCounter += 1                 # increase counter
-                for i in xrange(hypInArray.shape[0]):   # random init of hyp
+                for i in range(hypInArray.shape[0]):   # random init of hyp
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
