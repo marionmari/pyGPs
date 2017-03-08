@@ -56,3 +56,6 @@ target/
 
 # Method IO
 running_directory/*
+
+# MAC
+.DS_Store
