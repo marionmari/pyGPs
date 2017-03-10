@@ -11,26 +11,33 @@
     Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 ================================================================================
 
-pyGPs is a Python library for Gaussian Process (GP) Regression and Classification.
-Here is an online [documentation](http://www-ai.cs.uni-dortmund.de/weblab/static/api_docs/pyGPs/), where you will find a comprehensive introduction to functionalities and demonstrations. You can also find the same doc locally in `/doc/build/html/index.html`. 
+pyGPs is a library containing code for Gaussian Process (GP) Regression and Classification.
 
-pyGPs is an object-oriented GPs implementation. The functionality follows roughly the gpml matlab implementation by Carl Edward Rasmussen and Hannes Nickisch (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-01-21). Standard GP regression and classification as well as FITC (sparse GPs) inference is implemented.
+Here is the online documentation: [ONLINE documentation](http://www-ai.cs.uni-dortmund.de/weblab/static/api_docs/pyGPs/).
+
+pyGPs is an object-oriented implementation of GPs. Its functionality follows roughly the gpml matlab implementation by Carl Edward Rasmussen and Hannes Nickisch (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-01-21).
+
+Standard GP regression and (binary) classification as well as FITC (sparse GPs) inference is implemented.
+For a list of implemented covariance, mean, likelihood, and inference functions see list_of_functions.txt. 
+The current implementation is optimized and tested, however, the work on this library is still in progress. We appreciate any feedback.
+
+A comprehensive introduction to functionalities and demonstrations can be found in the *doc* folder; just open /doc/build/html/index.html in your browser to get to the html documentation of the whole package. 
 
 Further, pyGPs includes implementations of
 - minimize.py implemented in python by Roland Memisevic 2008, following minimize.m which is copyright (C) 1999 - 2006, Carl Edward Rasmussen
 - scg.py (Copyright (c) Ian T Nabney (1996-2001))
 - brentmin.py (Copyright (c) by Hannes Nickisch 2010-01-10.)
 
-Finally, pyGPs is constantly maintained. If you feel you have some relevant skills and are interested in contributing then please do get in touch. We appreciate any feedback
 
 Installing pyGPs
 ------------------
+Download the archive and extract it to any local directory.
+
 You can install via pip (**Recommended!**):
         
     pip install pyGPs 
 
-Alternatively, download the archive and extract it to any local directory. 
-Install the package using setup.py:
+or install the package using setup.py:
 
     python setup.py install
 
@@ -49,19 +56,4 @@ Acknowledgements
 The following persons helped to improve this software: Roman Garnett, Maciej Kurek, Hannes Nickisch, Zhao Xu, and Alejandro Molina.
 
 This work is partly supported by the Fraunhofer ATTRACT fellowship STREAM.
-
-Citation
--------------
-To cite pyGps, please use the following BibTex:
-```
-@article{JMLR:v16:neumann15a,
-  author  = {Marion Neumann and Shan Huang and Daniel E. Marthaler and Kristian Kersting},
-  title   = {pyGPs -- A Python Library for Gaussian Process Regression and Classification},
-  journal = {Journal of Machine Learning Research},
-  year    = {2015},
-  volume  = {16},
-  pages   = {2611-2616},
-  url     = {http://jmlr.org/papers/v16/neumann15a.html}
-}
-```
 
