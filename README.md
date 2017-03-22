@@ -1,4 +1,4 @@
-================================================================================
+```
     Marion Neumann [m dot neumann at wustl dot edu]
     Daniel Marthaler [dan dot marthaler at gmail dot com]
     Shan Huang [schan dot huang at gmail dot com]
@@ -9,7 +9,7 @@
 
     Copyright (c) by
     Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
-================================================================================
+```
 
 pyGPs is a Python library for Gaussian Process (GP) Regression and Classification.
 Here is an online [documentation](http://www-ai.cs.uni-dortmund.de/weblab/static/api_docs/pyGPs/), where you will find a comprehensive introduction to functionalities and demonstrations. You can also find the same doc locally in `/doc/build/html/index.html`. 
