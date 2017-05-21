@@ -13,7 +13,6 @@ from builtins import range
 #    Marion Neumann, Daniel Marthaler, Shan Huang & Kristian Kersting, 18/02/2014
 #================================================================================
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy import io as sio
 
 import pyGPs
