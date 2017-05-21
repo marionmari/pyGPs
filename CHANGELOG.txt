@@ -1,3 +1,11 @@
+Changelog pyGPs v1.3.5
+=========================
+
+May 2017
+----------------------------
+- fix a few Python 2/3 compatible issues
+- use Python logger instead of stderr print statements
+
 Changelog pyGPs v1.3.4
 =========================
 
