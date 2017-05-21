@@ -1,5 +1,4 @@
 from __future__ import print_function
-from builtins import range
 #================================================================================
 #    Marion Neumann [marion dot neumann at uni-bonn dot de]
 #    Daniel Marthaler [dan dot marthaler at gmail dot com]

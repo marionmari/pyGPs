@@ -1,5 +1,4 @@
 from __future__ import division
-from __future__ import print_function
 from builtins import str
 from builtins import range
 from past.utils import old_div
@@ -23,7 +22,8 @@ from past.utils import old_div
 import scipy.sparse as spsp
 import numpy as np
 import matplotlib.pyplot as plt
-    
+import logging
+
 def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False, showEachStep=False):
     '''
     Propagation kernel for graphs as described in: 
@@ -99,11 +99,11 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
     # ## PROPAGATION KERNEL ITERATIONS
     #===========================================================================
     for h in range(h_max+1):  
-        print('ITERATION: ', h)
+        logging.getLogger(__name__).info('ITERATION: ' + str(h))
         if h > 0:
             ## LABEL UPDATE 
             if showEachStep:
-                print('...computing LABEL UPDATE')
+                logging.getLogger(__name__).info('...computing LABEL UPDATE')
             
             if ktype == 'label_propagation':
                 lab_prob[idx,:] = lab_orig[idx,:]   # PUSH BACK original LABELS
@@ -126,7 +126,7 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
         
         ## COMPUTE hashvalues 
         if showEachStep:
-            print('...computing hashvalues')
+            logging.getLogger(__name__).info('...computing hashvalues')
         # determine path to take depending on chosen distance
         use_cauchy = (p =='L1') or (p =='tv')
         take_sqrt  = (p =='hellinger') 
@@ -146,7 +146,7 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
         uniqueHash, hashLabels = np.unique(hashLabels, return_inverse=True)  # map to consecutive integer from 0        
         ## COMPUTE kernel contribution 
         if showEachStep:
-            print('...computing KERNEL contribution')                     
+            logging.getLogger(__name__).info('...computing KERNEL contribution')                     
         # aggregate counts on graphs
         # counts is a matrix: number of graphs x number of hashlabels
         num_bins = len(uniqueHash)
@@ -168,7 +168,7 @@ def propagationKernel(A, l, gr_id, h_max, w, p, ktype=None, SUM=True, VIS=False,
             K[:,:,h] = K_h
         
         if showEachStep:
-            print(K[:,:,h]) 
+            logging.getLogger(__name__).info(str(K[:,:,h])) 
 
     ## VISUALIZE KERNELS
     if VIS:  

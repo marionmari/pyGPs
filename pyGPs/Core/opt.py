@@ -1,5 +1,4 @@
 from __future__ import division
-from __future__ import print_function
 from __future__ import absolute_import
 from builtins import range
 from past.utils import old_div
@@ -25,17 +24,16 @@ from builtins import object
 # Copyright (c) by Marion Neumann and Shan Huang, 30/09/2013
 
 import numpy as np
-import pyGPs
-
 from scipy.optimize import fmin_bfgs as bfgs
 from scipy.optimize import fmin_cg as cg
 from pyGPs.Optimization import minimize, scg
 from copy import deepcopy
+import logging
 
 class Optimizer(object):
     def __init__(self, model=None, searchConfig = None):
         self.model = model
-        from . import gp
+        self.logger = logging.getLogger(__name__)
 
     def findMin(self, x, y, numIters):
         '''
@@ -110,9 +108,9 @@ class CG(Optimizer):
             funcValue  = opt[1]
             warnFlag   = opt[4]
             if warnFlag == 1:
-                print("Maximum number of iterations exceeded.")
+                self.logger.warning("Maximum number of iterations exceeded.")
             elif warnFlag ==  2:
-                print("Gradient and/or function calls not changing.")
+                self.logger.warning("Gradient and/or function calls not changing.")
         except:
             self.errorCounter += 1
             if not self.searchConfig:         
@@ -136,13 +134,13 @@ class CG(Optimizer):
                 except:
                     self.errorCounter += 1
                 if self.searchConfig.num_restarts and self.errorCounter > old_div(self.searchConfig.num_restarts,2):
-                    print("[CG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[CG] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
                     raise Exception("Over half of the trails failed for conjugate gradient")
                 if self.searchConfig.num_restarts and self.trailsCounter > self.searchConfig.num_restarts-1:         # if exceed num_restarts
-                    print("[CG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[CG] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
-                    print("[CG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[CG] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue 
         return optimalHyp, funcValue
 
@@ -170,9 +168,9 @@ class BFGS(Optimizer):
             funcValue  = opt[1]
             warnFlag   = opt[6]
             if warnFlag == 1:
-                print("Maximum number of iterations exceeded.")
+                self.logger.warning("Maximum number of iterations exceeded.")
             elif warnFlag ==  2:
-                print("Gradient and/or function calls not changing.")
+                self.logger.warning("Gradient and/or function calls not changing.")
         except:
             self.errorCounter += 1
             if not self.searchConfig:         
@@ -197,13 +195,13 @@ class BFGS(Optimizer):
                 except:
                     self.errorCounter += 1
                 if self.searchConfig.num_restarts and self.errorCounter > old_div(self.searchConfig.num_restarts,2):
-                    print("[BFGS] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[BFGS] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
                     raise Exception("Over half of the trails failed for BFGS")
                 if self.searchConfig.num_restarts and self.trailsCounter > self.searchConfig.num_restarts-1:         # if exceed num_restarts
-                    print("[BFGS] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[BFGS] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
-                    print("[BFGS] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[BFGS] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue
 
         return optimalHyp, funcValue
@@ -231,7 +229,7 @@ class Minimize(Optimizer):
             opt = minimize.run(self._nlzAnddnlz, hypInArray, length=numIters)
             optimalHyp = deepcopy(opt[0])
             funcValue  = opt[1][-1]
-            print("Number of line searches %g" % opt[2])
+            self.logger.warning("Number of line searches %g", opt[2])
         except:
             self.errorCounter += 1
             if not self.searchConfig:
@@ -244,26 +242,26 @@ class Minimize(Optimizer):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
                 self.trailsCounter += 1                 # increase counter
-                for i in xrange(hypInArray.shape[0]):   # random init of hyp
+                for i in range(hypInArray.shape[0]):   # random init of hyp
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
                     # thisopt = minimize.run(self._nlzAnddnlz, hypInArray, length=-numIters)
                     thisopt = minimize.run(self._nlzAnddnlz, hypInArray, length=numIters)
-                    print("Number of line searches %g" % thisopt[2])
+                    self.logger.warning("Number of line searches %g", thisopt[2])
                     if thisopt[1][-1] < funcValue:
                         funcValue  = thisopt[1][-1]
                         optimalHyp = thisopt[0]
                 except:
                     self.errorCounter += 1
                 if self.searchConfig.num_restarts and self.errorCounter > self.searchConfig.num_restarts/2:
-                    print("[Minimize] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[Minimize] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
                     raise Exception("Over half of the trails failed for minimize")
                 if self.searchConfig.num_restarts and self.trailsCounter > self.searchConfig.num_restarts-1:         # if exceed num_restarts
-                    print("[Minimize] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[Minimize] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
-                    print("[Minimize] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[Minimize] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue
         return optimalHyp, funcValue
 
@@ -311,13 +309,13 @@ class SCG(Optimizer):
                 except:
                     self.errorCounter += 1
                 if self.searchConfig.num_restarts and self.errorCounter > old_div(self.searchConfig.num_restarts,2):
-                    print("[SCG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[SCG] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
                     raise Exception("Over half of the trails failed for Scaled conjugate gradient")
                 if self.searchConfig.num_restarts and self.trailsCounter > self.searchConfig.num_restarts-1:         # if exceed num_restarts
-                    print("[SCG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[SCG] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
-                    print("[SCG] %d out of %d trails failed during optimization" % (self.errorCounter, self.trailsCounter))
+                    self.logger.warning("[SCG] %d out of %d trails failed during optimization" , self.errorCounter, self.trailsCounter)
                     return optimalHyp, funcValue 
 
         return optimalHyp, funcValue

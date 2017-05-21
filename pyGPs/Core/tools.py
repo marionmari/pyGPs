@@ -1,5 +1,4 @@
 from __future__ import division
-from __future__ import print_function
 from past.builtins import cmp
 from past.utils import old_div
 #================================================================================
@@ -27,6 +26,7 @@ import matplotlib.pyplot as plt
 import sys
 from math import sqrt
 import scipy.linalg.lapack as lapack
+import logging
 
 def jitchol(A,maxtries=5):
     ''' Copyright (c) 2012, GPy authors (James Hensman, Nicolo Fusi, Ricardo Andrade,
@@ -67,7 +67,7 @@ def jitchol(A,maxtries=5):
             raise np.linalg.LinAlgError("kernel matrix not positive definite: non-positive diagonal elements")
         jitter = diagA.mean() * 1e-9
         while maxtries > 0 and np.isfinite(jitter):
-            print('Warning: adding jitter of {:.10e} to diagnol of kernel matrix for numerical stability'.format(jitter))
+            logging.getLogger(__name__).warning('adding jitter of {:.10e} to diagnol of kernel matrix for numerical stability'.format(jitter))
             try:
                 return np.linalg.cholesky(A + np.eye(A.shape[0]).T * jitter, lower=True)
             except:
@@ -257,7 +257,7 @@ def brentmin(xlow,xupp,Nitmax,tol,f,nout=None,*args):
         tol1 = seps*abs(xf) + old_div(tol,3.0); tol2 = 2.0*tol1
         if funccount >= Nitmax:
             # typically we should not get here
-            # print 'Warning: Specified number of function evaluation reached (brentmin)'
+            logging.getLogger(__name__).warning("Specified number of function evaluation reached")
             break
     # check that endpoints are less than the minimum found
     if ( (fa < fx) and (fa <= fb) ):

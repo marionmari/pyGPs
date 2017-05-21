@@ -53,6 +53,7 @@ from .tools import unique, jitchol, solve_chol
 from copy import deepcopy
 import pyGPs
 from pyGPs.Core.cov import FITCOfKernel
+import logging
 
 SHADEDCOLOR = [0.7539, 0.89453125, 0.62890625, 1.0]
 MEANCOLOR = [ 0.2109375, 0.63385, 0.1796875, 1.0]
@@ -83,6 +84,8 @@ class GP(object):
         self.fm = None            # column vector (of length ns) of predictive latent means
         self.fs2 = None           # column vector (of length ns) of predictive latent variances
         self.lp = None            # column vector (of length ns) of log predictive probabilities
+
+        self.logger = logging.getLogger(__name__)
 
 
 

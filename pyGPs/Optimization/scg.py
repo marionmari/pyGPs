@@ -1,5 +1,4 @@
 from __future__ import division
-from __future__ import print_function
 from past.utils import old_div
 #===============================================================================
 #   SCG  Scaled conjugate gradient optimization.
@@ -22,10 +21,13 @@ from past.utils import old_div
 
 from math import sqrt
 import numpy as np
+import logging
 
 def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = False, pointlog = False, scalelog = False, tolX = 1.0e-8, tolO = 1.0e-8, eval = None): 
     '''Scaled conjugate gradient optimization. '''
-    if display: print('\n***** starting optimization (SCG) *****\n')
+    if display: 
+        logging.getLogger(__name__).info('***** starting optimization (SCG) *****')
+
     nparams = len(x);
     #  Check gradients
     if gradcheck:
@@ -69,7 +71,7 @@ def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = Fals
                 mu = np.dot(d, gradnew)
             kappa = np.dot(d, d)
             if (kappa < eps):
-                #print "FNEW: " , fnow
+                logging.getLogger(__name__).info("FNEW: " + str(fnow))
                 #options(8) = fnow
                 if eval is not None:
                     return x, listF, evalList, time
@@ -121,7 +123,7 @@ def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = Fals
             #scalelog(j) = beta;     # Current scale parameter
             pass
         if display > 0:
-            print('***** Cycle %4d  Error %11.6f  Scale %e' %( j, fnow, beta))
+            logging.getLogger(__name__).info('***** Cycle %4d  Error %11.6f  Scale %e', j, fnow, beta)
 
         if (success == 1):
         # Test for termination
@@ -170,7 +172,7 @@ def run(f, x, args=(), niters = 100, gradcheck = False, display = 0, flog = Fals
     # iterations.
     # options(8) = fold;
     if (display):
-        print("maximum number of iterations reached")
+        logging.getLogger(__name__).info("maximum number of iterations reached")
     if eval is not None:
         return x, listF, evalList, time
     else:
