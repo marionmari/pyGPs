@@ -137,7 +137,7 @@ class GP(object):
         :param y: training labels in shape (n,1)
 
         Note this method will transform x, y to correct shape
-        if x, y is given in 1d array. 
+        if x, y is given in 1d array.
         '''
         # check wether the number of inputs and labels match
         assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
@@ -177,7 +177,7 @@ class GP(object):
     def plotData_2d(self,x1,x2,t1,t2,p1,p2,axisvals=None):
         '''
         Toy Method for ploting 2d data of the model. \n
-        For plotting, we superimpose the data points with the posterior equi-probability contour 
+        For plotting, we superimpose the data points with the posterior equi-probability contour
         lines for the probability of class two given complete information about the generating mechanism.
 
         :param x1: inputs for class +1
@@ -257,7 +257,7 @@ class GP(object):
         :param y: training labels in shape (n,1)
         '''
         # check wether the number of inputs and labels match
-        if x is not None and y is not None: 
+        if x is not None and y is not None:
             assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
 
         # check the shape of inputs
@@ -307,7 +307,7 @@ class GP(object):
         '''
 
         # check wether the number of inputs and labels match
-        if x is not None and y is not None: 
+        if x is not None and y is not None:
             assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
 
         # check the shape of inputs
@@ -325,7 +325,7 @@ class GP(object):
         if self.usingDefaultMean and self.meanfunc is None:
             c = np.mean(y)
             self.meanfunc = mean.Const(c)    # adapt default prior mean wrt. training labels
-            
+
         # call inference method
         if isinstance(self.likfunc, lik.Erf): #or is instance(self.likfunc, lik.Logistic):
             uy  = unique(self.y)
@@ -402,7 +402,7 @@ class GP(object):
         while nact<=ns-1:                              # process minibatches of test cases to save memory
             id  = list(range(nact,min(nact+nperbatch,ns)))   # data points to process
             kss = covfunc.getCovMatrix(z=xs[id,:], mode='self_test')    # self-variances
-            if isinstance(covfunc, FITCOfKernel): 
+            if isinstance(covfunc, FITCOfKernel):
                 Ks = covfunc.getCovMatrix(x=x, z=xs[id,:], mode='cross')   # cross-covariances
                 Ks = Ks[nz,:]
             else:
@@ -440,7 +440,7 @@ class GP(object):
 
     def predict_with_posterior(self, post, xs, ys=None):
         '''
-        Prediction of test points (given by xs) based on training data 
+        Prediction of test points (given by xs) based on training data
         of the current model with posterior already provided.
         (i.e. you already have the posterior and thus don't need the fitting phase.)
         This method will output the following value:\n
@@ -576,12 +576,8 @@ class GPR(GP):
             self.optimizer = opt.CG(self,conf)
         elif method == "BFGS":
             self.optimizer = opt.BFGS(self,conf)
-        elif method == "LBFGSB":
-            self.optimizer = opt.LBFGSB(self, conf)
-        elif method == "COBYLA":
-            self.optimizer = opt.COBYLA(self, conf)
-        elif method == "RTMinimize":
-            self.optimizer = opt.RTMinimize(self, conf)
+        elif method == "Nelder-Mead":
+            self.optimizer = opt.Simplex(self, conf)
         else:
             raise Exception('Optimization method is not set correctly in setOptimizer')
 
@@ -686,7 +682,7 @@ class GPC(GP):
         '''
         Plot 2d GP Classification result.
 
-        For plotting, we superimpose the data points with the posterior equi-probability contour 
+        For plotting, we superimpose the data points with the posterior equi-probability contour
         lines for the probability of class two given complete information about the generating mechanism.
 
         :param x1: inputs for class +1
@@ -813,7 +809,7 @@ class GPMC(object):
         :param y: training labels in shape (n,1)
 
         Note this method will transform x, y to correct shape
-        if x, y is given in 1d array. 
+        if x, y is given in 1d array.
         '''
         # check wether the number of inputs and labels match
         assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
@@ -907,7 +903,7 @@ class GPMC(object):
 
 
     def createBinaryClass(self, i,j):
-        ''' 
+        '''
         Create dataset x(data) and y(label) which only contains class i and j.
         Relabel class i to +1 and class j to -1
 
@@ -955,7 +951,7 @@ class GP_FITC(GP):
                                    when using a uni-distant default inducing points
 
         Note this method will transform x, y to correct shape
-        if x, y is given in 1d array. 
+        if x, y is given in 1d array.
         '''
         # check wether the number of inputs and labels match
         assert x.shape[0] == y.shape[0], "number of inputs and labels does not match"
@@ -1164,7 +1160,7 @@ class GPC_FITC(GP_FITC):
 
     def plot(self,x1,x2,t1,t2,axisvals=None):
         '''Plot 2d GP FITC classification.
-        For plotting, we superimpose the data points with the posterior equi-probability contour 
+        For plotting, we superimpose the data points with the posterior equi-probability contour
         lines for the probability of class two given complete information about the generating mechanism.
 
         :param x1: inputs for class +1
@@ -1212,7 +1208,3 @@ class GPC_FITC(GP_FITC):
             raise Exception("Logistic likelihood is currently not implemented.")
         else:
             raise Exception('Possible lik values are "Logistic".')
-
-
-
-
