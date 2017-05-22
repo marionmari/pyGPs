@@ -26,9 +26,11 @@ from builtins import object
 import numpy as np
 from scipy.optimize import fmin_bfgs as bfgs
 from scipy.optimize import fmin_cg as cg
+from scipy.optimize import fmin as simplex
 from pyGPs.Optimization import minimize, scg
 from copy import deepcopy
 import logging
+
 
 class Optimizer(object):
     def __init__(self, model=None, searchConfig = None):
@@ -87,6 +89,66 @@ class Optimizer(object):
         self.model.likfunc.hyp   = hypInList[(Lm+Lc):]
 
 
+class Simplex(Optimizer):
+    '''Downhill simplex algorithm by Nelder-Mead'''
+    def __init__(self, model, searchConfig = None):
+        super(Simplex, self).__init__()
+        self.model = model
+        self.searchConfig = searchConfig
+        self.trailsCounter = 0
+        self.errorCounter = 0
+
+    def findMin(self, x, y, numIters = 100):
+        meanfunc = self.model.meanfunc
+        covfunc = self.model.covfunc
+        likfunc = self.model.likfunc
+        inffunc = self.model.inffunc
+        hypInArray = self._convert_to_array()
+        try:
+            opt = simplex(self._nlml, hypInArray, maxiter=numIters, disp=False, full_output=True)
+            optimalHyp = deepcopy(opt[0])
+            funcValue  = opt[1]
+            warnFlag   = opt[4]
+            if warnFlag == 1:
+                self.logger.warning("Maximum number of function evaluations made")
+            elif warnFlag ==  2:
+                self.logger.warning("Maximum number of iterations exceeded.")
+        except:
+            self.errorCounter += 1
+            if not self.searchConfig:
+                raise Exception("Can not learn hyperparamters using Nelder-Mead.")
+        self.trailsCounter += 1
+
+        if self.searchConfig:
+            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange
+            if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
+                raise Exception('Specify at least one of the stop conditions')
+            while True:
+                self.trailsCounter += 1                 # increase counter
+                for i in range(hypInArray.shape[0]):   # random init of hyp
+                    hypInArray[i] = np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
+                # value this time is better than optiaml min value
+
+                try:
+                    thisopt = simplex(self._nlml, hypInArray, maxiter=numIters, disp=False, full_output=True)
+                    if thisopt[1] < funcValue:
+                        funcValue  = thisopt[1]
+                        optimalHyp = thisopt[0]
+                except:
+                    self.errorCounter += 1
+
+                if self.searchConfig.num_restarts and self.errorCounter > old_div(self.searchConfig.num_restarts, 2):
+                    self.logger.warning("[Simplex] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
+                    raise Exception("Over half of the trails failed for Nelder-Mead")
+                if self.searchConfig.num_restarts and self.trailsCounter > self.searchConfig.num_restarts-1:         # if exceed num_restarts
+                    self.logger.warning("[Simplex] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
+                    return optimalHyp, funcValue
+                if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
+                    self.logger.warning("[Simplex] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
+                    return optimalHyp, funcValue
+        return optimalHyp, funcValue
+
+
 class CG(Optimizer):
     '''Conjugent gradient'''
     def __init__(self, model, searchConfig = None):
@@ -113,12 +175,12 @@ class CG(Optimizer):
                 self.logger.warning("Gradient and/or function calls not changing.")
         except:
             self.errorCounter += 1
-            if not self.searchConfig:         
+            if not self.searchConfig:
                 raise Exception("Can not learn hyperparamters using conjugate gradient.")
         self.trailsCounter += 1
 
         if self.searchConfig:
-            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
+            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange
             if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
@@ -141,7 +203,7 @@ class CG(Optimizer):
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
                     self.logger.warning("[CG] %d out of %d trails failed during optimization", self.errorCounter, self.trailsCounter)
-                    return optimalHyp, funcValue 
+                    return optimalHyp, funcValue
         return optimalHyp, funcValue
 
 
@@ -173,13 +235,13 @@ class BFGS(Optimizer):
                 self.logger.warning("Gradient and/or function calls not changing.")
         except:
             self.errorCounter += 1
-            if not self.searchConfig:         
+            if not self.searchConfig:
                 raise Exception("Can not learn hyperparamters using BFGS.")
         self.trailsCounter += 1
 
 
         if self.searchConfig:
-            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange 
+            searchRange = self.searchConfig.meanRange + self.searchConfig.covRange + self.searchConfig.likRange
             if not (self.searchConfig.num_restarts or self.searchConfig.min_threshold):
                 raise Exception('Specify at least one of the stop conditions')
             while True:
@@ -316,9 +378,6 @@ class SCG(Optimizer):
                     return optimalHyp, funcValue
                 if self.searchConfig.min_threshold and funcValue <= self.searchConfig.min_threshold:           # reach provided mininal
                     self.logger.warning("[SCG] %d out of %d trails failed during optimization" , self.errorCounter, self.trailsCounter)
-                    return optimalHyp, funcValue 
+                    return optimalHyp, funcValue
 
         return optimalHyp, funcValue
-
-
-
