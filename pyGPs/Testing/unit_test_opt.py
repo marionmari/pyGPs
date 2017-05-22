@@ -16,59 +16,53 @@ import unittest
 import numpy as np
 import pyGPs
 
+
 class OptTests(unittest.TestCase):
 
     def setUp(self):
         # fix random seed
         np.random.seed(0)
-        
+
         # random data for testing
         n = 20     # number of inputs
         D = 3      # dimension of inputs
-        self.x = np.random.normal(loc=0.0, scale=1.0, size=(n,D))
+        self.x = np.random.normal(loc=0.0, scale=1.0, size=(n, D))
         self.y = np.random.random((n,))
         self.model = pyGPs.GPR()
-        nlZ, dnlZ, post = self.model.getPosterior(self.x,self.y)
+        nlZ, dnlZ, post = self.model.getPosterior(self.x, self.y)
         self.nlZ_beforeOpt = nlZ
-
-
 
     def checkOptimizer(self, optimizer):
         # funcValue is the minimal negative-log-marginal-likelihood during optimization,
         # and optimalHyp is a flattened numpy array
         optimalHyp, funcValue = optimizer.findMin(self.x, self.y)
-        self.assertTrue(funcValue < self.nlZ_beforeOpt)     
-        print("optimal hyperparameters in flattened array:", optimalHyp) 
+        self.assertTrue(funcValue < self.nlZ_beforeOpt)
+        print("optimal hyperparameters in flattened array:", optimalHyp)
 
-
+    def test_Simplex(self):
+        print("testing Simplex by Nelder-Mead...")
+        optimizer = pyGPs.Core.opt.Simplex(self.model)
+        self.checkOptimizer(optimizer)
 
     def test_CG(self):
         print("testing Conjugent gradient...")
         optimizer = pyGPs.Core.opt.CG(self.model)
         self.checkOptimizer(optimizer)
 
-
-
     def test_BFGS(self):
         print("testing quasi-Newton method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS)...")
         optimizer = pyGPs.Core.opt.BFGS(self.model)
         self.checkOptimizer(optimizer)
-
-
 
     def test_SCG(self):
         print("testing Scaled conjugent gradient...")
         optimizer = pyGPs.Core.opt.SCG(self.model)
         self.checkOptimizer(optimizer)
 
-
-
     def test_Minimize(self):
         print("testing minimize by Carl Rasmussen ...")
         optimizer = pyGPs.Core.opt.Minimize(self.model)
         self.checkOptimizer(optimizer)
-
-
 
     # Test your customized mean function
     '''
@@ -79,9 +73,6 @@ class OptTests(unittest.TestCase):
     '''
 
 
-
-
 if __name__ == "__main__":
     print("Running unit tests...")
     unittest.main()
-
