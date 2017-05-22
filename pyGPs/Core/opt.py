@@ -189,7 +189,7 @@ class CG(Optimizer):
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = cg(self._nlml, hypInArray, self._dnlml, maxiter=100, disp=False, full_output=True)
+                    thisopt = cg(self._nlml, hypInArray, self._dnlml, maxiter=numIters, disp=False, full_output=True)
                     if thisopt[1] < funcValue:
                         funcValue  = thisopt[1]
                         optimalHyp = thisopt[0]
@@ -250,7 +250,7 @@ class BFGS(Optimizer):
                     hypInArray[i]= np.random.uniform(low=searchRange[i][0], high=searchRange[i][1])
                 # value this time is better than optiaml min value
                 try:
-                    thisopt = bfgs(self._nlml, hypInArray, self._dnlml, maxiter=100, disp=False, full_output=True)
+                    thisopt = bfgs(self._nlml, hypInArray, self._dnlml, maxiter=numIters, disp=False, full_output=True)
                     if thisopt[1] < funcValue:
                         funcValue  = thisopt[1]
                         optimalHyp = thisopt[0]
