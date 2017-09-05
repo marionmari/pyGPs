@@ -495,10 +495,9 @@ class SM(Kernel):
         y = np.atleast_2d(y)
         (n, D) = x.shape
         Q = self.para[0]
-        w = np.zeros(Q)
+        w = old_div(np.std(y), Q)
         m = np.zeros((D, Q))
         s = np.zeros((D, Q))
-        w[:] = old_div(np.std(y), Q)
         hypinit = np.zeros(Q + 2 * D * Q)
 
         for i in range(D):
@@ -511,9 +510,9 @@ class SM(Kernel):
                 d2[d2 == 0] = 1
             minshift = np.min(np.min(np.sqrt(d2)))
             nyquist = old_div(0.5, minshift)
-            m[i, :] = nyquist * np.random.ranf((1, Q))
+            m[i, :] = np.max(nyquist * np.random.ranf((1, Q)),1e-6)
             maxshift = np.max(np.max(np.sqrt(d2)))
-            s[i, :] = old_div(1., np.abs(maxshift * np.random.ranf((1, Q))))
+            s[i, :] = np.max(old_div(1., np.abs(maxshift * np.random.ranf((1, Q)))),1e-6)
         hypinit[:Q] = np.log(w)
         hypinit[Q + np.arange(0, Q * D)] = np.log(np.ndarray.flatten(m)).T
         hypinit[Q + Q * D + np.arange(0, Q * D)] = np.log(np.ndarray.flatten(s)).T
