@@ -400,32 +400,32 @@ class GP(object):
         fs2 = np.zeros((ns,1))
         lp  = np.zeros((ns,1))
         while nact<=ns-1:                              # process minibatches of test cases to save memory
-            id  = list(range(nact,min(nact+nperbatch,ns)))   # data points to process
-            kss = covfunc.getCovMatrix(z=xs[id,:], mode='self_test')    # self-variances
+            ids  = list(range(nact,min(nact+nperbatch,ns)))   # data points to process
+            kss = covfunc.getCovMatrix(z=xs[ids,:], mode='self_test')    # self-variances
             if isinstance(covfunc, FITCOfKernel):
-                Ks = covfunc.getCovMatrix(x=x, z=xs[id,:], mode='cross')   # cross-covariances
+                Ks = covfunc.getCovMatrix(x=x, z=xs[ids,:], mode='cross')   # cross-covariances
                 Ks = Ks[nz,:]
             else:
-                Ks  = covfunc.getCovMatrix(x=x[nz,:], z=xs[id,:], mode='cross')   # cross-covariances
-            ms  = meanfunc.getMean(xs[id,:])
+                Ks  = covfunc.getCovMatrix(x=x[nz,:], z=xs[ids,:], mode='cross')   # cross-covariances
+            ms  = meanfunc.getMean(xs[ids,:])
             N   = (alpha.shape)[1]                     # number of alphas (usually 1; more in case of sampling)
             Fmu = np.tile(ms,(1,N)) + np.dot(Ks.T,alpha[nz])          # conditional mean fs|f
-            fmu[id] = np.reshape(old_div(Fmu.sum(axis=1),N),(len(id),1))       # predictive means
+            fmu[ids] = np.reshape(old_div(Fmu.sum(axis=1),N),(len(ids),1))       # predictive means
             if Ltril: # L is triangular => use Cholesky parameters (alpha,sW,L)
-                V       = np.linalg.solve(L.T,np.tile(sW,(1,len(id)))*Ks)
-                fs2[id] = kss - np.array([(V*V).sum(axis=0)]).T             # predictive variances
+                V       = np.linalg.solve(L.T,np.tile(sW,(1,len(ids)))*Ks)
+                fs2[ids] = kss - np.array([(V*V).sum(axis=0)]).T             # predictive variances
             else:     # L is not triangular => use alternative parametrization
-                fs2[id] = kss + np.array([(Ks*np.dot(L,Ks)).sum(axis=0)]).T # predictive variances
-            fs2[id] = np.maximum(fs2[id],0)            # remove numerical noise i.e. negative variances
-            Fs2 = np.tile(fs2[id],(1,N))               # we have multiple values in case of sampling
+                fs2[ids] = kss + np.array([(Ks*np.dot(L,Ks)).sum(axis=0)]).T # predictive variances
+            fs2[ids] = np.maximum(fs2[ids],0)            # remove numerical noise i.e. negative variances
+            Fs2 = np.tile(fs2[ids],(1,N))               # we have multiple values in case of sampling
             if ys is None:
                 Lp, Ymu, Ys2 = likfunc.evaluate(None,Fmu[:],Fs2[:],None,None,3)
             else:
-                Lp, Ymu, Ys2 = likfunc.evaluate(np.tile(ys[id],(1,N)), Fmu[:], Fs2[:],None,None,3)
-            lp[id]  = np.reshape( old_div(np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1),N) , (len(id),1) )   # log probability; sample averaging
-            ymu[id] = np.reshape( old_div(np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1),N) ,(len(id),1) )  # predictive mean ys|y and ...
-            ys2[id] = np.reshape( old_div(np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1),N) , (len(id),1) ) # .. variance
-            nact = id[-1]+1                  # set counter to index of next data point
+                Lp, Ymu, Ys2 = likfunc.evaluate(np.tile(ys[ids],(1,N)), Fmu[:], Fs2[:],None,None,3)
+            lp[ids]  = np.reshape( old_div(np.reshape(Lp,(np.prod(Lp.shape),N)).sum(axis=1),N) , (len(ids),1) )   # log probability; sample averaging
+            ymu[ids] = np.reshape( old_div(np.reshape(Ymu,(np.prod(Ymu.shape),N)).sum(axis=1),N) ,(len(ids),1) )  # predictive mean ys|y and ...            
+            ys2[ids] = np.reshape( old_div(np.reshape(Ys2,(np.prod(Ys2.shape),N)).sum(axis=1),N) , (len(ids),1) ) # .. variance
+            nact = ids[-1]+1                  # set counter to index of next data point
         self.ym = ymu
         self.ys2 = ys2
         self.lp = lp

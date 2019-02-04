@@ -372,7 +372,7 @@ class Exact(Inference):
                 dnlZ = dnlZStruct(meanfunc, covfunc, likfunc)  # allocate space for derivatives
                 Q = old_div(solve_chol(L,np.eye(n)),sn2) - np.dot(alpha,alpha.T) # precompute for convenience
                 dnlZ.lik = [sn2*np.trace(Q)]
-                if covfunc.hyp:
+                if len(covfunc.hyp) > 0:
                     for ii in range(len(covfunc.hyp)):
                         dnlZ.cov[ii] = old_div((Q*covfunc.getDerMatrix(x=x, mode='train', der=ii)).sum(),2.)
                 if meanfunc.hyp:
