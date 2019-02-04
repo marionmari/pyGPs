@@ -12,7 +12,7 @@
 ```
 
 pyGPs is a Python library for Gaussian Process (GP) Regression and Classification.
-Here is an online [documentation](http://www-ai.cs.uni-dortmund.de/weblab/static/api_docs/pyGPs/), where you will find a comprehensive introduction to functionalities and demonstrations. You can also find the same doc locally in `/doc/build/html/index.html`. 
+Here is an online [documentation](https://www.cse.wustl.edu/~m.neumann/pyGPs_doc/), where you will find a comprehensive introduction to functionalities and demonstrations. You can also find the same doc locally in `/doc/build/html/index.html`. 
 
 Generally speaking, pyGPs is an object-oriented GPs implementation. The functionality follows roughly the gpml matlab implementation by Carl Edward Rasmussen and Hannes Nickisch (Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-01-21). Standard GP regression and classification as well as FITC (sparse GPs) inference is implemented.
 
